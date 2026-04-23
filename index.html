@@ -478,6 +478,133 @@
     /* =========================
        RESPONSIVE
     ========================= */
+   
+    /* =========================
+   DESKTOP FIT NUMBER MATCH IN ONE SCREEN
+========================= */
+@media (min-width: 901px) {
+
+  #numberMatchPage {
+    height: 100vh;
+    overflow: hidden;
+    padding-bottom: 0;
+  }
+
+  #numberMatchPage .top-bar-wrap {
+    padding: 14px 4% 0 4%;
+  }
+
+  #numberMatchPage .page-inner {
+    height: calc(100vh - 86px);
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 14px;
+  }
+
+  #numberMatchPage .inner-page-hero {
+    margin-top: 10px;
+    padding: 20px 20px;
+    border-radius: 24px;
+  }
+
+  #numberMatchPage .inner-page-hero h1 {
+    font-size: 28px;
+    margin-bottom: 8px;
+  }
+
+  #numberMatchPage .inner-page-hero p {
+    font-size: 15px;
+    line-height: 1.45;
+  }
+
+  #numberMatchPage .match-layout {
+    flex: 1;
+    min-height: 0;
+    margin-top: 14px;
+    gap: 16px;
+    align-items: stretch;
+  }
+
+  #numberMatchPage .match-layout > div:first-child {
+    display: flex;
+    min-height: 0;
+  }
+
+  #numberMatchPage .match-layout > div:first-child .card {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+
+  #numberMatchPage .match-layout > div:first-child .numbers-textarea {
+    flex: 1;
+    min-height: 0;
+    height: 100%;
+    resize: none;
+  }
+
+  #numberMatchPage .card {
+    padding: 18px;
+    border-radius: 22px;
+  }
+
+  #numberMatchPage .card + .card {
+    margin-top: 14px;
+  }
+
+  #numberMatchPage .card-title {
+    font-size: 20px;
+    margin-bottom: 6px;
+  }
+
+  #numberMatchPage .card-subtitle {
+    font-size: 14px;
+    margin-bottom: 12px;
+    line-height: 1.45;
+  }
+
+  #numberMatchPage .target-input {
+    height: 54px;
+    font-size: 19px;
+  }
+
+  #numberMatchPage .small-help {
+    margin-top: 8px;
+    font-size: 13px;
+    line-height: 1.45;
+  }
+
+  #numberMatchPage .action-btn {
+    min-height: 50px;
+    font-size: 15px;
+  }
+
+  #numberMatchPage .result-box {
+    min-height: 110px;
+    padding: 14px;
+  }
+
+  #numberMatchPage .result-heading {
+    font-size: 20px;
+    margin-bottom: 10px;
+  }
+
+  #numberMatchPage .result-lines {
+    padding: 12px;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  #numberMatchPage .total-box {
+    margin-top: 10px;
+    padding: 12px;
+    font-size: 16px;
+  }
+
+}
+    
+    
     @media (max-width: 900px) {
       .hero {
         padding: 38px 5% 95px 5%;
