@@ -623,8 +623,9 @@
             <div class="card">
               <div class="card-title">Paste Your Numbers</div>
               <div class="card-subtitle">Enter one number on each line. Example: 548.25</div>
-              <textarea
-                id="numbersInput"
+             <textarea
+  id="numbersInput"
+  oninput="updateInputSummary()"
                 class="numbers-textarea"
                 placeholder="6589.10&#10;548.25&#10;584.00&#10;325.00&#10;695.32&#10;2541.05&#10;365.25&#10;9877.00"
               ></textarea>
@@ -677,7 +678,63 @@
       </div>
     </section>
   </div>
+// =========================
+// LIVE INPUT SUMMARY
+// =========================
+function updateInputSummary(){
 
+  const numbersText = document.getElementById('numbersInput').value;
+  const inputSummaryBox = document.getElementById('inputSummaryBox');
+
+  if(!numbersText.trim()){
+    inputSummaryBox.className = 'result-box';
+    inputSummaryBox.innerHTML = `
+      <div class="result-placeholder">
+        No numbers entered yet.
+      </div>
+    `;
+    return;
+  }
+
+  const lines = numbersText.split('\n');
+  let count = 0;
+  let totalCents = 0;
+
+  for(let i = 0; i < lines.length; i++){
+
+    let clean = lines[i].trim().replace(/,/g,'');
+
+    if(clean === '') continue;
+
+    let num = parseFloat(clean);
+
+    if(isNaN(num)){
+      inputSummaryBox.className = 'result-box result-error';
+      inputSummaryBox.innerHTML = `
+        <div class="result-heading">Invalid Input</div>
+        <div class="result-placeholder">
+          Line ${i+1} is not a valid number.
+        </div>
+      `;
+      return;
+    }
+
+    count++;
+    totalCents += Math.round(num * 100);
+  }
+
+  let total = (totalCents / 100).toFixed(2);
+
+  inputSummaryBox.className = 'result-box result-success';
+  inputSummaryBox.innerHTML = `
+    <div class="result-heading">Input Summary</div>
+    <div class="result-label">Numbers Entered</div>
+    <div class="result-lines">${count}</div>
+
+    <div class="result-label">Total of All Numbers</div>
+    <div class="total-box">Total: ${total}</div>
+  `;
+}
   <script>
     // =========================
     // OPEN HOME PAGE
