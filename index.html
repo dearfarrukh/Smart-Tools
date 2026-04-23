@@ -475,6 +475,308 @@
       color: #6b7280;
     }
 
+
+/* =========================
+   IOS CALCULATOR DESIGN
+========================= */
+.calculator-hero-ios {
+  margin-top: 18px;
+  background:
+    radial-gradient(circle at top left, rgba(255,255,255,0.22), transparent 30%),
+    linear-gradient(135deg, #0ea5e9 0%, #6366f1 40%, #ec4899 100%);
+  color: white;
+  border-radius: 30px;
+  padding: 26px 24px;
+  box-shadow:
+    0 16px 34px rgba(99, 102, 241, 0.20),
+    0 0 28px rgba(236, 72, 153, 0.18);
+}
+
+.calculator-hero-badge {
+  display: inline-block;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.18);
+  border: 1px solid rgba(255,255,255,0.22);
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 14px;
+  backdrop-filter: blur(8px);
+}
+
+.calculator-hero-ios h1 {
+  font-size: 34px;
+  font-weight: 800;
+  line-height: 1.1;
+  margin-bottom: 10px;
+  letter-spacing: -0.7px;
+}
+
+.calculator-hero-ios p {
+  font-size: 16px;
+  line-height: 1.55;
+  color: rgba(255,255,255,0.95);
+  max-width: 760px;
+}
+
+.calculator-ios-shell {
+  margin-top: 22px;
+  display: flex;
+  justify-content: center;
+}
+
+.calculator-ios-card {
+  width: 100%;
+  max-width: 540px;
+  border-radius: 34px;
+  padding: 22px;
+  background: rgba(255,255,255,0.70);
+  border: 1px solid rgba(255,255,255,0.65);
+  backdrop-filter: blur(18px);
+  box-shadow:
+    0 20px 44px rgba(15, 23, 42, 0.10),
+    0 0 30px rgba(99, 102, 241, 0.10);
+}
+
+.calculator-display-wrap {
+  border-radius: 28px;
+  padding: 18px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(245,247,255,0.92) 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.95),
+    0 8px 24px rgba(15, 23, 42, 0.06);
+  margin-bottom: 18px;
+}
+
+.calculator-display-label {
+  font-size: 13px;
+  font-weight: 800;
+  color: #6b7280;
+  letter-spacing: 0.7px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.calculator-live-display {
+  min-height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  text-align: right;
+  font-size: 34px;
+  font-weight: 800;
+  color: #111827;
+  word-break: break-word;
+}
+
+.calculator-inputs-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.calculator-input-box {
+  border-radius: 24px;
+  padding: 14px;
+  background: rgba(255,255,255,0.78);
+  box-shadow: 0 8px 22px rgba(15, 23, 42, 0.06);
+}
+
+.calculator-input-label {
+  font-size: 13px;
+  font-weight: 800;
+  color: #6b7280;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+.calculator-ios-input {
+  width: 100%;
+  height: 58px;
+  border: none;
+  outline: none;
+  border-radius: 18px;
+  padding: 0 16px;
+  font-size: 24px;
+  font-weight: 800;
+  color: #111827;
+  background: #f8fafc;
+  box-shadow: inset 0 0 0 2px #e5e7eb;
+}
+
+.calculator-ios-input:focus {
+  box-shadow:
+    inset 0 0 0 2px #60a5fa,
+    0 0 0 6px rgba(96, 165, 250, 0.12);
+}
+
+.calculator-actions-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.calculator-ios-btn {
+  min-height: 66px;
+  border: none;
+  border-radius: 24px;
+  color: white;
+  font-size: 18px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow:
+    0 12px 22px rgba(15, 23, 42, 0.12),
+    inset 0 1px 0 rgba(255,255,255,0.25);
+  transition: transform 0.16s ease, opacity 0.16s ease, box-shadow 0.16s ease;
+}
+
+.calculator-ios-btn:hover {
+  transform: translateY(-2px);
+  opacity: 0.97;
+}
+
+.calc-orange {
+  background: linear-gradient(135deg, #fb923c 0%, #f97316 100%);
+  box-shadow:
+    0 12px 22px rgba(249, 115, 22, 0.22),
+    0 0 22px rgba(251, 146, 60, 0.18);
+}
+
+.calc-blue {
+  background: linear-gradient(135deg, #60a5fa 0%, #2563eb 100%);
+  box-shadow:
+    0 12px 22px rgba(37, 99, 235, 0.22),
+    0 0 22px rgba(96, 165, 250, 0.18);
+}
+
+.calc-green {
+  background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
+  box-shadow:
+    0 12px 22px rgba(16, 185, 129, 0.22),
+    0 0 22px rgba(52, 211, 153, 0.18);
+}
+
+.calc-pink {
+  background: linear-gradient(135deg, #f472b6 0%, #ec4899 100%);
+  box-shadow:
+    0 12px 22px rgba(236, 72, 153, 0.22),
+    0 0 22px rgba(244, 114, 182, 0.18);
+}
+
+.calculator-reset-row {
+  margin-bottom: 18px;
+}
+
+.calculator-ios-reset-btn {
+  width: 100%;
+  min-height: 56px;
+  border: none;
+  border-radius: 22px;
+  background: linear-gradient(135deg, #475569 0%, #1e293b 100%);
+  color: white;
+  font-size: 16px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow:
+    0 12px 22px rgba(30, 41, 59, 0.18),
+    0 0 18px rgba(71, 85, 105, 0.14);
+}
+
+.calculator-answer-card {
+  border-radius: 26px;
+  padding: 18px;
+  background: rgba(255,255,255,0.72);
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+}
+
+/* =========================
+   PHONE CALCULATOR FIT
+========================= */
+@media (max-width: 640px) {
+
+  .calculator-hero-ios {
+    margin-top: 14px;
+    padding: 20px 16px;
+    border-radius: 24px;
+  }
+
+  .calculator-hero-ios h1 {
+    font-size: 28px;
+  }
+
+  .calculator-hero-ios p {
+    font-size: 14px;
+    line-height: 1.45;
+  }
+
+  .calculator-ios-shell {
+    margin-top: 16px;
+  }
+
+  .calculator-ios-card {
+    max-width: 100%;
+    padding: 14px;
+    border-radius: 26px;
+  }
+
+  .calculator-display-wrap {
+    padding: 14px;
+    border-radius: 22px;
+    margin-bottom: 14px;
+  }
+
+  .calculator-live-display {
+    min-height: 44px;
+    font-size: 28px;
+  }
+
+  .calculator-inputs-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+
+  .calculator-input-box {
+    border-radius: 20px;
+    padding: 12px;
+  }
+
+  .calculator-ios-input {
+    height: 54px;
+    font-size: 22px;
+    border-radius: 16px;
+  }
+
+  .calculator-actions-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+
+  .calculator-ios-btn {
+    min-height: 58px;
+    font-size: 16px;
+    border-radius: 20px;
+    padding: 0 10px;
+  }
+
+  .calculator-ios-reset-btn {
+    min-height: 52px;
+    font-size: 15px;
+    border-radius: 18px;
+  }
+
+  .calculator-answer-card {
+    padding: 14px;
+    border-radius: 22px;
+  }
+
+}
+
+    
     /* =========================
        RESPONSIVE
     ========================= */
@@ -826,84 +1128,80 @@
     <!-- =========================
          CALCULATOR PAGE
     ========================= -->
-    <section id="calculatorPage" class="page">
-      <div class="top-bar-wrap">
-        <div class="top-bar">
-          <button class="back-btn" onclick="openHomePage()">←</button>
-          <div class="top-bar-title">Pocket Tools</div>
-          <div class="top-bar-spacer"></div>
+   <section id="calculatorPage" class="page">
+  <div class="top-bar-wrap">
+    <div class="top-bar">
+      <button class="back-btn" onclick="openHomePage()">←</button>
+      <div class="top-bar-title">Pocket Tools</div>
+      <div class="top-bar-spacer"></div>
+    </div>
+  </div>
+
+  <div class="page-inner">
+    <div class="calculator-hero-ios">
+      <div class="calculator-hero-badge">Simple iOS Style Calculator</div>
+      <h1>Calculator</h1>
+      <p>Clean iPhone-style look with colorful glow, large buttons, and a phone-friendly layout.</p>
+    </div>
+
+    <div class="calculator-ios-shell">
+      <div class="calculator-ios-card">
+
+        <div class="calculator-display-wrap">
+          <div class="calculator-display-label">Result</div>
+          <div id="calculatorLiveDisplay" class="calculator-live-display">0</div>
         </div>
-      </div>
 
-      <div class="page-inner">
-        <div class="inner-page-hero">
-          <h1>Simple Calculator</h1>
-          <p>
-            Enter two numbers, then press a button to add, subtract, multiply, or divide.
-          </p>
-        </div>
-
-        <div class="match-layout">
-          <div>
-            <div class="card">
-              <div class="card-title">Enter Numbers</div>
-              <div class="card-subtitle">Type one number in each box.</div>
-
-              <input
-                id="calculatorInput1"
-                class="target-input"
-                type="text"
-                placeholder="First number"
-                style="margin-bottom:16px;"
-              />
-
-              <input
-                id="calculatorInput2"
-                class="target-input"
-                type="text"
-                placeholder="Second number"
-              />
-            </div>
+        <div class="calculator-inputs-grid">
+          <div class="calculator-input-box">
+            <div class="calculator-input-label">First Number</div>
+            <input
+              id="calculatorInput1"
+              class="calculator-ios-input"
+              type="text"
+              placeholder="0"
+              oninput="updateCalculatorPreview()"
+            />
           </div>
 
-          <div>
-            <div class="card">
-              <div class="card-title">Actions</div>
-              <div class="card-subtitle">Choose the math you want to do.</div>
+          <div class="calculator-input-box">
+            <div class="calculator-input-label">Second Number</div>
+            <input
+              id="calculatorInput2"
+              class="calculator-ios-input"
+              type="text"
+              placeholder="0"
+              oninput="updateCalculatorPreview()"
+            />
+          </div>
+        </div>
 
-              <div class="button-row" style="margin-bottom:14px;">
-                <button class="action-btn blue-btn" onclick="calculateResult('add')">Add</button>
-                <button class="action-btn purple-btn" onclick="calculateResult('subtract')">Subtract</button>
-              </div>
+        <div class="calculator-actions-grid">
+          <button class="calculator-ios-btn calc-orange" onclick="calculateResult('add')">＋ Add</button>
+          <button class="calculator-ios-btn calc-blue" onclick="calculateResult('subtract')">－ Subtract</button>
+          <button class="calculator-ios-btn calc-green" onclick="calculateResult('multiply')">× Multiply</button>
+          <button class="calculator-ios-btn calc-pink" onclick="calculateResult('divide')">÷ Divide</button>
+        </div>
 
-              <div class="button-row">
-                <button class="action-btn find-btn" onclick="calculateResult('multiply')">Multiply</button>
-                <button class="action-btn reset-btn" onclick="calculateResult('divide')">Divide</button>
-              </div>
-            </div>
+        <div class="calculator-reset-row">
+          <button class="calculator-ios-reset-btn" onclick="resetCalculator()">Clear Calculator</button>
+        </div>
 
-            <div class="card">
-              <div class="card-title">Calculator Result</div>
-              <div class="card-subtitle">Your answer will show here.</div>
-              <div id="calculatorResultBox" class="result-box">
-                <div class="result-placeholder">
-                  No result yet.<br><br>
-                  Enter two numbers and press a math button.
-                </div>
-              </div>
-            </div>
-
-            <div class="card">
-              <div class="card-title">Reset</div>
-              <div class="card-subtitle">Clear the calculator inputs and result.</div>
-              <div class="button-row">
-                <button class="action-btn reset-btn" onclick="resetCalculator()">Clear Calculator</button>
-              </div>
+        <div class="calculator-answer-card">
+          <div class="card-title">Calculator Result</div>
+          <div class="card-subtitle">Your calculation will show here.</div>
+          <div id="calculatorResultBox" class="result-box">
+            <div class="result-placeholder">
+              No result yet.<br><br>
+              Enter two numbers and press a math button.
             </div>
           </div>
         </div>
+
       </div>
-    </section>
+    </div>
+  </div>
+</section>
 
   </div>
 
@@ -1215,21 +1513,51 @@
       `;
     }
 
-    // =========================
-    // RESET CALCULATOR
-    // =========================
-    function resetCalculator() {
-      document.getElementById('calculatorInput1').value = '';
-      document.getElementById('calculatorInput2').value = '';
 
-      document.getElementById('calculatorResultBox').className = 'result-box';
-      document.getElementById('calculatorResultBox').innerHTML = `
-        <div class="result-placeholder">
-          No result yet.<br><br>
-          Enter two numbers and press a math button.
-        </div>
-      `;
-    }
+// =========================
+// UPDATE CALCULATOR PREVIEW
+// =========================
+function updateCalculatorPreview() {
+  const input1Text = document.getElementById('calculatorInput1').value.trim();
+  const input2Text = document.getElementById('calculatorInput2').value.trim();
+  const liveDisplay = document.getElementById('calculatorLiveDisplay');
+
+  if (input1Text === '' && input2Text === '') {
+    liveDisplay.innerText = '0';
+    return;
+  }
+
+  if (input1Text !== '' && input2Text === '') {
+    liveDisplay.innerText = input1Text;
+    return;
+  }
+
+  if (input1Text === '' && input2Text !== '') {
+    liveDisplay.innerText = input2Text;
+    return;
+  }
+
+  liveDisplay.innerText = input1Text + '   ' + input2Text;
+}
+
+    
+
+  // =========================
+// RESET CALCULATOR
+// =========================
+function resetCalculator() {
+  document.getElementById('calculatorInput1').value = '';
+  document.getElementById('calculatorInput2').value = '';
+  document.getElementById('calculatorLiveDisplay').innerText = '0';
+
+  document.getElementById('calculatorResultBox').className = 'result-box';
+  document.getElementById('calculatorResultBox').innerHTML = `
+    <div class="result-placeholder">
+      No result yet.<br><br>
+      Enter two numbers and press a math button.
+    </div>
+  `;
+}
   </script>
 </body>
 </html>
