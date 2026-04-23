@@ -639,6 +639,20 @@
               <div class="small-help">Tip: Use numbers only. Example: 1568.57</div>
             </div>
 
+<div class="card">
+  <div class="card-title">Input Summary</div>
+  <div class="card-subtitle">This shows how many numbers you entered and their total sum.</div>
+
+  <div id="inputSummaryBox" class="result-box">
+    <div class="result-placeholder">
+      No numbers entered yet.
+    </div>
+  </div>
+</div>
+
+
+
+            
             <div class="card">
               <div class="card-title">Actions</div>
               <div class="card-subtitle">Press Find Match to search. Press Reset to clear everything.</div>
@@ -807,7 +821,19 @@
         `;
         return;
       }
+      const inputSummaryBox = document.getElementById('inputSummaryBox');
+      const totalEnteredCents = parsedResult.numbers.reduce((sum, item) => sum + item.value, 0);
+      const totalEntered = (totalEnteredCents / 100).toFixed(2);
+      const countEntered = parsedResult.numbers.length;
 
+      inputSummaryBox.className = 'result-box result-success';
+      inputSummaryBox.innerHTML = `
+        <div class="result-heading">Input Summary</div>
+        <div class="result-label">Numbers Entered</div>
+        <div class="result-lines">${countEntered}</div>
+        <div class="result-label">Total of All Numbers</div>
+        <div class="total-box">Total: ${totalEntered}</div>
+      `;
       const targetCents = Math.round(targetNumber * 100);
       const match = findFirstMatch(parsedResult.numbers, targetCents, 0, [], 0);
 
