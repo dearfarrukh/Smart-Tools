@@ -1,1 +1,838 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <title>Pocket Tools</title>
+
+  <style>
+    /* =========================
+       RESET
+    ========================= */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      width: 100%;
+      min-height: 100%;
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(180deg, #f7f8ff 0%, #eef4ff 100%);
+      color: #1f2937;
+    }
+
+    body {
+      min-height: 100vh;
+    }
+
+    button,
+    input,
+    textarea {
+      font: inherit;
+    }
+
+    /* =========================
+       APP WRAPPER
+    ========================= */
+    .app-shell {
+      width: 100%;
+      min-height: 100vh;
+      padding: 0;
+    }
+
+    .page {
+      display: none;
+      width: 100%;
+      min-height: 100vh;
+      padding: 0 0 40px 0;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    .page-inner {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 4% 40px 4%;
+    }
+
+    /* =========================
+       TOP HERO HEADER
+    ========================= */
+    .hero {
+      width: 100%;
+      background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 45%, #ec4899 100%);
+      color: white;
+      padding: 48px 4% 110px 4%;
+      border-bottom-left-radius: 30px;
+      border-bottom-right-radius: 30px;
+      box-shadow: 0 12px 32px rgba(79, 70, 229, 0.25);
+    }
+
+    .hero-badge {
+      display: inline-block;
+      background: rgba(255, 255, 255, 0.18);
+      border: 1px solid rgba(255, 255, 255, 0.24);
+      padding: 10px 16px;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 18px;
+      backdrop-filter: blur(10px);
+    }
+
+    .hero h1 {
+      font-size: 42px;
+      line-height: 1.05;
+      font-weight: 800;
+      margin-bottom: 14px;
+      letter-spacing: -1px;
+    }
+
+    .hero p {
+      max-width: 700px;
+      font-size: 18px;
+      line-height: 1.6;
+      color: rgba(255, 255, 255, 0.94);
+    }
+
+    /* =========================
+       HOME PAGE TOOL CARDS AREA
+    ========================= */
+    .tools-section {
+      margin-top: -72px;
+      position: relative;
+      z-index: 5;
+    }
+
+    .section-title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 18px;
+      padding: 0 2px;
+    }
+
+    .section-title-row h2 {
+      font-size: 28px;
+      font-weight: 800;
+      color: #111827;
+      letter-spacing: -0.5px;
+    }
+
+    .section-title-row span {
+      font-size: 14px;
+      font-weight: 700;
+      color: #6b7280;
+    }
+
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 20px;
+    }
+
+    .tool-card {
+      border: none;
+      width: 100%;
+      text-align: left;
+      border-radius: 28px;
+      padding: 24px;
+      background: white;
+      box-shadow: 0 14px 34px rgba(15, 23, 42, 0.10);
+      cursor: pointer;
+      transition: transform 0.18s ease, box-shadow 0.18s ease;
+      min-height: 190px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .tool-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 18px 38px rgba(15, 23, 42, 0.14);
+    }
+
+    .tool-card::after {
+      content: "";
+      position: absolute;
+      right: -30px;
+      top: -30px;
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.16);
+    }
+
+    .tool-card-icon {
+      width: 58px;
+      height: 58px;
+      border-radius: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      margin-bottom: 18px;
+      background: rgba(255, 255, 255, 0.22);
+      backdrop-filter: blur(8px);
+    }
+
+    .tool-card h3 {
+      font-size: 24px;
+      font-weight: 800;
+      margin-bottom: 10px;
+      color: white;
+      letter-spacing: -0.5px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .tool-card p {
+      font-size: 15px;
+      line-height: 1.6;
+      color: rgba(255, 255, 255, 0.96);
+      position: relative;
+      z-index: 1;
+      max-width: 92%;
+    }
+
+    .tool-card.match-finder {
+      background: linear-gradient(135deg, #f97316 0%, #ef4444 100%);
+    }
+
+    .tool-card.calculator {
+      background: linear-gradient(135deg, #10b981 0%, #14b8a6 100%);
+      cursor: default;
+    }
+
+    .tool-card.notes {
+      background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
+      cursor: default;
+    }
+
+    .tool-card.converter {
+      background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
+      cursor: default;
+    }
+
+    /* =========================
+       PAGE TOP BAR
+    ========================= */
+    .top-bar-wrap {
+      width: 100%;
+      padding: 20px 4% 0 4%;
+    }
+
+    .top-bar {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .back-btn {
+      border: none;
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: white;
+      color: #111827;
+      font-size: 24px;
+      font-weight: 700;
+      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.10);
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .top-bar-title {
+      flex: 1;
+      text-align: center;
+      font-size: 22px;
+      font-weight: 800;
+      color: #111827;
+      letter-spacing: -0.4px;
+    }
+
+    .top-bar-spacer {
+      width: 52px;
+      height: 52px;
+      flex-shrink: 0;
+    }
+
+    /* =========================
+       INNER PAGE HEADER
+    ========================= */
+    .inner-page-hero {
+      margin-top: 18px;
+      background: linear-gradient(135deg, #0ea5e9 0%, #2563eb 45%, #7c3aed 100%);
+      color: white;
+      border-radius: 30px;
+      padding: 32px 24px;
+      box-shadow: 0 14px 32px rgba(37, 99, 235, 0.20);
+    }
+
+    .inner-page-hero h1 {
+      font-size: 34px;
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 12px;
+      letter-spacing: -0.8px;
+    }
+
+    .inner-page-hero p {
+      font-size: 17px;
+      line-height: 1.6;
+      color: rgba(255, 255, 255, 0.95);
+      max-width: 760px;
+    }
+
+    /* =========================
+       MATCH FINDER LAYOUT
+    ========================= */
+    .match-layout {
+      margin-top: 24px;
+      display: grid;
+      grid-template-columns: 1.45fr 0.9fr;
+      gap: 22px;
+      align-items: start;
+    }
+
+    .card {
+      background: white;
+      border-radius: 28px;
+      padding: 24px;
+      box-shadow: 0 14px 34px rgba(15, 23, 42, 0.08);
+    }
+
+    .card + .card {
+      margin-top: 22px;
+    }
+
+    .card-title {
+      font-size: 24px;
+      font-weight: 800;
+      color: #111827;
+      margin-bottom: 8px;
+      letter-spacing: -0.5px;
+    }
+
+    .card-subtitle {
+      font-size: 15px;
+      line-height: 1.6;
+      color: #6b7280;
+      margin-bottom: 18px;
+    }
+
+    .numbers-textarea {
+      width: 100%;
+      min-height: 460px;
+      border: 2px solid #e5e7eb;
+      border-radius: 20px;
+      padding: 18px;
+      resize: vertical;
+      outline: none;
+      font-size: 17px;
+      line-height: 1.6;
+      background: #fcfcff;
+      color: #111827;
+    }
+
+    .numbers-textarea:focus,
+    .target-input:focus {
+      border-color: #6366f1;
+      box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.10);
+    }
+
+    .target-input {
+      width: 100%;
+      height: 62px;
+      border: 2px solid #e5e7eb;
+      border-radius: 18px;
+      padding: 0 18px;
+      outline: none;
+      font-size: 22px;
+      font-weight: 700;
+      color: #111827;
+      background: #fcfcff;
+    }
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+
+    .action-btn {
+      border: none;
+      min-height: 58px;
+      border-radius: 18px;
+      padding: 0 24px;
+      cursor: pointer;
+      font-size: 17px;
+      font-weight: 800;
+      flex: 1;
+      transition: transform 0.16s ease, opacity 0.16s ease;
+    }
+
+    .action-btn:hover {
+      transform: translateY(-2px);
+      opacity: 0.96;
+    }
+
+    .find-btn {
+      background: linear-gradient(135deg, #22c55e 0%, #14b8a6 100%);
+      color: white;
+    }
+
+    .reset-btn {
+      background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);
+      color: white;
+    }
+
+    .result-box {
+      min-height: 250px;
+      border-radius: 22px;
+      padding: 18px;
+      background: linear-gradient(180deg, #f9fafb 0%, #f3f4f6 100%);
+      border: 1px solid #eef2f7;
+    }
+
+    .result-placeholder {
+      color: #6b7280;
+      font-size: 16px;
+      line-height: 1.7;
+    }
+
+    .result-success {
+      background: linear-gradient(180deg, #ecfdf5 0%, #d1fae5 100%);
+      border: 1px solid #86efac;
+    }
+
+    .result-error {
+      background: linear-gradient(180deg, #fff7ed 0%, #ffedd5 100%);
+      border: 1px solid #fdba74;
+    }
+
+    .result-heading {
+      font-size: 24px;
+      font-weight: 800;
+      margin-bottom: 14px;
+      color: #111827;
+      letter-spacing: -0.5px;
+    }
+
+    .result-label {
+      font-size: 14px;
+      font-weight: 800;
+      color: #6b7280;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-top: 12px;
+      margin-bottom: 8px;
+    }
+
+    .result-lines {
+      background: rgba(255, 255, 255, 0.82);
+      border-radius: 16px;
+      padding: 14px;
+      font-size: 17px;
+      line-height: 1.8;
+      color: #111827;
+      white-space: pre-line;
+      word-break: break-word;
+    }
+
+    .total-box {
+      margin-top: 14px;
+      border-radius: 16px;
+      padding: 16px;
+      background: rgba(255, 255, 255, 0.9);
+      font-size: 18px;
+      font-weight: 800;
+      color: #065f46;
+    }
+
+    .small-help {
+      margin-top: 12px;
+      font-size: 14px;
+      line-height: 1.7;
+      color: #6b7280;
+    }
+
+    /* =========================
+       RESPONSIVE
+    ========================= */
+    @media (max-width: 900px) {
+      .hero {
+        padding: 38px 5% 95px 5%;
+      }
+
+      .hero h1 {
+        font-size: 34px;
+      }
+
+      .tools-grid,
+      .match-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .numbers-textarea {
+        min-height: 300px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .page-inner {
+        padding: 0 5% 30px 5%;
+      }
+
+      .hero {
+        border-bottom-left-radius: 24px;
+        border-bottom-right-radius: 24px;
+        padding: 32px 5% 88px 5%;
+      }
+
+      .hero h1 {
+        font-size: 30px;
+      }
+
+      .hero p {
+        font-size: 16px;
+      }
+
+      .section-title-row h2 {
+        font-size: 24px;
+      }
+
+      .tool-card {
+        min-height: 170px;
+        padding: 20px;
+      }
+
+      .inner-page-hero {
+        padding: 26px 18px;
+        border-radius: 24px;
+      }
+
+      .inner-page-hero h1 {
+        font-size: 28px;
+      }
+
+      .card {
+        border-radius: 24px;
+        padding: 20px;
+      }
+
+      .card-title {
+        font-size: 21px;
+      }
+
+      .top-bar-title {
+        font-size: 20px;
+      }
+
+      .target-input {
+        font-size: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+
+    <!-- =========================
+         HOME PAGE
+    ========================= -->
+    <section id="homePage" class="page active">
+      <div class="hero">
+        <div class="page-inner">
+          <div class="hero-badge">Multi App Dashboard</div>
+          <h1>Pocket Tools</h1>
+          <p>
+            One colorful app with useful mini tools inside. Start with Number Match Finder,
+            and later add more tools like Calculator, Notes, and Converter.
+          </p>
+        </div>
+      </div>
+
+      <div class="page-inner tools-section">
+        <div class="section-title-row">
+          <h2>Your Tools</h2>
+          <span>Click a card to open</span>
+        </div>
+
+        <div class="tools-grid">
+          <button class="tool-card match-finder" onclick="openNumberMatchPage()">
+            <div class="tool-card-icon">#</div>
+            <h3>Number Match Finder</h3>
+            <p>Paste many numbers, enter one target total, and find the first valid match in top-to-bottom order.</p>
+          </button>
+
+          <div class="tool-card calculator">
+            <div class="tool-card-icon">+</div>
+            <h3>Calculator</h3>
+            <p>Coming soon. This card is here so the app already looks like a real multi-tool dashboard.</p>
+          </div>
+
+          <div class="tool-card notes">
+            <div class="tool-card-icon">✎</div>
+            <h3>Notes</h3>
+            <p>Coming soon. Later you can add a quick notes mini app here inside the same project.</p>
+          </div>
+
+          <div class="tool-card converter">
+            <div class="tool-card-icon">⇄</div>
+            <h3>Converter</h3>
+            <p>Coming soon. Later you can add money, units, time, or other useful conversions here.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================
+         NUMBER MATCH FINDER PAGE
+    ========================= -->
+    <section id="numberMatchPage" class="page">
+      <div class="top-bar-wrap">
+        <div class="top-bar">
+          <button class="back-btn" onclick="openHomePage()">←</button>
+          <div class="top-bar-title">Pocket Tools</div>
+          <div class="top-bar-spacer"></div>
+        </div>
+      </div>
+
+      <div class="page-inner">
+        <div class="inner-page-hero">
+          <h1>Number Match Finder</h1>
+          <p>
+            Paste one number per line, enter your target total, then press Find Match.
+            This tool checks from the beginning of your list first and stops at the first exact answer it finds.
+          </p>
+        </div>
+
+        <div class="match-layout">
+          <div>
+            <div class="card">
+              <div class="card-title">Paste Your Numbers</div>
+              <div class="card-subtitle">Enter one number on each line. Example: 548.25</div>
+              <textarea
+                id="numbersInput"
+                class="numbers-textarea"
+                placeholder="6589.10&#10;548.25&#10;584.00&#10;325.00&#10;695.32&#10;2541.05&#10;365.25&#10;9877.00"
+              ></textarea>
+            </div>
+          </div>
+
+          <div>
+            <div class="card">
+              <div class="card-title">Target Total</div>
+              <div class="card-subtitle">Type the exact total you want to match.</div>
+              <input id="targetInput" class="target-input" type="text" placeholder="1568.57" />
+              <div class="small-help">Tip: Use numbers only. Example: 1568.57</div>
+            </div>
+
+            <div class="card">
+              <div class="card-title">Actions</div>
+              <div class="card-subtitle">Press Find Match to search. Press Reset to clear everything.</div>
+              <div class="button-row">
+                <button class="action-btn find-btn" onclick="findNumberMatch()">Find Match</button>
+                <button class="action-btn reset-btn" onclick="resetNumberMatch()">Reset</button>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-title">Result</div>
+              <div class="card-subtitle">Your first exact result will show here.</div>
+              <div id="resultBox" class="result-box">
+                <div class="result-placeholder">
+                  No result yet.<br><br>
+                  Paste your numbers, enter a target total, and press <strong>Find Match</strong>.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    // =========================
+    // OPEN HOME PAGE
+    // =========================
+    function openHomePage() {
+      document.getElementById('homePage').classList.add('active');
+      document.getElementById('numberMatchPage').classList.remove('active');
+      window.scrollTo(0, 0);
+    }
+
+    // =========================
+    // OPEN NUMBER MATCH PAGE
+    // =========================
+    function openNumberMatchPage() {
+      document.getElementById('homePage').classList.remove('active');
+      document.getElementById('numberMatchPage').classList.add('active');
+      window.scrollTo(0, 0);
+    }
+
+    // =========================
+    // RESET NUMBER MATCH
+    // =========================
+    function resetNumberMatch() {
+      document.getElementById('numbersInput').value = '';
+      document.getElementById('targetInput').value = '';
+      document.getElementById('resultBox').className = 'result-box';
+      document.getElementById('resultBox').innerHTML = `
+        <div class="result-placeholder">
+          No result yet.<br><br>
+          Paste your numbers, enter a target total, and press <strong>Find Match</strong>.
+        </div>
+      `;
+    }
+
+    // =========================
+    // PARSE NUMBERS
+    // =========================
+    function parseNumbers(inputText) {
+      const lines = inputText.split('\n');
+      const parsed = [];
+
+      for (let i = 0; i < lines.length; i++) {
+        const cleanLine = lines[i].trim().replace(/,/g, '');
+
+        if (cleanLine === '') {
+          continue;
+        }
+
+        const value = parseFloat(cleanLine);
+
+        if (isNaN(value)) {
+          return {
+            ok: false,
+            message: 'Line ' + (i + 1) + ' is not a valid number.'
+          };
+        }
+
+        parsed.push({
+          value: Math.round(value * 100),
+          display: value.toFixed(2)
+        });
+      }
+
+      if (parsed.length === 0) {
+        return {
+          ok: false,
+          message: 'Please paste at least one number.'
+        };
+      }
+
+      return {
+        ok: true,
+        numbers: parsed
+      };
+    }
+
+    // =========================
+    // FIND FIRST MATCH RECURSIVE
+    // =========================
+    function findFirstMatch(numbers, targetCents, startIndex, currentList, currentSum) {
+      if (currentSum === targetCents) {
+        return currentList;
+      }
+
+      if (currentSum > targetCents) {
+        return null;
+      }
+
+      for (let i = startIndex; i < numbers.length; i++) {
+        const result = findFirstMatch(
+          numbers,
+          targetCents,
+          i + 1,
+          [...currentList, numbers[i]],
+          currentSum + numbers[i].value
+        );
+
+        if (result) {
+          return result;
+        }
+      }
+
+      return null;
+    }
+
+    // =========================
+    // FIND NUMBER MATCH
+    // =========================
+    function findNumberMatch() {
+      const numbersText = document.getElementById('numbersInput').value;
+      const targetText = document.getElementById('targetInput').value.trim().replace(/,/g, '');
+      const resultBox = document.getElementById('resultBox');
+
+      if (targetText === '') {
+        resultBox.className = 'result-box result-error';
+        resultBox.innerHTML = `
+          <div class="result-heading">Target Missing</div>
+          <div class="result-placeholder">Please enter your target total first.</div>
+        `;
+        return;
+      }
+
+      const targetNumber = parseFloat(targetText);
+
+      if (isNaN(targetNumber)) {
+        resultBox.className = 'result-box result-error';
+        resultBox.innerHTML = `
+          <div class="result-heading">Invalid Target</div>
+          <div class="result-placeholder">Your target total is not a valid number.</div>
+        `;
+        return;
+      }
+
+      const parsedResult = parseNumbers(numbersText);
+
+      if (!parsedResult.ok) {
+        resultBox.className = 'result-box result-error';
+        resultBox.innerHTML = `
+          <div class="result-heading">Check Your Input</div>
+          <div class="result-placeholder">${parsedResult.message}</div>
+        `;
+        return;
+      }
+
+      const targetCents = Math.round(targetNumber * 100);
+      const match = findFirstMatch(parsedResult.numbers, targetCents, 0, [], 0);
+
+      if (match) {
+        const matchedLines = match.map(item => item.display).join('<br>');
+        const matchedTotal = (match.reduce((sum, item) => sum + item.value, 0) / 100).toFixed(2);
+
+        resultBox.className = 'result-box result-success';
+        resultBox.innerHTML = `
+          <div class="result-heading">Match Found</div>
+          <div class="result-label">Matching Numbers</div>
+          <div class="result-lines">${matchedLines}</div>
+          <div class="total-box">Total: ${matchedTotal}</div>
+        `;
+      } else {
+        resultBox.className = 'result-box result-error';
+        resultBox.innerHTML = `
+          <div class="result-heading">No Exact Match</div>
+          <div class="result-placeholder">
+            No exact combination was found for target <strong>${targetNumber.toFixed(2)}</strong>.
+          </div>
+        `;
+      }
+    }
+  </script>
+</body>
+</html>
 
