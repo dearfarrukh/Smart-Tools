@@ -479,14 +479,13 @@
        RESPONSIVE
     ========================= */
    
-    /* =========================
+   /* =========================
    DESKTOP FIT NUMBER MATCH IN ONE SCREEN
 ========================= */
 @media (min-width: 901px) {
 
   #numberMatchPage {
-    height: 100vh;
-    overflow: hidden;
+    min-height: 100vh;
     padding-bottom: 0;
   }
 
@@ -495,7 +494,7 @@
   }
 
   #numberMatchPage .page-inner {
-    height: calc(100vh - 86px);
+    min-height: calc(100vh - 86px);
     display: flex;
     flex-direction: column;
     padding-bottom: 14px;
@@ -503,31 +502,36 @@
 
   #numberMatchPage .inner-page-hero {
     margin-top: 10px;
-    padding: 20px 20px;
-    border-radius: 24px;
+    padding: 18px 18px;
+    border-radius: 22px;
+    flex-shrink: 0;
   }
 
   #numberMatchPage .inner-page-hero h1 {
-    font-size: 28px;
-    margin-bottom: 8px;
+    font-size: 26px;
+    margin-bottom: 6px;
   }
 
   #numberMatchPage .inner-page-hero p {
-    font-size: 15px;
-    line-height: 1.45;
+    font-size: 14px;
+    line-height: 1.4;
   }
 
   #numberMatchPage .match-layout {
     flex: 1;
     min-height: 0;
-    margin-top: 14px;
-    gap: 16px;
+    margin-top: 12px;
+    gap: 14px;
     align-items: stretch;
+  }
+
+  #numberMatchPage .match-layout > div:first-child,
+  #numberMatchPage .match-layout > div:last-child {
+    min-height: 0;
   }
 
   #numberMatchPage .match-layout > div:first-child {
     display: flex;
-    min-height: 0;
   }
 
   #numberMatchPage .match-layout > div:first-child .card {
@@ -537,69 +541,79 @@
     min-height: 0;
   }
 
-  #numberMatchPage .match-layout > div:first-child .numbers-textarea {
+  #numberMatchPage .numbers-textarea {
     flex: 1;
-    min-height: 0;
-    height: 100%;
+    min-height: 260px;
+    height: auto;
     resize: none;
   }
 
   #numberMatchPage .card {
-    padding: 18px;
+    padding: 16px;
     border-radius: 22px;
   }
 
   #numberMatchPage .card + .card {
-    margin-top: 14px;
+    margin-top: 12px;
   }
 
   #numberMatchPage .card-title {
-    font-size: 20px;
+    font-size: 19px;
     margin-bottom: 6px;
   }
 
   #numberMatchPage .card-subtitle {
-    font-size: 14px;
-    margin-bottom: 12px;
-    line-height: 1.45;
-  }
-
-  #numberMatchPage .target-input {
-    height: 54px;
-    font-size: 19px;
-  }
-
-  #numberMatchPage .small-help {
-    margin-top: 8px;
     font-size: 13px;
-    line-height: 1.45;
-  }
-
-  #numberMatchPage .action-btn {
-    min-height: 50px;
-    font-size: 15px;
-  }
-
-  #numberMatchPage .result-box {
-    min-height: 110px;
-    padding: 14px;
-  }
-
-  #numberMatchPage .result-heading {
-    font-size: 20px;
+    line-height: 1.4;
     margin-bottom: 10px;
   }
 
-  #numberMatchPage .result-lines {
+  #numberMatchPage .target-input {
+    height: 50px;
+    font-size: 18px;
+  }
+
+  #numberMatchPage .small-help {
+    margin-top: 6px;
+    font-size: 12px;
+    line-height: 1.4;
+  }
+
+  #numberMatchPage .button-row {
+    gap: 10px;
+  }
+
+  #numberMatchPage .action-btn {
+    min-height: 46px;
+    font-size: 14px;
+  }
+
+  #numberMatchPage .result-box {
+    min-height: 90px;
     padding: 12px;
-    font-size: 15px;
-    line-height: 1.6;
+  }
+
+  #numberMatchPage .result-heading {
+    font-size: 18px;
+    margin-bottom: 8px;
+  }
+
+  #numberMatchPage .result-label {
+    font-size: 12px;
+    margin-top: 8px;
+    margin-bottom: 6px;
+  }
+
+  #numberMatchPage .result-lines {
+    padding: 10px;
+    font-size: 14px;
+    line-height: 1.5;
   }
 
   #numberMatchPage .total-box {
-    margin-top: 10px;
-    padding: 12px;
-    font-size: 16px;
+    margin-top: 8px;
+    padding: 10px;
+    font-size: 15px;
   }
 
 }
