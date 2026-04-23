@@ -180,6 +180,8 @@
       margin-bottom: 18px;
       background: rgba(255, 255, 255, 0.22);
       backdrop-filter: blur(8px);
+      position: relative;
+      z-index: 1;
     }
 
     .tool-card h3 {
@@ -207,7 +209,6 @@
 
     .tool-card.calculator {
       background: linear-gradient(135deg, #10b981 0%, #14b8a6 100%);
-      cursor: default;
     }
 
     .tool-card.notes {
@@ -295,7 +296,7 @@
     }
 
     /* =========================
-       MATCH FINDER LAYOUT
+       PAGE LAYOUT
     ========================= */
     .match-layout {
       margin-top: 24px;
@@ -380,6 +381,7 @@
       font-weight: 800;
       flex: 1;
       transition: transform 0.16s ease, opacity 0.16s ease;
+      color: white;
     }
 
     .action-btn:hover {
@@ -389,12 +391,18 @@
 
     .find-btn {
       background: linear-gradient(135deg, #22c55e 0%, #14b8a6 100%);
-      color: white;
     }
 
     .reset-btn {
       background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);
-      color: white;
+    }
+
+    .blue-btn {
+      background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
+    }
+
+    .purple-btn {
+      background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
     }
 
     .result-box {
@@ -557,8 +565,8 @@
           <div class="hero-badge">Multi App Dashboard</div>
           <h1>Pocket Tools</h1>
           <p>
-            One colorful app with useful mini tools inside. Start with Number Match Finder,
-            and later add more tools like Calculator, Notes, and Converter.
+            One colorful app with useful mini tools inside. Start with Number Match Finder
+            and Simple Calculator, and add more tools later.
           </p>
         </div>
       </div>
@@ -576,11 +584,11 @@
             <p>Paste many numbers, enter one target total, and find the first valid match in top-to-bottom order.</p>
           </button>
 
-          <div class="tool-card calculator">
+          <button class="tool-card calculator" onclick="openCalculatorPage()">
             <div class="tool-card-icon">+</div>
             <h3>Calculator</h3>
-            <p>Coming soon. This card is here so the app already looks like a real multi-tool dashboard.</p>
-          </div>
+            <p>Open a simple calculator for quick addition, subtraction, multiplication, and division.</p>
+          </button>
 
           <div class="tool-card notes">
             <div class="tool-card-icon">✎</div>
@@ -623,10 +631,10 @@
             <div class="card">
               <div class="card-title">Paste Your Numbers</div>
               <div class="card-subtitle">Enter one number on each line. Example: 548.25</div>
-             <textarea
-  id="numbersInput"
-  oninput="updateInputSummary()"
+              <textarea
+                id="numbersInput"
                 class="numbers-textarea"
+                oninput="updateInputSummary()"
                 placeholder="6589.10&#10;548.25&#10;584.00&#10;325.00&#10;695.32&#10;2541.05&#10;365.25&#10;9877.00"
               ></textarea>
             </div>
@@ -640,20 +648,16 @@
               <div class="small-help">Tip: Use numbers only. Example: 1568.57</div>
             </div>
 
-<div class="card">
-  <div class="card-title">Input Summary</div>
-  <div class="card-subtitle">This shows how many numbers you entered and their total sum.</div>
+            <div class="card">
+              <div class="card-title">Input Summary</div>
+              <div class="card-subtitle">This updates instantly while you type or paste numbers.</div>
+              <div id="inputSummaryBox" class="result-box">
+                <div class="result-placeholder">
+                  No numbers entered yet.
+                </div>
+              </div>
+            </div>
 
-  <div id="inputSummaryBox" class="result-box">
-    <div class="result-placeholder">
-      No numbers entered yet.
-    </div>
-  </div>
-</div>
-
-
-
-            
             <div class="card">
               <div class="card-title">Actions</div>
               <div class="card-subtitle">Press Find Match to search. Press Reset to clear everything.</div>
@@ -677,64 +681,91 @@
         </div>
       </div>
     </section>
-  </div>
-// =========================
-// LIVE INPUT SUMMARY
-// =========================
-function updateInputSummary(){
 
-  const numbersText = document.getElementById('numbersInput').value;
-  const inputSummaryBox = document.getElementById('inputSummaryBox');
-
-  if(!numbersText.trim()){
-    inputSummaryBox.className = 'result-box';
-    inputSummaryBox.innerHTML = `
-      <div class="result-placeholder">
-        No numbers entered yet.
-      </div>
-    `;
-    return;
-  }
-
-  const lines = numbersText.split('\n');
-  let count = 0;
-  let totalCents = 0;
-
-  for(let i = 0; i < lines.length; i++){
-
-    let clean = lines[i].trim().replace(/,/g,'');
-
-    if(clean === '') continue;
-
-    let num = parseFloat(clean);
-
-    if(isNaN(num)){
-      inputSummaryBox.className = 'result-box result-error';
-      inputSummaryBox.innerHTML = `
-        <div class="result-heading">Invalid Input</div>
-        <div class="result-placeholder">
-          Line ${i+1} is not a valid number.
+    <!-- =========================
+         CALCULATOR PAGE
+    ========================= -->
+    <section id="calculatorPage" class="page">
+      <div class="top-bar-wrap">
+        <div class="top-bar">
+          <button class="back-btn" onclick="openHomePage()">←</button>
+          <div class="top-bar-title">Pocket Tools</div>
+          <div class="top-bar-spacer"></div>
         </div>
-      `;
-      return;
-    }
+      </div>
 
-    count++;
-    totalCents += Math.round(num * 100);
-  }
+      <div class="page-inner">
+        <div class="inner-page-hero">
+          <h1>Simple Calculator</h1>
+          <p>
+            Enter two numbers, then press a button to add, subtract, multiply, or divide.
+          </p>
+        </div>
 
-  let total = (totalCents / 100).toFixed(2);
+        <div class="match-layout">
+          <div>
+            <div class="card">
+              <div class="card-title">Enter Numbers</div>
+              <div class="card-subtitle">Type one number in each box.</div>
 
-  inputSummaryBox.className = 'result-box result-success';
-  inputSummaryBox.innerHTML = `
-    <div class="result-heading">Input Summary</div>
-    <div class="result-label">Numbers Entered</div>
-    <div class="result-lines">${count}</div>
+              <input
+                id="calculatorInput1"
+                class="target-input"
+                type="text"
+                placeholder="First number"
+                style="margin-bottom:16px;"
+              />
 
-    <div class="result-label">Total of All Numbers</div>
-    <div class="total-box">Total: ${total}</div>
-  `;
-}
+              <input
+                id="calculatorInput2"
+                class="target-input"
+                type="text"
+                placeholder="Second number"
+              />
+            </div>
+          </div>
+
+          <div>
+            <div class="card">
+              <div class="card-title">Actions</div>
+              <div class="card-subtitle">Choose the math you want to do.</div>
+
+              <div class="button-row" style="margin-bottom:14px;">
+                <button class="action-btn blue-btn" onclick="calculateResult('add')">Add</button>
+                <button class="action-btn purple-btn" onclick="calculateResult('subtract')">Subtract</button>
+              </div>
+
+              <div class="button-row">
+                <button class="action-btn find-btn" onclick="calculateResult('multiply')">Multiply</button>
+                <button class="action-btn reset-btn" onclick="calculateResult('divide')">Divide</button>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-title">Calculator Result</div>
+              <div class="card-subtitle">Your answer will show here.</div>
+              <div id="calculatorResultBox" class="result-box">
+                <div class="result-placeholder">
+                  No result yet.<br><br>
+                  Enter two numbers and press a math button.
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-title">Reset</div>
+              <div class="card-subtitle">Clear the calculator inputs and result.</div>
+              <div class="button-row">
+                <button class="action-btn reset-btn" onclick="resetCalculator()">Clear Calculator</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
   <script>
     // =========================
     // OPEN HOME PAGE
@@ -742,6 +773,7 @@ function updateInputSummary(){
     function openHomePage() {
       document.getElementById('homePage').classList.add('active');
       document.getElementById('numberMatchPage').classList.remove('active');
+      document.getElementById('calculatorPage').classList.remove('active');
       window.scrollTo(0, 0);
     }
 
@@ -751,7 +783,74 @@ function updateInputSummary(){
     function openNumberMatchPage() {
       document.getElementById('homePage').classList.remove('active');
       document.getElementById('numberMatchPage').classList.add('active');
+      document.getElementById('calculatorPage').classList.remove('active');
       window.scrollTo(0, 0);
+    }
+
+    // =========================
+    // OPEN CALCULATOR PAGE
+    // =========================
+    function openCalculatorPage() {
+      document.getElementById('homePage').classList.remove('active');
+      document.getElementById('numberMatchPage').classList.remove('active');
+      document.getElementById('calculatorPage').classList.add('active');
+      window.scrollTo(0, 0);
+    }
+
+    // =========================
+    // LIVE INPUT SUMMARY
+    // =========================
+    function updateInputSummary() {
+      const numbersText = document.getElementById('numbersInput').value;
+      const inputSummaryBox = document.getElementById('inputSummaryBox');
+
+      if (!numbersText.trim()) {
+        inputSummaryBox.className = 'result-box';
+        inputSummaryBox.innerHTML = `
+          <div class="result-placeholder">
+            No numbers entered yet.
+          </div>
+        `;
+        return;
+      }
+
+      const lines = numbersText.split('\n');
+      let count = 0;
+      let totalCents = 0;
+
+      for (let i = 0; i < lines.length; i++) {
+        let clean = lines[i].trim().replace(/,/g, '');
+
+        if (clean === '') continue;
+
+        let num = parseFloat(clean);
+
+        if (isNaN(num)) {
+          inputSummaryBox.className = 'result-box result-error';
+          inputSummaryBox.innerHTML = `
+            <div class="result-heading">Invalid Input</div>
+            <div class="result-placeholder">
+              Line ${i + 1} is not a valid number.
+            </div>
+          `;
+          return;
+        }
+
+        count++;
+        totalCents += Math.round(num * 100);
+      }
+
+      let total = (totalCents / 100).toFixed(2);
+
+      inputSummaryBox.className = 'result-box result-success';
+      inputSummaryBox.innerHTML = `
+        <div class="result-heading">Input Summary</div>
+        <div class="result-label">Numbers Entered</div>
+        <div class="result-lines">${count}</div>
+
+        <div class="result-label">Total of All Numbers</div>
+        <div class="total-box">Total: ${total}</div>
+      `;
     }
 
     // =========================
@@ -760,11 +859,19 @@ function updateInputSummary(){
     function resetNumberMatch() {
       document.getElementById('numbersInput').value = '';
       document.getElementById('targetInput').value = '';
+
       document.getElementById('resultBox').className = 'result-box';
       document.getElementById('resultBox').innerHTML = `
         <div class="result-placeholder">
           No result yet.<br><br>
           Paste your numbers, enter a target total, and press <strong>Find Match</strong>.
+        </div>
+      `;
+
+      document.getElementById('inputSummaryBox').className = 'result-box';
+      document.getElementById('inputSummaryBox').innerHTML = `
+        <div class="result-placeholder">
+          No numbers entered yet.
         </div>
       `;
     }
@@ -878,19 +985,7 @@ function updateInputSummary(){
         `;
         return;
       }
-      const inputSummaryBox = document.getElementById('inputSummaryBox');
-      const totalEnteredCents = parsedResult.numbers.reduce((sum, item) => sum + item.value, 0);
-      const totalEntered = (totalEnteredCents / 100).toFixed(2);
-      const countEntered = parsedResult.numbers.length;
 
-      inputSummaryBox.className = 'result-box result-success';
-      inputSummaryBox.innerHTML = `
-        <div class="result-heading">Input Summary</div>
-        <div class="result-label">Numbers Entered</div>
-        <div class="result-lines">${countEntered}</div>
-        <div class="result-label">Total of All Numbers</div>
-        <div class="total-box">Total: ${totalEntered}</div>
-      `;
       const targetCents = Math.round(targetNumber * 100);
       const match = findFirstMatch(parsedResult.numbers, targetCents, 0, [], 0);
 
@@ -915,7 +1010,85 @@ function updateInputSummary(){
         `;
       }
     }
+
+    // =========================
+    // CALCULATOR RESULT
+    // =========================
+    function calculateResult(action) {
+      const input1Text = document.getElementById('calculatorInput1').value.trim().replace(/,/g, '');
+      const input2Text = document.getElementById('calculatorInput2').value.trim().replace(/,/g, '');
+      const resultBox = document.getElementById('calculatorResultBox');
+
+      if (input1Text === '' || input2Text === '') {
+        resultBox.className = 'result-box result-error';
+        resultBox.innerHTML = `
+          <div class="result-heading">Missing Number</div>
+          <div class="result-placeholder">Please enter both numbers first.</div>
+        `;
+        return;
+      }
+
+      const num1 = parseFloat(input1Text);
+      const num2 = parseFloat(input2Text);
+
+      if (isNaN(num1) || isNaN(num2)) {
+        resultBox.className = 'result-box result-error';
+        resultBox.innerHTML = `
+          <div class="result-heading">Invalid Input</div>
+          <div class="result-placeholder">Please enter valid numbers only.</div>
+        `;
+        return;
+      }
+
+      let result = 0;
+      let symbol = '';
+
+      if (action === 'add') {
+        result = num1 + num2;
+        symbol = '+';
+      } else if (action === 'subtract') {
+        result = num1 - num2;
+        symbol = '-';
+      } else if (action === 'multiply') {
+        result = num1 * num2;
+        symbol = '×';
+      } else if (action === 'divide') {
+        if (num2 === 0) {
+          resultBox.className = 'result-box result-error';
+          resultBox.innerHTML = `
+            <div class="result-heading">Cannot Divide</div>
+            <div class="result-placeholder">Division by zero is not allowed.</div>
+          `;
+          return;
+        }
+        result = num1 / num2;
+        symbol = '÷';
+      }
+
+      resultBox.className = 'result-box result-success';
+      resultBox.innerHTML = `
+        <div class="result-heading">Answer</div>
+        <div class="result-label">Calculation</div>
+        <div class="result-lines">${num1} ${symbol} ${num2}</div>
+        <div class="total-box">Result: ${result}</div>
+      `;
+    }
+
+    // =========================
+    // RESET CALCULATOR
+    // =========================
+    function resetCalculator() {
+      document.getElementById('calculatorInput1').value = '';
+      document.getElementById('calculatorInput2').value = '';
+
+      document.getElementById('calculatorResultBox').className = 'result-box';
+      document.getElementById('calculatorResultBox').innerHTML = `
+        <div class="result-placeholder">
+          No result yet.<br><br>
+          Enter two numbers and press a math button.
+        </div>
+      `;
+    }
   </script>
 </body>
 </html>
-
