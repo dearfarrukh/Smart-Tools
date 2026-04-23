@@ -30,13 +30,11 @@
 
     button,
     input,
-    textarea {
+    textarea,
+    select {
       font: inherit;
     }
 
-    /* =========================
-       APP WRAPPER
-    ========================= */
     .app-shell {
       width: 100%;
       min-height: 100vh;
@@ -95,7 +93,7 @@
     }
 
     .hero p {
-      max-width: 700px;
+      max-width: 760px;
       font-size: 18px;
       line-height: 1.6;
       color: rgba(255, 255, 255, 0.94);
@@ -208,17 +206,15 @@
     }
 
     .tool-card.calculator {
-      background: linear-gradient(135deg, #10b981 0%, #14b8a6 100%);
+      background: linear-gradient(135deg, #111827 0%, #000000 100%);
     }
 
     .tool-card.notes {
       background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
-      cursor: default;
     }
 
-    .tool-card.converter {
-      background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
-      cursor: default;
+    .tool-card.car-care {
+      background: linear-gradient(135deg, #10b981 0%, #14b8a6 100%);
     }
 
     /* =========================
@@ -280,6 +276,16 @@
       box-shadow: 0 14px 32px rgba(37, 99, 235, 0.20);
     }
 
+    .inner-page-hero.dark-hero {
+      background: linear-gradient(135deg, #0b0b0f 0%, #1f2937 45%, #111827 100%);
+      box-shadow: 0 14px 32px rgba(17, 24, 39, 0.28);
+    }
+
+    .inner-page-hero.green-hero {
+      background: linear-gradient(135deg, #059669 0%, #10b981 50%, #14b8a6 100%);
+      box-shadow: 0 14px 32px rgba(16, 185, 129, 0.24);
+    }
+
     .inner-page-hero h1 {
       font-size: 34px;
       font-weight: 800;
@@ -296,16 +302,8 @@
     }
 
     /* =========================
-       PAGE LAYOUT
+       SHARED CARDS
     ========================= */
-    .match-layout {
-      margin-top: 24px;
-      display: grid;
-      grid-template-columns: 1.45fr 0.9fr;
-      gap: 22px;
-      align-items: start;
-    }
-
     .card {
       background: white;
       border-radius: 28px;
@@ -332,37 +330,11 @@
       margin-bottom: 18px;
     }
 
-    .numbers-textarea {
-      width: 100%;
-      min-height: 460px;
-      border: 2px solid #e5e7eb;
-      border-radius: 20px;
-      padding: 18px;
-      resize: vertical;
-      outline: none;
-      font-size: 17px;
-      line-height: 1.6;
-      background: #fcfcff;
-      color: #111827;
-    }
-
-    .numbers-textarea:focus,
-    .target-input:focus {
-      border-color: #6366f1;
-      box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.10);
-    }
-
-    .target-input {
-      width: 100%;
-      height: 62px;
-      border: 2px solid #e5e7eb;
-      border-radius: 18px;
-      padding: 0 18px;
-      outline: none;
-      font-size: 22px;
-      font-weight: 700;
-      color: #111827;
-      background: #fcfcff;
+    .small-help {
+      margin-top: 12px;
+      font-size: 14px;
+      line-height: 1.7;
+      color: #6b7280;
     }
 
     .button-row {
@@ -403,6 +375,10 @@
 
     .purple-btn {
       background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+    }
+
+    .teal-btn {
+      background: linear-gradient(135deg, #0891b2 0%, #14b8a6 100%);
     }
 
     .result-box {
@@ -468,459 +444,485 @@
       color: #065f46;
     }
 
-    .small-help {
-      margin-top: 12px;
-      font-size: 14px;
-      line-height: 1.7;
-      color: #6b7280;
+    .text-input,
+    .date-input,
+    .select-input,
+    .target-input,
+    .numbers-textarea,
+    .notes-textarea {
+      width: 100%;
+      border: 2px solid #e5e7eb;
+      border-radius: 18px;
+      padding: 0 16px;
+      outline: none;
+      font-size: 18px;
+      background: #fcfcff;
+      color: #111827;
     }
 
+    .text-input,
+    .date-input,
+    .select-input,
+    .target-input {
+      height: 58px;
+    }
 
-/* =========================
-   IOS CALCULATOR DESIGN
-========================= */
-.calculator-hero-ios {
-  margin-top: 18px;
-  background:
-    radial-gradient(circle at top left, rgba(255,255,255,0.22), transparent 30%),
-    linear-gradient(135deg, #0ea5e9 0%, #6366f1 40%, #ec4899 100%);
-  color: white;
-  border-radius: 30px;
-  padding: 26px 24px;
-  box-shadow:
-    0 16px 34px rgba(99, 102, 241, 0.20),
-    0 0 28px rgba(236, 72, 153, 0.18);
-}
+    .numbers-textarea,
+    .notes-textarea {
+      min-height: 170px;
+      resize: vertical;
+      padding: 16px;
+      line-height: 1.6;
+    }
 
-.calculator-hero-badge {
-  display: inline-block;
-  padding: 8px 14px;
-  border-radius: 999px;
-  background: rgba(255,255,255,0.18);
-  border: 1px solid rgba(255,255,255,0.22);
-  font-size: 13px;
-  font-weight: 700;
-  margin-bottom: 14px;
-  backdrop-filter: blur(8px);
-}
+    .numbers-textarea {
+      min-height: 460px;
+      font-size: 17px;
+    }
 
-.calculator-hero-ios h1 {
-  font-size: 34px;
-  font-weight: 800;
-  line-height: 1.1;
-  margin-bottom: 10px;
-  letter-spacing: -0.7px;
-}
+    .numbers-textarea:focus,
+    .target-input:focus,
+    .text-input:focus,
+    .date-input:focus,
+    .select-input:focus,
+    .notes-textarea:focus {
+      border-color: #6366f1;
+      box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.10);
+    }
 
-.calculator-hero-ios p {
-  font-size: 16px;
-  line-height: 1.55;
-  color: rgba(255,255,255,0.95);
-  max-width: 760px;
-}
+    .form-grid-two {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
 
-.calculator-ios-shell {
-  margin-top: 22px;
-  display: flex;
-  justify-content: center;
-}
+    /* =========================
+       NUMBER MATCH PAGE LAYOUT
+    ========================= */
+    .match-layout {
+      margin-top: 24px;
+      display: grid;
+      grid-template-columns: 1.45fr 0.9fr;
+      gap: 22px;
+      align-items: start;
+    }
 
-.calculator-ios-card {
-  width: 100%;
-  max-width: 540px;
-  border-radius: 34px;
-  padding: 22px;
-  background: rgba(255,255,255,0.70);
-  border: 1px solid rgba(255,255,255,0.65);
-  backdrop-filter: blur(18px);
-  box-shadow:
-    0 20px 44px rgba(15, 23, 42, 0.10),
-    0 0 30px rgba(99, 102, 241, 0.10);
-}
+    /* =========================
+       IPHONE CALCULATOR
+    ========================= */
+    .iphone-calc-shell {
+      margin-top: 24px;
+      display: flex;
+      justify-content: center;
+    }
 
-.calculator-display-wrap {
-  border-radius: 28px;
-  padding: 18px;
-  background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(245,247,255,0.92) 100%);
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,0.95),
-    0 8px 24px rgba(15, 23, 42, 0.06);
-  margin-bottom: 18px;
-}
+    .iphone-calc {
+      width: 100%;
+      max-width: 430px;
+      background: #000;
+      border-radius: 34px;
+      padding: 24px 18px 18px 18px;
+      box-shadow: 0 22px 48px rgba(15, 23, 42, 0.28);
+    }
 
-.calculator-display-label {
-  font-size: 13px;
-  font-weight: 800;
-  color: #6b7280;
-  letter-spacing: 0.7px;
-  text-transform: uppercase;
-  margin-bottom: 8px;
-}
+    .iphone-calc-display {
+      min-height: 108px;
+      color: white;
+      display: flex;
+      align-items: flex-end;
+      justify-content: flex-end;
+      text-align: right;
+      font-size: 56px;
+      font-weight: 300;
+      padding: 10px 8px 18px 8px;
+      word-break: break-all;
+      overflow-wrap: anywhere;
+    }
 
-.calculator-live-display {
-  min-height: 56px;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  text-align: right;
-  font-size: 34px;
-  font-weight: 800;
-  color: #111827;
-  word-break: break-word;
-}
+    .calc-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
 
-.calculator-inputs-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 14px;
-  margin-bottom: 18px;
-}
+    .calc-key {
+      border: none;
+      border-radius: 50%;
+      height: 78px;
+      font-size: 32px;
+      cursor: pointer;
+      transition: transform 0.12s ease, opacity 0.12s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
 
-.calculator-input-box {
-  border-radius: 24px;
-  padding: 14px;
-  background: rgba(255,255,255,0.78);
-  box-shadow: 0 8px 22px rgba(15, 23, 42, 0.06);
-}
+    .calc-key:active {
+      transform: scale(0.97);
+      opacity: 0.9;
+    }
 
-.calculator-input-label {
-  font-size: 13px;
-  font-weight: 800;
-  color: #6b7280;
-  margin-bottom: 8px;
-  text-transform: uppercase;
-  letter-spacing: 0.6px;
-}
+    .calc-key-dark {
+      background: #333333;
+      color: white;
+    }
 
-.calculator-ios-input {
-  width: 100%;
-  height: 58px;
-  border: none;
-  outline: none;
-  border-radius: 18px;
-  padding: 0 16px;
-  font-size: 24px;
-  font-weight: 800;
-  color: #111827;
-  background: #f8fafc;
-  box-shadow: inset 0 0 0 2px #e5e7eb;
-}
+    .calc-key-light {
+      background: #a5a5a5;
+      color: black;
+    }
 
-.calculator-ios-input:focus {
-  box-shadow:
-    inset 0 0 0 2px #60a5fa,
-    0 0 0 6px rgba(96, 165, 250, 0.12);
-}
+    .calc-key-orange {
+      background: #f59e0b;
+      color: white;
+    }
 
-.calculator-actions-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 14px;
-  margin-bottom: 16px;
-}
+    .calc-key-wide {
+      grid-column: span 2;
+      border-radius: 999px;
+      text-align: left;
+      padding-left: 30px;
+    }
 
-.calculator-ios-btn {
-  min-height: 66px;
-  border: none;
-  border-radius: 24px;
-  color: white;
-  font-size: 18px;
-  font-weight: 800;
-  cursor: pointer;
-  box-shadow:
-    0 12px 22px rgba(15, 23, 42, 0.12),
-    inset 0 1px 0 rgba(255,255,255,0.25);
-  transition: transform 0.16s ease, opacity 0.16s ease, box-shadow 0.16s ease;
-}
+    .calc-history-card {
+      max-width: 430px;
+      margin: 22px auto 0 auto;
+    }
 
-.calculator-ios-btn:hover {
-  transform: translateY(-2px);
-  opacity: 0.97;
-}
+    /* =========================
+       NOTES PAGE
+    ========================= */
+    .notes-layout {
+      margin-top: 24px;
+      display: grid;
+      grid-template-columns: 0.95fr 1.05fr;
+      gap: 22px;
+      align-items: start;
+    }
 
-.calc-orange {
-  background: linear-gradient(135deg, #fb923c 0%, #f97316 100%);
-  box-shadow:
-    0 12px 22px rgba(249, 115, 22, 0.22),
-    0 0 22px rgba(251, 146, 60, 0.18);
-}
+    .notes-list {
+      display: grid;
+      gap: 14px;
+    }
 
-.calc-blue {
-  background: linear-gradient(135deg, #60a5fa 0%, #2563eb 100%);
-  box-shadow:
-    0 12px 22px rgba(37, 99, 235, 0.22),
-    0 0 22px rgba(96, 165, 250, 0.18);
-}
+    .note-item {
+      border: 1px solid #dbe4ff;
+      background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+      border-radius: 22px;
+      padding: 18px;
+      box-shadow: 0 10px 24px rgba(59, 130, 246, 0.08);
+    }
 
-.calc-green {
-  background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
-  box-shadow:
-    0 12px 22px rgba(16, 185, 129, 0.22),
-    0 0 22px rgba(52, 211, 153, 0.18);
-}
+    .note-item h4 {
+      font-size: 20px;
+      font-weight: 800;
+      color: #111827;
+      margin-bottom: 8px;
+    }
 
-.calc-pink {
-  background: linear-gradient(135deg, #f472b6 0%, #ec4899 100%);
-  box-shadow:
-    0 12px 22px rgba(236, 72, 153, 0.22),
-    0 0 22px rgba(244, 114, 182, 0.18);
-}
+    .note-meta {
+      font-size: 13px;
+      color: #6b7280;
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
 
-.calculator-reset-row {
-  margin-bottom: 18px;
-}
+    .note-preview {
+      font-size: 15px;
+      line-height: 1.6;
+      color: #374151;
+      white-space: pre-line;
+      margin-bottom: 14px;
+    }
 
-.calculator-ios-reset-btn {
-  width: 100%;
-  min-height: 56px;
-  border: none;
-  border-radius: 22px;
-  background: linear-gradient(135deg, #475569 0%, #1e293b 100%);
-  color: white;
-  font-size: 16px;
-  font-weight: 800;
-  cursor: pointer;
-  box-shadow:
-    0 12px 22px rgba(30, 41, 59, 0.18),
-    0 0 18px rgba(71, 85, 105, 0.14);
-}
+    .mini-btn-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
 
-.calculator-answer-card {
-  border-radius: 26px;
-  padding: 18px;
-  background: rgba(255,255,255,0.72);
-  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
-}
+    .mini-btn {
+      border: none;
+      min-height: 42px;
+      padding: 0 16px;
+      border-radius: 14px;
+      font-size: 14px;
+      font-weight: 800;
+      color: white;
+      cursor: pointer;
+    }
 
-/* =========================
-   PHONE CALCULATOR FIT
-========================= */
-@media (max-width: 640px) {
+    .mini-blue {
+      background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
+    }
 
-  .calculator-hero-ios {
-    margin-top: 14px;
-    padding: 20px 16px;
-    border-radius: 24px;
-  }
+    .mini-red {
+      background: linear-gradient(135deg, #ef4444 0%, #f97316 100%);
+    }
 
-  .calculator-hero-ios h1 {
-    font-size: 28px;
-  }
+    .mini-gray {
+      background: linear-gradient(135deg, #475569 0%, #1f2937 100%);
+    }
 
-  .calculator-hero-ios p {
-    font-size: 14px;
-    line-height: 1.45;
-  }
+    /* =========================
+       CAR CARE
+    ========================= */
+    .car-select-grid {
+      margin-top: 24px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
 
-  .calculator-ios-shell {
-    margin-top: 16px;
-  }
+    .car-card {
+      border: none;
+      text-align: left;
+      border-radius: 28px;
+      padding: 26px;
+      min-height: 220px;
+      color: white;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 16px 38px rgba(15, 23, 42, 0.14);
+    }
 
-  .calculator-ios-card {
-    max-width: 100%;
-    padding: 14px;
-    border-radius: 26px;
-  }
+    .car-card::after {
+      content: "";
+      position: absolute;
+      width: 150px;
+      height: 150px;
+      right: -30px;
+      top: -30px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.15);
+    }
 
-  .calculator-display-wrap {
-    padding: 14px;
-    border-radius: 22px;
-    margin-bottom: 14px;
-  }
+    .car-card.mazda {
+      background: linear-gradient(135deg, #0f766e 0%, #10b981 100%);
+    }
 
-  .calculator-live-display {
-    min-height: 44px;
-    font-size: 28px;
-  }
+    .car-card.toyota {
+      background: linear-gradient(135deg, #0f172a 0%, #334155 100%);
+    }
 
-  .calculator-inputs-grid {
-    grid-template-columns: 1fr;
-    gap: 12px;
-    margin-bottom: 14px;
-  }
+    .car-card h3 {
+      font-size: 30px;
+      font-weight: 800;
+      margin-bottom: 12px;
+      position: relative;
+      z-index: 1;
+    }
 
-  .calculator-input-box {
-    border-radius: 20px;
-    padding: 12px;
-  }
+    .car-card p {
+      font-size: 16px;
+      line-height: 1.6;
+      max-width: 90%;
+      position: relative;
+      z-index: 1;
+    }
 
-  .calculator-ios-input {
-    height: 54px;
-    font-size: 22px;
-    border-radius: 16px;
-  }
+    .summary-grid {
+      margin-top: 24px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
 
-  .calculator-actions-grid {
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    margin-bottom: 14px;
-  }
+    .summary-box {
+      background: white;
+      border-radius: 24px;
+      padding: 20px;
+      box-shadow: 0 14px 34px rgba(15, 23, 42, 0.08);
+    }
 
-  .calculator-ios-btn {
-    min-height: 58px;
-    font-size: 16px;
-    border-radius: 20px;
-    padding: 0 10px;
-  }
+    .summary-label {
+      font-size: 14px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.7px;
+      color: #6b7280;
+      margin-bottom: 12px;
+    }
 
-  .calculator-ios-reset-btn {
-    min-height: 52px;
-    font-size: 15px;
-    border-radius: 18px;
-  }
+    .summary-value {
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: -0.7px;
+      color: #111827;
+    }
 
-  .calculator-answer-card {
-    padding: 14px;
-    border-radius: 22px;
-  }
+    .car-layout {
+      margin-top: 22px;
+      display: grid;
+      grid-template-columns: 0.95fr 1.05fr;
+      gap: 22px;
+      align-items: start;
+    }
 
-}
+    .service-list {
+      display: grid;
+      gap: 14px;
+    }
 
-    
+    .service-card {
+      border-radius: 22px;
+      padding: 18px;
+      background: linear-gradient(180deg, #ffffff 0%, #f9fbff 100%);
+      border: 1px solid #e5eefc;
+      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+    }
+
+    .service-card h4 {
+      font-size: 20px;
+      font-weight: 800;
+      color: #111827;
+      margin-bottom: 8px;
+    }
+
+    .service-meta {
+      font-size: 15px;
+      line-height: 1.7;
+      color: #374151;
+      white-space: pre-line;
+      margin-bottom: 14px;
+    }
+
     /* =========================
        RESPONSIVE
     ========================= */
-   
-   /* =========================
-   DESKTOP FIT NUMBER MATCH IN ONE SCREEN
-========================= */
-@media (min-width: 901px) {
+    @media (min-width: 901px) {
+      #numberMatchPage {
+        min-height: 100vh;
+        padding-bottom: 0;
+      }
 
-  #numberMatchPage {
-    min-height: 100vh;
-    padding-bottom: 0;
-  }
+      #numberMatchPage .top-bar-wrap {
+        padding: 14px 4% 0 4%;
+      }
 
-  #numberMatchPage .top-bar-wrap {
-    padding: 14px 4% 0 4%;
-  }
+      #numberMatchPage .page-inner {
+        min-height: calc(100vh - 86px);
+        display: flex;
+        flex-direction: column;
+        padding-bottom: 14px;
+      }
 
-  #numberMatchPage .page-inner {
-    min-height: calc(100vh - 86px);
-    display: flex;
-    flex-direction: column;
-    padding-bottom: 14px;
-  }
+      #numberMatchPage .inner-page-hero {
+        margin-top: 10px;
+        padding: 18px 18px;
+        border-radius: 22px;
+        flex-shrink: 0;
+      }
 
-  #numberMatchPage .inner-page-hero {
-    margin-top: 10px;
-    padding: 18px 18px;
-    border-radius: 22px;
-    flex-shrink: 0;
-  }
+      #numberMatchPage .inner-page-hero h1 {
+        font-size: 26px;
+        margin-bottom: 6px;
+      }
 
-  #numberMatchPage .inner-page-hero h1 {
-    font-size: 26px;
-    margin-bottom: 6px;
-  }
+      #numberMatchPage .inner-page-hero p {
+        font-size: 14px;
+        line-height: 1.4;
+      }
 
-  #numberMatchPage .inner-page-hero p {
-    font-size: 14px;
-    line-height: 1.4;
-  }
+      #numberMatchPage .match-layout {
+        flex: 1;
+        min-height: 0;
+        margin-top: 12px;
+        gap: 14px;
+        align-items: stretch;
+      }
 
-  #numberMatchPage .match-layout {
-    flex: 1;
-    min-height: 0;
-    margin-top: 12px;
-    gap: 14px;
-    align-items: stretch;
-  }
+      #numberMatchPage .match-layout > div:first-child,
+      #numberMatchPage .match-layout > div:last-child {
+        min-height: 0;
+      }
 
-  #numberMatchPage .match-layout > div:first-child,
-  #numberMatchPage .match-layout > div:last-child {
-    min-height: 0;
-  }
+      #numberMatchPage .match-layout > div:first-child {
+        display: flex;
+      }
 
-  #numberMatchPage .match-layout > div:first-child {
-    display: flex;
-  }
+      #numberMatchPage .match-layout > div:first-child .card {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+      }
 
-  #numberMatchPage .match-layout > div:first-child .card {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    min-height: 0;
-  }
+      #numberMatchPage .numbers-textarea {
+        flex: 1;
+        min-height: 260px;
+        height: auto;
+        resize: none;
+      }
 
-  #numberMatchPage .numbers-textarea {
-    flex: 1;
-    min-height: 260px;
-    height: auto;
-    resize: none;
-  }
+      #numberMatchPage .card {
+        padding: 16px;
+        border-radius: 22px;
+      }
 
-  #numberMatchPage .card {
-    padding: 16px;
-    border-radius: 22px;
-  }
+      #numberMatchPage .card + .card {
+        margin-top: 12px;
+      }
 
-  #numberMatchPage .card + .card {
-    margin-top: 12px;
-  }
+      #numberMatchPage .card-title {
+        font-size: 19px;
+        margin-bottom: 6px;
+      }
 
-  #numberMatchPage .card-title {
-    font-size: 19px;
-    margin-bottom: 6px;
-  }
+      #numberMatchPage .card-subtitle {
+        font-size: 13px;
+        line-height: 1.4;
+        margin-bottom: 10px;
+      }
 
-  #numberMatchPage .card-subtitle {
-    font-size: 13px;
-    line-height: 1.4;
-    margin-bottom: 10px;
-  }
+      #numberMatchPage .target-input {
+        height: 50px;
+        font-size: 18px;
+      }
 
-  #numberMatchPage .target-input {
-    height: 50px;
-    font-size: 18px;
-  }
+      #numberMatchPage .small-help {
+        margin-top: 6px;
+        font-size: 12px;
+        line-height: 1.4;
+      }
 
-  #numberMatchPage .small-help {
-    margin-top: 6px;
-    font-size: 12px;
-    line-height: 1.4;
-  }
+      #numberMatchPage .button-row {
+        gap: 10px;
+      }
 
-  #numberMatchPage .button-row {
-    gap: 10px;
-  }
+      #numberMatchPage .action-btn {
+        min-height: 46px;
+        font-size: 14px;
+      }
 
-  #numberMatchPage .action-btn {
-    min-height: 46px;
-    font-size: 14px;
-  }
+      #numberMatchPage .result-box {
+        min-height: 90px;
+        padding: 12px;
+      }
 
-  #numberMatchPage .result-box {
-    min-height: 90px;
-    padding: 12px;
-  }
+      #numberMatchPage .result-heading {
+        font-size: 18px;
+        margin-bottom: 8px;
+      }
 
-  #numberMatchPage .result-heading {
-    font-size: 18px;
-    margin-bottom: 8px;
-  }
+      #numberMatchPage .result-label {
+        font-size: 12px;
+        margin-top: 8px;
+        margin-bottom: 6px;
+      }
 
-  #numberMatchPage .result-label {
-    font-size: 12px;
-    margin-top: 8px;
-    margin-bottom: 6px;
-  }
+      #numberMatchPage .result-lines {
+        padding: 10px;
+        font-size: 14px;
+        line-height: 1.5;
+      }
 
-  #numberMatchPage .result-lines {
-    padding: 10px;
-    font-size: 14px;
-    line-height: 1.5;
-  }
+      #numberMatchPage .total-box {
+        margin-top: 8px;
+        padding: 10px;
+        font-size: 15px;
+      }
+    }
 
-  #numberMatchPage .total-box {
-    margin-top: 8px;
-    padding: 10px;
-    font-size: 15px;
-  }
-
-}
-    
-    
     @media (max-width: 900px) {
       .hero {
         padding: 38px 5% 95px 5%;
@@ -931,7 +933,12 @@
       }
 
       .tools-grid,
-      .match-layout {
+      .match-layout,
+      .notes-layout,
+      .car-layout,
+      .car-select-grid,
+      .summary-grid,
+      .form-grid-two {
         grid-template-columns: 1fr;
       }
 
@@ -977,7 +984,8 @@
         font-size: 28px;
       }
 
-      .card {
+      .card,
+      .summary-box {
         border-radius: 24px;
         padding: 20px;
       }
@@ -990,8 +998,32 @@
         font-size: 20px;
       }
 
-      .target-input {
-        font-size: 20px;
+      .target-input,
+      .text-input,
+      .date-input,
+      .select-input {
+        font-size: 18px;
+      }
+
+      .iphone-calc {
+        max-width: 100%;
+        border-radius: 30px;
+        padding: 18px 14px 14px 14px;
+      }
+
+      .iphone-calc-display {
+        min-height: 92px;
+        font-size: 46px;
+        padding-bottom: 14px;
+      }
+
+      .calc-grid {
+        gap: 10px;
+      }
+
+      .calc-key {
+        height: 68px;
+        font-size: 28px;
       }
     }
   </style>
@@ -1008,8 +1040,8 @@
           <div class="hero-badge">Multi App Dashboard</div>
           <h1>Pocket Tools</h1>
           <p>
-            One colorful app with useful mini tools inside. Start with Number Match Finder
-            and Simple Calculator, and add more tools later.
+            One colorful app with useful mini tools inside. Your Number Match Finder stays as it is,
+            and now you also have an iPhone-style Calculator, saved Notes, and Car Care for Mazda CX50 and Toyota Camry.
           </p>
         </div>
       </div>
@@ -1028,22 +1060,22 @@
           </button>
 
           <button class="tool-card calculator" onclick="openCalculatorPage()">
-            <div class="tool-card-icon">+</div>
+            <div class="tool-card-icon">⌕</div>
             <h3>Calculator</h3>
-            <p>Open a simple calculator for quick addition, subtraction, multiplication, and division.</p>
+            <p>Full iPhone-style calculator with all buttons, big display, and phone-friendly layout.</p>
           </button>
 
-          <div class="tool-card notes">
+          <button class="tool-card notes" onclick="openNotesPage()">
             <div class="tool-card-icon">✎</div>
             <h3>Notes</h3>
-            <p>Coming soon. Later you can add a quick notes mini app here inside the same project.</p>
-          </div>
+            <p>Save quick notes with title, details, edit, delete, and local storage save inside your app.</p>
+          </button>
 
-          <div class="tool-card converter">
-            <div class="tool-card-icon">⇄</div>
-            <h3>Converter</h3>
-            <p>Coming soon. Later you can add money, units, time, or other useful conversions here.</p>
-          </div>
+          <button class="tool-card car-care" onclick="openCarPage()">
+            <div class="tool-card-icon">🚗</div>
+            <h3>Car Care</h3>
+            <p>Track maintenance and expenses separately for your Mazda CX50 and Toyota Camry.</p>
+          </button>
         </div>
       </div>
     </section>
@@ -1128,111 +1160,280 @@
     <!-- =========================
          CALCULATOR PAGE
     ========================= -->
-   <section id="calculatorPage" class="page">
-  <div class="top-bar-wrap">
-    <div class="top-bar">
-      <button class="back-btn" onclick="openHomePage()">←</button>
-      <div class="top-bar-title">Pocket Tools</div>
-      <div class="top-bar-spacer"></div>
-    </div>
-  </div>
+    <section id="calculatorPage" class="page">
+      <div class="top-bar-wrap">
+        <div class="top-bar">
+          <button class="back-btn" onclick="openHomePage()">←</button>
+          <div class="top-bar-title">Pocket Tools</div>
+          <div class="top-bar-spacer"></div>
+        </div>
+      </div>
 
-  <div class="page-inner">
-    <div class="calculator-hero-ios">
-      <div class="calculator-hero-badge">Simple iOS Style Calculator</div>
-      <h1>Calculator</h1>
-      <p>Clean iPhone-style look with colorful glow, large buttons, and a phone-friendly layout.</p>
-    </div>
-
-    <div class="calculator-ios-shell">
-      <div class="calculator-ios-card">
-
-        <div class="calculator-display-wrap">
-          <div class="calculator-display-label">Result</div>
-          <div id="calculatorLiveDisplay" class="calculator-live-display">0</div>
+      <div class="page-inner">
+        <div class="inner-page-hero dark-hero">
+          <h1>Calculator</h1>
+          <p>
+            iPhone-style calculator with all main buttons, a large live display, and quick calculation history.
+          </p>
         </div>
 
-        <div class="calculator-inputs-grid">
-          <div class="calculator-input-box">
-            <div class="calculator-input-label">First Number</div>
-            <input
-              id="calculatorInput1"
-              class="calculator-ios-input"
-              type="text"
-              placeholder="0"
-              oninput="updateCalculatorPreview()"
-            />
-          </div>
+        <div class="iphone-calc-shell">
+          <div class="iphone-calc">
+            <div id="iphoneCalcDisplay" class="iphone-calc-display">0</div>
 
-          <div class="calculator-input-box">
-            <div class="calculator-input-label">Second Number</div>
-            <input
-              id="calculatorInput2"
-              class="calculator-ios-input"
-              type="text"
-              placeholder="0"
-              oninput="updateCalculatorPreview()"
-            />
-          </div>
-        </div>
+            <div class="calc-grid">
+              <button class="calc-key calc-key-light" onclick="pressCalculatorFunction('clear')" id="calcClearBtn">AC</button>
+              <button class="calc-key calc-key-light" onclick="pressCalculatorFunction('toggleSign')">+/−</button>
+              <button class="calc-key calc-key-light" onclick="pressCalculatorFunction('percent')">%</button>
+              <button class="calc-key calc-key-orange" onclick="pressCalculatorOperator('÷')">÷</button>
 
-        <div class="calculator-actions-grid">
-          <button class="calculator-ios-btn calc-orange" onclick="calculateResult('add')">＋ Add</button>
-          <button class="calculator-ios-btn calc-blue" onclick="calculateResult('subtract')">－ Subtract</button>
-          <button class="calculator-ios-btn calc-green" onclick="calculateResult('multiply')">× Multiply</button>
-          <button class="calculator-ios-btn calc-pink" onclick="calculateResult('divide')">÷ Divide</button>
-        </div>
+              <button class="calc-key calc-key-dark" onclick="pressCalculatorDigit('7')">7</button>
+              <button class="calc-key calc-key-dark" onclick="pressCalculatorDigit('8')">8</button>
+              <button class="calc-key calc-key-dark" onclick="pressCalculatorDigit('9')">9</button>
+              <button class="calc-key calc-key-orange" onclick="pressCalculatorOperator('×')">×</button>
 
-        <div class="calculator-reset-row">
-          <button class="calculator-ios-reset-btn" onclick="resetCalculator()">Clear Calculator</button>
-        </div>
+              <button class="calc-key calc-key-dark" onclick="pressCalculatorDigit('4')">4</button>
+              <button class="calc-key calc-key-dark" onclick="pressCalculatorDigit('5')">5</button>
+              <button class="calc-key calc-key-dark" onclick="pressCalculatorDigit('6')">6</button>
+              <button class="calc-key calc-key-orange" onclick="pressCalculatorOperator('-')">−</button>
 
-        <div class="calculator-answer-card">
-          <div class="card-title">Calculator Result</div>
-          <div class="card-subtitle">Your calculation will show here.</div>
-          <div id="calculatorResultBox" class="result-box">
-            <div class="result-placeholder">
-              No result yet.<br><br>
-              Enter two numbers and press a math button.
+              <button class="calc-key calc-key-dark" onclick="pressCalculatorDigit('1')">1</button>
+              <button class="calc-key calc-key-dark" onclick="pressCalculatorDigit('2')">2</button>
+              <button class="calc-key calc-key-dark" onclick="pressCalculatorDigit('3')">3</button>
+              <button class="calc-key calc-key-orange" onclick="pressCalculatorOperator('+')">+</button>
+
+              <button class="calc-key calc-key-dark calc-key-wide" onclick="pressCalculatorDigit('0')">0</button>
+              <button class="calc-key calc-key-dark" onclick="pressCalculatorDigit('.')">.</button>
+              <button class="calc-key calc-key-orange" onclick="pressCalculatorEquals()">=</button>
             </div>
           </div>
         </div>
 
+        <div class="card calc-history-card">
+          <div class="card-title">Calculator Result</div>
+          <div class="card-subtitle">Your last completed calculation shows here.</div>
+          <div id="calculatorResultBox" class="result-box">
+            <div class="result-placeholder">
+              No result yet.<br><br>
+              Tap the calculator buttons to start.
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
-</section>
+    </section>
 
+    <!-- =========================
+         NOTES PAGE
+    ========================= -->
+    <section id="notesPage" class="page">
+      <div class="top-bar-wrap">
+        <div class="top-bar">
+          <button class="back-btn" onclick="openHomePage()">←</button>
+          <div class="top-bar-title">Pocket Tools</div>
+          <div class="top-bar-spacer"></div>
+        </div>
+      </div>
+
+      <div class="page-inner">
+        <div class="inner-page-hero">
+          <h1>Notes</h1>
+          <p>
+            Save quick notes with a title and details. Your notes stay saved in local storage on this device.
+          </p>
+        </div>
+
+        <div class="notes-layout">
+          <div>
+            <div class="card">
+              <div class="card-title">Write Note</div>
+              <div class="card-subtitle">Add a new note or edit an old one.</div>
+
+              <input id="noteTitleInput" class="text-input" type="text" placeholder="Note title" />
+              <div style="height:14px;"></div>
+              <textarea id="noteBodyInput" class="notes-textarea" placeholder="Write your note here..."></textarea>
+              <div class="small-help">Saved notes stay on this device using local storage.</div>
+
+              <div class="button-row" style="margin-top:18px;">
+                <button class="action-btn blue-btn" onclick="saveNote()">Save Note</button>
+                <button class="action-btn reset-btn" onclick="resetNoteForm()">Clear Form</button>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div class="card">
+              <div class="card-title">Saved Notes</div>
+              <div class="card-subtitle">Tap edit to load a note back into the form.</div>
+              <div id="notesList" class="notes-list"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================
+         CAR MAIN PAGE
+    ========================= -->
+    <section id="carPage" class="page">
+      <div class="top-bar-wrap">
+        <div class="top-bar">
+          <button class="back-btn" onclick="openHomePage()">←</button>
+          <div class="top-bar-title">Pocket Tools</div>
+          <div class="top-bar-spacer"></div>
+        </div>
+      </div>
+
+      <div class="page-inner">
+        <div class="inner-page-hero green-hero">
+          <h1>Car Care</h1>
+          <p>
+            Keep maintenance records and expenses separately for your Mazda CX50 and Toyota Camry.
+          </p>
+        </div>
+
+        <div class="car-select-grid">
+          <button class="car-card mazda" onclick="openCarDetails('mazdaCx50')">
+            <h3>Mazda CX50</h3>
+            <p>Track oil changes, repairs, mileage, spending, and service history for your Mazda.</p>
+          </button>
+
+          <button class="car-card toyota" onclick="openCarDetails('toyotaCamry')">
+            <h3>Toyota Camry</h3>
+            <p>Track maintenance, car expenses, and all saved records for your Toyota separately.</p>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================
+         CAR DETAILS PAGE
+    ========================= -->
+    <section id="carDetailsPage" class="page">
+      <div class="top-bar-wrap">
+        <div class="top-bar">
+          <button class="back-btn" onclick="openCarPage()">←</button>
+          <div id="carDetailsTopTitle" class="top-bar-title">Car Care</div>
+          <div class="top-bar-spacer"></div>
+        </div>
+      </div>
+
+      <div class="page-inner">
+        <div class="inner-page-hero green-hero">
+          <h1 id="carDetailsHeroTitle">Car Details</h1>
+          <p id="carDetailsHeroText">Track service records, mileage, and total expenses.</p>
+        </div>
+
+        <div class="summary-grid">
+          <div class="summary-box">
+            <div class="summary-label">Total Spent</div>
+            <div id="carTotalSpent" class="summary-value">$0.00</div>
+          </div>
+          <div class="summary-box">
+            <div class="summary-label">Total Services</div>
+            <div id="carTotalServices" class="summary-value">0</div>
+          </div>
+          <div class="summary-box">
+            <div class="summary-label">Last Service Date</div>
+            <div id="carLastDate" class="summary-value">—</div>
+          </div>
+          <div class="summary-box">
+            <div class="summary-label">Last Mileage</div>
+            <div id="carLastMileage" class="summary-value">—</div>
+          </div>
+        </div>
+
+        <div class="car-layout">
+          <div>
+            <div class="card">
+              <div class="card-title">Add Maintenance Record</div>
+              <div class="card-subtitle">Each record saves under the current selected car only.</div>
+
+              <div class="form-grid-two">
+                <select id="serviceTypeInput" class="select-input">
+                  <option value="Oil Change">Oil Change</option>
+                  <option value="Tire Rotation">Tire Rotation</option>
+                  <option value="Brake Service">Brake Service</option>
+                  <option value="Battery">Battery</option>
+                  <option value="Inspection">Inspection</option>
+                  <option value="Registration">Registration</option>
+                  <option value="Insurance">Insurance</option>
+                  <option value="Car Wash">Car Wash</option>
+                  <option value="Repair">Repair</option>
+                  <option value="Other">Other</option>
+                </select>
+
+                <input id="serviceDateInput" class="date-input" type="date" />
+              </div>
+
+              <div style="height:16px;"></div>
+
+              <div class="form-grid-two">
+                <input id="serviceMileageInput" class="text-input" type="text" placeholder="Mileage" />
+                <input id="serviceCostInput" class="text-input" type="text" placeholder="Cost" />
+              </div>
+
+              <div style="height:16px;"></div>
+
+              <input id="serviceShopInput" class="text-input" type="text" placeholder="Shop / Place" />
+              <div style="height:16px;"></div>
+              <textarea id="serviceNotesInput" class="notes-textarea" placeholder="Notes"></textarea>
+
+              <div class="button-row" style="margin-top:18px;">
+                <button class="action-btn blue-btn" onclick="saveCarService()">Save Record</button>
+                <button class="action-btn reset-btn" onclick="resetCarForm()">Clear Form</button>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div class="card">
+              <div class="card-title">Service History</div>
+              <div class="card-subtitle">Each car keeps its own separate saved records.</div>
+              <div id="serviceList" class="service-list"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
   </div>
 
   <script>
     // =========================
-    // OPEN HOME PAGE
+    // GLOBAL PAGE HELPERS
     // =========================
+    function hideAllPages() {
+      const pages = document.querySelectorAll('.page');
+      pages.forEach(page => page.classList.remove('active'));
+    }
+
     function openHomePage() {
+      hideAllPages();
       document.getElementById('homePage').classList.add('active');
-      document.getElementById('numberMatchPage').classList.remove('active');
-      document.getElementById('calculatorPage').classList.remove('active');
       window.scrollTo(0, 0);
     }
 
-    // =========================
-    // OPEN NUMBER MATCH PAGE
-    // =========================
     function openNumberMatchPage() {
-      document.getElementById('homePage').classList.remove('active');
+      hideAllPages();
       document.getElementById('numberMatchPage').classList.add('active');
-      document.getElementById('calculatorPage').classList.remove('active');
       window.scrollTo(0, 0);
     }
 
-    // =========================
-    // OPEN CALCULATOR PAGE
-    // =========================
     function openCalculatorPage() {
-      document.getElementById('homePage').classList.remove('active');
-      document.getElementById('numberMatchPage').classList.remove('active');
+      hideAllPages();
       document.getElementById('calculatorPage').classList.add('active');
+      window.scrollTo(0, 0);
+    }
+
+    function openNotesPage() {
+      hideAllPages();
+      document.getElementById('notesPage').classList.add('active');
+      renderNotes();
+      window.scrollTo(0, 0);
+    }
+
+    function openCarPage() {
+      hideAllPages();
+      document.getElementById('carPage').classList.add('active');
       window.scrollTo(0, 0);
     }
 
@@ -1451,113 +1652,485 @@
     }
 
     // =========================
-    // CALCULATOR RESULT
+    // CALCULATOR STATE
     // =========================
-    function calculateResult(action) {
-      const input1Text = document.getElementById('calculatorInput1').value.trim().replace(/,/g, '');
-      const input2Text = document.getElementById('calculatorInput2').value.trim().replace(/,/g, '');
-      const resultBox = document.getElementById('calculatorResultBox');
+    let calcDisplayValue = '0';
+    let calcStoredValue = null;
+    let calcPendingOperator = null;
+    let calcWaitingForNextValue = false;
 
-      if (input1Text === '' || input2Text === '') {
-        resultBox.className = 'result-box result-error';
-        resultBox.innerHTML = `
-          <div class="result-heading">Missing Number</div>
-          <div class="result-placeholder">Please enter both numbers first.</div>
-        `;
+    function updateCalculatorDisplay() {
+      const display = document.getElementById('iphoneCalcDisplay');
+      if (display) {
+        display.innerText = calcDisplayValue;
+      }
+
+      const clearBtn = document.getElementById('calcClearBtn');
+      if (clearBtn) {
+        clearBtn.innerText = calcDisplayValue === '0' && calcStoredValue === null ? 'AC' : 'C';
+      }
+    }
+
+    function formatCalculatorNumber(num) {
+      if (!isFinite(num)) return 'Error';
+      const rounded = Math.round((num + Number.EPSILON) * 1000000000) / 1000000000;
+      return String(rounded);
+    }
+
+    function getCalculatorCurrentNumber() {
+      return parseFloat(calcDisplayValue);
+    }
+
+    function pressCalculatorDigit(digit) {
+      if (calcDisplayValue === 'Error') {
+        calcDisplayValue = '0';
+      }
+
+      if (calcWaitingForNextValue) {
+        calcDisplayValue = digit === '.' ? '0.' : digit;
+        calcWaitingForNextValue = false;
+        updateCalculatorDisplay();
         return;
       }
 
-      const num1 = parseFloat(input1Text);
-      const num2 = parseFloat(input2Text);
-
-      if (isNaN(num1) || isNaN(num2)) {
-        resultBox.className = 'result-box result-error';
-        resultBox.innerHTML = `
-          <div class="result-heading">Invalid Input</div>
-          <div class="result-placeholder">Please enter valid numbers only.</div>
-        `;
+      if (digit === '.') {
+        if (!calcDisplayValue.includes('.')) {
+          calcDisplayValue += '.';
+        }
+        updateCalculatorDisplay();
         return;
       }
 
-      let result = 0;
-      let symbol = '';
+      if (calcDisplayValue === '0') {
+        calcDisplayValue = digit;
+      } else {
+        calcDisplayValue += digit;
+      }
 
-      if (action === 'add') {
-        result = num1 + num2;
-        symbol = '+';
-      } else if (action === 'subtract') {
-        result = num1 - num2;
-        symbol = '-';
-      } else if (action === 'multiply') {
-        result = num1 * num2;
-        symbol = '×';
-      } else if (action === 'divide') {
-        if (num2 === 0) {
-          resultBox.className = 'result-box result-error';
-          resultBox.innerHTML = `
-            <div class="result-heading">Cannot Divide</div>
-            <div class="result-placeholder">Division by zero is not allowed.</div>
-          `;
+      updateCalculatorDisplay();
+    }
+
+    function calculateTwoNumbers(first, second, operator) {
+      if (operator === '+') return first + second;
+      if (operator === '-') return first - second;
+      if (operator === '×') return first * second;
+      if (operator === '÷') {
+        if (second === 0) return null;
+        return first / second;
+      }
+      return second;
+    }
+
+    function pressCalculatorOperator(operator) {
+      const currentValue = getCalculatorCurrentNumber();
+
+      if (calcStoredValue !== null && calcPendingOperator && !calcWaitingForNextValue) {
+        const result = calculateTwoNumbers(calcStoredValue, currentValue, calcPendingOperator);
+
+        if (result === null) {
+          calcDisplayValue = 'Error';
+          calcStoredValue = null;
+          calcPendingOperator = null;
+          calcWaitingForNextValue = false;
+          updateCalculatorDisplay();
           return;
         }
-        result = num1 / num2;
-        symbol = '÷';
+
+        calcStoredValue = result;
+        calcDisplayValue = formatCalculatorNumber(result);
+      } else {
+        calcStoredValue = currentValue;
       }
 
+      calcPendingOperator = operator;
+      calcWaitingForNextValue = true;
+      updateCalculatorDisplay();
+    }
+
+    function pressCalculatorEquals() {
+      if (calcPendingOperator === null || calcStoredValue === null) {
+        renderCalculatorResult(calcDisplayValue, calcDisplayValue, '', calcDisplayValue);
+        return;
+      }
+
+      const secondValue = getCalculatorCurrentNumber();
+      const firstValue = calcStoredValue;
+      const operator = calcPendingOperator;
+      const result = calculateTwoNumbers(firstValue, secondValue, operator);
+
+      if (result === null) {
+        calcDisplayValue = 'Error';
+        calcStoredValue = null;
+        calcPendingOperator = null;
+        calcWaitingForNextValue = false;
+        updateCalculatorDisplay();
+
+        const resultBox = document.getElementById('calculatorResultBox');
+        resultBox.className = 'result-box result-error';
+        resultBox.innerHTML = `
+          <div class="result-heading">Cannot Divide</div>
+          <div class="result-placeholder">Division by zero is not allowed.</div>
+        `;
+        return;
+      }
+
+      calcDisplayValue = formatCalculatorNumber(result);
+      calcStoredValue = null;
+      calcPendingOperator = null;
+      calcWaitingForNextValue = true;
+      updateCalculatorDisplay();
+      renderCalculatorResult(firstValue, secondValue, operator, calcDisplayValue);
+    }
+
+    function pressCalculatorFunction(action) {
+      if (action === 'clear') {
+        calcDisplayValue = '0';
+        calcStoredValue = null;
+        calcPendingOperator = null;
+        calcWaitingForNextValue = false;
+        updateCalculatorDisplay();
+
+        document.getElementById('calculatorResultBox').className = 'result-box';
+        document.getElementById('calculatorResultBox').innerHTML = `
+          <div class="result-placeholder">
+            No result yet.<br><br>
+            Tap the calculator buttons to start.
+          </div>
+        `;
+        return;
+      }
+
+      let currentValue = getCalculatorCurrentNumber();
+
+      if (action === 'toggleSign') {
+        currentValue = currentValue * -1;
+        calcDisplayValue = formatCalculatorNumber(currentValue);
+      }
+
+      if (action === 'percent') {
+        currentValue = currentValue / 100;
+        calcDisplayValue = formatCalculatorNumber(currentValue);
+      }
+
+      updateCalculatorDisplay();
+    }
+
+    function renderCalculatorResult(first, second, operator, result) {
+      const resultBox = document.getElementById('calculatorResultBox');
       resultBox.className = 'result-box result-success';
       resultBox.innerHTML = `
         <div class="result-heading">Answer</div>
         <div class="result-label">Calculation</div>
-        <div class="result-lines">${num1} ${symbol} ${num2}</div>
+        <div class="result-lines">${first} ${operator} ${second}</div>
         <div class="total-box">Result: ${result}</div>
       `;
     }
 
+    // =========================
+    // NOTES APP
+    // =========================
+    let editingNoteId = null;
 
-// =========================
-// UPDATE CALCULATOR PREVIEW
-// =========================
-function updateCalculatorPreview() {
-  const input1Text = document.getElementById('calculatorInput1').value.trim();
-  const input2Text = document.getElementById('calculatorInput2').value.trim();
-  const liveDisplay = document.getElementById('calculatorLiveDisplay');
+    function getNotesData() {
+      return JSON.parse(localStorage.getItem('pocketToolsNotes') || '[]');
+    }
 
-  if (input1Text === '' && input2Text === '') {
-    liveDisplay.innerText = '0';
-    return;
-  }
+    function saveNotesData(data) {
+      localStorage.setItem('pocketToolsNotes', JSON.stringify(data));
+    }
 
-  if (input1Text !== '' && input2Text === '') {
-    liveDisplay.innerText = input1Text;
-    return;
-  }
+    function saveNote() {
+      const title = document.getElementById('noteTitleInput').value.trim();
+      const body = document.getElementById('noteBodyInput').value.trim();
 
-  if (input1Text === '' && input2Text !== '') {
-    liveDisplay.innerText = input2Text;
-    return;
-  }
+      if (title === '' && body === '') {
+        alert('Please write a title or note first.');
+        return;
+      }
 
-  liveDisplay.innerText = input1Text + '   ' + input2Text;
-}
+      const notes = getNotesData();
+      const now = new Date();
+      const stamp = now.toLocaleString();
 
-    
+      if (editingNoteId) {
+        const noteIndex = notes.findIndex(note => note.id === editingNoteId);
+        if (noteIndex !== -1) {
+          notes[noteIndex].title = title || 'Untitled Note';
+          notes[noteIndex].body = body;
+          notes[noteIndex].updatedAt = stamp;
+        }
+      } else {
+        notes.unshift({
+          id: 'note-' + Date.now(),
+          title: title || 'Untitled Note',
+          body: body,
+          updatedAt: stamp
+        });
+      }
 
-  // =========================
-// RESET CALCULATOR
-// =========================
-function resetCalculator() {
-  document.getElementById('calculatorInput1').value = '';
-  document.getElementById('calculatorInput2').value = '';
-  document.getElementById('calculatorLiveDisplay').innerText = '0';
+      saveNotesData(notes);
+      resetNoteForm();
+      renderNotes();
+    }
 
-  document.getElementById('calculatorResultBox').className = 'result-box';
-  document.getElementById('calculatorResultBox').innerHTML = `
-    <div class="result-placeholder">
-      No result yet.<br><br>
-      Enter two numbers and press a math button.
-    </div>
-  `;
-}
+    function renderNotes() {
+      const notesList = document.getElementById('notesList');
+      if (!notesList) return;
+
+      const notes = getNotesData();
+
+      if (notes.length === 0) {
+        notesList.innerHTML = `
+          <div class="result-box">
+            <div class="result-placeholder">
+              No saved notes yet.<br><br>
+              Write a note and press <strong>Save Note</strong>.
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      notesList.innerHTML = notes.map(note => `
+        <div class="note-item">
+          <h4>${escapeHtml(note.title)}</h4>
+          <div class="note-meta">Updated: ${escapeHtml(note.updatedAt || '')}</div>
+          <div class="note-preview">${escapeHtml(note.body || '').replace(/\n/g, '<br>')}</div>
+          <div class="mini-btn-row">
+            <button class="mini-btn mini-blue" onclick="editNote('${note.id}')">Edit</button>
+            <button class="mini-btn mini-red" onclick="deleteNote('${note.id}')">Delete</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function editNote(noteId) {
+      const notes = getNotesData();
+      const note = notes.find(item => item.id === noteId);
+      if (!note) return;
+
+      editingNoteId = noteId;
+      document.getElementById('noteTitleInput').value = note.title || '';
+      document.getElementById('noteBodyInput').value = note.body || '';
+      window.scrollTo(0, 0);
+    }
+
+    function deleteNote(noteId) {
+      const notes = getNotesData();
+      const filtered = notes.filter(item => item.id !== noteId);
+      saveNotesData(filtered);
+
+      if (editingNoteId === noteId) {
+        resetNoteForm();
+      }
+
+      renderNotes();
+    }
+
+    function resetNoteForm() {
+      editingNoteId = null;
+      document.getElementById('noteTitleInput').value = '';
+      document.getElementById('noteBodyInput').value = '';
+    }
+
+    // =========================
+    // CAR CARE DATA
+    // =========================
+    const carNames = {
+      mazdaCx50: 'Mazda CX50',
+      toyotaCamry: 'Toyota Camry'
+    };
+
+    let currentCarKey = 'mazdaCx50';
+    let editingServiceId = null;
+
+    function getCarData() {
+      return JSON.parse(localStorage.getItem('pocketToolsCarData') || '{"mazdaCx50":[],"toyotaCamry":[]}');
+    }
+
+    function saveCarData(data) {
+      localStorage.setItem('pocketToolsCarData', JSON.stringify(data));
+    }
+
+    function openCarDetails(carKey) {
+      currentCarKey = carKey;
+      hideAllPages();
+      document.getElementById('carDetailsPage').classList.add('active');
+      document.getElementById('carDetailsTopTitle').innerText = carNames[carKey];
+      document.getElementById('carDetailsHeroTitle').innerText = carNames[carKey];
+      document.getElementById('carDetailsHeroText').innerText = 'Track service records, mileage, and total expenses for your ' + carNames[carKey] + '.';
+      resetCarForm();
+      renderCarDetails();
+      window.scrollTo(0, 0);
+    }
+
+    function renderCarDetails() {
+      const allData = getCarData();
+      const records = allData[currentCarKey] || [];
+      const serviceList = document.getElementById('serviceList');
+
+      let totalSpent = 0;
+      let totalServices = records.length;
+      let lastDate = '—';
+      let lastMileage = '—';
+
+      if (records.length > 0) {
+        totalSpent = records.reduce((sum, item) => sum + (parseFloat(item.cost) || 0), 0);
+        lastDate = records[0].date || '—';
+        lastMileage = records[0].mileage ? Number(itemOrZero(records[0].mileage)).toLocaleString() : '—';
+      }
+
+      document.getElementById('carTotalSpent').innerText = '$' + totalSpent.toFixed(2);
+      document.getElementById('carTotalServices').innerText = String(totalServices);
+      document.getElementById('carLastDate').innerText = lastDate;
+      document.getElementById('carLastMileage').innerText = lastMileage === '—' ? '—' : lastMileage;
+
+      if (records.length === 0) {
+        serviceList.innerHTML = `
+          <div class="result-box">
+            <div class="result-placeholder">
+              No service records yet for <strong>${carNames[currentCarKey]}</strong>.<br><br>
+              Add your first maintenance entry.
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      serviceList.innerHTML = records.map(record => `
+        <div class="service-card">
+          <h4>${escapeHtml(record.type)}</h4>
+          <div class="service-meta">Date: ${escapeHtml(record.date || '—')}
+Mileage: ${escapeHtml(record.mileage || '—')}
+Cost: $${escapeHtml(String(record.cost || '0'))}
+Shop: ${escapeHtml(record.shop || '—')}
+Notes: ${escapeHtml(record.notes || '—')}</div>
+          <div class="mini-btn-row">
+            <button class="mini-btn mini-blue" onclick="editCarService('${record.id}')">Edit</button>
+            <button class="mini-btn mini-red" onclick="deleteCarService('${record.id}')">Delete</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function itemOrZero(value) {
+      const num = parseFloat(String(value).replace(/,/g, ''));
+      if (isNaN(num)) return 0;
+      return num;
+    }
+
+    function saveCarService() {
+      const type = document.getElementById('serviceTypeInput').value;
+      const date = document.getElementById('serviceDateInput').value;
+      const mileageText = document.getElementById('serviceMileageInput').value.trim().replace(/,/g, '');
+      const costText = document.getElementById('serviceCostInput').value.trim().replace(/,/g, '');
+      const shop = document.getElementById('serviceShopInput').value.trim();
+      const notes = document.getElementById('serviceNotesInput').value.trim();
+
+      if (date === '') {
+        alert('Please enter the service date.');
+        return;
+      }
+
+      if (mileageText !== '' && isNaN(parseFloat(mileageText))) {
+        alert('Mileage must be a valid number.');
+        return;
+      }
+
+      if (costText !== '' && isNaN(parseFloat(costText))) {
+        alert('Cost must be a valid number.');
+        return;
+      }
+
+      const allData = getCarData();
+      const records = allData[currentCarKey] || [];
+      const newRecord = {
+        id: editingServiceId || 'service-' + Date.now(),
+        type: type,
+        date: date,
+        mileage: mileageText,
+        cost: costText === '' ? '0' : parseFloat(costText).toFixed(2),
+        shop: shop,
+        notes: notes
+      };
+
+      if (editingServiceId) {
+        const index = records.findIndex(item => item.id === editingServiceId);
+        if (index !== -1) {
+          records[index] = newRecord;
+        }
+      } else {
+        records.unshift(newRecord);
+      }
+
+      records.sort((a, b) => {
+        const first = new Date(b.date).getTime();
+        const second = new Date(a.date).getTime();
+        return first - second;
+      });
+
+      allData[currentCarKey] = records;
+      saveCarData(allData);
+      resetCarForm();
+      renderCarDetails();
+    }
+
+    function editCarService(serviceId) {
+      const allData = getCarData();
+      const records = allData[currentCarKey] || [];
+      const record = records.find(item => item.id === serviceId);
+      if (!record) return;
+
+      editingServiceId = serviceId;
+      document.getElementById('serviceTypeInput').value = record.type || 'Oil Change';
+      document.getElementById('serviceDateInput').value = record.date || '';
+      document.getElementById('serviceMileageInput').value = record.mileage || '';
+      document.getElementById('serviceCostInput').value = record.cost || '';
+      document.getElementById('serviceShopInput').value = record.shop || '';
+      document.getElementById('serviceNotesInput').value = record.notes || '';
+      window.scrollTo(0, 0);
+    }
+
+    function deleteCarService(serviceId) {
+      const allData = getCarData();
+      const records = allData[currentCarKey] || [];
+      allData[currentCarKey] = records.filter(item => item.id !== serviceId);
+      saveCarData(allData);
+
+      if (editingServiceId === serviceId) {
+        resetCarForm();
+      }
+
+      renderCarDetails();
+    }
+
+    function resetCarForm() {
+      editingServiceId = null;
+      document.getElementById('serviceTypeInput').value = 'Oil Change';
+      document.getElementById('serviceDateInput').value = '';
+      document.getElementById('serviceMileageInput').value = '';
+      document.getElementById('serviceCostInput').value = '';
+      document.getElementById('serviceShopInput').value = '';
+      document.getElementById('serviceNotesInput').value = '';
+    }
+
+    // =========================
+    // HTML ESCAPE
+    // =========================
+    function escapeHtml(text) {
+      return String(text)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    // =========================
+    // STARTUP
+    // =========================
+    updateCalculatorDisplay();
+    renderNotes();
   </script>
 </body>
 </html>
