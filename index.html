@@ -6,6 +6,12 @@
   <meta name="mobile-web-app-capable" content="yes" />
   <title>Pocket Tools</title>
 
+  <!-- PDF reader library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+
+  <!-- Excel reader library -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
   <style>
     /* =========================
        RESET
@@ -16,7 +22,8 @@
       padding: 0;
     }
 
-    html, body {
+    html,
+    body {
       width: 100%;
       min-height: 100%;
       font-family: Arial, Helvetica, sans-serif;
@@ -205,8 +212,8 @@
       background: linear-gradient(135deg, #f97316 0%, #ef4444 100%);
     }
 
-    .tool-card.calculator {
-      background: linear-gradient(135deg, #111827 0%, #000000 100%);
+    .tool-card.pdf-excel {
+      background: linear-gradient(135deg, #0ea5e9 0%, #2563eb 48%, #7c3aed 100%);
     }
 
     .tool-card.notes {
@@ -274,11 +281,6 @@
       border-radius: 30px;
       padding: 32px 24px;
       box-shadow: 0 14px 32px rgba(37, 99, 235, 0.20);
-    }
-
-    .inner-page-hero.dark-hero {
-      background: linear-gradient(135deg, #0b0b0f 0%, #1f2937 45%, #111827 100%);
-      box-shadow: 0 14px 32px rgba(17, 24, 39, 0.28);
     }
 
     .inner-page-hero.green-hero {
@@ -449,7 +451,8 @@
     .select-input,
     .target-input,
     .numbers-textarea,
-    .notes-textarea {
+    .notes-textarea,
+    .csv-textarea {
       width: 100%;
       border: 2px solid #e5e7eb;
       border-radius: 18px;
@@ -468,7 +471,8 @@
     }
 
     .numbers-textarea,
-    .notes-textarea {
+    .notes-textarea,
+    .csv-textarea {
       min-height: 170px;
       resize: vertical;
       padding: 16px;
@@ -480,12 +484,21 @@
       font-size: 17px;
     }
 
+    .csv-textarea {
+      min-height: 320px;
+      font-family: Consolas, Menlo, monospace;
+      font-size: 14px;
+      white-space: pre;
+      overflow: auto;
+    }
+
     .numbers-textarea:focus,
     .target-input:focus,
     .text-input:focus,
     .date-input:focus,
     .select-input:focus,
-    .notes-textarea:focus {
+    .notes-textarea:focus,
+    .csv-textarea:focus {
       border-color: #6366f1;
       box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.10);
     }
@@ -508,83 +521,146 @@
     }
 
     /* =========================
-       IPHONE CALCULATOR
+       PDF EXCEL CONVERTER PAGE
     ========================= */
-    .iphone-calc-shell {
+    .converter-layout {
       margin-top: 24px;
-      display: flex;
-      justify-content: center;
-    }
-
-    .iphone-calc {
-      width: 100%;
-      max-width: 430px;
-      background: #000;
-      border-radius: 34px;
-      padding: 24px 18px 18px 18px;
-      box-shadow: 0 22px 48px rgba(15, 23, 42, 0.28);
-    }
-
-    .iphone-calc-display {
-      min-height: 108px;
-      color: white;
-      display: flex;
-      align-items: flex-end;
-      justify-content: flex-end;
-      text-align: right;
-      font-size: 56px;
-      font-weight: 300;
-      padding: 10px 8px 18px 8px;
-      word-break: break-all;
-      overflow-wrap: anywhere;
-    }
-
-    .calc-grid {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 12px;
+      grid-template-columns: 0.9fr 1.1fr;
+      gap: 22px;
+      align-items: start;
     }
 
-    .calc-key {
-      border: none;
-      border-radius: 50%;
-      height: 78px;
-      font-size: 32px;
+    .upload-drop-box {
+      width: 100%;
+      border: 2px dashed #93c5fd;
+      border-radius: 26px;
+      padding: 28px 20px;
+      background: linear-gradient(180deg, #eff6ff 0%, #ffffff 100%);
+      text-align: center;
       cursor: pointer;
-      transition: transform 0.12s ease, opacity 0.12s ease;
-      -webkit-tap-highlight-color: transparent;
     }
 
-    .calc-key:active {
-      transform: scale(0.97);
-      opacity: 0.9;
+    .upload-drop-box:hover {
+      border-color: #2563eb;
+      background: linear-gradient(180deg, #dbeafe 0%, #ffffff 100%);
     }
 
-    .calc-key-dark {
-      background: #333333;
+    .upload-icon {
+      width: 68px;
+      height: 68px;
+      margin: 0 auto 14px auto;
+      border-radius: 22px;
+      background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
       color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      font-weight: 900;
     }
 
-    .calc-key-light {
-      background: #a5a5a5;
-      color: black;
+    .file-input-hidden {
+      display: none;
     }
 
-    .calc-key-orange {
-      background: #f59e0b;
-      color: white;
+    .file-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 16px;
     }
 
-    .calc-key-wide {
-      grid-column: span 2;
-      border-radius: 999px;
+    .file-pill {
+      padding: 12px 14px;
+      border-radius: 16px;
+      background: #f8fafc;
+      border: 1px solid #e5e7eb;
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: center;
+      font-size: 14px;
+      color: #334155;
+      font-weight: 700;
+    }
+
+    .file-pill span:last-child {
+      color: #64748b;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .account-map {
+      display: grid;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .account-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 14px;
+      border-radius: 16px;
+      background: #f8fafc;
+      border: 1px solid #e5e7eb;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .account-row span:first-child {
+      color: #111827;
+    }
+
+    .account-row span:last-child {
+      color: #2563eb;
+    }
+
+    .preview-table-wrap {
+      width: 100%;
+      overflow: auto;
+      border-radius: 20px;
+      border: 1px solid #e5e7eb;
+      background: white;
+    }
+
+    .preview-table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 720px;
+    }
+
+    .preview-table th,
+    .preview-table td {
+      padding: 12px 12px;
+      border-bottom: 1px solid #e5e7eb;
       text-align: left;
-      padding-left: 30px;
+      font-size: 14px;
+      white-space: nowrap;
     }
 
-    .calc-history-card {
-      max-width: 430px;
-      margin: 22px auto 0 auto;
+    .preview-table th {
+      background: #f8fafc;
+      color: #334155;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-size: 12px;
+    }
+
+    .preview-table td {
+      color: #111827;
+      font-weight: 700;
+    }
+
+    .status-good {
+      color: #059669;
+      font-weight: 900;
+    }
+
+    .status-bad {
+      color: #dc2626;
+      font-weight: 900;
     }
 
     /* =========================
@@ -656,10 +732,6 @@
 
     .mini-red {
       background: linear-gradient(135deg, #ef4444 0%, #f97316 100%);
-    }
-
-    .mini-gray {
-      background: linear-gradient(135deg, #475569 0%, #1f2937 100%);
     }
 
     /* =========================
@@ -831,11 +903,6 @@
         align-items: stretch;
       }
 
-      #numberMatchPage .match-layout > div:first-child,
-      #numberMatchPage .match-layout > div:last-child {
-        min-height: 0;
-      }
-
       #numberMatchPage .match-layout > div:first-child {
         display: flex;
       }
@@ -934,6 +1001,7 @@
 
       .tools-grid,
       .match-layout,
+      .converter-layout,
       .notes-layout,
       .car-layout,
       .car-select-grid,
@@ -1004,27 +1072,6 @@
       .select-input {
         font-size: 18px;
       }
-
-      .iphone-calc {
-        max-width: 100%;
-        border-radius: 30px;
-        padding: 18px 14px 14px 14px;
-      }
-
-      .iphone-calc-display {
-        min-height: 92px;
-        font-size: 46px;
-        padding-bottom: 14px;
-      }
-
-      .calc-grid {
-        gap: 10px;
-      }
-
-      .calc-key {
-        height: 68px;
-        font-size: 28px;
-      }
     }
   </style>
 </head>
@@ -1040,8 +1087,8 @@
           <div class="hero-badge">Multi App Dashboard</div>
           <h1>Pocket Tools</h1>
           <p>
-            One colorful app with useful mini tools inside. Your Number Match Finder stays as it is,
-            and now you also have an iPhone-style Calculator, saved Notes, and Car Care for Mazda CX50 and Toyota Camry.
+            One colorful app with useful mini tools inside. Your calculator is removed.
+            Now you can convert your company PDF and Excel files into bank upload CSV.
           </p>
         </div>
       </div>
@@ -1059,10 +1106,10 @@
             <p>Paste many numbers, enter one target total, and find the first valid match in top-to-bottom order.</p>
           </button>
 
-          <button class="tool-card calculator" onclick="openCalculatorPage()">
-            <div class="tool-card-icon">⌕</div>
-            <h3>Calculator</h3>
-            <p>Full iPhone-style calculator with all buttons, big display, and phone-friendly layout.</p>
+          <button class="tool-card pdf-excel" onclick="openPdfExcelPage()">
+            <div class="tool-card-icon">⇄</div>
+            <h3>PDF / Excel to CSV</h3>
+            <p>Upload WFC, NFC, MFL, Skoch, Mineola Realty, or Roselle files and download bank upload CSV.</p>
           </button>
 
           <button class="tool-card notes" onclick="openNotesPage()">
@@ -1158,64 +1205,119 @@
     </section>
 
     <!-- =========================
-         CALCULATOR PAGE
+         PDF EXCEL TO CSV PAGE
     ========================= -->
-    <section id="calculatorPage" class="page">
+    <section id="pdfExcelPage" class="page">
       <div class="top-bar-wrap">
         <div class="top-bar">
           <button class="back-btn" onclick="openHomePage()">←</button>
-          <div class="top-bar-title">Pocket Tools</div>
+          <div class="top-bar-title">PDF / Excel to CSV</div>
           <div class="top-bar-spacer"></div>
         </div>
       </div>
 
       <div class="page-inner">
-        <div class="inner-page-hero dark-hero">
-          <h1>Calculator</h1>
+        <div class="inner-page-hero">
+          <h1>PDF / Excel to CSV</h1>
           <p>
-            iPhone-style calculator with all main buttons, a large live display, and quick calculation history.
+            Upload your check register PDFs or Excel transaction files.
+            The app will read the checks and make the bank upload CSV file.
           </p>
         </div>
 
-        <div class="iphone-calc-shell">
-          <div class="iphone-calc">
-            <div id="iphoneCalcDisplay" class="iphone-calc-display">0</div>
+        <div class="converter-layout">
+          <div>
+            <div class="card">
+              <div class="card-title">Upload Files</div>
+              <div class="card-subtitle">
+                You can upload multiple PDF and Excel files together.
+              </div>
 
-            <div class="calc-grid">
-              <button class="calc-key calc-key-light" onclick="pressCalculatorFunction('clear')" id="calcClearBtn">AC</button>
-              <button class="calc-key calc-key-light" onclick="pressCalculatorFunction('toggleSign')">+/−</button>
-              <button class="calc-key calc-key-light" onclick="pressCalculatorFunction('percent')">%</button>
-              <button class="calc-key calc-key-orange" onclick="pressCalculatorOperator('÷')">÷</button>
+              <label class="upload-drop-box" for="converterFileInput">
+                <div class="upload-icon">⇧</div>
+                <div style="font-size:22px;font-weight:900;color:#111827;margin-bottom:8px;">
+                  Tap to Choose Files
+                </div>
+                <div style="font-size:15px;line-height:1.6;color:#64748b;font-weight:700;">
+                  PDF, XLSX, XLS, or CSV files
+                </div>
+              </label>
 
-              <button class="calc-key calc-key-dark" onclick="pressCalculatorDigit('7')">7</button>
-              <button class="calc-key calc-key-dark" onclick="pressCalculatorDigit('8')">8</button>
-              <button class="calc-key calc-key-dark" onclick="pressCalculatorDigit('9')">9</button>
-              <button class="calc-key calc-key-orange" onclick="pressCalculatorOperator('×')">×</button>
+              <input
+                id="converterFileInput"
+                class="file-input-hidden"
+                type="file"
+                multiple
+                accept=".pdf,.xlsx,.xls,.csv,application/pdf,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,text/csv"
+                onchange="handleConverterFileSelection(event)"
+              />
 
-              <button class="calc-key calc-key-dark" onclick="pressCalculatorDigit('4')">4</button>
-              <button class="calc-key calc-key-dark" onclick="pressCalculatorDigit('5')">5</button>
-              <button class="calc-key calc-key-dark" onclick="pressCalculatorDigit('6')">6</button>
-              <button class="calc-key calc-key-orange" onclick="pressCalculatorOperator('-')">−</button>
+              <div id="converterFileList" class="file-list">
+                <div class="result-placeholder" style="margin-top:16px;">
+                  No files selected yet.
+                </div>
+              </div>
 
-              <button class="calc-key calc-key-dark" onclick="pressCalculatorDigit('1')">1</button>
-              <button class="calc-key calc-key-dark" onclick="pressCalculatorDigit('2')">2</button>
-              <button class="calc-key calc-key-dark" onclick="pressCalculatorDigit('3')">3</button>
-              <button class="calc-key calc-key-orange" onclick="pressCalculatorOperator('+')">+</button>
+              <div class="button-row" style="margin-top:20px;">
+                <button class="action-btn blue-btn" onclick="convertSelectedFilesToCsv()">Convert to CSV</button>
+                <button class="action-btn reset-btn" onclick="resetPdfExcelConverter()">Reset</button>
+              </div>
+            </div>
 
-              <button class="calc-key calc-key-dark calc-key-wide" onclick="pressCalculatorDigit('0')">0</button>
-              <button class="calc-key calc-key-dark" onclick="pressCalculatorDigit('.')">.</button>
-              <button class="calc-key calc-key-orange" onclick="pressCalculatorEquals()">=</button>
+            <div class="card">
+              <div class="card-title">Account Numbers</div>
+              <div class="card-subtitle">
+                These are already built into this app.
+              </div>
+
+              <div class="account-map">
+                <div class="account-row"><span>WFC / WFOPER</span><span>215030036</span></div>
+                <div class="account-row"><span>NFC / NUZZ FUEL OPER</span><span>723622671</span></div>
+                <div class="account-row"><span>MFL / MFLPR</span><span>825149150</span></div>
+                <div class="account-row"><span>Skoch / AQUADYNE P&amp;H</span><span>215029380</span></div>
+                <div class="account-row"><span>Mineola Realty</span><span>974509879</span></div>
+                <div class="account-row"><span>Roselle Building</span><span>974509911</span></div>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div class="card calc-history-card">
-          <div class="card-title">Calculator Result</div>
-          <div class="card-subtitle">Your last completed calculation shows here.</div>
-          <div id="calculatorResultBox" class="result-box">
-            <div class="result-placeholder">
-              No result yet.<br><br>
-              Tap the calculator buttons to start.
+          <div>
+            <div class="card">
+              <div class="card-title">Status</div>
+              <div class="card-subtitle">
+                Conversion message and row count will show here.
+              </div>
+              <div id="converterStatusBox" class="result-box">
+                <div class="result-placeholder">
+                  Upload files and press <strong>Convert to CSV</strong>.
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-title">Preview</div>
+              <div class="card-subtitle">
+                Preview of rows that will be placed in the CSV.
+              </div>
+              <div id="converterPreviewBox" class="result-box">
+                <div class="result-placeholder">
+                  No preview yet.
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-title">CSV Output</div>
+              <div class="card-subtitle">
+                Bank upload format: I, account number, check number, date, amount, payee.
+              </div>
+
+              <textarea id="converterCsvOutput" class="csv-textarea" readonly placeholder="CSV output will show here..."></textarea>
+
+              <div class="button-row" style="margin-top:18px;">
+                <button class="action-btn find-btn" onclick="downloadConvertedCsv()">Download CSV</button>
+                <button class="action-btn purple-btn" onclick="copyConvertedCsv()">Copy CSV</button>
+              </div>
             </div>
           </div>
         </div>
@@ -1399,6 +1501,13 @@
 
   <script>
     // =========================
+    // PDF.JS SETUP
+    // =========================
+    if (window.pdfjsLib) {
+      pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+    }
+
+    // =========================
     // GLOBAL PAGE HELPERS
     // =========================
     function hideAllPages() {
@@ -1418,9 +1527,9 @@
       window.scrollTo(0, 0);
     }
 
-    function openCalculatorPage() {
+    function openPdfExcelPage() {
       hideAllPages();
-      document.getElementById('calculatorPage').classList.add('active');
+      document.getElementById('pdfExcelPage').classList.add('active');
       window.scrollTo(0, 0);
     }
 
@@ -1652,178 +1761,530 @@
     }
 
     // =========================
-    // CALCULATOR STATE
+    // PDF / EXCEL CONVERTER STATE
     // =========================
-    let calcDisplayValue = '0';
-    let calcStoredValue = null;
-    let calcPendingOperator = null;
-    let calcWaitingForNextValue = false;
+    let converterSelectedFiles = [];
+    let converterRows = [];
 
-    function updateCalculatorDisplay() {
-      const display = document.getElementById('iphoneCalcDisplay');
-      if (display) {
-        display.innerText = calcDisplayValue;
-      }
+    const converterAccountMap = {
+      "WFOPER": "215030036",
+      "NUZZ FUEL OPER": "723622671",
+      "MFLPR": "825149150",
+      "AQUADYNE P&H": "215029380",
+      "MINEOLA REALTY": "974509879",
+      "MINEOLA REALTY ASSOCIATES": "974509879",
+      "ROSELLE BUILDING": "974509911",
+      "ROSELLE BUILDING CO INC": "974509911",
+      "ROSELLE BLDG": "974509911"
+    };
 
-      const clearBtn = document.getElementById('calcClearBtn');
-      if (clearBtn) {
-        clearBtn.innerText = calcDisplayValue === '0' && calcStoredValue === null ? 'AC' : 'C';
-      }
+    // =========================
+    // HANDLE CONVERTER FILE SELECTION
+    // =========================
+    function handleConverterFileSelection(event) {
+      converterSelectedFiles = Array.from(event.target.files || []);
+      renderConverterFileList();
+      setConverterStatus('ready', `${converterSelectedFiles.length} file(s) selected. Press Convert to CSV.`);
     }
 
-    function formatCalculatorNumber(num) {
-      if (!isFinite(num)) return 'Error';
-      const rounded = Math.round((num + Number.EPSILON) * 1000000000) / 1000000000;
-      return String(rounded);
-    }
+    // =========================
+    // RENDER CONVERTER FILE LIST
+    // =========================
+    function renderConverterFileList() {
+      const fileList = document.getElementById('converterFileList');
 
-    function getCalculatorCurrentNumber() {
-      return parseFloat(calcDisplayValue);
-    }
-
-    function pressCalculatorDigit(digit) {
-      if (calcDisplayValue === 'Error') {
-        calcDisplayValue = '0';
-      }
-
-      if (calcWaitingForNextValue) {
-        calcDisplayValue = digit === '.' ? '0.' : digit;
-        calcWaitingForNextValue = false;
-        updateCalculatorDisplay();
-        return;
-      }
-
-      if (digit === '.') {
-        if (!calcDisplayValue.includes('.')) {
-          calcDisplayValue += '.';
-        }
-        updateCalculatorDisplay();
-        return;
-      }
-
-      if (calcDisplayValue === '0') {
-        calcDisplayValue = digit;
-      } else {
-        calcDisplayValue += digit;
-      }
-
-      updateCalculatorDisplay();
-    }
-
-    function calculateTwoNumbers(first, second, operator) {
-      if (operator === '+') return first + second;
-      if (operator === '-') return first - second;
-      if (operator === '×') return first * second;
-      if (operator === '÷') {
-        if (second === 0) return null;
-        return first / second;
-      }
-      return second;
-    }
-
-    function pressCalculatorOperator(operator) {
-      const currentValue = getCalculatorCurrentNumber();
-
-      if (calcStoredValue !== null && calcPendingOperator && !calcWaitingForNextValue) {
-        const result = calculateTwoNumbers(calcStoredValue, currentValue, calcPendingOperator);
-
-        if (result === null) {
-          calcDisplayValue = 'Error';
-          calcStoredValue = null;
-          calcPendingOperator = null;
-          calcWaitingForNextValue = false;
-          updateCalculatorDisplay();
-          return;
-        }
-
-        calcStoredValue = result;
-        calcDisplayValue = formatCalculatorNumber(result);
-      } else {
-        calcStoredValue = currentValue;
-      }
-
-      calcPendingOperator = operator;
-      calcWaitingForNextValue = true;
-      updateCalculatorDisplay();
-    }
-
-    function pressCalculatorEquals() {
-      if (calcPendingOperator === null || calcStoredValue === null) {
-        renderCalculatorResult(calcDisplayValue, calcDisplayValue, '', calcDisplayValue);
-        return;
-      }
-
-      const secondValue = getCalculatorCurrentNumber();
-      const firstValue = calcStoredValue;
-      const operator = calcPendingOperator;
-      const result = calculateTwoNumbers(firstValue, secondValue, operator);
-
-      if (result === null) {
-        calcDisplayValue = 'Error';
-        calcStoredValue = null;
-        calcPendingOperator = null;
-        calcWaitingForNextValue = false;
-        updateCalculatorDisplay();
-
-        const resultBox = document.getElementById('calculatorResultBox');
-        resultBox.className = 'result-box result-error';
-        resultBox.innerHTML = `
-          <div class="result-heading">Cannot Divide</div>
-          <div class="result-placeholder">Division by zero is not allowed.</div>
-        `;
-        return;
-      }
-
-      calcDisplayValue = formatCalculatorNumber(result);
-      calcStoredValue = null;
-      calcPendingOperator = null;
-      calcWaitingForNextValue = true;
-      updateCalculatorDisplay();
-      renderCalculatorResult(firstValue, secondValue, operator, calcDisplayValue);
-    }
-
-    function pressCalculatorFunction(action) {
-      if (action === 'clear') {
-        calcDisplayValue = '0';
-        calcStoredValue = null;
-        calcPendingOperator = null;
-        calcWaitingForNextValue = false;
-        updateCalculatorDisplay();
-
-        document.getElementById('calculatorResultBox').className = 'result-box';
-        document.getElementById('calculatorResultBox').innerHTML = `
-          <div class="result-placeholder">
-            No result yet.<br><br>
-            Tap the calculator buttons to start.
+      if (!converterSelectedFiles.length) {
+        fileList.innerHTML = `
+          <div class="result-placeholder" style="margin-top:16px;">
+            No files selected yet.
           </div>
         `;
         return;
       }
 
-      let currentValue = getCalculatorCurrentNumber();
-
-      if (action === 'toggleSign') {
-        currentValue = currentValue * -1;
-        calcDisplayValue = formatCalculatorNumber(currentValue);
-      }
-
-      if (action === 'percent') {
-        currentValue = currentValue / 100;
-        calcDisplayValue = formatCalculatorNumber(currentValue);
-      }
-
-      updateCalculatorDisplay();
+      fileList.innerHTML = converterSelectedFiles.map(file => `
+        <div class="file-pill">
+          <span>${escapeHtml(file.name)}</span>
+          <span>${formatFileSize(file.size)}</span>
+        </div>
+      `).join('');
     }
 
-    function renderCalculatorResult(first, second, operator, result) {
-      const resultBox = document.getElementById('calculatorResultBox');
-      resultBox.className = 'result-box result-success';
-      resultBox.innerHTML = `
-        <div class="result-heading">Answer</div>
-        <div class="result-label">Calculation</div>
-        <div class="result-lines">${first} ${operator} ${second}</div>
-        <div class="total-box">Result: ${result}</div>
+    // =========================
+    // FORMAT FILE SIZE
+    // =========================
+    function formatFileSize(bytes) {
+      if (!bytes && bytes !== 0) return '';
+      if (bytes < 1024) return bytes + ' B';
+      if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+      return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+    }
+
+    // =========================
+    // CONVERT SELECTED FILES TO CSV
+    // =========================
+    async function convertSelectedFilesToCsv() {
+      if (!converterSelectedFiles.length) {
+        setConverterStatus('error', 'Please choose at least one PDF or Excel file first.');
+        return;
+      }
+
+      converterRows = [];
+      setConverterStatus('ready', 'Reading files...');
+
+      try {
+        for (const file of converterSelectedFiles) {
+          const lowerName = file.name.toLowerCase();
+
+          if (lowerName.endsWith('.pdf')) {
+            const rows = await parsePdfFileToRows(file);
+            converterRows.push(...rows);
+          } else if (lowerName.endsWith('.xlsx') || lowerName.endsWith('.xls') || lowerName.endsWith('.csv')) {
+            const rows = await parseExcelFileToRows(file);
+            converterRows.push(...rows);
+          }
+        }
+
+        converterRows = converterRows.filter(row => row && row.account && row.checkNumber && row.date && row.amount && row.payee);
+
+        if (!converterRows.length) {
+          setConverterStatus('error', 'No check rows found. Make sure the file is one of your supported PDF or Excel formats.');
+          renderConverterPreview();
+          document.getElementById('converterCsvOutput').value = '';
+          return;
+        }
+
+        const csvText = buildBankUploadCsv(converterRows);
+        document.getElementById('converterCsvOutput').value = csvText;
+        renderConverterPreview();
+
+        setConverterStatus('success', `Done. ${converterRows.length} CSV row(s) created.`);
+      } catch (error) {
+        console.error(error);
+        setConverterStatus('error', 'Something went wrong while reading the file. Check the file format and try again.');
+      }
+    }
+
+    // =========================
+    // SET CONVERTER STATUS
+    // =========================
+    function setConverterStatus(type, message) {
+      const statusBox = document.getElementById('converterStatusBox');
+
+      if (type === 'success') {
+        statusBox.className = 'result-box result-success';
+        statusBox.innerHTML = `
+          <div class="result-heading">Success</div>
+          <div class="result-placeholder">${escapeHtml(message)}</div>
+        `;
+        return;
+      }
+
+      if (type === 'error') {
+        statusBox.className = 'result-box result-error';
+        statusBox.innerHTML = `
+          <div class="result-heading">Check File</div>
+          <div class="result-placeholder">${escapeHtml(message)}</div>
+        `;
+        return;
+      }
+
+      statusBox.className = 'result-box';
+      statusBox.innerHTML = `
+        <div class="result-heading">Ready</div>
+        <div class="result-placeholder">${escapeHtml(message)}</div>
       `;
+    }
+
+    // =========================
+    // READ PDF FILE TEXT
+    // =========================
+    async function readPdfText(file) {
+      if (!window.pdfjsLib) {
+        throw new Error('PDF.js library did not load.');
+      }
+
+      const arrayBuffer = await file.arrayBuffer();
+      const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+      let fullText = '';
+
+      for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber++) {
+        const page = await pdf.getPage(pageNumber);
+        const content = await page.getTextContent();
+
+        const pageText = content.items.map(item => item.str).join(' ');
+        fullText += '\n' + pageText;
+      }
+
+      return fullText.replace(/\s+/g, ' ').trim();
+    }
+
+    // =========================
+    // PARSE PDF FILE TO ROWS
+    // =========================
+    async function parsePdfFileToRows(file) {
+      const text = await readPdfText(file);
+      const checkbookId = detectPdfCheckbookId(text);
+      const account = converterAccountMap[checkbookId] || '';
+
+      if (!account) {
+        console.warn('Unknown PDF checkbook:', checkbookId, file.name);
+      }
+
+      const rows = [];
+      const rowRegex = /([A-Z]*\d{3,}|\d{3,})\s+(\d{2}\/\d{2}\/\d{4})\s+(CHK|WDL)\s+(.+?)\s+No\s+\S+\s+\$([\d,]+\.\d{2})/g;
+      let match;
+
+      while ((match = rowRegex.exec(text)) !== null) {
+        const checkNumber = String(match[1]).trim();
+        const date = String(match[2]).trim();
+        const type = String(match[3]).trim();
+        const payee = cleanPayee(match[4]);
+        const amount = cleanAmount(match[5]);
+
+        if (type !== 'CHK') {
+          continue;
+        }
+
+        rows.push({
+          source: file.name,
+          account: account,
+          checkNumber: checkNumber,
+          date: date,
+          amount: amount,
+          payee: payee
+        });
+      }
+
+      return rows;
+    }
+
+    // =========================
+    // DETECT PDF CHECKBOOK ID
+    // =========================
+    function detectPdfCheckbookId(text) {
+      if (text.includes('WFOPER')) return 'WFOPER';
+      if (text.includes('NUZZ FUEL OPER')) return 'NUZZ FUEL OPER';
+      if (text.includes('MFLPR')) return 'MFLPR';
+      if (text.includes('AQUADYNE P&H')) return 'AQUADYNE P&H';
+      return '';
+    }
+
+    // =========================
+    // PARSE EXCEL FILE TO ROWS
+    // =========================
+    async function parseExcelFileToRows(file) {
+      if (!window.XLSX) {
+        throw new Error('SheetJS library did not load.');
+      }
+
+      const arrayBuffer = await file.arrayBuffer();
+      const workbook = XLSX.read(arrayBuffer, { type: 'array', cellDates: false });
+      const sheetName = workbook.SheetNames[0];
+      const sheet = workbook.Sheets[sheetName];
+      const matrix = XLSX.utils.sheet_to_json(sheet, { header: 1, raw: false, defval: '' });
+
+      const textBlob = (file.name + ' ' + matrix.flat().join(' ')).toUpperCase();
+      const account = detectExcelAccount(textBlob);
+
+      const transactionRows = [];
+
+      matrix.forEach(row => {
+        const dateText = normalizeExcelDate(row[1]);
+        const checkNumber = normalizeCheckNumber(row[2]);
+        const payee = cleanPayee(row[3]);
+        const amountNumber = parseMoneyNumber(row[4]);
+
+        if (!dateText || !checkNumber || !payee || amountNumber === null) {
+          return;
+        }
+
+        transactionRows.push({
+          source: file.name,
+          account: account,
+          checkNumber: checkNumber,
+          date: dateText,
+          amountNumber: amountNumber,
+          payee: payee
+        });
+      });
+
+      if (!transactionRows.length) {
+        return [];
+      }
+
+      const grouped = {};
+
+      transactionRows.forEach(row => {
+        const key = row.checkNumber;
+
+        if (!grouped[key]) {
+          grouped[key] = {
+            source: row.source,
+            account: row.account,
+            checkNumber: row.checkNumber,
+            date: row.date,
+            payee: row.payee,
+            netCents: 0,
+            negativePayee: '',
+            negativeDate: ''
+          };
+        }
+
+        grouped[key].netCents += Math.round(row.amountNumber * 100);
+
+        if (row.amountNumber < 0 && !grouped[key].negativePayee) {
+          grouped[key].negativePayee = row.payee;
+          grouped[key].negativeDate = row.date;
+        }
+      });
+
+      const finalRows = [];
+
+      Object.values(grouped).forEach(group => {
+        if (group.netCents < 0) {
+          finalRows.push({
+            source: group.source,
+            account: group.account,
+            checkNumber: group.checkNumber,
+            date: group.negativeDate || group.date,
+            amount: (Math.abs(group.netCents) / 100).toFixed(2),
+            payee: group.negativePayee || group.payee
+          });
+        }
+      });
+
+      return finalRows;
+    }
+
+    // =========================
+    // DETECT EXCEL ACCOUNT
+    // =========================
+    function detectExcelAccount(textBlob) {
+      if (textBlob.includes('MINEOLA REALTY')) return converterAccountMap['MINEOLA REALTY'];
+      if (textBlob.includes('ROSELLE BUILDING') || textBlob.includes('ROSELLE BLDG')) return converterAccountMap['ROSELLE BUILDING'];
+      return '';
+    }
+
+    // =========================
+    // NORMALIZE EXCEL DATE
+    // =========================
+    function normalizeExcelDate(value) {
+      if (!value) return '';
+
+      let text = String(value).trim();
+
+      if (/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(text)) {
+        const parts = text.split('/');
+        return parts[0].padStart(2, '0') + '/' + parts[1].padStart(2, '0') + '/' + parts[2];
+      }
+
+      const date = new Date(text);
+
+      if (!isNaN(date.getTime())) {
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const year = date.getFullYear();
+        return month + '/' + day + '/' + year;
+      }
+
+      return '';
+    }
+
+    // =========================
+    // NORMALIZE CHECK NUMBER
+    // =========================
+    function normalizeCheckNumber(value) {
+      if (value === null || value === undefined) return '';
+
+      let text = String(value).trim();
+
+      if (text === '') return '';
+
+      if (/^\d+\.0+$/.test(text)) {
+        text = text.split('.')[0];
+      }
+
+      return text;
+    }
+
+    // =========================
+    // PARSE MONEY NUMBER
+    // =========================
+    function parseMoneyNumber(value) {
+      if (value === null || value === undefined || value === '') return null;
+
+      let text = String(value).replace(/\$/g, '').replace(/,/g, '').trim();
+
+      if (text === '') return null;
+
+      const number = parseFloat(text);
+
+      if (isNaN(number)) return null;
+
+      return number;
+    }
+
+    // =========================
+    // CLEAN AMOUNT
+    // =========================
+    function cleanAmount(value) {
+      return String(value).replace(/\$/g, '').replace(/,/g, '').trim();
+    }
+
+    // =========================
+    // CLEAN PAYEE
+    // =========================
+    function cleanPayee(value) {
+      return String(value || '')
+        .replace(/\s+/g, ' ')
+        .trim();
+    }
+
+    // =========================
+    // BUILD BANK UPLOAD CSV
+    // =========================
+    function buildBankUploadCsv(rows) {
+      return rows.map(row => {
+        return [
+          'I',
+          row.account,
+          row.checkNumber,
+          row.date,
+          row.amount,
+          row.payee
+        ].map(csvEscape).join(',');
+      }).join('\n');
+    }
+
+    // =========================
+    // CSV ESCAPE
+    // =========================
+    function csvEscape(value) {
+      const text = String(value ?? '');
+
+      if (/[",\n\r]/.test(text)) {
+        return '"' + text.replace(/"/g, '""') + '"';
+      }
+
+      return text;
+    }
+
+    // =========================
+    // RENDER CONVERTER PREVIEW
+    // =========================
+    function renderConverterPreview() {
+      const previewBox = document.getElementById('converterPreviewBox');
+
+      if (!converterRows.length) {
+        previewBox.className = 'result-box';
+        previewBox.innerHTML = `
+          <div class="result-placeholder">
+            No preview yet.
+          </div>
+        `;
+        return;
+      }
+
+      const rowsHtml = converterRows.map(row => `
+        <tr>
+          <td>${escapeHtml(row.account)}</td>
+          <td>${escapeHtml(row.checkNumber)}</td>
+          <td>${escapeHtml(row.date)}</td>
+          <td>${escapeHtml(row.amount)}</td>
+          <td>${escapeHtml(row.payee)}</td>
+          <td>${escapeHtml(row.source || '')}</td>
+        </tr>
+      `).join('');
+
+      previewBox.className = 'result-box result-success';
+      previewBox.innerHTML = `
+        <div class="preview-table-wrap">
+          <table class="preview-table">
+            <thead>
+              <tr>
+                <th>Account</th>
+                <th>Check #</th>
+                <th>Date</th>
+                <th>Amount</th>
+                <th>Payee</th>
+                <th>Source</th>
+              </tr>
+            </thead>
+            <tbody>${rowsHtml}</tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    // =========================
+    // DOWNLOAD CONVERTED CSV
+    // =========================
+    function downloadConvertedCsv() {
+      const csvText = document.getElementById('converterCsvOutput').value;
+
+      if (!csvText.trim()) {
+        setConverterStatus('error', 'There is no CSV to download yet. Convert files first.');
+        return;
+      }
+
+      const blob = new Blob([csvText], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      const now = new Date();
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+      const day = String(now.getDate()).padStart(2, '0');
+      const year = String(now.getFullYear()).slice(-2);
+
+      link.href = url;
+      link.download = month + day + year + '_bank_upload.csv';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    }
+
+    // =========================
+    // COPY CONVERTED CSV
+    // =========================
+    async function copyConvertedCsv() {
+      const csvText = document.getElementById('converterCsvOutput').value;
+
+      if (!csvText.trim()) {
+        setConverterStatus('error', 'There is no CSV to copy yet. Convert files first.');
+        return;
+      }
+
+      try {
+        await navigator.clipboard.writeText(csvText);
+        setConverterStatus('success', 'CSV copied.');
+      } catch (error) {
+        setConverterStatus('error', 'Copy did not work on this browser. You can select the CSV text and copy manually.');
+      }
+    }
+
+    // =========================
+    // RESET PDF EXCEL CONVERTER
+    // =========================
+    function resetPdfExcelConverter() {
+      converterSelectedFiles = [];
+      converterRows = [];
+
+      const fileInput = document.getElementById('converterFileInput');
+      if (fileInput) fileInput.value = '';
+
+      renderConverterFileList();
+
+      document.getElementById('converterCsvOutput').value = '';
+
+      document.getElementById('converterPreviewBox').className = 'result-box';
+      document.getElementById('converterPreviewBox').innerHTML = `
+        <div class="result-placeholder">
+          No preview yet.
+        </div>
+      `;
+
+      setConverterStatus('ready', 'Upload files and press Convert to CSV.');
     }
 
     // =========================
@@ -2129,7 +2590,6 @@ Notes: ${escapeHtml(record.notes || '—')}</div>
     // =========================
     // STARTUP
     // =========================
-    updateCalculatorDisplay();
     renderNotes();
   </script>
 </body>
