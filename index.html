@@ -12,6 +12,11 @@
   <!-- Excel reader library -->
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
+  <!-- PDF/Image tools libraries -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
   <style>
     /* =========================
        RESET
@@ -214,6 +219,10 @@
 
     .tool-card.pdf-excel {
       background: linear-gradient(135deg, #0ea5e9 0%, #2563eb 48%, #7c3aed 100%);
+    }
+
+    .tool-card.pdf-image {
+      background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 50%, #06b6d4 100%);
     }
 
     .tool-card.notes {
@@ -875,6 +884,73 @@
     }
 
     /* =========================
+       PDF IMAGE TOOLS
+    ========================= */
+    .pdf-image-layout {
+      margin-top: 22px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 22px;
+      align-items: start;
+    }
+
+    .mini-output-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 14px;
+      margin-top: 14px;
+    }
+
+    .png-preview-card {
+      background: #f8fafc;
+      border: 1px solid #e5e7eb;
+      border-radius: 18px;
+      padding: 10px;
+      box-shadow: 0 8px 18px rgba(15, 23, 42, 0.06);
+    }
+
+    .png-preview-card img {
+      width: 100%;
+      height: 150px;
+      object-fit: contain;
+      background: white;
+      border-radius: 12px;
+      border: 1px solid #e5e7eb;
+      margin-bottom: 8px;
+    }
+
+    .small-download-link {
+      display: block;
+      width: 100%;
+      text-align: center;
+      text-decoration: none;
+      border-radius: 14px;
+      padding: 10px 8px;
+      background: #111827;
+      color: white;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .page-range-input {
+      width: 100%;
+      min-height: 54px;
+      border: 2px solid #dbe7ff;
+      border-radius: 18px;
+      padding: 14px 16px;
+      font-size: 17px;
+      font-weight: 700;
+      outline: none;
+      background: #f8fbff;
+      color: #111827;
+    }
+
+    .page-range-input:focus {
+      border-color: #6366f1;
+      box-shadow: 0 0 0 4px rgba(99,102,241,0.12);
+    }
+
+    /* =========================
        RESPONSIVE
     ========================= */
     @media (min-width: 901px) {
@@ -1018,6 +1094,7 @@
       .tools-grid,
       .match-layout,
       .converter-layout,
+      .pdf-image-layout,
       .notes-layout,
       .car-layout,
       .car-select-grid,
@@ -1103,8 +1180,8 @@
           <div class="hero-badge">Multi App Dashboard</div>
           <h1>Pocket Tools</h1>
           <p>
-            One colorful app with useful mini tools inside. Your calculator is removed.
-            Now you can convert your company PDF and Excel files into bank upload CSV.
+            One colorful app with useful mini tools inside. Convert bank PDF/Excel files to CSV,
+            convert PDF pages to PNG, make PDFs from pictures, and do basic PDF edits.
           </p>
         </div>
       </div>
@@ -1126,6 +1203,12 @@
             <div class="tool-card-icon">⇄</div>
             <h3>PDF / Excel to CSV</h3>
             <p>Upload WFC, NFC, MFL, Skoch, Mineola Realty, or Roselle files and download bank upload CSV.</p>
+          </button>
+
+          <button class="tool-card pdf-image" onclick="openPdfImageToolsPage()">
+            <div class="tool-card-icon">🖼️</div>
+            <h3>PDF / Image Tools</h3>
+            <p>Convert PDF pages to PNG, turn pictures into PDF, merge PDFs, or keep only selected pages.</p>
           </button>
 
           <button class="tool-card notes" onclick="openNotesPage()">
@@ -1364,6 +1447,97 @@
     </section>
 
     <!-- =========================
+         PDF IMAGE TOOLS PAGE
+    ========================= -->
+    <section id="pdfImageToolsPage" class="page">
+      <div class="top-bar-wrap">
+        <div class="top-bar">
+          <button class="back-btn" onclick="openHomePage()">←</button>
+          <div class="top-bar-title">PDF / Image Tools</div>
+          <div class="top-bar-spacer"></div>
+        </div>
+      </div>
+
+      <div class="page-inner">
+        <div class="inner-page-hero">
+          <h1>PDF / Image Tools</h1>
+          <p>Convert PDF pages into PNG images, make a PDF from pictures, merge PDFs, or keep only selected pages from one PDF.</p>
+        </div>
+
+        <div class="pdf-image-layout">
+          <div>
+            <div class="card">
+              <div class="card-title">PDF to PNG</div>
+              <div class="card-subtitle">Upload a PDF. Each page will become a PNG image.</div>
+              <label class="upload-drop-box" for="pdfToPngInput">
+                <div class="upload-icon">📄</div>
+                <div style="font-size:22px;font-weight:900;color:#111827;margin-bottom:8px;">Choose PDF</div>
+                <div style="font-size:15px;line-height:1.6;color:#64748b;font-weight:700;">PDF files only</div>
+              </label>
+              <input id="pdfToPngInput" class="file-input-hidden" type="file" multiple accept=".pdf,application/pdf" onchange="handlePdfToPngSelection(event)" />
+              <div id="pdfToPngFileList" class="file-list"><div class="result-placeholder" style="margin-top:16px;">No PDF selected yet.</div></div>
+              <div class="button-row" style="margin-top:20px;">
+                <button class="action-btn blue-btn" onclick="convertPdfToPngImages()">Convert to PNG</button>
+                <button class="action-btn reset-btn" onclick="resetPdfToPngTool()">Reset</button>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-title">Images to PDF</div>
+              <div class="card-subtitle">Upload PNG or JPG pictures and make one PDF file.</div>
+              <label class="upload-drop-box" for="imagesToPdfInput">
+                <div class="upload-icon">🖼️</div>
+                <div style="font-size:22px;font-weight:900;color:#111827;margin-bottom:8px;">Choose Images</div>
+                <div style="font-size:15px;line-height:1.6;color:#64748b;font-weight:700;">PNG, JPG, JPEG, WEBP</div>
+              </label>
+              <input id="imagesToPdfInput" class="file-input-hidden" type="file" multiple accept="image/png,image/jpeg,image/jpg,image/webp" onchange="handleImagesToPdfSelection(event)" />
+              <div id="imagesToPdfFileList" class="file-list"><div class="result-placeholder" style="margin-top:16px;">No images selected yet.</div></div>
+              <div class="button-row" style="margin-top:20px;">
+                <button class="action-btn find-btn" onclick="convertImagesToPdfFile()">Make PDF</button>
+                <button class="action-btn reset-btn" onclick="resetImagesToPdfTool()">Reset</button>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div class="card">
+              <div class="card-title">Basic PDF Edit</div>
+              <div class="card-subtitle">Merge multiple PDFs, or upload one PDF and keep only selected pages.</div>
+              <label class="upload-drop-box" for="pdfEditInput">
+                <div class="upload-icon">✂️</div>
+                <div style="font-size:22px;font-weight:900;color:#111827;margin-bottom:8px;">Choose PDF Files</div>
+                <div style="font-size:15px;line-height:1.6;color:#64748b;font-weight:700;">For merge or page selection</div>
+              </label>
+              <input id="pdfEditInput" class="file-input-hidden" type="file" multiple accept=".pdf,application/pdf" onchange="handlePdfEditSelection(event)" />
+              <div id="pdfEditFileList" class="file-list"><div class="result-placeholder" style="margin-top:16px;">No PDF selected yet.</div></div>
+              <div style="margin-top:18px;">
+                <label style="display:block;font-size:14px;font-weight:900;color:#374151;margin-bottom:8px;">Pages to keep from first PDF</label>
+                <input id="pdfPagesToKeepInput" class="page-range-input" type="text" placeholder="Example: 1,3,5-8" />
+                <div class="small-help">Leave blank for merge. Use page numbers like 1,2,5-7.</div>
+              </div>
+              <div class="button-row" style="margin-top:20px;">
+                <button class="action-btn purple-btn" onclick="mergePdfFiles()">Merge PDFs</button>
+                <button class="action-btn blue-btn" onclick="makeSelectedPagePdf()">Keep Pages</button>
+              </div>
+              <div class="button-row" style="margin-top:12px;"><button class="action-btn reset-btn" onclick="resetPdfEditTool()">Reset</button></div>
+            </div>
+
+            <div class="card">
+              <div class="card-title">Output</div>
+              <div class="card-subtitle">Converted files and messages will show here.</div>
+              <div id="pdfImageStatusBox" class="result-box"><div class="result-placeholder">Choose a tool and press the convert button.</div></div>
+              <div id="pdfPngOutputGrid" class="mini-output-grid"></div>
+              <div class="button-row" style="margin-top:18px;">
+                <button class="action-btn find-btn" onclick="downloadAllPngAsZip()">Download PNG ZIP</button>
+                <button class="action-btn reset-btn" onclick="clearPdfImageOutput()">Clear Output</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================
          NOTES PAGE
     ========================= -->
     <section id="notesPage" class="page">
@@ -1569,6 +1743,12 @@
     function openPdfExcelPage() {
       hideAllPages();
       document.getElementById('pdfExcelPage').classList.add('active');
+      window.scrollTo(0, 0);
+    }
+
+    function openPdfImageToolsPage() {
+      hideAllPages();
+      document.getElementById('pdfImageToolsPage').classList.add('active');
       window.scrollTo(0, 0);
     }
 
