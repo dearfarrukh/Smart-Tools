@@ -596,10 +596,11 @@
       margin-top: 12px;
     }
 
-    .account-row {
-      display: flex;
-      justify-content: space-between;
+    .account-input-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
       gap: 12px;
+      align-items: center;
       padding: 12px 14px;
       border-radius: 16px;
       background: #f8fafc;
@@ -608,12 +609,27 @@
       font-weight: 800;
     }
 
-    .account-row span:first-child {
+    .account-input-row span {
       color: #111827;
+      line-height: 1.35;
     }
 
-    .account-row span:last-child {
-      color: #2563eb;
+    .account-number-input {
+      width: 100%;
+      height: 44px;
+      border: 2px solid #e5e7eb;
+      border-radius: 14px;
+      padding: 0 12px;
+      outline: none;
+      font-size: 16px;
+      font-weight: 800;
+      color: #111827;
+      background: white;
+    }
+
+    .account-number-input:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.10);
     }
 
     .preview-table-wrap {
@@ -1267,16 +1283,39 @@
             <div class="card">
               <div class="card-title">Account Numbers</div>
               <div class="card-subtitle">
-                These are already built into this app.
+                Type the bank account number for the file you are converting. Leave the others blank if you do not need them.
               </div>
 
               <div class="account-map">
-                <div class="account-row"><span>WFC / WFOPER</span><span>215030036</span></div>
-                <div class="account-row"><span>NFC / NUZZ FUEL OPER</span><span>723622671</span></div>
-                <div class="account-row"><span>MFL / MFLPR</span><span>825149150</span></div>
-                <div class="account-row"><span>Skoch / AQUADYNE P&amp;H</span><span>215029380</span></div>
-                <div class="account-row"><span>Mineola Realty</span><span>974509879</span></div>
-                <div class="account-row"><span>Roselle Building</span><span>974509911</span></div>
+                <label class="account-input-row">
+                  <span>WFC / WFOPER</span>
+                  <input id="accountWfcInput" class="account-number-input" type="text" inputmode="numeric" placeholder="Enter WFC account #" oninput="saveConverterAccountInputs()" />
+                </label>
+
+                <label class="account-input-row">
+                  <span>NFC / NUZZ FUEL OPER</span>
+                  <input id="accountNfcInput" class="account-number-input" type="text" inputmode="numeric" placeholder="Enter NFC account #" oninput="saveConverterAccountInputs()" />
+                </label>
+
+                <label class="account-input-row">
+                  <span>MFL / MFLPR</span>
+                  <input id="accountMflInput" class="account-number-input" type="text" inputmode="numeric" placeholder="Enter MFL account #" oninput="saveConverterAccountInputs()" />
+                </label>
+
+                <label class="account-input-row">
+                  <span>Skoch / AQUADYNE P&amp;H</span>
+                  <input id="accountSkochInput" class="account-number-input" type="text" inputmode="numeric" placeholder="Enter Skoch account #" oninput="saveConverterAccountInputs()" />
+                </label>
+
+                <label class="account-input-row">
+                  <span>Mineola Realty</span>
+                  <input id="accountMineolaRealtyInput" class="account-number-input" type="text" inputmode="numeric" placeholder="Enter Mineola Realty account #" oninput="saveConverterAccountInputs()" />
+                </label>
+
+                <label class="account-input-row">
+                  <span>Roselle Building</span>
+                  <input id="accountRoselleInput" class="account-number-input" type="text" inputmode="numeric" placeholder="Enter Roselle account #" oninput="saveConverterAccountInputs()" />
+                </label>
               </div>
             </div>
           </div>
@@ -1766,17 +1805,73 @@
     let converterSelectedFiles = [];
     let converterRows = [];
 
-    const converterAccountMap = {
-      "WFOPER": "215030036",
-      "NUZZ FUEL OPER": "723622671",
-      "MFLPR": "825149150",
-      "AQUADYNE P&H": "215029380",
-      "MINEOLA REALTY": "974509879",
-      "MINEOLA REALTY ASSOCIATES": "974509879",
-      "ROSELLE BUILDING": "974509911",
-      "ROSELLE BUILDING CO INC": "974509911",
-      "ROSELLE BLDG": "974509911"
+    const converterAccountInputIds = {
+      wfc: 'accountWfcInput',
+      nfc: 'accountNfcInput',
+      mfl: 'accountMflInput',
+      skoch: 'accountSkochInput',
+      mineolaRealty: 'accountMineolaRealtyInput',
+      roselle: 'accountRoselleInput'
     };
+
+    // =========================
+    // GET CONVERTER ACCOUNT MAP FROM INPUT BOXES
+    // =========================
+    function getConverterAccountMap() {
+      const wfc = getAccountInputValue('accountWfcInput');
+      const nfc = getAccountInputValue('accountNfcInput');
+      const mfl = getAccountInputValue('accountMflInput');
+      const skoch = getAccountInputValue('accountSkochInput');
+      const mineolaRealty = getAccountInputValue('accountMineolaRealtyInput');
+      const roselle = getAccountInputValue('accountRoselleInput');
+
+      return {
+        "WFOPER": wfc,
+        "NUZZ FUEL OPER": nfc,
+        "MFLPR": mfl,
+        "AQUADYNE P&H": skoch,
+        "MINEOLA REALTY": mineolaRealty,
+        "MINEOLA REALTY ASSOCIATES": mineolaRealty,
+        "ROSELLE BUILDING": roselle,
+        "ROSELLE BUILDING CO INC": roselle,
+        "ROSELLE BLDG": roselle
+      };
+    }
+
+    // =========================
+    // GET ACCOUNT INPUT VALUE
+    // =========================
+    function getAccountInputValue(inputId) {
+      const input = document.getElementById(inputId);
+      if (!input) return '';
+      return input.value.trim();
+    }
+
+    // =========================
+    // SAVE CONVERTER ACCOUNT INPUTS
+    // =========================
+    function saveConverterAccountInputs() {
+      const data = {};
+
+      Object.keys(converterAccountInputIds).forEach(key => {
+        const inputId = converterAccountInputIds[key];
+        data[key] = getAccountInputValue(inputId);
+      });
+
+      localStorage.setItem('pocketToolsConverterAccounts', JSON.stringify(data));
+    }
+
+    // =========================
+    // LOAD CONVERTER ACCOUNT INPUTS
+    // =========================
+    function loadConverterAccountInputs() {
+      const saved = JSON.parse(localStorage.getItem('pocketToolsConverterAccounts') || '{}');
+
+      Object.keys(converterAccountInputIds).forEach(key => {
+        const input = document.getElementById(converterAccountInputIds[key]);
+        if (input) input.value = saved[key] || '';
+      });
+    }
 
     // =========================
     // HANDLE CONVERTER FILE SELECTION
@@ -1843,6 +1938,16 @@
             const rows = await parseExcelFileToRows(file);
             converterRows.push(...rows);
           }
+        }
+
+        const rowsMissingAccount = converterRows.filter(row => row && !row.account && row.checkNumber && row.date && row.amount && row.payee);
+
+        if (rowsMissingAccount.length) {
+          const sourceNames = [...new Set(rowsMissingAccount.map(row => row.source || 'file'))].join(', ');
+          setConverterStatus('error', 'Account number is missing. Type the correct account number in the Account Numbers box for: ' + sourceNames);
+          renderConverterPreview();
+          document.getElementById('converterCsvOutput').value = '';
+          return;
         }
 
         converterRows = converterRows.filter(row => row && row.account && row.checkNumber && row.date && row.amount && row.payee);
@@ -1925,7 +2030,8 @@
     async function parsePdfFileToRows(file) {
       const text = await readPdfText(file);
       const checkbookId = detectPdfCheckbookId(text);
-      const account = converterAccountMap[checkbookId] || '';
+      const accountMap = getConverterAccountMap();
+      const account = accountMap[checkbookId] || '';
 
       if (!account) {
         console.warn('Unknown PDF checkbook:', checkbookId, file.name);
@@ -2061,8 +2167,9 @@
     // DETECT EXCEL ACCOUNT
     // =========================
     function detectExcelAccount(textBlob) {
-      if (textBlob.includes('MINEOLA REALTY')) return converterAccountMap['MINEOLA REALTY'];
-      if (textBlob.includes('ROSELLE BUILDING') || textBlob.includes('ROSELLE BLDG')) return converterAccountMap['ROSELLE BUILDING'];
+      const accountMap = getConverterAccountMap();
+      if (textBlob.includes('MINEOLA REALTY')) return accountMap['MINEOLA REALTY'];
+      if (textBlob.includes('ROSELLE BUILDING') || textBlob.includes('ROSELLE BLDG')) return accountMap['ROSELLE BUILDING'];
       return '';
     }
 
@@ -2590,6 +2697,7 @@ Notes: ${escapeHtml(record.notes || '—')}</div>
     // =========================
     // STARTUP
     // =========================
+    loadConverterAccountInputs();
     renderNotes();
   </script>
 </body>
