@@ -1348,7 +1348,7 @@
             <div class="card">
               <div class="card-title">CSV Output</div>
               <div class="card-subtitle">
-                Bank upload format: I, account number, check number, date, amount, payee.
+                Bank upload format: I, account number, check number, date MMDDYY, amount, payee.
               </div>
 
               <textarea id="converterCsvOutput" class="csv-textarea" readonly placeholder="CSV output will show here..."></textarea>
@@ -2042,11 +2042,11 @@
       let match;
 
       while ((match = rowRegex.exec(text)) !== null) {
-        const checkNumber = String(match[1]).trim();
-        const date = String(match[2]).trim();
+        const checkNumber = normalizeCheckNumber(match[1]);
+        const date = convertSlashDateToUploadDate(match[2]);
         const type = String(match[3]).trim();
         const payee = cleanPayee(match[4]);
-        const amount = cleanAmount(match[5]);
+        const amount = formatUploadAmount(match[5]);
 
         if (type !== 'CHK') {
           continue;
@@ -2092,8 +2092,8 @@
 
       const textBlob = (file.name + ' ' + matrix.flat().join(' ')).toUpperCase();
       const account = detectExcelAccount(textBlob);
-
-      const transactionRows = [];
+      const rows = [];
+      const seenRows = {};
 
       matrix.forEach(row => {
         const dateText = normalizeExcelDate(row[1]);
@@ -2101,66 +2101,33 @@
         const payee = cleanPayee(row[3]);
         const amountNumber = parseMoneyNumber(row[4]);
 
-        if (!dateText || !checkNumber || !payee || amountNumber === null) {
+        // Only negative Excel rows are real outgoing checks.
+        // Positive rows and total rows are skipped.
+        if (!dateText || !checkNumber || !payee || amountNumber === null || amountNumber >= 0) {
           return;
         }
 
-        transactionRows.push({
+        const amount = formatUploadAmount(Math.abs(amountNumber));
+        const dedupeKey = [account, checkNumber, dateText, amount, payee].join('|');
+
+        // Roselle can show the same negative row twice. Keep only one copy.
+        if (seenRows[dedupeKey]) {
+          return;
+        }
+
+        seenRows[dedupeKey] = true;
+
+        rows.push({
           source: file.name,
           account: account,
           checkNumber: checkNumber,
           date: dateText,
-          amountNumber: amountNumber,
+          amount: amount,
           payee: payee
         });
       });
 
-      if (!transactionRows.length) {
-        return [];
-      }
-
-      const grouped = {};
-
-      transactionRows.forEach(row => {
-        const key = row.checkNumber;
-
-        if (!grouped[key]) {
-          grouped[key] = {
-            source: row.source,
-            account: row.account,
-            checkNumber: row.checkNumber,
-            date: row.date,
-            payee: row.payee,
-            netCents: 0,
-            negativePayee: '',
-            negativeDate: ''
-          };
-        }
-
-        grouped[key].netCents += Math.round(row.amountNumber * 100);
-
-        if (row.amountNumber < 0 && !grouped[key].negativePayee) {
-          grouped[key].negativePayee = row.payee;
-          grouped[key].negativeDate = row.date;
-        }
-      });
-
-      const finalRows = [];
-
-      Object.values(grouped).forEach(group => {
-        if (group.netCents < 0) {
-          finalRows.push({
-            source: group.source,
-            account: group.account,
-            checkNumber: group.checkNumber,
-            date: group.negativeDate || group.date,
-            amount: (Math.abs(group.netCents) / 100).toFixed(2),
-            payee: group.negativePayee || group.payee
-          });
-        }
-      });
-
-      return finalRows;
+      return rows;
     }
 
     // =========================
@@ -2183,16 +2150,16 @@
 
       if (/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(text)) {
         const parts = text.split('/');
-        return parts[0].padStart(2, '0') + '/' + parts[1].padStart(2, '0') + '/' + parts[2];
+        return formatUploadDate(parts[0], parts[1], parts[2]);
       }
 
       const date = new Date(text);
 
       if (!isNaN(date.getTime())) {
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const day = String(date.getDate()).padStart(2, '0');
-        const year = date.getFullYear();
-        return month + '/' + day + '/' + year;
+        const month = String(date.getMonth() + 1);
+        const day = String(date.getDate());
+        const year = String(date.getFullYear());
+        return formatUploadDate(month, day, year);
       }
 
       return '';
@@ -2212,7 +2179,7 @@
         text = text.split('.')[0];
       }
 
-      return text;
+      return stripLeadingZeros(text);
     }
 
     // =========================
@@ -2244,8 +2211,52 @@
     // =========================
     function cleanPayee(value) {
       return String(value || '')
+        .replace(/,/g, '')
         .replace(/\s+/g, ' ')
         .trim();
+    }
+
+    // =========================
+    // STRIP LEADING ZEROS FROM CHECK NUMBER
+    // =========================
+    function stripLeadingZeros(value) {
+      const text = String(value || '').trim();
+      if (/^\d+$/.test(text)) {
+        const stripped = text.replace(/^0+/, '');
+        return stripped || '0';
+      }
+      return text;
+    }
+
+    // =========================
+    // FORMAT UPLOAD DATE AS MMDDYY
+    // =========================
+    function formatUploadDate(month, day, year) {
+      const mm = String(month).padStart(2, '0');
+      const dd = String(day).padStart(2, '0');
+      const yy = String(year).slice(-2);
+      return mm + dd + yy;
+    }
+
+    // =========================
+    // CONVERT MM/DD/YYYY TO MMDDYY
+    // =========================
+    function convertSlashDateToUploadDate(value) {
+      const text = String(value || '').trim();
+      const match = text.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+      if (!match) return text;
+      return formatUploadDate(match[1], match[2], match[3]);
+    }
+
+    // =========================
+    // FORMAT AMOUNT LIKE BANK UPLOAD FILE
+    // =========================
+    function formatUploadAmount(value) {
+      const number = Number(String(value).replace(/\$/g, '').replace(/,/g, '').trim());
+      if (isNaN(number)) return '';
+
+      const rounded = Math.round((number + Number.EPSILON) * 100) / 100;
+      return String(rounded);
     }
 
     // =========================
