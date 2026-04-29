@@ -874,6 +874,126 @@
       margin-bottom: 14px;
     }
 
+
+
+    /* =========================
+       APP PASSWORD LOCK
+    ========================= */
+    body.app-locked {
+      overflow: hidden;
+    }
+
+    body.app-locked .app-shell {
+      filter: blur(8px);
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .app-lock-screen {
+      position: fixed;
+      inset: 0;
+      z-index: 99999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: linear-gradient(135deg, rgba(15,23,42,0.96), rgba(79,70,229,0.96), rgba(236,72,153,0.94));
+    }
+
+    body:not(.app-locked) .app-lock-screen {
+      display: none;
+    }
+
+    .app-lock-card {
+      width: 100%;
+      max-width: 430px;
+      border-radius: 32px;
+      background: rgba(255,255,255,0.96);
+      box-shadow: 0 24px 60px rgba(0,0,0,0.30);
+      padding: 28px;
+      text-align: center;
+    }
+
+    .app-lock-icon {
+      width: 78px;
+      height: 78px;
+      border-radius: 24px;
+      background: linear-gradient(135deg, #4f46e5, #ec4899);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 38px;
+      margin: 0 auto 18px auto;
+      box-shadow: 0 12px 28px rgba(79,70,229,0.28);
+    }
+
+    .app-lock-card h1 {
+      font-size: 30px;
+      font-weight: 900;
+      color: #111827;
+      letter-spacing: -0.8px;
+      margin-bottom: 8px;
+    }
+
+    .app-lock-card p {
+      font-size: 15px;
+      line-height: 1.6;
+      color: #64748b;
+      font-weight: 700;
+      margin-bottom: 18px;
+    }
+
+    .app-lock-input {
+      width: 100%;
+      height: 58px;
+      border: 2px solid #e5e7eb;
+      border-radius: 18px;
+      padding: 0 16px;
+      outline: none;
+      font-size: 20px;
+      font-weight: 800;
+      background: #f8fafc;
+      color: #111827;
+      text-align: center;
+      letter-spacing: 2px;
+      margin-bottom: 12px;
+    }
+
+    .app-lock-input:focus {
+      border-color: #6366f1;
+      box-shadow: 0 0 0 4px rgba(99,102,241,0.12);
+    }
+
+    .app-lock-message {
+      min-height: 24px;
+      font-size: 14px;
+      font-weight: 800;
+      color: #ef4444;
+      margin-bottom: 12px;
+    }
+
+    .app-lock-help {
+      margin-top: 14px;
+      font-size: 13px;
+      line-height: 1.5;
+      color: #64748b;
+    }
+
+    .lock-app-btn {
+      border: none;
+      min-height: 42px;
+      padding: 0 16px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.20);
+      color: white;
+      font-size: 14px;
+      font-weight: 900;
+      cursor: pointer;
+      margin-top: 16px;
+      backdrop-filter: blur(8px);
+    }
+
     /* =========================
        RESPONSIVE
     ========================= */
@@ -1091,7 +1211,48 @@
     }
   </style>
 </head>
-<body>
+<body class="app-locked">
+
+  <!-- =========================
+       APP PASSWORD LOCK SCREEN
+  ========================= -->
+  <div id="appLockScreen" class="app-lock-screen">
+    <div class="app-lock-card">
+      <div class="app-lock-icon">🔒</div>
+      <h1 id="appLockTitle">Pocket Tools Locked</h1>
+      <p id="appLockText">Enter your password to open your Smart Tools app.</p>
+
+      <input
+        id="appLockPasswordInput"
+        class="app-lock-input"
+        type="password"
+        placeholder="Password"
+        autocomplete="current-password"
+        onkeydown="handleAppLockEnter(event)"
+      />
+
+      <input
+        id="appLockConfirmInput"
+        class="app-lock-input"
+        type="password"
+        placeholder="Confirm Password"
+        autocomplete="new-password"
+        onkeydown="handleAppLockEnter(event)"
+        style="display:none;"
+      />
+
+      <div id="appLockMessage" class="app-lock-message"></div>
+
+      <button id="appLockMainBtn" class="action-btn blue-btn" style="width:100%;" onclick="submitAppLockPassword()">
+        Unlock App
+      </button>
+
+      <div class="app-lock-help">
+        First time: create a password. After that, this app will ask for the password every time it opens on this device.
+      </div>
+    </div>
+  </div>
+
   <div class="app-shell">
 
     <!-- =========================
@@ -1106,6 +1267,7 @@
             One colorful app with useful mini tools inside. Your calculator is removed.
             Now you can convert your company PDF and Excel files into bank upload CSV.
           </p>
+          <button class="lock-app-btn" onclick="lockPocketToolsApp()">🔒 Lock App</button>
         </div>
       </div>
 
@@ -1544,6 +1706,132 @@
     // =========================
     if (window.pdfjsLib) {
       pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+    }
+
+    // =========================
+    // APP PASSWORD LOCK
+    // =========================
+    let appLockMode = "unlock";
+
+    function getAppLockPasswordData() {
+      return localStorage.getItem('pocketToolsPasswordHash') || '';
+    }
+
+    async function hashAppPassword(password) {
+      const encoder = new TextEncoder();
+      const data = encoder.encode('PocketToolsSalt2026|' + password);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      return hashArray.map(byte => byte.toString(16).padStart(2, '0')).join('');
+    }
+
+    function setAppLockMessage(message, color) {
+      const box = document.getElementById('appLockMessage');
+      if (!box) return;
+      box.style.color = color || '#ef4444';
+      box.innerText = message || '';
+    }
+
+    function prepareAppLockScreen() {
+      const savedHash = getAppLockPasswordData();
+      const title = document.getElementById('appLockTitle');
+      const text = document.getElementById('appLockText');
+      const passwordInput = document.getElementById('appLockPasswordInput');
+      const confirmInput = document.getElementById('appLockConfirmInput');
+      const mainBtn = document.getElementById('appLockMainBtn');
+
+      document.body.classList.add('app-locked');
+      setAppLockMessage('');
+
+      if (savedHash) {
+        appLockMode = 'unlock';
+        if (title) title.innerText = 'Pocket Tools Locked';
+        if (text) text.innerText = 'Enter your password to open your Smart Tools app.';
+        if (passwordInput) {
+          passwordInput.value = '';
+          passwordInput.placeholder = 'Password';
+          passwordInput.autocomplete = 'current-password';
+        }
+        if (confirmInput) {
+          confirmInput.value = '';
+          confirmInput.style.display = 'none';
+        }
+        if (mainBtn) mainBtn.innerText = 'Unlock App';
+      } else {
+        appLockMode = 'create';
+        if (title) title.innerText = 'Create App Password';
+        if (text) text.innerText = 'Create a password first. Next time this app opens, it will ask for this password.';
+        if (passwordInput) {
+          passwordInput.value = '';
+          passwordInput.placeholder = 'Create Password';
+          passwordInput.autocomplete = 'new-password';
+        }
+        if (confirmInput) {
+          confirmInput.value = '';
+          confirmInput.style.display = 'block';
+        }
+        if (mainBtn) mainBtn.innerText = 'Save Password & Open';
+      }
+
+      setTimeout(() => {
+        if (passwordInput) passwordInput.focus();
+      }, 250);
+    }
+
+    async function submitAppLockPassword() {
+      const passwordInput = document.getElementById('appLockPasswordInput');
+      const confirmInput = document.getElementById('appLockConfirmInput');
+      const password = passwordInput ? passwordInput.value : '';
+      const confirmPassword = confirmInput ? confirmInput.value : '';
+
+      if (password.length < 4) {
+        setAppLockMessage('Password must be at least 4 characters.');
+        return;
+      }
+
+      if (appLockMode === 'create') {
+        if (password !== confirmPassword) {
+          setAppLockMessage('Passwords do not match.');
+          return;
+        }
+
+        const hash = await hashAppPassword(password);
+        localStorage.setItem('pocketToolsPasswordHash', hash);
+        unlockPocketToolsApp();
+        return;
+      }
+
+      const savedHash = getAppLockPasswordData();
+      const typedHash = await hashAppPassword(password);
+
+      if (typedHash === savedHash) {
+        unlockPocketToolsApp();
+      } else {
+        setAppLockMessage('Wrong password. Try again.');
+        if (passwordInput) {
+          passwordInput.value = '';
+          passwordInput.focus();
+        }
+      }
+    }
+
+    function unlockPocketToolsApp() {
+      document.body.classList.remove('app-locked');
+      setAppLockMessage('');
+      const passwordInput = document.getElementById('appLockPasswordInput');
+      const confirmInput = document.getElementById('appLockConfirmInput');
+      if (passwordInput) passwordInput.value = '';
+      if (confirmInput) confirmInput.value = '';
+    }
+
+    function lockPocketToolsApp() {
+      prepareAppLockScreen();
+    }
+
+    function handleAppLockEnter(event) {
+      if (event.key === 'Enter') {
+        submitAppLockPassword();
+      }
     }
 
     // =========================
@@ -2708,6 +2996,7 @@ Notes: ${escapeHtml(record.notes || '—')}</div>
     // =========================
     // STARTUP
     // =========================
+    prepareAppLockScreen();
     loadConverterAccountInputs();
     renderNotes();
   </script>
