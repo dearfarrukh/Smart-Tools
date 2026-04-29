@@ -302,6 +302,88 @@
       cursor: pointer;
     }
 
+    .custom-mix-toggle-row {
+      margin-top: 18px;
+      margin-bottom: 8px;
+      min-height: 58px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 14px 16px;
+      border-radius: 22px;
+      background: #f8fafc;
+      border: 1px solid #e5e7eb;
+    }
+
+    .custom-mix-toggle-text { min-width: 0; }
+    .custom-mix-toggle-title { font-size: 17px; font-weight: 900; color: #111827; }
+    .custom-mix-toggle-subtitle { margin-top: 4px; font-size: 13px; font-weight: 800; color: #64748b; line-height: 1.35; }
+
+    .custom-mix-switch {
+      width: 68px;
+      height: 38px;
+      border: none;
+      border-radius: 999px;
+      background: #d1d5db;
+      padding: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      flex-shrink: 0;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    .custom-mix-switch.on { background: #22c55e; justify-content: flex-end; }
+    .custom-mix-switch-dot { width: 30px; height: 30px; border-radius: 50%; background: white; box-shadow: 0 3px 10px rgba(0,0,0,0.22); }
+
+    .custom-mix-option-content {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .custom-mix-controls { display: none; align-items: center; gap: 8px; flex-shrink: 0; }
+    .custom-mix-controls.show { display: flex; }
+
+    .custom-mix-btn {
+      width: 34px;
+      height: 34px;
+      border: none;
+      border-radius: 50%;
+      background: #e0f2fe;
+      color: #0369a1;
+      font-size: 21px;
+      font-weight: 900;
+      cursor: pointer;
+      line-height: 1;
+    }
+
+    .custom-mix-count { min-width: 30px; text-align: center; font-size: 19px; font-weight: 900; color: #111827; }
+
+    .custom-mix-total-box {
+      display: none;
+      margin-top: 14px;
+      border-radius: 18px;
+      padding: 14px 16px;
+      background: #ecfdf5;
+      color: #166534;
+      font-size: 16px;
+      font-weight: 900;
+      text-align: center;
+    }
+
+    .custom-mix-total-box.show { display: block; }
+
+    @media (max-width: 560px) {
+      .custom-mix-option-content { align-items: flex-start; flex-direction: column; gap: 10px; }
+      .custom-mix-controls { width: 100%; justify-content: flex-start; }
+    }
+
     .password-range {
       width: 100%;
       accent-color: #2563eb;
@@ -1404,25 +1486,65 @@
               <div class="card-title">Options</div>
               <div class="card-subtitle">Turn on what you want inside the password.</div>
 
+              <div class="custom-mix-toggle-row">
+                <div class="custom-mix-toggle-text">
+                  <div class="custom-mix-toggle-title">Custom Mix Optional</div>
+                  <div class="custom-mix-toggle-subtitle">OFF uses the normal length slider. ON lets you choose exact amounts.</div>
+                </div>
+                <button id="customMixToggleBtn" class="custom-mix-switch" onclick="toggleCustomPasswordMix()" aria-label="Turn custom password mix on or off">
+                  <span class="custom-mix-switch-dot"></span>
+                </button>
+              </div>
+
               <label class="password-option-row">
-                <span>Capital Letters A B C</span>
-                <input id="includeUppercase" type="checkbox" checked>
+                <div class="custom-mix-option-content">
+                  <span>Capital Letters A B C</span>
+                  <div id="uppercaseMixControls" class="custom-mix-controls">
+                    <button type="button" class="custom-mix-btn" onclick="event.preventDefault(); changePasswordMixCount('uppercase', -1);">−</button>
+                    <div id="uppercaseMixCount" class="custom-mix-count">4</div>
+                    <button type="button" class="custom-mix-btn" onclick="event.preventDefault(); changePasswordMixCount('uppercase', 1);">+</button>
+                  </div>
+                </div>
+                <input id="includeUppercase" type="checkbox" checked onchange="updateCustomPasswordMixUI()">
               </label>
 
               <label class="password-option-row">
-                <span>Small Letters a b c</span>
-                <input id="includeLowercase" type="checkbox" checked>
+                <div class="custom-mix-option-content">
+                  <span>Small Letters a b c</span>
+                  <div id="lowercaseMixControls" class="custom-mix-controls">
+                    <button type="button" class="custom-mix-btn" onclick="event.preventDefault(); changePasswordMixCount('lowercase', -1);">−</button>
+                    <div id="lowercaseMixCount" class="custom-mix-count">6</div>
+                    <button type="button" class="custom-mix-btn" onclick="event.preventDefault(); changePasswordMixCount('lowercase', 1);">+</button>
+                  </div>
+                </div>
+                <input id="includeLowercase" type="checkbox" checked onchange="updateCustomPasswordMixUI()">
               </label>
 
               <label class="password-option-row">
-                <span>Numbers 1 2 3</span>
-                <input id="includeNumbers" type="checkbox" checked>
+                <div class="custom-mix-option-content">
+                  <span>Numbers 1 2 3</span>
+                  <div id="numbersMixControls" class="custom-mix-controls">
+                    <button type="button" class="custom-mix-btn" onclick="event.preventDefault(); changePasswordMixCount('numbers', -1);">−</button>
+                    <div id="numbersMixCount" class="custom-mix-count">3</div>
+                    <button type="button" class="custom-mix-btn" onclick="event.preventDefault(); changePasswordMixCount('numbers', 1);">+</button>
+                  </div>
+                </div>
+                <input id="includeNumbers" type="checkbox" checked onchange="updateCustomPasswordMixUI()">
               </label>
 
               <label class="password-option-row" style="border-bottom:none;">
-                <span>Symbols @ # $</span>
-                <input id="includeSymbols" type="checkbox" checked>
+                <div class="custom-mix-option-content">
+                  <span>Symbols @ # $</span>
+                  <div id="symbolsMixControls" class="custom-mix-controls">
+                    <button type="button" class="custom-mix-btn" onclick="event.preventDefault(); changePasswordMixCount('symbols', -1);">−</button>
+                    <div id="symbolsMixCount" class="custom-mix-count">2</div>
+                    <button type="button" class="custom-mix-btn" onclick="event.preventDefault(); changePasswordMixCount('symbols', 1);">+</button>
+                  </div>
+                </div>
+                <input id="includeSymbols" type="checkbox" checked onchange="updateCustomPasswordMixUI()">
               </label>
+
+              <div id="customMixTotalBox" class="custom-mix-total-box">Custom Mix Total Length: 15</div>
             </div>
           </div>
         </div>
@@ -1947,6 +2069,7 @@
       hideAllPages();
       document.getElementById('passwordGeneratorPage').classList.add('active');
       updatePasswordLengthLabel();
+      updateCustomPasswordMixUI();
       window.scrollTo(0, 0);
     }
 
@@ -3723,13 +3846,97 @@ Notes: ${escapeHtml(record.notes || '—')}</div>
     // =========================
     // PASSWORD GENERATOR
     // =========================
+    let isCustomPasswordMixOn = false;
+
+    const passwordMixCounts = {
+      uppercase: 4,
+      lowercase: 6,
+      numbers: 3,
+      symbols: 2
+    };
+
     function updatePasswordLengthLabel() {
       const slider = document.getElementById('passwordLengthSlider');
       const label = document.getElementById('passwordLengthNumber');
-
       if (!slider || !label) return;
+      label.innerText = isCustomPasswordMixOn ? getCustomPasswordMixTotal() : slider.value;
+    }
 
-      label.innerText = slider.value;
+    function toggleCustomPasswordMix() {
+      isCustomPasswordMixOn = !isCustomPasswordMixOn;
+      updateCustomPasswordMixUI();
+    }
+
+    function updateCustomPasswordMixUI() {
+      const toggleBtn = document.getElementById('customMixToggleBtn');
+      const totalBox = document.getElementById('customMixTotalBox');
+      const slider = document.getElementById('passwordLengthSlider');
+
+      const controls = [
+        document.getElementById('uppercaseMixControls'),
+        document.getElementById('lowercaseMixControls'),
+        document.getElementById('numbersMixControls'),
+        document.getElementById('symbolsMixControls')
+      ];
+
+      if (toggleBtn) {
+        toggleBtn.classList.toggle('on', isCustomPasswordMixOn);
+        toggleBtn.setAttribute('aria-label', isCustomPasswordMixOn ? 'Custom password mix is on' : 'Custom password mix is off');
+      }
+
+      controls.forEach(control => {
+        if (control) control.classList.toggle('show', isCustomPasswordMixOn);
+      });
+
+      if (slider) slider.disabled = isCustomPasswordMixOn;
+
+      updatePasswordMixCountLabels();
+
+      if (totalBox) {
+        totalBox.classList.toggle('show', isCustomPasswordMixOn);
+        totalBox.innerText = 'Custom Mix Total Length: ' + getCustomPasswordMixTotal();
+      }
+
+      updatePasswordLengthLabel();
+    }
+
+    function changePasswordMixCount(type, amount) {
+      if (!Object.prototype.hasOwnProperty.call(passwordMixCounts, type)) return;
+
+      passwordMixCounts[type] += amount;
+
+      if (passwordMixCounts[type] < 0) passwordMixCounts[type] = 0;
+      if (passwordMixCounts[type] > 40) passwordMixCounts[type] = 40;
+
+      updateCustomPasswordMixUI();
+    }
+
+    function updatePasswordMixCountLabels() {
+      const uppercaseLabel = document.getElementById('uppercaseMixCount');
+      const lowercaseLabel = document.getElementById('lowercaseMixCount');
+      const numbersLabel = document.getElementById('numbersMixCount');
+      const symbolsLabel = document.getElementById('symbolsMixCount');
+
+      if (uppercaseLabel) uppercaseLabel.innerText = passwordMixCounts.uppercase;
+      if (lowercaseLabel) lowercaseLabel.innerText = passwordMixCounts.lowercase;
+      if (numbersLabel) numbersLabel.innerText = passwordMixCounts.numbers;
+      if (symbolsLabel) symbolsLabel.innerText = passwordMixCounts.symbols;
+    }
+
+    function getCustomPasswordMixTotal() {
+      const uppercaseInput = document.getElementById('includeUppercase');
+      const lowercaseInput = document.getElementById('includeLowercase');
+      const numbersInput = document.getElementById('includeNumbers');
+      const symbolsInput = document.getElementById('includeSymbols');
+
+      let total = 0;
+
+      if (!uppercaseInput || uppercaseInput.checked) total += passwordMixCounts.uppercase;
+      if (!lowercaseInput || lowercaseInput.checked) total += passwordMixCounts.lowercase;
+      if (!numbersInput || numbersInput.checked) total += passwordMixCounts.numbers;
+      if (!symbolsInput || symbolsInput.checked) total += passwordMixCounts.symbols;
+
+      return total;
     }
 
     function generatePassword() {
@@ -3751,6 +3958,44 @@ Notes: ${escapeHtml(record.notes || '—')}</div>
       const lowercaseChars = 'abcdefghijklmnopqrstuvwxyz';
       const numberChars = '0123456789';
       const symbolChars = '!@#$%^&*-_+=?';
+
+      let passwordArray = [];
+
+      if (isCustomPasswordMixOn) {
+        if (uppercaseInput && uppercaseInput.checked) {
+          addPasswordCharacters(passwordArray, uppercaseChars, passwordMixCounts.uppercase);
+        }
+
+        if (lowercaseInput && lowercaseInput.checked) {
+          addPasswordCharacters(passwordArray, lowercaseChars, passwordMixCounts.lowercase);
+        }
+
+        if (numbersInput && numbersInput.checked) {
+          addPasswordCharacters(passwordArray, numberChars, passwordMixCounts.numbers);
+        }
+
+        if (symbolsInput && symbolsInput.checked) {
+          addPasswordCharacters(passwordArray, symbolChars, passwordMixCounts.symbols);
+        }
+
+        if (passwordArray.length === 0) {
+          if (passwordBox) passwordBox.innerText = 'Choose at least one custom mix amount';
+          if (strengthText) {
+            strengthText.innerText = 'Strength: Cannot generate';
+            strengthText.style.background = '#fee2e2';
+            strengthText.style.color = '#991b1b';
+          }
+          return;
+        }
+
+        passwordArray = shufflePasswordArray(passwordArray);
+
+        const customPassword = passwordArray.join('');
+
+        if (passwordBox) passwordBox.innerText = customPassword;
+        updatePasswordStrength(customPassword);
+        return;
+      }
 
       let selectedGroups = [];
       let allChars = '';
@@ -3785,8 +4030,6 @@ Notes: ${escapeHtml(record.notes || '—')}</div>
         return;
       }
 
-      let passwordArray = [];
-
       selectedGroups.forEach(group => {
         passwordArray.push(getRandomCharacter(group));
       });
@@ -3801,6 +4044,12 @@ Notes: ${escapeHtml(record.notes || '—')}</div>
 
       if (passwordBox) passwordBox.innerText = password;
       updatePasswordStrength(password);
+    }
+
+    function addPasswordCharacters(passwordArray, characterSet, amount) {
+      for (let i = 0; i < amount; i++) {
+        passwordArray.push(getRandomCharacter(characterSet));
+      }
     }
 
     function getRandomCharacter(characterSet) {
@@ -3862,7 +4111,8 @@ Notes: ${escapeHtml(record.notes || '—')}</div>
       if (
         password === '' ||
         password === 'Tap Generate Password' ||
-        password === 'Choose at least one option'
+        password === 'Choose at least one option' ||
+        password === 'Choose at least one custom mix amount'
       ) {
         if (copyMessage) {
           copyMessage.style.display = 'block';
@@ -3900,6 +4150,12 @@ Notes: ${escapeHtml(record.notes || '—')}</div>
 
       if (slider) slider.value = 16;
 
+      isCustomPasswordMixOn = false;
+      passwordMixCounts.uppercase = 4;
+      passwordMixCounts.lowercase = 6;
+      passwordMixCounts.numbers = 3;
+      passwordMixCounts.symbols = 2;
+
       const uppercaseInput = document.getElementById('includeUppercase');
       const lowercaseInput = document.getElementById('includeLowercase');
       const numbersInput = document.getElementById('includeNumbers');
@@ -3910,6 +4166,7 @@ Notes: ${escapeHtml(record.notes || '—')}</div>
       if (numbersInput) numbersInput.checked = true;
       if (symbolsInput) symbolsInput.checked = true;
 
+      updateCustomPasswordMixUI();
       updatePasswordLengthLabel();
 
       if (passwordBox) passwordBox.innerText = 'Tap Generate Password';
