@@ -237,6 +237,10 @@
       background: linear-gradient(135deg, #111827 0%, #374151 55%, #0ea5e9 100%);
     }
 
+    .tool-card.hard-refresh {
+      background: linear-gradient(135deg, #22c55e 0%, #16a34a 48%, #0f766e 100%);
+    }
+
     /* =========================
        PASSWORD GENERATOR
     ========================= */
@@ -1393,6 +1397,12 @@
             <p>Make strong secure passwords with length, numbers, symbols, copy button, and strength check.</p>
           </button>
 
+          <button class="tool-card hard-refresh" onclick="hardRefreshAppKeepData()">
+            <div class="tool-card-icon">↻</div>
+            <h3>Hard Refresh App</h3>
+            <p>Reload the newest GitHub version right away. Your saved notes, cars, and app data stay safe.</p>
+          </button>
+
           <button class="tool-card car-care" onclick="openCarPage()">
             <div class="tool-card-icon">🚗</div>
             <h3>Car Care</h3>
@@ -2044,6 +2054,30 @@
       hideAllPages();
       document.getElementById('homePage').classList.add('active');
       window.scrollTo(0, 0);
+    }
+
+    // =========================
+    // HARD REFRESH APP - KEEP SAVED DATA SAFE
+    // =========================
+    async function hardRefreshAppKeepData() {
+      try {
+        // This does NOT clear localStorage, notes, car data, or saved app data.
+        // It only removes browser cache and old service worker cache so GitHub shows the newest file.
+        if ('serviceWorker' in navigator) {
+          const registrations = await navigator.serviceWorker.getRegistrations();
+          await Promise.all(registrations.map(registration => registration.unregister()));
+        }
+
+        if ('caches' in window) {
+          const cacheNames = await caches.keys();
+          await Promise.all(cacheNames.map(cacheName => caches.delete(cacheName)));
+        }
+      } catch (error) {
+        console.log('Hard refresh cache cleanup skipped:', error);
+      }
+
+      const cleanUrl = window.location.origin + window.location.pathname;
+      window.location.replace(cleanUrl + '?refresh=' + Date.now());
     }
 
     function openNumberMatchPage() {
