@@ -2874,6 +2874,317 @@ Notes: ${escapeHtml(record.notes || '—')}</div>
     }
 
     // =========================
+    // PDF / IMAGE TOOLS STATE
+    // =========================
+    let pdfToPngFiles = [];
+    let imagesToPdfFiles = [];
+    let pdfEditFiles = [];
+    let generatedPngFiles = [];
+
+    // =========================
+    // PDF / IMAGE TOOLS HELPERS
+    // =========================
+    function formatFileSize(bytes) {
+      if (!bytes && bytes !== 0) return '';
+      if (bytes < 1024) return bytes + ' B';
+      if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+      return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+    }
+
+    function safeFileName(name) {
+      return String(name || 'file')
+        .replace(/\.[^/.]+$/, '')
+        .replace(/[^a-z0-9-_]+/gi, '-')
+        .replace(/-+/g, '-')
+        .replace(/^-|-$/g, '') || 'file';
+    }
+
+    function showPdfImageStatus(message, type = 'ready') {
+      const box = document.getElementById('pdfImageStatusBox');
+      if (!box) return;
+      if (type === 'success') {
+        box.className = 'result-box result-success';
+        box.innerHTML = `<div class="result-heading">Success</div><div class="result-placeholder">${escapeHtml(message)}</div>`;
+        return;
+      }
+      if (type === 'error') {
+        box.className = 'result-box result-error';
+        box.innerHTML = `<div class="result-heading">Check File</div><div class="result-placeholder">${escapeHtml(message)}</div>`;
+        return;
+      }
+      box.className = 'result-box';
+      box.innerHTML = `<div class="result-heading">Ready</div><div class="result-placeholder">${escapeHtml(message)}</div>`;
+    }
+
+    function renderSelectedFileList(containerId, files, emptyText) {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+      if (!files || files.length === 0) {
+        container.innerHTML = `<div class="result-placeholder" style="margin-top:16px;">${escapeHtml(emptyText)}</div>`;
+        return;
+      }
+      container.innerHTML = files.map(file => `
+        <div class="file-pill">
+          <span>${escapeHtml(file.name)}</span>
+          <span>${escapeHtml(formatFileSize(file.size))}</span>
+        </div>
+      `).join('');
+    }
+
+    function downloadBlob(blob, fileName) {
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = fileName;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1500);
+    }
+
+    async function canvasToBlob(canvas, type = 'image/png', quality = 0.95) {
+      return new Promise(resolve => canvas.toBlob(resolve, type, quality));
+    }
+
+    // =========================
+    // PDF TO PNG SELECTION
+    // =========================
+    function handlePdfToPngSelection(event) {
+      pdfToPngFiles = Array.from(event.target.files || []);
+      renderSelectedFileList('pdfToPngFileList', pdfToPngFiles, 'No PDF selected yet.');
+      if (pdfToPngFiles.length > 0) showPdfImageStatus(`${pdfToPngFiles.length} PDF file selected. Press Convert to PNG.`, 'ready');
+    }
+
+    function resetPdfToPngTool() {
+      pdfToPngFiles = [];
+      const input = document.getElementById('pdfToPngInput');
+      if (input) input.value = '';
+      renderSelectedFileList('pdfToPngFileList', [], 'No PDF selected yet.');
+      showPdfImageStatus('PDF to PNG reset. Choose a PDF file again.', 'ready');
+    }
+
+    async function convertPdfToPngImages() {
+      try {
+        if (!window.pdfjsLib) { showPdfImageStatus('PDF.js did not load. Check internet connection and refresh the app.', 'error'); return; }
+        if (pdfToPngFiles.length === 0) { showPdfImageStatus('Please choose a PDF first.', 'error'); return; }
+        clearPdfImageOutput(false);
+        showPdfImageStatus('Converting PDF pages to PNG. Please wait...', 'ready');
+        const outputGrid = document.getElementById('pdfPngOutputGrid');
+        generatedPngFiles = [];
+        for (const file of pdfToPngFiles) {
+          const arrayBuffer = await file.arrayBuffer();
+          const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+          for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber++) {
+            const page = await pdf.getPage(pageNumber);
+            const viewport = page.getViewport({ scale: 2 });
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+            canvas.width = viewport.width;
+            canvas.height = viewport.height;
+            await page.render({ canvasContext: context, viewport }).promise;
+            const blob = await canvasToBlob(canvas, 'image/png');
+            const pngName = `${safeFileName(file.name)}-page-${pageNumber}.png`;
+            const url = URL.createObjectURL(blob);
+            generatedPngFiles.push({ name: pngName, blob, url });
+            if (outputGrid) {
+              const card = document.createElement('div');
+              card.className = 'png-preview-card';
+              card.innerHTML = `
+                <img src="${url}" alt="${escapeHtml(pngName)}">
+                <div style="font-size:13px;font-weight:900;color:#111827;word-break:break-word;margin-bottom:8px;">${escapeHtml(pngName)}</div>
+                <a class="small-download-link" href="${url}" download="${escapeHtml(pngName)}">Download</a>
+              `;
+              outputGrid.appendChild(card);
+            }
+          }
+        }
+        showPdfImageStatus(`Done. Created ${generatedPngFiles.length} PNG image(s).`, 'success');
+      } catch (error) {
+        console.error(error);
+        showPdfImageStatus('Could not convert this PDF. Try another PDF or refresh the app.', 'error');
+      }
+    }
+
+    async function downloadAllPngAsZip() {
+      try {
+        if (generatedPngFiles.length === 0) { showPdfImageStatus('No PNG files ready yet. Convert a PDF first.', 'error'); return; }
+        if (!window.JSZip) { showPdfImageStatus('ZIP library did not load. Check internet connection and refresh the app.', 'error'); return; }
+        const zip = new JSZip();
+        for (const item of generatedPngFiles) zip.file(item.name, item.blob);
+        const zipBlob = await zip.generateAsync({ type: 'blob' });
+        downloadBlob(zipBlob, 'pdf-pages-png.zip');
+        showPdfImageStatus('PNG ZIP downloaded.', 'success');
+      } catch (error) {
+        console.error(error);
+        showPdfImageStatus('Could not make the ZIP file.', 'error');
+      }
+    }
+
+    function clearPdfImageOutput(showMessage = true) {
+      const outputGrid = document.getElementById('pdfPngOutputGrid');
+      if (outputGrid) outputGrid.innerHTML = '';
+      generatedPngFiles.forEach(item => { if (item.url) URL.revokeObjectURL(item.url); });
+      generatedPngFiles = [];
+      if (showMessage) showPdfImageStatus('Output cleared.', 'ready');
+    }
+
+    // =========================
+    // IMAGES TO PDF
+    // =========================
+    function handleImagesToPdfSelection(event) {
+      imagesToPdfFiles = Array.from(event.target.files || []);
+      renderSelectedFileList('imagesToPdfFileList', imagesToPdfFiles, 'No images selected yet.');
+      if (imagesToPdfFiles.length > 0) showPdfImageStatus(`${imagesToPdfFiles.length} image file selected. Press Make PDF.`, 'ready');
+    }
+
+    function resetImagesToPdfTool() {
+      imagesToPdfFiles = [];
+      const input = document.getElementById('imagesToPdfInput');
+      if (input) input.value = '';
+      renderSelectedFileList('imagesToPdfFileList', [], 'No images selected yet.');
+      showPdfImageStatus('Images to PDF reset. Choose images again.', 'ready');
+    }
+
+    async function convertImagesToPdfFile() {
+      try {
+        if (!window.jspdf || !window.jspdf.jsPDF) { showPdfImageStatus('jsPDF did not load. Check internet connection and refresh the app.', 'error'); return; }
+        if (imagesToPdfFiles.length === 0) { showPdfImageStatus('Please choose image files first.', 'error'); return; }
+        showPdfImageStatus('Making PDF from images. Please wait...', 'ready');
+        const { jsPDF } = window.jspdf;
+        let pdf = null;
+        for (let i = 0; i < imagesToPdfFiles.length; i++) {
+          const file = imagesToPdfFiles[i];
+          const dataUrl = await readFileAsDataUrl(file);
+          const imageInfo = await loadImageForPdf(dataUrl);
+          const orientation = imageInfo.width > imageInfo.height ? 'l' : 'p';
+          if (!pdf) pdf = new jsPDF({ orientation, unit: 'pt', format: 'letter' });
+          else pdf.addPage('letter', orientation);
+          const pageWidth = pdf.internal.pageSize.getWidth();
+          const pageHeight = pdf.internal.pageSize.getHeight();
+          const margin = 24;
+          const maxWidth = pageWidth - margin * 2;
+          const maxHeight = pageHeight - margin * 2;
+          const ratio = Math.min(maxWidth / imageInfo.width, maxHeight / imageInfo.height);
+          const drawWidth = imageInfo.width * ratio;
+          const drawHeight = imageInfo.height * ratio;
+          const x = (pageWidth - drawWidth) / 2;
+          const y = (pageHeight - drawHeight) / 2;
+          const format = file.type && file.type.toLowerCase().includes('png') ? 'PNG' : 'JPEG';
+          pdf.addImage(dataUrl, format, x, y, drawWidth, drawHeight);
+        }
+        pdf.save('images-to-pdf.pdf');
+        showPdfImageStatus(`Done. Made PDF from ${imagesToPdfFiles.length} image(s).`, 'success');
+      } catch (error) {
+        console.error(error);
+        showPdfImageStatus('Could not make PDF from these images. Try JPG or PNG files.', 'error');
+      }
+    }
+
+    function readFileAsDataUrl(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function loadImageForPdf(src) {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => resolve({ width: img.naturalWidth, height: img.naturalHeight });
+        img.onerror = reject;
+        img.src = src;
+      });
+    }
+
+    // =========================
+    // BASIC PDF EDIT
+    // =========================
+    function handlePdfEditSelection(event) {
+      pdfEditFiles = Array.from(event.target.files || []);
+      renderSelectedFileList('pdfEditFileList', pdfEditFiles, 'No PDF selected yet.');
+      if (pdfEditFiles.length > 0) showPdfImageStatus(`${pdfEditFiles.length} PDF file selected for PDF edit.`, 'ready');
+    }
+
+    function resetPdfEditTool() {
+      pdfEditFiles = [];
+      const input = document.getElementById('pdfEditInput');
+      const pageInput = document.getElementById('pdfPagesToKeepInput');
+      if (input) input.value = '';
+      if (pageInput) pageInput.value = '';
+      renderSelectedFileList('pdfEditFileList', [], 'No PDF selected yet.');
+      showPdfImageStatus('PDF edit reset. Choose PDF files again.', 'ready');
+    }
+
+    async function mergePdfFiles() {
+      try {
+        if (!window.PDFLib) { showPdfImageStatus('PDF edit library did not load. Check internet connection and refresh the app.', 'error'); return; }
+        if (pdfEditFiles.length === 0) { showPdfImageStatus('Choose at least one PDF file first.', 'error'); return; }
+        showPdfImageStatus('Merging PDFs. Please wait...', 'ready');
+        const mergedPdf = await PDFLib.PDFDocument.create();
+        for (const file of pdfEditFiles) {
+          const bytes = await file.arrayBuffer();
+          const sourcePdf = await PDFLib.PDFDocument.load(bytes);
+          const copiedPages = await mergedPdf.copyPages(sourcePdf, sourcePdf.getPageIndices());
+          copiedPages.forEach(page => mergedPdf.addPage(page));
+        }
+        const mergedBytes = await mergedPdf.save();
+        downloadBlob(new Blob([mergedBytes], { type: 'application/pdf' }), 'merged.pdf');
+        showPdfImageStatus(`Done. Merged ${pdfEditFiles.length} PDF file(s).`, 'success');
+      } catch (error) {
+        console.error(error);
+        showPdfImageStatus('Could not merge these PDFs.', 'error');
+      }
+    }
+
+    async function makeSelectedPagePdf() {
+      try {
+        if (!window.PDFLib) { showPdfImageStatus('PDF edit library did not load. Check internet connection and refresh the app.', 'error'); return; }
+        if (pdfEditFiles.length === 0) { showPdfImageStatus('Choose one PDF file first.', 'error'); return; }
+        const rangeText = document.getElementById('pdfPagesToKeepInput').value.trim();
+        if (!rangeText) { showPdfImageStatus('Type pages to keep first. Example: 1,3,5-8', 'error'); return; }
+        showPdfImageStatus('Making selected-pages PDF. Please wait...', 'ready');
+        const bytes = await pdfEditFiles[0].arrayBuffer();
+        const sourcePdf = await PDFLib.PDFDocument.load(bytes);
+        const pageNumbers = parsePageRange(rangeText, sourcePdf.getPageCount());
+        if (pageNumbers.length === 0) { showPdfImageStatus('No valid pages found. Example: 1,3,5-8', 'error'); return; }
+        const newPdf = await PDFLib.PDFDocument.create();
+        const zeroBased = pageNumbers.map(num => num - 1);
+        const copiedPages = await newPdf.copyPages(sourcePdf, zeroBased);
+        copiedPages.forEach(page => newPdf.addPage(page));
+        const newBytes = await newPdf.save();
+        downloadBlob(new Blob([newBytes], { type: 'application/pdf' }), `${safeFileName(pdfEditFiles[0].name)}-selected-pages.pdf`);
+        showPdfImageStatus(`Done. Kept ${pageNumbers.length} page(s).`, 'success');
+      } catch (error) {
+        console.error(error);
+        showPdfImageStatus('Could not make selected-pages PDF.', 'error');
+      }
+    }
+
+    function parsePageRange(rangeText, maxPages) {
+      const pages = new Set();
+      const parts = String(rangeText).split(',');
+      parts.forEach(part => {
+        const clean = part.trim();
+        if (!clean) return;
+        if (clean.includes('-')) {
+          const pieces = clean.split('-');
+          const start = parseInt(pieces[0], 10);
+          const end = parseInt(pieces[1], 10);
+          if (isNaN(start) || isNaN(end)) return;
+          const low = Math.min(start, end);
+          const high = Math.max(start, end);
+          for (let i = low; i <= high; i++) if (i >= 1 && i <= maxPages) pages.add(i);
+          return;
+        }
+        const page = parseInt(clean, 10);
+        if (!isNaN(page) && page >= 1 && page <= maxPages) pages.add(page);
+      });
+      return Array.from(pages).sort((a, b) => a - b);
+    }
+
+    // =========================
     // HTML ESCAPE
     // =========================
     function escapeHtml(text) {
