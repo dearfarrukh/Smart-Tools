@@ -104,6 +104,37 @@
       letter-spacing: -1px;
     }
 
+    .hero-title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .hero-refresh-btn {
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      background: rgba(255, 255, 255, 0.18);
+      color: white;
+      border-radius: 999px;
+      min-height: 42px;
+      padding: 0 16px;
+      font-size: 14px;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.16);
+      backdrop-filter: blur(10px);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      white-space: nowrap;
+    }
+
+    .hero-refresh-btn:active {
+      transform: scale(0.97);
+    }
+
     .hero p {
       max-width: 760px;
       font-size: 18px;
@@ -237,9 +268,6 @@
       background: linear-gradient(135deg, #111827 0%, #374151 55%, #0ea5e9 100%);
     }
 
-    .tool-card.hard-refresh {
-      background: linear-gradient(135deg, #22c55e 0%, #16a34a 48%, #0f766e 100%);
-    }
 
     /* =========================
        PASSWORD GENERATOR
@@ -1263,6 +1291,16 @@
         font-size: 34px;
       }
 
+      .hero-title-row {
+        align-items: flex-start;
+      }
+
+      .hero-refresh-btn {
+        min-height: 40px;
+        padding: 0 14px;
+        font-size: 13px;
+      }
+
       .tools-grid,
       .match-layout,
       .converter-layout,
@@ -1351,7 +1389,12 @@
       <div class="hero">
         <div class="page-inner">
           <div class="hero-badge">Multi App Dashboard</div>
-          <h1>Pocket Tools</h1>
+
+          <div class="hero-title-row">
+            <h1>Pocket Tools</h1>
+            <button class="hero-refresh-btn" onclick="hardRefreshAppKeepData()">↻ Refresh</button>
+          </div>
+
           <p>
             One colorful app with useful mini tools inside. Convert bank PDF/Excel files to CSV,
             convert PDF pages to PNG, make PDFs from pictures, and do basic PDF edits.
@@ -1397,11 +1440,6 @@
             <p>Make strong secure passwords with length, numbers, symbols, copy button, and strength check.</p>
           </button>
 
-          <button class="tool-card hard-refresh" onclick="hardRefreshAppKeepData()">
-            <div class="tool-card-icon">↻</div>
-            <h3>Hard Refresh App</h3>
-            <p>Reload the newest GitHub version right away. Your saved notes, cars, and app data stay safe.</p>
-          </button>
 
           <button class="tool-card car-care" onclick="openCarPage()">
             <div class="tool-card-icon">🚗</div>
