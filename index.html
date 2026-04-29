@@ -1207,8 +1207,8 @@
 
           <button class="tool-card pdf-image" onclick="openPdfImageToolsPage()">
             <div class="tool-card-icon">🖼️</div>
-            <h3>PDF / Image Tools</h3>
-            <p>Convert PDF pages to PNG, turn pictures into PDF, merge PDFs, or keep only selected pages.</p>
+            <h3>File Converter</h3>
+            <p>One smart upload box. Choose PDF or image and the app shows the right converter tools.</p>
           </button>
 
           <button class="tool-card notes" onclick="openNotesPage()">
@@ -1453,79 +1453,64 @@
       <div class="top-bar-wrap">
         <div class="top-bar">
           <button class="back-btn" onclick="openHomePage()">←</button>
-          <div class="top-bar-title">PDF / Image Tools</div>
+          <div class="top-bar-title">File Converter</div>
           <div class="top-bar-spacer"></div>
         </div>
       </div>
 
       <div class="page-inner">
         <div class="inner-page-hero">
-          <h1>PDF / Image Tools</h1>
-          <p>Convert PDF pages into PNG images, make a PDF from pictures, merge PDFs, or keep only selected pages from one PDF.</p>
+          <h1>File Converter</h1>
+          <p>One smart upload box. Choose PDF, PNG, JPG, JPEG, or WebP. The app will show the right tools automatically.</p>
         </div>
 
         <div class="pdf-image-layout">
           <div>
             <div class="card">
-              <div class="card-title">PDF to PNG</div>
-              <div class="card-subtitle">Upload a PDF. Each page will become a PNG image.</div>
-              <label class="upload-drop-box" for="pdfToPngInput">
-                <div class="upload-icon">📄</div>
-                <div style="font-size:22px;font-weight:900;color:#111827;margin-bottom:8px;">Choose PDF</div>
-                <div style="font-size:15px;line-height:1.6;color:#64748b;font-weight:700;">PDF files only</div>
-              </label>
-              <input id="pdfToPngInput" class="file-input-hidden" type="file" multiple accept=".pdf,application/pdf" onchange="handlePdfToPngSelection(event)" />
-              <div id="pdfToPngFileList" class="file-list"><div class="result-placeholder" style="margin-top:16px;">No PDF selected yet.</div></div>
-              <div class="button-row" style="margin-top:20px;">
-                <button class="action-btn blue-btn" onclick="convertPdfToPngImages()">Convert to PNG</button>
-                <button class="action-btn reset-btn" onclick="resetPdfToPngTool()">Reset</button>
-              </div>
-            </div>
+              <div class="card-title">Smart Upload</div>
+              <div class="card-subtitle">Upload one file for normal conversion, or multiple files for merge / images to PDF.</div>
 
-            <div class="card">
-              <div class="card-title">Images to PDF</div>
-              <div class="card-subtitle">Upload PNG or JPG pictures and make one PDF file.</div>
-              <label class="upload-drop-box" for="imagesToPdfInput">
-                <div class="upload-icon">🖼️</div>
-                <div style="font-size:22px;font-weight:900;color:#111827;margin-bottom:8px;">Choose Images</div>
-                <div style="font-size:15px;line-height:1.6;color:#64748b;font-weight:700;">PNG, JPG, JPEG, WEBP</div>
+              <label class="upload-drop-box" for="smartFileInput">
+                <div class="upload-icon">⇧</div>
+                <div style="font-size:22px;font-weight:900;color:#111827;margin-bottom:8px;">Choose PDF or Image</div>
+                <div style="font-size:15px;line-height:1.6;color:#64748b;font-weight:700;">PDF, PNG, JPG, JPEG, WEBP</div>
               </label>
-              <input id="imagesToPdfInput" class="file-input-hidden" type="file" multiple accept="image/png,image/jpeg,image/jpg,image/webp" onchange="handleImagesToPdfSelection(event)" />
-              <div id="imagesToPdfFileList" class="file-list"><div class="result-placeholder" style="margin-top:16px;">No images selected yet.</div></div>
+
+              <input
+                id="smartFileInput"
+                class="file-input-hidden"
+                type="file"
+                multiple
+                accept=".pdf,image/png,image/jpeg,image/jpg,image/webp,application/pdf"
+                onchange="handleSmartFileSelection(event)"
+              />
+
+              <div id="smartFileList" class="file-list">
+                <div class="result-placeholder" style="margin-top:16px;">No file selected yet.</div>
+              </div>
+
+              <div id="smartFilePreview" class="mini-output-grid"></div>
+
               <div class="button-row" style="margin-top:20px;">
-                <button class="action-btn find-btn" onclick="convertImagesToPdfFile()">Make PDF</button>
-                <button class="action-btn reset-btn" onclick="resetImagesToPdfTool()">Reset</button>
+                <button class="action-btn reset-btn" onclick="resetSmartFileTool()">Reset</button>
               </div>
             </div>
           </div>
 
           <div>
             <div class="card">
-              <div class="card-title">Basic PDF Edit</div>
-              <div class="card-subtitle">Merge multiple PDFs, or upload one PDF and keep only selected pages.</div>
-              <label class="upload-drop-box" for="pdfEditInput">
-                <div class="upload-icon">✂️</div>
-                <div style="font-size:22px;font-weight:900;color:#111827;margin-bottom:8px;">Choose PDF Files</div>
-                <div style="font-size:15px;line-height:1.6;color:#64748b;font-weight:700;">For merge or page selection</div>
-              </label>
-              <input id="pdfEditInput" class="file-input-hidden" type="file" multiple accept=".pdf,application/pdf" onchange="handlePdfEditSelection(event)" />
-              <div id="pdfEditFileList" class="file-list"><div class="result-placeholder" style="margin-top:16px;">No PDF selected yet.</div></div>
-              <div style="margin-top:18px;">
-                <label style="display:block;font-size:14px;font-weight:900;color:#374151;margin-bottom:8px;">Pages to keep from first PDF</label>
-                <input id="pdfPagesToKeepInput" class="page-range-input" type="text" placeholder="Example: 1,3,5-8" />
-                <div class="small-help">Leave blank for merge. Use page numbers like 1,2,5-7.</div>
+              <div class="card-title">Available Actions</div>
+              <div class="card-subtitle">Actions change automatically based on what you uploaded.</div>
+
+              <div id="smartActionsBox" class="result-box">
+                <div class="result-placeholder">Choose a PDF or image first. Tools will show here.</div>
               </div>
-              <div class="button-row" style="margin-top:20px;">
-                <button class="action-btn purple-btn" onclick="mergePdfFiles()">Merge PDFs</button>
-                <button class="action-btn blue-btn" onclick="makeSelectedPagePdf()">Keep Pages</button>
-              </div>
-              <div class="button-row" style="margin-top:12px;"><button class="action-btn reset-btn" onclick="resetPdfEditTool()">Reset</button></div>
             </div>
 
             <div class="card">
               <div class="card-title">Output</div>
               <div class="card-subtitle">Converted files and messages will show here.</div>
-              <div id="pdfImageStatusBox" class="result-box"><div class="result-placeholder">Choose a tool and press the convert button.</div></div>
+              <div id="pdfImageStatusBox" class="result-box"><div class="result-placeholder">Choose a file first.</div></div>
               <div id="pdfPngOutputGrid" class="mini-output-grid"></div>
               <div class="button-row" style="margin-top:18px;">
                 <button class="action-btn find-btn" onclick="downloadAllPngAsZip()">Download PNG ZIP</button>
@@ -1534,6 +1519,8 @@
             </div>
           </div>
         </div>
+
+        <input id="pdfPagesToKeepInput" class="page-range-input" type="hidden" />
       </div>
     </section>
 
@@ -3182,6 +3169,331 @@ Notes: ${escapeHtml(record.notes || '—')}</div>
         if (!isNaN(page) && page >= 1 && page <= maxPages) pages.add(page);
       });
       return Array.from(pages).sort((a, b) => a - b);
+    }
+
+
+    // =========================
+    // SMART FILE CONVERTER
+    // =========================
+    let smartToolFiles = [];
+
+    function isPdfFile(file) {
+      const name = (file && file.name ? file.name : '').toLowerCase();
+      return (file && file.type === 'application/pdf') || name.endsWith('.pdf');
+    }
+
+    function isImageFile(file) {
+      return file && file.type && file.type.startsWith('image/');
+    }
+
+    function handleSmartFileSelection(event) {
+      smartToolFiles = Array.from(event.target.files || []);
+      renderSelectedFileList('smartFileList', smartToolFiles, 'No file selected yet.');
+      clearPdfImageOutput(false);
+      renderSmartFilePreview();
+      renderSmartActions();
+    }
+
+    function resetSmartFileTool() {
+      smartToolFiles = [];
+      const input = document.getElementById('smartFileInput');
+      if (input) input.value = '';
+      renderSelectedFileList('smartFileList', [], 'No file selected yet.');
+      const preview = document.getElementById('smartFilePreview');
+      if (preview) preview.innerHTML = '';
+      const actions = document.getElementById('smartActionsBox');
+      if (actions) actions.innerHTML = '<div class="result-placeholder">Choose a PDF or image first. Tools will show here.</div>';
+      clearPdfImageOutput(false);
+      showPdfImageStatus('Reset done. Choose a PDF or image again.', 'ready');
+    }
+
+    async function renderSmartFilePreview() {
+      const preview = document.getElementById('smartFilePreview');
+      if (!preview) return;
+      preview.innerHTML = '';
+      if (smartToolFiles.length === 0) return;
+
+      const firstFile = smartToolFiles[0];
+
+      if (isImageFile(firstFile)) {
+        const url = URL.createObjectURL(firstFile);
+        const card = document.createElement('div');
+        card.className = 'png-preview-card';
+        card.innerHTML = `
+          <img src="${url}" alt="${escapeHtml(firstFile.name)}">
+          <div style="font-size:13px;font-weight:900;color:#111827;word-break:break-word;margin-bottom:8px;">Preview: ${escapeHtml(firstFile.name)}</div>
+        `;
+        preview.appendChild(card);
+        setTimeout(() => URL.revokeObjectURL(url), 20000);
+        return;
+      }
+
+      if (isPdfFile(firstFile)) {
+        const card = document.createElement('div');
+        card.className = 'png-preview-card';
+        card.innerHTML = `
+          <div style="height:150px;display:flex;align-items:center;justify-content:center;background:white;border-radius:12px;border:1px solid #e5e7eb;margin-bottom:8px;font-size:52px;">📄</div>
+          <div style="font-size:13px;font-weight:900;color:#111827;word-break:break-word;margin-bottom:8px;">Selected PDF: ${escapeHtml(firstFile.name)}</div>
+        `;
+        preview.appendChild(card);
+
+        try {
+          if (!window.pdfjsLib) return;
+          const arrayBuffer = await firstFile.arrayBuffer();
+          const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+          const page = await pdf.getPage(1);
+          const viewport = page.getViewport({ scale: 0.6 });
+          const canvas = document.createElement('canvas');
+          const context = canvas.getContext('2d');
+          canvas.width = viewport.width;
+          canvas.height = viewport.height;
+          await page.render({ canvasContext: context, viewport }).promise;
+          const dataUrl = canvas.toDataURL('image/png');
+          card.innerHTML = `
+            <img src="${dataUrl}" alt="${escapeHtml(firstFile.name)} first page">
+            <div style="font-size:13px;font-weight:900;color:#111827;word-break:break-word;margin-bottom:8px;">${escapeHtml(firstFile.name)}</div>
+            <div style="font-size:12px;font-weight:800;color:#64748b;">PDF • ${pdf.numPages} page(s)</div>
+          `;
+        } catch (error) {
+          console.error(error);
+        }
+      }
+    }
+
+    function renderSmartActions() {
+      const actions = document.getElementById('smartActionsBox');
+      if (!actions) return;
+
+      if (smartToolFiles.length === 0) {
+        actions.className = 'result-box';
+        actions.innerHTML = '<div class="result-placeholder">Choose a PDF or image first. Tools will show here.</div>';
+        showPdfImageStatus('Choose a file first.', 'ready');
+        return;
+      }
+
+      const pdfFiles = smartToolFiles.filter(isPdfFile);
+      const imageFiles = smartToolFiles.filter(isImageFile);
+      const otherFiles = smartToolFiles.filter(file => !isPdfFile(file) && !isImageFile(file));
+
+      if (otherFiles.length > 0 || (pdfFiles.length > 0 && imageFiles.length > 0)) {
+        actions.className = 'result-box result-error';
+        actions.innerHTML = '<div class="result-heading">File Type Problem</div><div class="result-placeholder">Please choose only PDF files together, or only image files together.</div>';
+        showPdfImageStatus('Please choose only PDF files together, or only image files together.', 'error');
+        return;
+      }
+
+      if (pdfFiles.length > 0) {
+        actions.className = 'result-box';
+        actions.innerHTML = `
+          <div class="result-heading">PDF Tools Detected</div>
+          <div class="result-placeholder" style="margin-bottom:16px;">${pdfFiles.length} PDF file(s) selected.</div>
+          <div class="button-row">
+            <button class="action-btn blue-btn" onclick="smartPdfToPng()">PDF to PNG</button>
+            <button class="action-btn purple-btn" onclick="smartMergePdfs()">Merge PDFs</button>
+          </div>
+          <div style="margin-top:18px;">
+            <label style="display:block;font-size:14px;font-weight:900;color:#374151;margin-bottom:8px;">Keep selected pages from first PDF</label>
+            <input id="smartPagesToKeepInput" class="page-range-input" type="text" placeholder="Example: 1,3,5-8" />
+            <div class="small-help">Use page numbers like 1,2,5-7.</div>
+            <button class="action-btn find-btn" style="width:100%;margin-top:14px;" onclick="smartKeepPdfPages()">Keep Pages</button>
+          </div>
+        `;
+        showPdfImageStatus('PDF detected. Choose one of the PDF tools.', 'ready');
+        return;
+      }
+
+      if (imageFiles.length > 0) {
+        actions.className = 'result-box';
+        actions.innerHTML = `
+          <div class="result-heading">Image Tools Detected</div>
+          <div class="result-placeholder" style="margin-bottom:16px;">${imageFiles.length} image file(s) selected.</div>
+          <div class="button-row">
+            <button class="action-btn blue-btn" onclick="smartConvertImages('image/png','png')">Convert to PNG</button>
+            <button class="action-btn find-btn" onclick="smartConvertImages('image/jpeg','jpg')">Convert to JPG</button>
+          </div>
+          <div class="button-row" style="margin-top:12px;">
+            <button class="action-btn purple-btn" onclick="smartConvertImages('image/webp','webp')">Convert to WebP</button>
+            <button class="action-btn blue-btn" onclick="smartImagesToPdf()">Image to PDF</button>
+          </div>
+          <div class="button-row" style="margin-top:12px;">
+            <button class="action-btn find-btn" onclick="smartRotateImagesRight()">Rotate Right</button>
+            <button class="action-btn purple-btn" onclick="smartCompressImages()">Compress JPG</button>
+          </div>
+        `;
+        showPdfImageStatus('Image detected. Choose one of the image tools.', 'ready');
+      }
+    }
+
+    function smartPdfToPng() {
+      pdfToPngFiles = smartToolFiles.filter(isPdfFile);
+      convertPdfToPngImages();
+    }
+
+    function smartMergePdfs() {
+      pdfEditFiles = smartToolFiles.filter(isPdfFile);
+      mergePdfFiles();
+    }
+
+    function smartKeepPdfPages() {
+      pdfEditFiles = smartToolFiles.filter(isPdfFile);
+      const smartInput = document.getElementById('smartPagesToKeepInput');
+      const hiddenInput = document.getElementById('pdfPagesToKeepInput');
+      if (hiddenInput && smartInput) hiddenInput.value = smartInput.value;
+      makeSelectedPagePdf();
+    }
+
+    async function smartImagesToPdf() {
+      try {
+        const imageFiles = smartToolFiles.filter(isImageFile);
+        if (!window.jspdf || !window.jspdf.jsPDF) { showPdfImageStatus('jsPDF did not load. Check internet connection and refresh the app.', 'error'); return; }
+        if (imageFiles.length === 0) { showPdfImageStatus('Please choose image files first.', 'error'); return; }
+
+        showPdfImageStatus('Making PDF from image file(s). Please wait...', 'ready');
+        const { jsPDF } = window.jspdf;
+        let pdf = null;
+
+        for (let i = 0; i < imageFiles.length; i++) {
+          const file = imageFiles[i];
+          const dataUrl = await readFileAsDataUrl(file);
+          const img = await loadFullImage(dataUrl);
+          const orientation = img.naturalWidth > img.naturalHeight ? 'l' : 'p';
+
+          if (!pdf) pdf = new jsPDF({ orientation, unit: 'pt', format: 'letter' });
+          else pdf.addPage('letter', orientation);
+
+          const pageWidth = pdf.internal.pageSize.getWidth();
+          const pageHeight = pdf.internal.pageSize.getHeight();
+          const margin = 24;
+          const maxWidth = pageWidth - margin * 2;
+          const maxHeight = pageHeight - margin * 2;
+          const ratio = Math.min(maxWidth / img.naturalWidth, maxHeight / img.naturalHeight);
+          const drawWidth = img.naturalWidth * ratio;
+          const drawHeight = img.naturalHeight * ratio;
+          const x = (pageWidth - drawWidth) / 2;
+          const y = (pageHeight - drawHeight) / 2;
+
+          const canvas = document.createElement('canvas');
+          canvas.width = img.naturalWidth;
+          canvas.height = img.naturalHeight;
+          const ctx = canvas.getContext('2d');
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          ctx.drawImage(img, 0, 0);
+          const jpegDataUrl = canvas.toDataURL('image/jpeg', 0.92);
+
+          pdf.addImage(jpegDataUrl, 'JPEG', x, y, drawWidth, drawHeight);
+        }
+
+        pdf.save('images-to-pdf.pdf');
+        showPdfImageStatus(`Done. Made PDF from ${imageFiles.length} image file(s).`, 'success');
+      } catch (error) {
+        console.error(error);
+        showPdfImageStatus('Could not make PDF from these images. Try PNG or JPG first.', 'error');
+      }
+    }
+
+    async function smartConvertImages(outputType, extension) {
+      try {
+        const imageFiles = smartToolFiles.filter(isImageFile);
+        if (imageFiles.length === 0) { showPdfImageStatus('Please choose image files first.', 'error'); return; }
+        clearPdfImageOutput(false);
+        showPdfImageStatus('Converting image file(s). Please wait...', 'ready');
+        for (const file of imageFiles) {
+          const dataUrl = await readFileAsDataUrl(file);
+          const img = await loadFullImage(dataUrl);
+          const canvas = document.createElement('canvas');
+          canvas.width = img.naturalWidth;
+          canvas.height = img.naturalHeight;
+          const ctx = canvas.getContext('2d');
+          if (outputType === 'image/jpeg') {
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+          }
+          ctx.drawImage(img, 0, 0);
+          const blob = await canvasToBlob(canvas, outputType, 0.92);
+          const fileName = `${safeFileName(file.name)}.${extension}`;
+          addImageOutputCard(blob, fileName);
+        }
+        showPdfImageStatus(`Done. Converted ${imageFiles.length} image file(s).`, 'success');
+      } catch (error) {
+        console.error(error);
+        showPdfImageStatus('Could not convert this image. Try another image.', 'error');
+      }
+    }
+
+    async function smartRotateImagesRight() {
+      try {
+        const imageFiles = smartToolFiles.filter(isImageFile);
+        if (imageFiles.length === 0) { showPdfImageStatus('Please choose image files first.', 'error'); return; }
+        clearPdfImageOutput(false);
+        showPdfImageStatus('Rotating image file(s). Please wait...', 'ready');
+        for (const file of imageFiles) {
+          const dataUrl = await readFileAsDataUrl(file);
+          const img = await loadFullImage(dataUrl);
+          const canvas = document.createElement('canvas');
+          canvas.width = img.naturalHeight;
+          canvas.height = img.naturalWidth;
+          const ctx = canvas.getContext('2d');
+          ctx.translate(canvas.width / 2, canvas.height / 2);
+          ctx.rotate(Math.PI / 2);
+          ctx.drawImage(img, -img.naturalWidth / 2, -img.naturalHeight / 2);
+          const blob = await canvasToBlob(canvas, 'image/png', 0.95);
+          addImageOutputCard(blob, `${safeFileName(file.name)}-rotated.png`);
+        }
+        showPdfImageStatus(`Done. Rotated ${imageFiles.length} image file(s).`, 'success');
+      } catch (error) {
+        console.error(error);
+        showPdfImageStatus('Could not rotate this image.', 'error');
+      }
+    }
+
+    async function smartCompressImages() {
+      try {
+        const imageFiles = smartToolFiles.filter(isImageFile);
+        if (imageFiles.length === 0) { showPdfImageStatus('Please choose image files first.', 'error'); return; }
+        clearPdfImageOutput(false);
+        showPdfImageStatus('Compressing image file(s). Please wait...', 'ready');
+        for (const file of imageFiles) {
+          const dataUrl = await readFileAsDataUrl(file);
+          const img = await loadFullImage(dataUrl);
+          const canvas = document.createElement('canvas');
+          canvas.width = img.naturalWidth;
+          canvas.height = img.naturalHeight;
+          const ctx = canvas.getContext('2d');
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          ctx.drawImage(img, 0, 0);
+          const blob = await canvasToBlob(canvas, 'image/jpeg', 0.65);
+          addImageOutputCard(blob, `${safeFileName(file.name)}-compressed.jpg`);
+        }
+        showPdfImageStatus(`Done. Compressed ${imageFiles.length} image file(s).`, 'success');
+      } catch (error) {
+        console.error(error);
+        showPdfImageStatus('Could not compress this image.', 'error');
+      }
+    }
+
+    function loadFullImage(src) {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => resolve(img);
+        img.onerror = reject;
+        img.src = src;
+      });
+    }
+
+    function addImageOutputCard(blob, fileName) {
+      const outputGrid = document.getElementById('pdfPngOutputGrid');
+      if (!outputGrid || !blob) return;
+      const url = URL.createObjectURL(blob);
+      const card = document.createElement('div');
+      card.className = 'png-preview-card';
+      card.innerHTML = `
+        <img src="${url}" alt="${escapeHtml(fileName)}">
+        <div style="font-size:13px;font-weight:900;color:#111827;word-break:break-word;margin-bottom:8px;">${escapeHtml(fileName)}</div>
+        <a class="small-download-link" href="${url}" download="${escapeHtml(fileName)}">Download</a>
+      `;
+      outputGrid.appendChild(card);
     }
 
     // =========================
