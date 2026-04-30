@@ -1738,6 +1738,399 @@
         font-size: 18px;
       }
     }
+
+    /* =========================
+       DARK DASHBOARD HOME PAGE
+    ========================= */
+    #homePage {
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at top left, rgba(34,197,94,0.16), transparent 32%),
+        radial-gradient(circle at top right, rgba(14,165,233,0.12), transparent 30%),
+        linear-gradient(180deg, #07111f 0%, #0b1626 52%, #07111f 100%);
+      color: #f8fafc;
+    }
+
+    #homePage .dashboard-shell {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 24px 4% 34px 4%;
+    }
+
+    .dashboard-topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 14px 0 22px 0;
+      border-bottom: 1px solid rgba(148,163,184,0.18);
+      margin-bottom: 22px;
+    }
+
+    .dashboard-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .dashboard-menu-icon {
+      width: 44px;
+      height: 44px;
+      border: 1px solid rgba(148,163,184,0.22);
+      border-radius: 14px;
+      background: rgba(15,23,42,0.72);
+      color: #e2e8f0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      line-height: 1;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
+    }
+
+    .dashboard-logo {
+      width: 44px;
+      height: 44px;
+      border-radius: 15px;
+      background: rgba(34,197,94,0.14);
+      color: #22c55e;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 25px;
+    }
+
+    .dashboard-title {
+      font-size: 28px;
+      line-height: 1;
+      font-weight: 900;
+      letter-spacing: -0.8px;
+      color: #f8fafc;
+      white-space: nowrap;
+    }
+
+    .dashboard-title span {
+      color: #22c55e;
+    }
+
+    .dashboard-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      position: relative;
+    }
+
+    .dashboard-small-btn {
+      width: 48px;
+      height: 48px;
+      border: 1px solid rgba(148,163,184,0.24);
+      border-radius: 16px;
+      background: rgba(15,23,42,0.78);
+      color: #f8fafc;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      font-weight: 900;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 12px 30px rgba(0,0,0,0.18);
+      backdrop-filter: blur(14px);
+    }
+
+    .dashboard-menu-dropdown {
+      display: none;
+      position: absolute;
+      right: 0;
+      top: 58px;
+      width: 230px;
+      padding: 10px;
+      border-radius: 20px;
+      background: rgba(15,23,42,0.96);
+      border: 1px solid rgba(148,163,184,0.22);
+      box-shadow: 0 24px 60px rgba(0,0,0,0.35);
+      backdrop-filter: blur(18px);
+      z-index: 40;
+    }
+
+    .dashboard-menu-dropdown.open {
+      display: block;
+    }
+
+    .dashboard-menu-dropdown button {
+      width: 100%;
+      min-height: 48px;
+      border: none;
+      border-radius: 15px;
+      background: transparent;
+      color: #f8fafc;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0 12px;
+      font-size: 15px;
+      font-weight: 800;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .dashboard-menu-dropdown button:hover {
+      background: rgba(148,163,184,0.13);
+    }
+
+    .dashboard-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      margin-bottom: 22px;
+    }
+
+    .dashboard-stat-card {
+      min-height: 102px;
+      border-radius: 18px;
+      padding: 18px;
+      background: linear-gradient(180deg, rgba(30,41,59,0.82), rgba(15,23,42,0.78));
+      border: 1px solid rgba(148,163,184,0.18);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 12px 34px rgba(0,0,0,0.18);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      overflow: hidden;
+    }
+
+    .dashboard-stat-icon {
+      width: 58px;
+      height: 58px;
+      border-radius: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      flex: 0 0 auto;
+    }
+
+    .dashboard-stat-icon.green { background: rgba(34,197,94,0.14); color:#22c55e; }
+    .dashboard-stat-icon.purple { background: rgba(168,85,247,0.14); color:#a855f7; }
+    .dashboard-stat-icon.blue { background: rgba(59,130,246,0.14); color:#38bdf8; }
+    .dashboard-stat-icon.orange { background: rgba(249,115,22,0.14); color:#fb923c; }
+
+    .dashboard-stat-label {
+      color: #cbd5e1;
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .dashboard-stat-value {
+      color: #f8fafc;
+      font-size: 22px;
+      font-weight: 900;
+      line-height: 1.05;
+    }
+
+    .dashboard-stat-sub {
+      color: #94a3b8;
+      font-size: 13px;
+      font-weight: 700;
+      margin-top: 5px;
+    }
+
+    .dashboard-tools-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .dashboard-tool-card {
+      min-height: 186px;
+      border: 1px solid rgba(148,163,184,0.18);
+      border-radius: 18px;
+      padding: 22px;
+      background: linear-gradient(180deg, rgba(30,41,59,0.78), rgba(15,23,42,0.78));
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 14px 36px rgba(0,0,0,0.20);
+      color: #f8fafc;
+      text-align: left;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.16s ease, border-color 0.16s ease, background 0.16s ease;
+    }
+
+    .dashboard-tool-card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(34,197,94,0.35);
+      background: linear-gradient(180deg, rgba(30,41,59,0.92), rgba(15,23,42,0.88));
+    }
+
+    .dashboard-tool-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 29px;
+      margin-bottom: 32px;
+    }
+
+    .dashboard-tool-icon.green { color:#22c55e; background: rgba(34,197,94,0.12); }
+    .dashboard-tool-icon.yellow { color:#fbbf24; background: rgba(251,191,36,0.12); }
+    .dashboard-tool-icon.red { color:#fb7185; background: rgba(251,113,133,0.12); }
+    .dashboard-tool-icon.cyan { color:#22d3ee; background: rgba(34,211,238,0.12); }
+    .dashboard-tool-icon.purple { color:#a855f7; background: rgba(168,85,247,0.12); }
+    .dashboard-tool-icon.blue { color:#60a5fa; background: rgba(96,165,250,0.12); }
+    .dashboard-tool-icon.orange { color:#fb923c; background: rgba(251,146,60,0.12); }
+
+    .dashboard-tool-card h3 {
+      color: #f8fafc;
+      font-size: 19px;
+      font-weight: 900;
+      margin-bottom: 10px;
+      letter-spacing: -0.25px;
+    }
+
+    .dashboard-tool-card p {
+      color: #cbd5e1;
+      font-size: 14px;
+      line-height: 1.45;
+      max-width: 92%;
+    }
+
+    .dashboard-card-arrow {
+      position: absolute;
+      right: 18px;
+      bottom: 18px;
+      color: #94a3b8;
+      font-size: 26px;
+      line-height: 1;
+    }
+
+    .dashboard-footer {
+      margin-top: 18px;
+      min-height: 68px;
+      border-radius: 18px;
+      background: rgba(15,23,42,0.62);
+      border: 1px solid rgba(148,163,184,0.15);
+      color: #94a3b8;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 0 22px;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    @media (max-width: 1000px) {
+      .dashboard-stats-grid,
+      .dashboard-tools-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 640px) {
+      #homePage .dashboard-shell {
+        padding: 18px 4% 28px 4%;
+      }
+
+      .dashboard-topbar {
+        padding-bottom: 16px;
+        margin-bottom: 16px;
+      }
+
+      .dashboard-title {
+        font-size: 24px;
+      }
+
+      .dashboard-menu-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 25px;
+      }
+
+      .dashboard-logo {
+        width: 40px;
+        height: 40px;
+        font-size: 23px;
+      }
+
+      .dashboard-small-btn {
+        width: 44px;
+        height: 44px;
+        border-radius: 15px;
+      }
+
+      .dashboard-stats-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+      }
+
+      .dashboard-stat-card {
+        min-height: 88px;
+        padding: 12px;
+        gap: 10px;
+        border-radius: 16px;
+      }
+
+      .dashboard-stat-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 14px;
+        font-size: 23px;
+      }
+
+      .dashboard-stat-value {
+        font-size: 18px;
+      }
+
+      .dashboard-stat-label,
+      .dashboard-stat-sub {
+        font-size: 12px;
+      }
+
+      .dashboard-tools-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+      }
+
+      .dashboard-tool-card {
+        min-height: 150px;
+        padding: 16px;
+        border-radius: 17px;
+      }
+
+      .dashboard-tool-icon {
+        width: 42px;
+        height: 42px;
+        border-radius: 14px;
+        font-size: 24px;
+        margin-bottom: 22px;
+      }
+
+      .dashboard-tool-card h3 {
+        font-size: 16px;
+        margin-bottom: 7px;
+      }
+
+      .dashboard-tool-card p {
+        font-size: 12px;
+        line-height: 1.35;
+      }
+
+      .dashboard-card-arrow {
+        right: 14px;
+        bottom: 12px;
+        font-size: 22px;
+      }
+
+      .dashboard-footer {
+        min-height: 58px;
+        padding: 0 14px;
+        font-size: 12px;
+      }
+    }
+
   </style>
 </head>
 <body>
@@ -1747,499 +2140,134 @@
          HOME PAGE
     ========================= -->
     <section id="homePage" class="page active">
-      <div class="hero">
-        <div class="page-inner">
-          <div class="hero-badge">Multi App Dashboard</div>
+      <div class="dashboard-shell">
 
-          <div class="hero-title-row">
-            <h1>Pocket Tools</h1>
+        <!-- TOP BAR -->
+        <div class="dashboard-topbar">
+          <div class="dashboard-brand">
+            <div class="dashboard-menu-icon">≡</div>
+            <div class="dashboard-logo">🛠️</div>
+            <div class="dashboard-title">Smart <span>Tools</span></div>
+          </div>
 
-            <div class="hero-action-wrap">
+          <div class="dashboard-actions">
+            <button class="dashboard-small-btn" onclick="toggleHomeToolsMenu(event)" aria-label="Open app tools menu">⋮</button>
 
-              <button class="hero-tools-btn" onclick="toggleHomeToolsMenu(event)" aria-label="Open app tools menu">⋯</button>
+            <div id="homeToolsMenu" class="dashboard-menu-dropdown">
+              <button onclick="hardRefreshAppKeepData()"><span>↻</span> Refresh App</button>
+              <button onclick="downloadSmartToolsBackup()"><span>⇩</span> Export Backup</button>
+              <button onclick="openSmartToolsBackupFileChooser()"><span>⇧</span> Import Backup</button>
+            </div>
+          </div>
+        </div>
 
-              <div id="homeToolsMenu" class="hero-tools-menu">
-                <button onclick="hardRefreshAppKeepData()">↻ Refresh App</button>
-                <button onclick="downloadSmartToolsBackup()">💾 Export Backup</button>
-                <button onclick="openSmartToolsBackupFileChooser()">📂 Import Backup</button>
-              </div>
+        <!-- SMALL SUMMARY CARDS -->
+        <div class="dashboard-stats-grid">
+          <div class="dashboard-stat-card">
+            <div class="dashboard-stat-icon green">📅</div>
+            <div>
+              <div class="dashboard-stat-label">Today</div>
+              <div class="dashboard-stat-value" id="dashboardTodayDate">Today</div>
+              <div class="dashboard-stat-sub" id="dashboardTodayDay">Day</div>
             </div>
           </div>
 
-          <p>
-            One colorful app with useful mini tools inside. Convert bank PDF/Excel files to CSV,
-            convert PDF pages to PNG, make PDFs from pictures, and do basic PDF edits.
-          </p>
+          <div class="dashboard-stat-card">
+            <div class="dashboard-stat-icon purple">📝</div>
+            <div>
+              <div class="dashboard-stat-label">Notes</div>
+              <div class="dashboard-stat-value" id="dashboardNotesCount">0</div>
+              <div class="dashboard-stat-sub">Total Notes</div>
+            </div>
+          </div>
+
+          <div class="dashboard-stat-card">
+            <div class="dashboard-stat-icon blue">🚗</div>
+            <div>
+              <div class="dashboard-stat-label">Cars</div>
+              <div class="dashboard-stat-value">2</div>
+              <div class="dashboard-stat-sub">Mazda + Camry</div>
+            </div>
+          </div>
+
+          <div class="dashboard-stat-card">
+            <div class="dashboard-stat-icon orange">👥</div>
+            <div>
+              <div class="dashboard-stat-label">Qameti</div>
+              <div class="dashboard-stat-value" id="dashboardQametiCount">0</div>
+              <div class="dashboard-stat-sub">Saved Plans</div>
+            </div>
+          </div>
         </div>
-      </div>
 
-      <div class="page-inner tools-section">
-        <div class="section-title-row">
-          <h2>Your Tools</h2>
-          <span>Click a card to open</span>
-        </div>
-
-        <div class="tools-grid">
-          <button class="tool-card match-finder" onclick="openNumberMatchPage()">
-            <div class="tool-card-icon">#</div>
-            <h3>Number Match Finder</h3>
-            <p>Paste many numbers, enter one target total, and find the first valid match in top-to-bottom order.</p>
-          </button>
-
-          <button class="tool-card pdf-excel" onclick="openPdfExcelPage()">
-            <div class="tool-card-icon">⇄</div>
-            <h3>PDF / Excel to CSV</h3>
-            <p>Upload WFC, NFC, MFL, Skoch, Mineola Realty, or Roselle files and download bank upload CSV.</p>
-          </button>
-
-          <button class="tool-card pdf-image" onclick="openPdfImageToolsPage()">
-            <div class="tool-card-icon">🖼️</div>
-            <h3>File Converter</h3>
-            <p>One smart upload box. Choose PDF or image and the app shows the right converter tools.</p>
-          </button>
-
-          <button class="tool-card notes" onclick="openNotesPage()">
-            <div class="tool-card-icon">✎</div>
-            <h3>Notes</h3>
-            <p>Save quick notes with title, details, edit, delete, and local storage save inside your app.</p>
-          </button>
-
-
-          <button class="tool-card password-generator" onclick="openPasswordGeneratorPage()">
-            <div class="tool-card-icon">🔐</div>
-            <h3>Password Generator</h3>
-            <p>Make strong secure passwords with length, numbers, symbols, copy button, and strength check.</p>
-          </button>
-
-
-
-
-          <button class="tool-card qameti-tracker" onclick="openQametiPage()">
-            <div class="tool-card-icon">💰</div>
+        <!-- MAIN TOOL CARDS -->
+        <div class="dashboard-tools-grid">
+          <button class="dashboard-tool-card" onclick="openQametiPage()">
+            <div class="dashboard-tool-icon green">👥</div>
             <h3>Qameti Tracker</h3>
-            <p>Track your running committee, monthly payments, paid date, method, total payout, and previous years.</p>
+            <p>Track payments, methods, due dates, and previous years.</p>
+            <div class="dashboard-card-arrow">›</div>
           </button>
 
+          <button class="dashboard-tool-card" onclick="openNotesPage()">
+            <div class="dashboard-tool-icon yellow">🗒️</div>
+            <h3>Notes</h3>
+            <p>Write and organize quick notes inside the app.</p>
+            <div class="dashboard-card-arrow">›</div>
+          </button>
 
-          <button class="tool-card car-care" onclick="openCarPage()">
-            <div class="tool-card-icon">🚗</div>
+          <button class="dashboard-tool-card" onclick="openCarPage()">
+            <div class="dashboard-tool-icon red">🚘</div>
             <h3>Car Care</h3>
-            <p>Track maintenance and expenses separately for your Mazda CX50 and Toyota Camry.</p>
-          </button>
-        </div>
-      </div>
-    </section>
-
-
-
-
-    <!-- =========================
-         QAMETI TRACKER PAGE
-    ========================= -->
-    <section id="qametiPage" class="page">
-      <div class="top-bar-wrap">
-        <div class="top-bar">
-          <button class="back-btn" onclick="openHomePage()">←</button>
-          <div class="top-bar-title">Qameti Tracker</div>
-          <button class="back-btn" onclick="openAddQametiPopup()" title="Add Qameti">+</button>
-        </div>
-      </div>
-
-      <div class="page-inner">
-        <div class="inner-page-hero green-hero">
-          <h1>Qameti Tracker</h1>
-          <p>
-            Track the latest running qameti first. Use the dropdown to check previous qameti records,
-            and press + to add a new yearly or separate committee.
-          </p>
-        </div>
-
-        <div class="qameti-top-actions">
-          <select id="qametiSelect" class="qameti-select" onchange="changeSelectedQameti()">
-            <option value="">No Qameti Yet</option>
-          </select>
-          <button class="qameti-add-btn" onclick="openAddQametiPopup()">+</button>
-        </div>
-
-        <div id="qametiContent"></div>
-      </div>
-    </section>
-
-    <!-- =========================
-         ADD QAMETI POPUP
-    ========================= -->
-    <div id="qametiAddPopup" class="qameti-popup-overlay">
-      <div class="qameti-popup-card">
-        <div class="qameti-popup-title-row">
-          <div class="qameti-popup-title">Add New Qameti</div>
-          <button class="qameti-close-btn" onclick="closeAddQametiPopup()">×</button>
-        </div>
-
-        <div class="qameti-form-grid">
-          <label class="qameti-full-field">
-            <span class="qameti-field-label">Qameti Name</span>
-            <input id="qametiNameInput" class="text-input" type="text" placeholder="Example: Family Qameti 2026">
-          </label>
-
-          <label>
-            <span class="qameti-field-label">Currency</span>
-            <select id="qametiCurrencyInput" class="select-input">
-              <option value="$">$ Dollar</option>
-              <option value="Rs">Rs Rupees</option>
-              <option value="Custom">Custom</option>
-            </select>
-          </label>
-
-          <label>
-            <span class="qameti-field-label">Custom Currency</span>
-            <input id="qametiCustomCurrencyInput" class="text-input" type="text" placeholder="Example: AED">
-          </label>
-
-          <label>
-            <span class="qameti-field-label">Number of Members</span>
-            <input id="qametiMembersInput" class="text-input" type="number" min="1" placeholder="10" oninput="updateQametiAutoTotal()">
-          </label>
-
-          <label>
-            <span class="qameti-field-label">Monthly Contribution</span>
-            <input id="qametiMonthlyInput" class="text-input" type="number" min="0" step="0.01" placeholder="500" oninput="updateQametiAutoTotal()">
-          </label>
-
-          <label>
-            <span class="qameti-field-label">Total I Get</span>
-            <input id="qametiTotalInput" class="text-input" type="number" min="0" step="0.01" placeholder="Auto total">
-          </label>
-
-          <label>
-            <span class="qameti-field-label">How Many Months</span>
-            <input id="qametiMonthsInput" class="text-input" type="number" min="1" placeholder="10">
-          </label>
-
-          <label>
-            <span class="qameti-field-label">Start Month</span>
-
-            <!-- =========================
-                 QAMETI CUSTOM MONTH YEAR PICKER
-            ========================= -->
-            <input id="qametiStartMonthInput" type="hidden">
-
-            <div style="display:grid;grid-template-columns:52px 1fr 1fr 52px;gap:8px;align-items:center;">
-              <button type="button" onclick="changeQametiStartYear(-1)" style="height:58px;border:none;border-radius:18px;background:#eef2ff;color:#3730a3;font-size:26px;font-weight:900;cursor:pointer;">‹</button>
-
-              <select id="qametiStartMonthSelect" class="select-input" onchange="updateQametiStartMonthHidden()">
-                <option value="01">January</option>
-                <option value="02">February</option>
-                <option value="03">March</option>
-                <option value="04">April</option>
-                <option value="05">May</option>
-                <option value="06">June</option>
-                <option value="07">July</option>
-                <option value="08">August</option>
-                <option value="09">September</option>
-                <option value="10">October</option>
-                <option value="11">November</option>
-                <option value="12">December</option>
-              </select>
-
-              <select id="qametiStartYearSelect" class="select-input" onchange="updateQametiStartMonthHidden()"></select>
-
-              <button type="button" onclick="changeQametiStartYear(1)" style="height:58px;border:none;border-radius:18px;background:#eef2ff;color:#3730a3;font-size:26px;font-weight:900;cursor:pointer;">›</button>
-            </div>
-
-            <div class="small-help">Use ‹ and › to go back or forward by year. Example: 2025, 2026, 2027.</div>
-          </label>
-
-          <label>
-            <span class="qameti-field-label">Payment Due Day</span>
-            <input id="qametiDueDayInput" class="text-input" type="number" min="1" max="31" value="5">
-          </label>
-
-          <label class="qameti-full-field">
-            <span class="qameti-field-label">My Receiving Month Optional</span>
-            <input id="qametiReceiveMonthInput" class="text-input" type="number" min="1" placeholder="Example: 4 means 4th month">
-          </label>
-        </div>
-
-        <div class="button-row" style="margin-top:20px;">
-          <button class="action-btn find-btn" onclick="createNewQameti()">Create Qameti</button>
-          <button class="action-btn reset-btn" onclick="closeAddQametiPopup()">Cancel</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- =========================
-         QAMETI PAYMENT POPUP
-    ========================= -->
-    <div id="qametiPaymentPopup" class="qameti-popup-overlay">
-      <div class="qameti-popup-card">
-        <div class="qameti-popup-title-row">
-          <div id="qametiPaymentPopupTitle" class="qameti-popup-title">Edit Payment</div>
-          <button class="qameti-close-btn" onclick="closeQametiPaymentPopup()">×</button>
-        </div>
-
-        <input id="qametiEditingPaymentIndex" type="hidden">
-
-        <div class="qameti-form-grid">
-          <label>
-            <span class="qameti-field-label">Due Date</span>
-            <input id="qametiPaymentDueDateInput" class="date-input" type="date">
-          </label>
-
-          <label>
-            <span class="qameti-field-label">Paid Date</span>
-            <input id="qametiPaymentPaidDateInput" class="date-input" type="date">
-          </label>
-
-          <label>
-            <span class="qameti-field-label">Amount</span>
-            <input id="qametiPaymentAmountInput" class="text-input" type="number" min="0" step="0.01">
-          </label>
-
-          <label>
-            <span class="qameti-field-label">How I Paid</span>
-            <select id="qametiPaymentMethodInput" class="select-input">
-              <option value="">Select Method</option>
-              <option value="Cash">Cash</option>
-              <option value="Zelle">Zelle</option>
-              <option value="Bank Transfer">Bank Transfer</option>
-              <option value="Check">Check</option>
-              <option value="Other">Other</option>
-            </select>
-          </label>
-
-          <label class="qameti-full-field">
-            <span class="qameti-field-label">Notes</span>
-            <textarea id="qametiPaymentNotesInput" class="notes-textarea" placeholder="Optional note"></textarea>
-          </label>
-        </div>
-
-        <div class="button-row" style="margin-top:20px;">
-          <button class="action-btn find-btn" onclick="saveQametiPayment()">Save Payment</button>
-          <button class="action-btn purple-btn" onclick="markQametiPaymentUnpaid()">Mark Unpaid</button>
-          <button class="action-btn reset-btn" onclick="closeQametiPaymentPopup()">Cancel</button>
-        </div>
-      </div>
-    </div>
-
-
-
-    <!-- =========================
-         BACKUP RESTORE PAGE
-    ========================= -->
-    <section id="backupPage" class="page">
-      <div class="top-bar-wrap">
-        <div class="top-bar">
-          <button class="back-btn" onclick="openHomePage()">←</button>
-          <div class="top-bar-title">Backup</div>
-          <div class="top-bar-spacer"></div>
-        </div>
-      </div>
-
-      <div class="page-inner">
-        <div class="inner-page-hero">
-          <h1>Export Backup</h1>
-          <p>
-            Save all Smart Tools data into one file named smart-tools-backup.json.
-          </p>
-        </div>
-
-        <div class="card" style="max-width:720px;margin:24px auto 0 auto;">
-          <div class="card-title">Export Backup</div>
-          <div class="card-subtitle">
-            This saves your Qameti Tracker, Notes, Car Care, converter accounts, and all app local storage data.
-          </div>
-
-          <div class="result-box result-success">
-            <div class="result-heading">Backup File Name</div>
-            <div class="result-lines">smart-tools-backup.json</div>
-            <div class="small-help">
-              Your browser may add (1) or (2) if the old file is already in Downloads. That is normal.
-            </div>
-          </div>
-
-          <div class="button-row" style="margin-top:18px;">
-            <button class="action-btn find-btn" onclick="downloadSmartToolsBackup()">Export Backup</button>
-          </div>
-
-          <button onclick="openSmartToolsBackupFileChooser()" style="
-          width:100%;
-          min-height:54px;
-          margin-top:14px;
-          border:none;
-          border-radius:18px;
-          background:#f1f5f9;
-          color:#111827;
-          font-size:17px;
-          font-weight:900;
-          cursor:pointer;
-          ">
-            Import Backup
+            <p>Track service and expenses for both cars.</p>
+            <div class="dashboard-card-arrow">›</div>
           </button>
 
-          <input
-            id="smartToolsBackupFileInput"
-            class="file-input-hidden"
-            type="file"
-            accept=".json,application/json"
-            onchange="restoreSmartToolsBackup(event)"
-          />
+          <button class="dashboard-tool-card" onclick="openPdfImageToolsPage()">
+            <div class="dashboard-tool-icon cyan">🧮</div>
+            <h3>Converters</h3>
+            <p>Convert images, PDFs, and useful file tools.</p>
+            <div class="dashboard-card-arrow">›</div>
+          </button>
 
-          <div id="smartToolsBackupStatusBox" class="result-box" style="margin-top:18px;">
-            <div class="result-placeholder">
-              No backup file selected yet.
-            </div>
-          </div>
+          <button class="dashboard-tool-card" onclick="openPdfExcelPage()">
+            <div class="dashboard-tool-icon purple">📄</div>
+            <h3>PDF / Excel to CSV</h3>
+            <p>Extract bank data and make upload-ready CSV files.</p>
+            <div class="dashboard-card-arrow">›</div>
+          </button>
+
+          <button class="dashboard-tool-card" onclick="openPasswordGeneratorPage()">
+            <div class="dashboard-tool-icon blue">🛡️</div>
+            <h3>Password Generator</h3>
+            <p>Generate strong passwords with custom mix options.</p>
+            <div class="dashboard-card-arrow">›</div>
+          </button>
+
+          <button class="dashboard-tool-card" onclick="openNumberMatchPage()">
+            <div class="dashboard-tool-icon green">#</div>
+            <h3>Number Match</h3>
+            <p>Find numbers that match your target total.</p>
+            <div class="dashboard-card-arrow">›</div>
+          </button>
+
+          <button class="dashboard-tool-card" onclick="openSmartToolsBackupFileChooser()">
+            <div class="dashboard-tool-icon orange">⇧</div>
+            <h3>Import Backup</h3>
+            <p>Restore your saved Smart Tools backup file.</p>
+            <div class="dashboard-card-arrow">›</div>
+          </button>
+        </div>
+
+        <!-- FOOTER -->
+        <div class="dashboard-footer">
+          <div>Quick Actions</div>
+          <div>Smart Tools © 2026</div>
         </div>
       </div>
     </section>
 
-    <!-- =========================
-         PASSWORD GENERATOR PAGE
-    ========================= -->
-    <section id="passwordGeneratorPage" class="page">
-      <div class="top-bar-wrap">
-        <div class="top-bar">
-          <button class="back-btn" onclick="openHomePage()">←</button>
-          <div class="top-bar-title">Password Generator</div>
-          <div class="top-bar-spacer"></div>
-        </div>
-      </div>
 
-      <div class="page-inner">
-        <div class="inner-page-hero">
-          <h1>Password Generator</h1>
-          <p>
-            Make a strong password with capital letters, small letters, numbers, and symbols.
-            You can choose the length, generate again, and copy it with one click.
-          </p>
-        </div>
-
-        <div class="password-generator-layout">
-          <div>
-            <div class="card">
-              <div class="card-title">Generated Password</div>
-              <div class="card-subtitle">Your new secure password will show here.</div>
-
-              <div id="generatedPasswordBox" class="password-display-box">Tap Generate Password</div>
-
-              <div id="passwordStrengthText" class="password-strength-pill">
-                Strength: Not generated yet
-              </div>
-
-              <div id="passwordCopyMessage" class="copy-message">
-                Password copied!
-              </div>
-            </div>
-
-            <div class="card">
-              <div class="card-title">Actions</div>
-              <div class="card-subtitle">Generate a new password or copy the current password.</div>
-
-              <div class="button-row">
-                <button class="action-btn blue-btn" onclick="generatePassword()">Generate Password</button>
-                <button class="action-btn find-btn" onclick="copyGeneratedPassword()">Copy Password</button>
-              </div>
-
-              <div class="button-row" style="margin-top:14px;">
-                <button class="action-btn reset-btn" onclick="resetPasswordGenerator()">Reset</button>
-              </div>
-            </div>
-          </div>
-
-          <div>
-            <div class="card">
-              <div class="card-title">Password Length</div>
-              <div class="card-subtitle">Move the slider to choose how long the password should be.</div>
-
-              <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:14px;">
-                <div style="font-size:18px;font-weight:900;color:#111827;">Length</div>
-                <div id="passwordLengthNumber" style="font-size:28px;font-weight:900;color:#2563eb;">16</div>
-              </div>
-
-              <input
-                id="passwordLengthSlider"
-                class="password-range"
-                type="range"
-                min="6"
-                max="40"
-                value="16"
-                oninput="updatePasswordLengthLabel()"
-              />
-
-              <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:900;color:#94a3b8;margin-top:10px;">
-                <span>6</span>
-                <span>40</span>
-              </div>
-            </div>
-
-            <div class="card">
-              <div class="card-title">Options</div>
-              <div class="card-subtitle">Turn on what you want inside the password.</div>
-
-              <div class="custom-mix-toggle-row">
-                <div class="custom-mix-toggle-text">
-                  <div class="custom-mix-toggle-title">Custom Mix Optional</div>
-                  <div class="custom-mix-toggle-subtitle">OFF uses the normal length slider. ON lets you choose exact amounts.</div>
-                </div>
-                <button id="customMixToggleBtn" class="custom-mix-switch" onclick="toggleCustomPasswordMix()" aria-label="Turn custom password mix on or off">
-                  <span class="custom-mix-switch-dot"></span>
-                </button>
-              </div>
-
-              <label class="password-option-row">
-                <div class="custom-mix-option-content">
-                  <span>Capital Letters A B C</span>
-                  <div id="uppercaseMixControls" class="custom-mix-controls">
-                    <button type="button" class="custom-mix-btn" onclick="event.preventDefault(); changePasswordMixCount('uppercase', -1);">−</button>
-                    <div id="uppercaseMixCount" class="custom-mix-count">4</div>
-                    <button type="button" class="custom-mix-btn" onclick="event.preventDefault(); changePasswordMixCount('uppercase', 1);">+</button>
-                  </div>
-                </div>
-                <input id="includeUppercase" type="checkbox" checked onchange="updateCustomPasswordMixUI()">
-              </label>
-
-              <label class="password-option-row">
-                <div class="custom-mix-option-content">
-                  <span>Small Letters a b c</span>
-                  <div id="lowercaseMixControls" class="custom-mix-controls">
-                    <button type="button" class="custom-mix-btn" onclick="event.preventDefault(); changePasswordMixCount('lowercase', -1);">−</button>
-                    <div id="lowercaseMixCount" class="custom-mix-count">6</div>
-                    <button type="button" class="custom-mix-btn" onclick="event.preventDefault(); changePasswordMixCount('lowercase', 1);">+</button>
-                  </div>
-                </div>
-                <input id="includeLowercase" type="checkbox" checked onchange="updateCustomPasswordMixUI()">
-              </label>
-
-              <label class="password-option-row">
-                <div class="custom-mix-option-content">
-                  <span>Numbers 1 2 3</span>
-                  <div id="numbersMixControls" class="custom-mix-controls">
-                    <button type="button" class="custom-mix-btn" onclick="event.preventDefault(); changePasswordMixCount('numbers', -1);">−</button>
-                    <div id="numbersMixCount" class="custom-mix-count">3</div>
-                    <button type="button" class="custom-mix-btn" onclick="event.preventDefault(); changePasswordMixCount('numbers', 1);">+</button>
-                  </div>
-                </div>
-                <input id="includeNumbers" type="checkbox" checked onchange="updateCustomPasswordMixUI()">
-              </label>
-
-              <label class="password-option-row" style="border-bottom:none;">
-                <div class="custom-mix-option-content">
-                  <span>Symbols @ # $</span>
-                  <div id="symbolsMixControls" class="custom-mix-controls">
-                    <button type="button" class="custom-mix-btn" onclick="event.preventDefault(); changePasswordMixCount('symbols', -1);">−</button>
-                    <div id="symbolsMixCount" class="custom-mix-count">2</div>
-                    <button type="button" class="custom-mix-btn" onclick="event.preventDefault(); changePasswordMixCount('symbols', 1);">+</button>
-                  </div>
-                </div>
-                <input id="includeSymbols" type="checkbox" checked onchange="updateCustomPasswordMixUI()">
-              </label>
-
-              <div id="customMixTotalBox" class="custom-mix-total-box">Custom Mix Total Length: 15</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
 
     <!-- =========================
          NUMBER MATCH FINDER PAGE
@@ -2733,6 +2761,7 @@
     function openHomePage() {
       hideAllPages();
       document.getElementById('homePage').classList.add('active');
+      updateSmartToolsDashboard();
       window.scrollTo(0, 0);
     }
 
@@ -5598,9 +5627,53 @@ Notes: ${escapeHtml(record.notes || '—')}</div>
     }
 
 
+
+    // =========================
+    // UPDATE DARK HOME DASHBOARD
+    // =========================
+    function updateSmartToolsDashboard(){
+      const todayDate = document.getElementById('dashboardTodayDate');
+      const todayDay = document.getElementById('dashboardTodayDay');
+      const notesCountBox = document.getElementById('dashboardNotesCount');
+      const qametiCountBox = document.getElementById('dashboardQametiCount');
+
+      const now = new Date();
+      if(todayDate){
+        todayDate.textContent = now.toLocaleDateString('en-US', {
+          month: 'short',
+          day: 'numeric',
+          year: 'numeric'
+        });
+      }
+
+      if(todayDay){
+        todayDay.textContent = now.toLocaleDateString('en-US', { weekday: 'long' });
+      }
+
+      if(notesCountBox){
+        try{
+          const notes = JSON.parse(localStorage.getItem('smartToolsNotes') || '[]');
+          notesCountBox.textContent = Array.isArray(notes) ? notes.length : 0;
+        }catch(e){
+          notesCountBox.textContent = 0;
+        }
+      }
+
+      if(qametiCountBox){
+        try{
+          const qametiData = JSON.parse(localStorage.getItem('pocketToolsQametiData') || '[]');
+          qametiCountBox.textContent = Array.isArray(qametiData) ? qametiData.length : 0;
+        }catch(e){
+          qametiCountBox.textContent = 0;
+        }
+      }
+    }
+
+
     // =========================
     // STARTUP
     // =========================
+    updateSmartToolsDashboard();
     loadConverterAccountInputs();
     renderNotes();
   </script>
