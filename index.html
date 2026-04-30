@@ -3294,8 +3294,30 @@
     // =========================
     function detectExcelAccount(textBlob) {
       const accountMap = getConverterAccountMap();
-      if (textBlob.includes('MINEOLA REALTY')) return accountMap['MINEOLA REALTY'];
-      if (textBlob.includes('ROSELLE BUILDING') || textBlob.includes('ROSELLE BLDG')) return accountMap['ROSELLE BUILDING'];
+      const upperText = String(textBlob || '').toUpperCase();
+
+      // IMPORTANT:
+      // Check Roselle FIRST because Roselle files can have
+      // "Mineola Realty Associates" inside the payee/name rows.
+      // The account must come from the file/company heading, not from payee names.
+      if (
+        upperText.includes('ROSELLE BUILDING CO INC') ||
+        upperText.includes('ROSELLE BUILDING CO. INC') ||
+        upperText.includes('ROSELLE BLDG') ||
+        upperText.includes('ROSELLE BUILDING') ||
+        upperText.includes('ROSELLE BUIL') ||
+        upperText.includes('ROSELL BUIL')
+      ) {
+        return accountMap['ROSELLE BUILDING'];
+      }
+
+      if (
+        upperText.includes('MINEOLA REALTY ASSOCIATES') ||
+        upperText.includes('MINEOLA REALTY')
+      ) {
+        return accountMap['MINEOLA REALTY'];
+      }
+
       return '';
     }
 
