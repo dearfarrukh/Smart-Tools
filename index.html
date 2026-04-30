@@ -150,6 +150,72 @@
       transform: scale(0.97);
     }
 
+    .hero-action-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .hero-tools-btn {
+      width: 42px;
+      height: 42px;
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      background: rgba(255, 255, 255, 0.18);
+      color: white;
+      border-radius: 50%;
+      font-size: 20px;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.16);
+      backdrop-filter: blur(10px);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+    }
+
+    .hero-tools-menu {
+      display: none;
+      position: absolute;
+      right: 0;
+      top: 52px;
+      width: 230px;
+      padding: 10px;
+      border-radius: 22px;
+      background: rgba(255, 255, 255, 0.96);
+      box-shadow: 0 18px 44px rgba(15, 23, 42, 0.22);
+      z-index: 30;
+      backdrop-filter: blur(14px);
+    }
+
+    .hero-tools-menu.open {
+      display: block;
+    }
+
+    .hero-tools-menu button {
+      width: 100%;
+      border: none;
+      background: #f8fafc;
+      color: #111827;
+      border-radius: 16px;
+      min-height: 46px;
+      padding: 0 14px;
+      margin-bottom: 8px;
+      font-size: 15px;
+      font-weight: 900;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .hero-tools-menu button:last-child {
+      margin-bottom: 0;
+    }
+
+    .hero-tools-menu button:hover {
+      background: #eef2ff;
+    }
+
     .hero p {
       max-width: 760px;
       font-size: 18px;
@@ -1687,7 +1753,18 @@
 
           <div class="hero-title-row">
             <h1>Pocket Tools</h1>
-            <button class="hero-refresh-btn" onclick="hardRefreshAppKeepData()">↻ Refresh</button>
+
+            <div class="hero-action-wrap">
+              <button class="hero-refresh-btn" onclick="hardRefreshAppKeepData()">↻ Refresh</button>
+
+              <button class="hero-tools-btn" onclick="toggleHomeToolsMenu(event)" aria-label="Open app tools menu">⋯</button>
+
+              <div id="homeToolsMenu" class="hero-tools-menu">
+                <button onclick="hardRefreshAppKeepData()">↻ Refresh App</button>
+                <button onclick="downloadSmartToolsBackup()">💾 Export Backup</button>
+                <button onclick="openSmartToolsBackupFileChooser()">📂 Import Backup</button>
+              </div>
+            </div>
           </div>
 
           <p>
@@ -1744,11 +1821,6 @@
             <p>Track your running committee, monthly payments, paid date, method, total payout, and previous years.</p>
           </button>
 
-          <button class="tool-card backup-tools" onclick="openBackupPage()">
-            <div class="tool-card-icon">💾</div>
-            <h3>Backup / Restore</h3>
-            <p>Download one same-name backup file for all saved Smart Tools data, then restore it anytime.</p>
-          </button>
 
           <button class="tool-card car-care" onclick="openCarPage()">
             <div class="tool-card-icon">🚗</div>
@@ -1959,72 +2031,63 @@
       <div class="top-bar-wrap">
         <div class="top-bar">
           <button class="back-btn" onclick="openHomePage()">←</button>
-          <div class="top-bar-title">Backup / Restore</div>
+          <div class="top-bar-title">Backup</div>
           <div class="top-bar-spacer"></div>
         </div>
       </div>
 
       <div class="page-inner">
         <div class="inner-page-hero">
-          <h1>Backup / Restore</h1>
+          <h1>Export Backup</h1>
           <p>
-            Save all Smart Tools data into one backup file. The download file name stays the same:
-            smart-tools-backup.json
+            Save all Smart Tools data into one file named smart-tools-backup.json.
           </p>
         </div>
 
-        <div class="converter-layout">
-          <div>
-            <div class="card">
-              <div class="card-title">Download Backup</div>
-              <div class="card-subtitle">
-                This saves your Qameti Tracker, Notes, Car Care, converter accounts, and all app local storage data.
-              </div>
+        <div class="card" style="max-width:720px;margin:24px auto 0 auto;">
+          <div class="card-title">Export Backup</div>
+          <div class="card-subtitle">
+            This saves your Qameti Tracker, Notes, Car Care, converter accounts, and all app local storage data.
+          </div>
 
-              <div class="result-box result-success">
-                <div class="result-heading">Backup File Name</div>
-                <div class="result-lines">smart-tools-backup.json</div>
-                <div class="small-help">
-                  Your browser may add (1) or (2) if the old file is already in Downloads. That is normal.
-                </div>
-              </div>
-
-              <div class="button-row" style="margin-top:18px;">
-                <button class="action-btn find-btn" onclick="downloadSmartToolsBackup()">Download Backup</button>
-              </div>
+          <div class="result-box result-success">
+            <div class="result-heading">Backup File Name</div>
+            <div class="result-lines">smart-tools-backup.json</div>
+            <div class="small-help">
+              Your browser may add (1) or (2) if the old file is already in Downloads. That is normal.
             </div>
           </div>
 
-          <div>
-            <div class="card">
-              <div class="card-title">Restore Backup</div>
-              <div class="card-subtitle">
-                Choose your smart-tools-backup.json file to put your saved data back into the app.
-              </div>
+          <div class="button-row" style="margin-top:18px;">
+            <button class="action-btn find-btn" onclick="downloadSmartToolsBackup()">Export Backup</button>
+          </div>
 
-              <label class="upload-drop-box" for="smartToolsBackupFileInput">
-                <div class="upload-icon">⇧</div>
-                <div style="font-size:22px;font-weight:900;color:#111827;margin-bottom:8px;">
-                  Choose Backup File
-                </div>
-                <div style="font-size:15px;line-height:1.6;color:#64748b;font-weight:700;">
-                  smart-tools-backup.json
-                </div>
-              </label>
+          <button onclick="openSmartToolsBackupFileChooser()" style="
+          width:100%;
+          min-height:54px;
+          margin-top:14px;
+          border:none;
+          border-radius:18px;
+          background:#f1f5f9;
+          color:#111827;
+          font-size:17px;
+          font-weight:900;
+          cursor:pointer;
+          ">
+            Import Backup
+          </button>
 
-              <input
-                id="smartToolsBackupFileInput"
-                class="file-input-hidden"
-                type="file"
-                accept=".json,application/json"
-                onchange="restoreSmartToolsBackup(event)"
-              />
+          <input
+            id="smartToolsBackupFileInput"
+            class="file-input-hidden"
+            type="file"
+            accept=".json,application/json"
+            onchange="restoreSmartToolsBackup(event)"
+          />
 
-              <div id="smartToolsBackupStatusBox" class="result-box" style="margin-top:18px;">
-                <div class="result-placeholder">
-                  No backup file selected yet.
-                </div>
-              </div>
+          <div id="smartToolsBackupStatusBox" class="result-box" style="margin-top:18px;">
+            <div class="result-placeholder">
+              No backup file selected yet.
             </div>
           </div>
         </div>
@@ -2718,9 +2781,32 @@
 
     function openBackupPage() {
       hideAllPages();
+      closeHomeToolsMenu();
       document.getElementById('backupPage').classList.add('active');
       window.scrollTo(0, 0);
     }
+
+    function toggleHomeToolsMenu(event) {
+      if (event) event.stopPropagation();
+      const menu = document.getElementById('homeToolsMenu');
+      if (!menu) return;
+      menu.classList.toggle('open');
+    }
+
+    function closeHomeToolsMenu() {
+      const menu = document.getElementById('homeToolsMenu');
+      if (menu) menu.classList.remove('open');
+    }
+
+    function openSmartToolsBackupFileChooser() {
+      closeHomeToolsMenu();
+      const input = document.getElementById('smartToolsBackupFileInput');
+      if (input) input.click();
+    }
+
+    document.addEventListener('click', function() {
+      closeHomeToolsMenu();
+    });
 
 
     function openPasswordGeneratorPage() {
