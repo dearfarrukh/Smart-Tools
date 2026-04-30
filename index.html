@@ -1836,7 +1836,36 @@
 
           <label>
             <span class="qameti-field-label">Start Month</span>
-            <input id="qametiStartMonthInput" class="date-input" type="month">
+
+            <!-- =========================
+                 QAMETI CUSTOM MONTH YEAR PICKER
+            ========================= -->
+            <input id="qametiStartMonthInput" type="hidden">
+
+            <div style="display:grid;grid-template-columns:52px 1fr 1fr 52px;gap:8px;align-items:center;">
+              <button type="button" onclick="changeQametiStartYear(-1)" style="height:58px;border:none;border-radius:18px;background:#eef2ff;color:#3730a3;font-size:26px;font-weight:900;cursor:pointer;">‹</button>
+
+              <select id="qametiStartMonthSelect" class="select-input" onchange="updateQametiStartMonthHidden()">
+                <option value="01">January</option>
+                <option value="02">February</option>
+                <option value="03">March</option>
+                <option value="04">April</option>
+                <option value="05">May</option>
+                <option value="06">June</option>
+                <option value="07">July</option>
+                <option value="08">August</option>
+                <option value="09">September</option>
+                <option value="10">October</option>
+                <option value="11">November</option>
+                <option value="12">December</option>
+              </select>
+
+              <select id="qametiStartYearSelect" class="select-input" onchange="updateQametiStartMonthHidden()"></select>
+
+              <button type="button" onclick="changeQametiStartYear(1)" style="height:58px;border:none;border-radius:18px;background:#eef2ff;color:#3730a3;font-size:26px;font-weight:900;cursor:pointer;">›</button>
+            </div>
+
+            <div class="small-help">Use ‹ and › to go back or forward by year. Example: 2025, 2026, 2027.</div>
           </label>
 
           <label>
@@ -4973,7 +5002,7 @@ Notes: ${escapeHtml(record.notes || '—')}</div>
       document.getElementById('qametiMonthlyInput').value = '';
       document.getElementById('qametiTotalInput').value = '';
       document.getElementById('qametiMonthsInput').value = '';
-      document.getElementById('qametiStartMonthInput').value = getCurrentMonthInputValue();
+      setQametiStartMonthValue(getCurrentMonthInputValue());
       document.getElementById('qametiDueDayInput').value = '5';
       document.getElementById('qametiReceiveMonthInput').value = '';
 
@@ -4998,6 +5027,70 @@ Notes: ${escapeHtml(record.notes || '—')}</div>
       if (members > 0 && monthsInput && !monthsInput.value) {
         monthsInput.value = members;
       }
+    }
+
+    // =========================
+    // QAMETI CUSTOM START MONTH PICKER
+    // =========================
+    function buildQametiStartYearOptions(selectedYear) {
+      const yearSelect = document.getElementById("qametiStartYearSelect");
+      if (!yearSelect) return;
+
+      const currentYear = new Date().getFullYear();
+      const startYear = currentYear - 30;
+      const endYear = currentYear + 30;
+      const chosenYear = Number(selectedYear || currentYear);
+
+      let html = "";
+      for (let year = startYear; year <= endYear; year++) {
+        html += "<option value=\"" + year + "\">" + year + "</option>";
+      }
+
+      yearSelect.innerHTML = html;
+      yearSelect.value = String(chosenYear);
+
+      if (yearSelect.value !== String(chosenYear)) {
+        const extraOption = document.createElement("option");
+        extraOption.value = String(chosenYear);
+        extraOption.textContent = String(chosenYear);
+        yearSelect.appendChild(extraOption);
+        yearSelect.value = String(chosenYear);
+      }
+    }
+
+    function setQametiStartMonthValue(value) {
+      const safeValue = value || getCurrentMonthInputValue();
+      const parts = String(safeValue).split("-");
+      const year = Number(parts[0]) || new Date().getFullYear();
+      const month = String(Number(parts[1]) || (new Date().getMonth() + 1)).padStart(2, "0");
+      const monthSelect = document.getElementById("qametiStartMonthSelect");
+      const hiddenInput = document.getElementById("qametiStartMonthInput");
+
+      buildQametiStartYearOptions(year);
+
+      const yearSelect = document.getElementById("qametiStartYearSelect");
+
+      if (monthSelect) monthSelect.value = month;
+      if (yearSelect) yearSelect.value = String(year);
+      if (hiddenInput) hiddenInput.value = year + "-" + month;
+    }
+
+    function updateQametiStartMonthHidden() {
+      const monthSelect = document.getElementById("qametiStartMonthSelect");
+      const yearSelect = document.getElementById("qametiStartYearSelect");
+      const hiddenInput = document.getElementById("qametiStartMonthInput");
+      if (!monthSelect || !yearSelect || !hiddenInput) return;
+      hiddenInput.value = yearSelect.value + "-" + monthSelect.value;
+    }
+
+    function changeQametiStartYear(amount) {
+      const yearSelect = document.getElementById("qametiStartYearSelect");
+      if (!yearSelect) return;
+      const currentYear = Number(yearSelect.value || new Date().getFullYear());
+      const newYear = currentYear + Number(amount || 0);
+      buildQametiStartYearOptions(newYear);
+      yearSelect.value = String(newYear);
+      updateQametiStartMonthHidden();
     }
 
     function createNewQameti() {
