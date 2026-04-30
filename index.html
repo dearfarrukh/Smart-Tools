@@ -283,6 +283,10 @@
       background: linear-gradient(135deg, #111827 0%, #374151 55%, #0ea5e9 100%);
     }
 
+    .tool-card.backup-tools {
+      background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 48%, #ec4899 100%);
+    }
+
 
     /* =========================
        PASSWORD GENERATOR
@@ -1740,6 +1744,12 @@
             <p>Track your running committee, monthly payments, paid date, method, total payout, and previous years.</p>
           </button>
 
+          <button class="tool-card backup-tools" onclick="openBackupPage()">
+            <div class="tool-card-icon">💾</div>
+            <h3>Backup / Restore</h3>
+            <p>Download one same-name backup file for all saved Smart Tools data, then restore it anytime.</p>
+          </button>
+
           <button class="tool-card car-care" onclick="openCarPage()">
             <div class="tool-card-icon">🚗</div>
             <h3>Car Care</h3>
@@ -1939,6 +1949,87 @@
         </div>
       </div>
     </div>
+
+
+
+    <!-- =========================
+         BACKUP RESTORE PAGE
+    ========================= -->
+    <section id="backupPage" class="page">
+      <div class="top-bar-wrap">
+        <div class="top-bar">
+          <button class="back-btn" onclick="openHomePage()">←</button>
+          <div class="top-bar-title">Backup / Restore</div>
+          <div class="top-bar-spacer"></div>
+        </div>
+      </div>
+
+      <div class="page-inner">
+        <div class="inner-page-hero">
+          <h1>Backup / Restore</h1>
+          <p>
+            Save all Smart Tools data into one backup file. The download file name stays the same:
+            smart-tools-backup.json
+          </p>
+        </div>
+
+        <div class="converter-layout">
+          <div>
+            <div class="card">
+              <div class="card-title">Download Backup</div>
+              <div class="card-subtitle">
+                This saves your Qameti Tracker, Notes, Car Care, converter accounts, and all app local storage data.
+              </div>
+
+              <div class="result-box result-success">
+                <div class="result-heading">Backup File Name</div>
+                <div class="result-lines">smart-tools-backup.json</div>
+                <div class="small-help">
+                  Your browser may add (1) or (2) if the old file is already in Downloads. That is normal.
+                </div>
+              </div>
+
+              <div class="button-row" style="margin-top:18px;">
+                <button class="action-btn find-btn" onclick="downloadSmartToolsBackup()">Download Backup</button>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div class="card">
+              <div class="card-title">Restore Backup</div>
+              <div class="card-subtitle">
+                Choose your smart-tools-backup.json file to put your saved data back into the app.
+              </div>
+
+              <label class="upload-drop-box" for="smartToolsBackupFileInput">
+                <div class="upload-icon">⇧</div>
+                <div style="font-size:22px;font-weight:900;color:#111827;margin-bottom:8px;">
+                  Choose Backup File
+                </div>
+                <div style="font-size:15px;line-height:1.6;color:#64748b;font-weight:700;">
+                  smart-tools-backup.json
+                </div>
+              </label>
+
+              <input
+                id="smartToolsBackupFileInput"
+                class="file-input-hidden"
+                type="file"
+                accept=".json,application/json"
+                onchange="restoreSmartToolsBackup(event)"
+              />
+
+              <div id="smartToolsBackupStatusBox" class="result-box" style="margin-top:18px;">
+                <div class="result-placeholder">
+                  No backup file selected yet.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
 
     <!-- =========================
          PASSWORD GENERATOR PAGE
@@ -2622,6 +2713,12 @@
     function openPdfImageToolsPage() {
       hideAllPages();
       document.getElementById('pdfImageToolsPage').classList.add('active');
+      window.scrollTo(0, 0);
+    }
+
+    function openBackupPage() {
+      hideAllPages();
+      document.getElementById('backupPage').classList.add('active');
       window.scrollTo(0, 0);
     }
 
@@ -5272,6 +5369,127 @@ Notes: ${escapeHtml(record.notes || '—')}</div>
       const num = Number(value || 0);
       return num.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     }
+
+
+
+    // =========================
+    // SMART TOOLS BACKUP / RESTORE
+    // =========================
+    function getAllSmartToolsLocalStorageData() {
+      const data = {};
+
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        data[key] = localStorage.getItem(key);
+      }
+
+      return data;
+    }
+
+    function downloadSmartToolsBackup() {
+      const backupData = {
+        appName: 'Smart Tools',
+        backupType: 'full-local-storage-backup',
+        createdAt: new Date().toISOString(),
+        fileName: 'smart-tools-backup.json',
+        localStorage: getAllSmartToolsLocalStorageData()
+      };
+
+      const jsonText = JSON.stringify(backupData, null, 2);
+      const blob = new Blob([jsonText], { type: 'application/json;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+
+      link.href = url;
+      link.download = 'smart-tools-backup.json';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+
+      setSmartToolsBackupStatus('success', 'Backup downloaded as smart-tools-backup.json.');
+    }
+
+    function restoreSmartToolsBackup(event) {
+      const file = event.target.files && event.target.files[0];
+
+      if (!file) {
+        setSmartToolsBackupStatus('error', 'No backup file selected.');
+        return;
+      }
+
+      const reader = new FileReader();
+
+      reader.onload = function(loadEvent) {
+        try {
+          const backupData = JSON.parse(loadEvent.target.result);
+
+          if (!backupData || !backupData.localStorage || typeof backupData.localStorage !== 'object') {
+            setSmartToolsBackupStatus('error', 'This file does not look like a Smart Tools backup file.');
+            return;
+          }
+
+          const confirmRestore = confirm('Restore this backup now? This will replace the saved Smart Tools data on this device.');
+
+          if (!confirmRestore) {
+            setSmartToolsBackupStatus('ready', 'Restore cancelled. Your current data was not changed.');
+            event.target.value = '';
+            return;
+          }
+
+          localStorage.clear();
+
+          Object.keys(backupData.localStorage).forEach(function(key) {
+            localStorage.setItem(key, backupData.localStorage[key]);
+          });
+
+          setSmartToolsBackupStatus('success', 'Backup restored. The app will refresh now.');
+
+          setTimeout(function() {
+            window.location.reload();
+          }, 800);
+        } catch (error) {
+          console.error(error);
+          setSmartToolsBackupStatus('error', 'Could not read this backup file. Make sure it is smart-tools-backup.json.');
+        }
+      };
+
+      reader.onerror = function() {
+        setSmartToolsBackupStatus('error', 'Could not open this backup file.');
+      };
+
+      reader.readAsText(file);
+    }
+
+    function setSmartToolsBackupStatus(type, message) {
+      const box = document.getElementById('smartToolsBackupStatusBox');
+      if (!box) return;
+
+      if (type === 'success') {
+        box.className = 'result-box result-success';
+        box.innerHTML = `
+          <div class="result-heading">Success</div>
+          <div class="result-placeholder">${escapeHtml(message)}</div>
+        `;
+        return;
+      }
+
+      if (type === 'error') {
+        box.className = 'result-box result-error';
+        box.innerHTML = `
+          <div class="result-heading">Check Backup</div>
+          <div class="result-placeholder">${escapeHtml(message)}</div>
+        `;
+        return;
+      }
+
+      box.className = 'result-box';
+      box.innerHTML = `
+        <div class="result-heading">Ready</div>
+        <div class="result-placeholder">${escapeHtml(message)}</div>
+      `;
+    }
+
 
     // =========================
     // STARTUP
