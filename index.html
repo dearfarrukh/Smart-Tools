@@ -4730,9 +4730,48 @@ Notes: ${escapeHtml(record.notes || '—')}</div>
     function openQametiPage() {
       hideAllPages();
       document.getElementById('qametiPage').classList.add('active');
+      repairAllQametiPaymentMonths();
       chooseLatestQametiIfNeeded();
       renderQametiPage();
       window.scrollTo(0, 0);
+    }
+
+    // =========================
+    // REPAIR QAMETI PAYMENT MONTHS
+    // =========================
+    function repairAllQametiPaymentMonths() {
+      const data = getQametiData();
+      let changed = false;
+
+      data.forEach(qameti => {
+        const months = Number(qameti.months || 0);
+        const monthly = Number(qameti.monthly || 0);
+        const dueDay = Number(qameti.dueDay || 5);
+        const startMonth = qameti.startMonth || getCurrentMonthInputValue();
+        const oldPayments = Array.isArray(qameti.payments) ? qameti.payments : [];
+        const newPayments = [];
+
+        for (let i = 0; i < months; i++) {
+          const monthInfo = getQametiMonthInfo(startMonth, i, dueDay);
+          const oldPayment = oldPayments[i] || {};
+
+          newPayments.push({
+            label: monthInfo.label,
+            dueDate: monthInfo.date,
+            paidDate: oldPayment.paidDate || '',
+            method: oldPayment.method || '',
+            amount: oldPayment.amount || monthly,
+            notes: oldPayment.notes || ''
+          });
+        }
+
+        if (JSON.stringify(oldPayments) !== JSON.stringify(newPayments)) {
+          qameti.payments = newPayments;
+          changed = true;
+        }
+      });
+
+      if (changed) saveQametiData(data);
     }
 
     function chooseLatestQametiIfNeeded() {
@@ -4758,7 +4797,9 @@ Notes: ${escapeHtml(record.notes || '—')}</div>
     function changeSelectedQameti() {
       const select = document.getElementById('qametiSelect');
       currentQametiId = select ? select.value : null;
+      repairAllQametiPaymentMonths();
       renderQametiPage();
+      window.scrollTo(0, 0);
     }
 
     function getCurrentQameti() {
