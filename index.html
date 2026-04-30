@@ -778,6 +778,41 @@
       font-size: 17px;
     }
 
+    /* =========================
+       NUMBER MATCH EXCEL CELLS
+    ========================= */
+    .excel-number-cells {
+      font-family: Consolas, Menlo, monospace;
+      font-size: 19px;
+      font-weight: 800;
+      line-height: 42px;
+      padding: 0 18px;
+      background:
+        repeating-linear-gradient(
+          to bottom,
+          #ffffff 0px,
+          #ffffff 41px,
+          #dbeafe 42px
+        );
+      border: 2px solid #bfdbfe;
+      border-radius: 18px;
+      color: #111827;
+      white-space: pre;
+      overflow: auto;
+    }
+
+    body.smart-tools-dark-theme .excel-number-cells {
+      background:
+        repeating-linear-gradient(
+          to bottom,
+          rgba(15,23,42,0.94) 0px,
+          rgba(15,23,42,0.94) 41px,
+          rgba(96,165,250,0.28) 42px
+        );
+      border-color: rgba(96,165,250,0.38);
+      color: #f8fafc;
+    }
+
     .csv-textarea {
       min-height: 320px;
       font-family: Consolas, Menlo, monospace;
@@ -2491,9 +2526,10 @@
               <div class="card-subtitle">Enter one number on each line. Example: 548.25</div>
               <textarea
                 id="numbersInput"
-                class="numbers-textarea"
+                class="numbers-textarea excel-number-cells"
                 oninput="updateInputSummary()"
-                placeholder="6589.10&#10;548.25&#10;584.00&#10;325.00&#10;695.32&#10;2541.05&#10;365.25&#10;9877.00"
+                onblur="formatNumbersInputToTwoDecimals()"
+                placeholder="23.00&#10;548.25&#10;584.00&#10;325.00&#10;695.32&#10;2541.05&#10;365.25&#10;9877.00"
               ></textarea>
             </div>
           </div>
@@ -2502,7 +2538,7 @@
             <div class="card">
               <div class="card-title">Target Total</div>
               <div class="card-subtitle">Type the exact total you want to match.</div>
-              <input id="targetInput" class="target-input" type="text" placeholder="1568.57" />
+              <input id="targetInput" class="target-input" type="text" placeholder="1568.57" onblur="formatTargetInputToTwoDecimals()" />
               <div class="small-help">Tip: Use numbers only. Example: 1568.57</div>
             </div>
 
@@ -3458,6 +3494,60 @@
         <div class="result-label">Total of All Numbers</div>
         <div class="total-box">Total: ${total}</div>
       `;
+    }
+
+    // =========================
+    // FORMAT NUMBER MATCH INPUT TO 2 DECIMALS
+    // Example: 23 becomes 23.00
+    // =========================
+    function formatNumbersInputToTwoDecimals() {
+      const numbersInput = document.getElementById('numbersInput');
+      if (!numbersInput) return;
+
+      const lines = numbersInput.value.split('\n');
+
+      const formattedLines = lines.map(line => {
+        const originalLine = line.trim();
+
+        if (originalLine === '') {
+          return '';
+        }
+
+        const cleanLine = originalLine.replace(/,/g, '');
+        const numberValue = parseFloat(cleanLine);
+
+        if (isNaN(numberValue)) {
+          return originalLine;
+        }
+
+        return numberValue.toFixed(2);
+      });
+
+      numbersInput.value = formattedLines.join('\n');
+      updateInputSummary();
+    }
+
+    // =========================
+    // FORMAT NUMBER MATCH TARGET TO 2 DECIMALS
+    // Example: 23 becomes 23.00
+    // =========================
+    function formatTargetInputToTwoDecimals() {
+      const targetInput = document.getElementById('targetInput');
+      if (!targetInput) return;
+
+      const cleanValue = targetInput.value.trim().replace(/,/g, '');
+
+      if (cleanValue === '') {
+        return;
+      }
+
+      const numberValue = parseFloat(cleanValue);
+
+      if (isNaN(numberValue)) {
+        return;
+      }
+
+      targetInput.value = numberValue.toFixed(2);
     }
 
     // =========================
