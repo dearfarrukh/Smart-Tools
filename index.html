@@ -2527,7 +2527,7 @@
               <textarea
                 id="numbersInput"
                 class="numbers-textarea excel-number-cells"
-                oninput="updateInputSummary()"
+                oninput="handleNumberMatchInput(event)"
                 onblur="formatNumbersInputToTwoDecimals()"
                 placeholder="23.00&#10;548.25&#10;584.00&#10;325.00&#10;695.32&#10;2541.05&#10;365.25&#10;9877.00"
               ></textarea>
@@ -3497,18 +3497,43 @@
     }
 
     // =========================
-    // FORMAT NUMBER MATCH INPUT TO 2 DECIMALS
-    // Example: 23 becomes 23.00
+    // HANDLE NUMBER MATCH INPUT LIVE
+    // Formats completed lines while typing.
+    // Example: type 23 then press Enter => 23.00
     // =========================
-    function formatNumbersInputToTwoDecimals() {
+    function handleNumberMatchInput(event) {
       const numbersInput = document.getElementById('numbersInput');
       if (!numbersInput) return;
 
-      const lines = numbersInput.value.split('\n');
+      const value = numbersInput.value;
+
+      // If user pressed Enter, format all completed lines right away.
+      // The current empty new line stays ready for the next number.
+      if (value.endsWith('\n')) {
+        formatNumbersInputToTwoDecimals(true);
+        return;
+      }
+
+      updateInputSummary();
+    }
+
+    // =========================
+    // FORMAT NUMBER MATCH INPUT TO 2 DECIMALS
+    // Example: 23 becomes 23.00
+    // keepLastBlankLine=true keeps the new line after pressing Enter.
+    // =========================
+    function formatNumbersInputToTwoDecimals(keepLastBlankLine = false) {
+      const numbersInput = document.getElementById('numbersInput');
+      if (!numbersInput) return;
+
+      const originalValue = numbersInput.value;
+      const shouldKeepLastBlankLine = keepLastBlankLine && originalValue.endsWith('\n');
+      const lines = originalValue.split('\n');
 
       const formattedLines = lines.map(line => {
         const originalLine = line.trim();
 
+        // Keep empty lines empty.
         if (originalLine === '') {
           return '';
         }
@@ -3523,7 +3548,18 @@
         return numberValue.toFixed(2);
       });
 
-      numbersInput.value = formattedLines.join('\n');
+      let newValue = formattedLines.join('\n');
+
+      if (shouldKeepLastBlankLine && !newValue.endsWith('\n')) {
+        newValue += '\n';
+      }
+
+      numbersInput.value = newValue;
+
+      // Move cursor to end so user can keep typing next number.
+      numbersInput.selectionStart = numbersInput.value.length;
+      numbersInput.selectionEnd = numbersInput.value.length;
+
       updateInputSummary();
     }
 
