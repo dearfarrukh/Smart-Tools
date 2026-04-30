@@ -1165,6 +1165,282 @@
       box-shadow: 0 0 0 4px rgba(99,102,241,0.12);
     }
 
+
+
+    /* =========================
+       QAMETI TRACKER
+    ========================= */
+    .tool-card.qameti-tracker {
+      background: linear-gradient(135deg, #16a34a 0%, #22c55e 45%, #0ea5e9 100%);
+    }
+
+    .qameti-top-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-top: 22px;
+    }
+
+    .qameti-select {
+      flex: 1;
+      height: 58px;
+      border: 2px solid #dbeafe;
+      border-radius: 20px;
+      padding: 0 16px;
+      font-size: 17px;
+      font-weight: 900;
+      color: #111827;
+      background: white;
+      outline: none;
+      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+    }
+
+    .qameti-add-btn {
+      width: 58px;
+      height: 58px;
+      border: none;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #16a34a 0%, #0ea5e9 100%);
+      color: white;
+      font-size: 34px;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 14px 30px rgba(14, 165, 233, 0.22);
+      flex-shrink: 0;
+      line-height: 1;
+    }
+
+    .qameti-empty-box {
+      margin-top: 22px;
+      background: white;
+      border-radius: 28px;
+      padding: 26px;
+      box-shadow: 0 14px 34px rgba(15, 23, 42, 0.08);
+      text-align: center;
+    }
+
+    .qameti-empty-icon {
+      width: 74px;
+      height: 74px;
+      border-radius: 24px;
+      background: linear-gradient(135deg, #dcfce7 0%, #dbeafe 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 16px auto;
+      font-size: 36px;
+    }
+
+    .qameti-detail-wrap {
+      margin-top: 22px;
+      display: grid;
+      grid-template-columns: 0.9fr 1.1fr;
+      gap: 22px;
+      align-items: start;
+    }
+
+    .qameti-summary-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-top: 16px;
+    }
+
+    .qameti-summary-mini {
+      background: #f8fafc;
+      border: 1px solid #e5e7eb;
+      border-radius: 20px;
+      padding: 16px;
+    }
+
+    .qameti-summary-mini-label {
+      font-size: 12px;
+      font-weight: 900;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      margin-bottom: 8px;
+    }
+
+    .qameti-summary-mini-value {
+      font-size: 22px;
+      font-weight: 900;
+      color: #111827;
+      letter-spacing: -0.5px;
+      word-break: break-word;
+    }
+
+    .qameti-progress-bar {
+      width: 100%;
+      height: 14px;
+      background: #e5e7eb;
+      border-radius: 999px;
+      overflow: hidden;
+      margin-top: 16px;
+    }
+
+    .qameti-progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #22c55e 0%, #0ea5e9 100%);
+      border-radius: 999px;
+      width: 0%;
+    }
+
+    .qameti-month-list {
+      display: grid;
+      gap: 14px;
+    }
+
+    .qameti-month-row {
+      border: none;
+      width: 100%;
+      text-align: left;
+      border-radius: 22px;
+      padding: 18px;
+      background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+      border: 1px solid #e5eefc;
+      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+      cursor: pointer;
+    }
+
+    .qameti-month-row.paid {
+      background: linear-gradient(180deg, #ecfdf5 0%, #ffffff 100%);
+      border-color: #bbf7d0;
+    }
+
+    .qameti-month-row.pending {
+      background: linear-gradient(180deg, #fff7ed 0%, #ffffff 100%);
+      border-color: #fed7aa;
+    }
+
+    .qameti-month-title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .qameti-month-title {
+      font-size: 20px;
+      font-weight: 900;
+      color: #111827;
+    }
+
+    .qameti-status-pill {
+      border-radius: 999px;
+      padding: 7px 12px;
+      font-size: 12px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .qameti-status-pill.paid {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .qameti-status-pill.pending {
+      background: #ffedd5;
+      color: #9a3412;
+    }
+
+    .qameti-month-details {
+      font-size: 15px;
+      line-height: 1.7;
+      color: #374151;
+      font-weight: 700;
+    }
+
+    .qameti-popup-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: rgba(15, 23, 42, 0.55);
+      padding: 24px 4%;
+      overflow: auto;
+    }
+
+    .qameti-popup-card {
+      width: 100%;
+      max-width: 620px;
+      margin: 30px auto;
+      background: white;
+      border-radius: 30px;
+      padding: 24px;
+      box-shadow: 0 24px 60px rgba(15, 23, 42, 0.30);
+    }
+
+    .qameti-popup-title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .qameti-popup-title {
+      font-size: 26px;
+      font-weight: 900;
+      color: #111827;
+      letter-spacing: -0.6px;
+    }
+
+    .qameti-close-btn {
+      width: 46px;
+      height: 46px;
+      border: none;
+      border-radius: 50%;
+      background: #f3f4f6;
+      color: #111827;
+      font-size: 24px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .qameti-form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .qameti-field-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 900;
+      color: #475569;
+      margin-bottom: 8px;
+    }
+
+    .qameti-full-field {
+      grid-column: 1 / -1;
+    }
+
+    @media (max-width: 900px) {
+      .qameti-detail-wrap {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .qameti-form-grid,
+      .qameti-summary-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .qameti-popup-overlay {
+        padding: 16px 4%;
+      }
+
+      .qameti-popup-card {
+        margin: 14px auto;
+        padding: 20px;
+        border-radius: 26px;
+      }
+    }
+
     /* =========================
        RESPONSIVE
     ========================= */
@@ -1456,6 +1732,14 @@
           </button>
 
 
+
+
+          <button class="tool-card qameti-tracker" onclick="openQametiPage()">
+            <div class="tool-card-icon">💰</div>
+            <h3>Qameti Tracker</h3>
+            <p>Track your running committee, monthly payments, paid date, method, total payout, and previous years.</p>
+          </button>
+
           <button class="tool-card car-care" onclick="openCarPage()">
             <div class="tool-card-icon">🚗</div>
             <h3>Car Care</h3>
@@ -1465,6 +1749,167 @@
       </div>
     </section>
 
+
+
+
+    <!-- =========================
+         QAMETI TRACKER PAGE
+    ========================= -->
+    <section id="qametiPage" class="page">
+      <div class="top-bar-wrap">
+        <div class="top-bar">
+          <button class="back-btn" onclick="openHomePage()">←</button>
+          <div class="top-bar-title">Qameti Tracker</div>
+          <button class="back-btn" onclick="openAddQametiPopup()" title="Add Qameti">+</button>
+        </div>
+      </div>
+
+      <div class="page-inner">
+        <div class="inner-page-hero green-hero">
+          <h1>Qameti Tracker</h1>
+          <p>
+            Track the latest running qameti first. Use the dropdown to check previous qameti records,
+            and press + to add a new yearly or separate committee.
+          </p>
+        </div>
+
+        <div class="qameti-top-actions">
+          <select id="qametiSelect" class="qameti-select" onchange="changeSelectedQameti()">
+            <option value="">No Qameti Yet</option>
+          </select>
+          <button class="qameti-add-btn" onclick="openAddQametiPopup()">+</button>
+        </div>
+
+        <div id="qametiContent"></div>
+      </div>
+    </section>
+
+    <!-- =========================
+         ADD QAMETI POPUP
+    ========================= -->
+    <div id="qametiAddPopup" class="qameti-popup-overlay">
+      <div class="qameti-popup-card">
+        <div class="qameti-popup-title-row">
+          <div class="qameti-popup-title">Add New Qameti</div>
+          <button class="qameti-close-btn" onclick="closeAddQametiPopup()">×</button>
+        </div>
+
+        <div class="qameti-form-grid">
+          <label class="qameti-full-field">
+            <span class="qameti-field-label">Qameti Name</span>
+            <input id="qametiNameInput" class="text-input" type="text" placeholder="Example: Family Qameti 2026">
+          </label>
+
+          <label>
+            <span class="qameti-field-label">Currency</span>
+            <select id="qametiCurrencyInput" class="select-input">
+              <option value="$">$ Dollar</option>
+              <option value="Rs">Rs Rupees</option>
+              <option value="Custom">Custom</option>
+            </select>
+          </label>
+
+          <label>
+            <span class="qameti-field-label">Custom Currency</span>
+            <input id="qametiCustomCurrencyInput" class="text-input" type="text" placeholder="Example: AED">
+          </label>
+
+          <label>
+            <span class="qameti-field-label">Number of Members</span>
+            <input id="qametiMembersInput" class="text-input" type="number" min="1" placeholder="10" oninput="updateQametiAutoTotal()">
+          </label>
+
+          <label>
+            <span class="qameti-field-label">Monthly Contribution</span>
+            <input id="qametiMonthlyInput" class="text-input" type="number" min="0" step="0.01" placeholder="500" oninput="updateQametiAutoTotal()">
+          </label>
+
+          <label>
+            <span class="qameti-field-label">Total I Get</span>
+            <input id="qametiTotalInput" class="text-input" type="number" min="0" step="0.01" placeholder="Auto total">
+          </label>
+
+          <label>
+            <span class="qameti-field-label">How Many Months</span>
+            <input id="qametiMonthsInput" class="text-input" type="number" min="1" placeholder="10">
+          </label>
+
+          <label>
+            <span class="qameti-field-label">Start Month</span>
+            <input id="qametiStartMonthInput" class="date-input" type="month">
+          </label>
+
+          <label>
+            <span class="qameti-field-label">Payment Due Day</span>
+            <input id="qametiDueDayInput" class="text-input" type="number" min="1" max="31" value="5">
+          </label>
+
+          <label class="qameti-full-field">
+            <span class="qameti-field-label">My Receiving Month Optional</span>
+            <input id="qametiReceiveMonthInput" class="text-input" type="number" min="1" placeholder="Example: 4 means 4th month">
+          </label>
+        </div>
+
+        <div class="button-row" style="margin-top:20px;">
+          <button class="action-btn find-btn" onclick="createNewQameti()">Create Qameti</button>
+          <button class="action-btn reset-btn" onclick="closeAddQametiPopup()">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- =========================
+         QAMETI PAYMENT POPUP
+    ========================= -->
+    <div id="qametiPaymentPopup" class="qameti-popup-overlay">
+      <div class="qameti-popup-card">
+        <div class="qameti-popup-title-row">
+          <div id="qametiPaymentPopupTitle" class="qameti-popup-title">Edit Payment</div>
+          <button class="qameti-close-btn" onclick="closeQametiPaymentPopup()">×</button>
+        </div>
+
+        <input id="qametiEditingPaymentIndex" type="hidden">
+
+        <div class="qameti-form-grid">
+          <label>
+            <span class="qameti-field-label">Due Date</span>
+            <input id="qametiPaymentDueDateInput" class="date-input" type="date">
+          </label>
+
+          <label>
+            <span class="qameti-field-label">Paid Date</span>
+            <input id="qametiPaymentPaidDateInput" class="date-input" type="date">
+          </label>
+
+          <label>
+            <span class="qameti-field-label">Amount</span>
+            <input id="qametiPaymentAmountInput" class="text-input" type="number" min="0" step="0.01">
+          </label>
+
+          <label>
+            <span class="qameti-field-label">How I Paid</span>
+            <select id="qametiPaymentMethodInput" class="select-input">
+              <option value="">Select Method</option>
+              <option value="Cash">Cash</option>
+              <option value="Zelle">Zelle</option>
+              <option value="Bank Transfer">Bank Transfer</option>
+              <option value="Check">Check</option>
+              <option value="Other">Other</option>
+            </select>
+          </label>
+
+          <label class="qameti-full-field">
+            <span class="qameti-field-label">Notes</span>
+            <textarea id="qametiPaymentNotesInput" class="notes-textarea" placeholder="Optional note"></textarea>
+          </label>
+        </div>
+
+        <div class="button-row" style="margin-top:20px;">
+          <button class="action-btn find-btn" onclick="saveQametiPayment()">Save Payment</button>
+          <button class="action-btn purple-btn" onclick="markQametiPaymentUnpaid()">Mark Unpaid</button>
+          <button class="action-btn reset-btn" onclick="closeQametiPaymentPopup()">Cancel</button>
+        </div>
+      </div>
+    </div>
 
     <!-- =========================
          PASSWORD GENERATOR PAGE
@@ -4265,6 +4710,433 @@ Notes: ${escapeHtml(record.notes || '—')}</div>
       }
 
       if (copyMessage) copyMessage.style.display = 'none';
+    }
+
+
+
+    // =========================
+    // QAMETI TRACKER DATA
+    // =========================
+    let currentQametiId = null;
+
+    function getQametiData() {
+      return JSON.parse(localStorage.getItem('pocketToolsQametiData') || '[]');
+    }
+
+    function saveQametiData(data) {
+      localStorage.setItem('pocketToolsQametiData', JSON.stringify(data));
+    }
+
+    function openQametiPage() {
+      hideAllPages();
+      document.getElementById('qametiPage').classList.add('active');
+      chooseLatestQametiIfNeeded();
+      renderQametiPage();
+      window.scrollTo(0, 0);
+    }
+
+    function chooseLatestQametiIfNeeded() {
+      const data = getQametiData();
+      if (!data.length) {
+        currentQametiId = null;
+        return;
+      }
+
+      const stillExists = data.some(item => item.id === currentQametiId);
+      if (stillExists) return;
+
+      const sorted = [...data].sort((a, b) => {
+        const aTime = new Date((a.startMonth || '1900-01') + '-01').getTime();
+        const bTime = new Date((b.startMonth || '1900-01') + '-01').getTime();
+        return bTime - aTime;
+      });
+
+      const running = sorted.find(item => getQametiPaidCount(item) < Number(item.months || 0));
+      currentQametiId = running ? running.id : sorted[0].id;
+    }
+
+    function changeSelectedQameti() {
+      const select = document.getElementById('qametiSelect');
+      currentQametiId = select ? select.value : null;
+      renderQametiPage();
+    }
+
+    function getCurrentQameti() {
+      const data = getQametiData();
+      return data.find(item => item.id === currentQametiId) || null;
+    }
+
+    function renderQametiPage() {
+      renderQametiDropdown();
+      const content = document.getElementById('qametiContent');
+      if (!content) return;
+
+      const qameti = getCurrentQameti();
+
+      if (!qameti) {
+        content.innerHTML = `
+          <div class="qameti-empty-box">
+            <div class="qameti-empty-icon">💰</div>
+            <div class="card-title">No Qameti Added Yet</div>
+            <div class="card-subtitle" style="margin-bottom:18px;">
+              Press the + button to add your first qameti. After that, the latest running qameti will show here first.
+            </div>
+            <button class="action-btn find-btn" style="max-width:320px;" onclick="openAddQametiPopup()">Add New Qameti</button>
+          </div>
+        `;
+        return;
+      }
+
+      const paidCount = getQametiPaidCount(qameti);
+      const months = Number(qameti.months || 0);
+      const monthly = Number(qameti.monthly || 0);
+      const totalPaid = getQametiTotalPaid(qameti);
+      const remaining = Math.max(0, (monthly * months) - totalPaid);
+      const percent = months > 0 ? Math.round((paidCount / months) * 100) : 0;
+      const receiveText = getQametiReceiveText(qameti);
+
+      content.innerHTML = `
+        <div class="qameti-detail-wrap">
+          <div>
+            <div class="card">
+              <div class="card-title">${escapeHtml(qameti.name)}</div>
+              <div class="card-subtitle">Latest summary for this qameti.</div>
+
+              <div class="qameti-summary-grid">
+                <div class="qameti-summary-mini">
+                  <div class="qameti-summary-mini-label">Monthly</div>
+                  <div class="qameti-summary-mini-value">${escapeHtml(qameti.currency)}${formatQametiMoney(monthly)}</div>
+                </div>
+                <div class="qameti-summary-mini">
+                  <div class="qameti-summary-mini-label">Total I Get</div>
+                  <div class="qameti-summary-mini-value">${escapeHtml(qameti.currency)}${formatQametiMoney(qameti.total)}</div>
+                </div>
+                <div class="qameti-summary-mini">
+                  <div class="qameti-summary-mini-label">Members</div>
+                  <div class="qameti-summary-mini-value">${escapeHtml(qameti.members)}</div>
+                </div>
+                <div class="qameti-summary-mini">
+                  <div class="qameti-summary-mini-label">Months</div>
+                  <div class="qameti-summary-mini-value">${escapeHtml(qameti.months)}</div>
+                </div>
+              </div>
+
+              <div class="qameti-progress-bar">
+                <div class="qameti-progress-fill" style="width:${percent}%;"></div>
+              </div>
+              <div class="small-help"><strong>${paidCount}/${months}</strong> months paid • ${percent}% complete</div>
+            </div>
+
+            <div class="card">
+              <div class="card-title">My Turn</div>
+              <div class="card-subtitle">Track the month you receive the full qameti payout.</div>
+              <div class="result-box result-success" style="min-height:auto;">
+                <div class="result-placeholder">${receiveText}</div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-title">Payment Total</div>
+              <div class="qameti-summary-grid">
+                <div class="qameti-summary-mini">
+                  <div class="qameti-summary-mini-label">Paid So Far</div>
+                  <div class="qameti-summary-mini-value">${escapeHtml(qameti.currency)}${formatQametiMoney(totalPaid)}</div>
+                </div>
+                <div class="qameti-summary-mini">
+                  <div class="qameti-summary-mini-label">Remaining</div>
+                  <div class="qameti-summary-mini-value">${escapeHtml(qameti.currency)}${formatQametiMoney(remaining)}</div>
+                </div>
+              </div>
+              <div class="button-row" style="margin-top:18px;">
+                <button class="action-btn reset-btn" onclick="deleteCurrentQameti()">Delete This Qameti</button>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div class="card">
+              <div class="card-title">Monthly Payment Lines</div>
+              <div class="card-subtitle">Tap any month to add paid date, payment method, amount, and notes.</div>
+              <div class="qameti-month-list">
+                ${renderQametiPaymentRows(qameti)}
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderQametiDropdown() {
+      const select = document.getElementById('qametiSelect');
+      if (!select) return;
+
+      const data = getQametiData();
+      if (!data.length) {
+        select.innerHTML = '<option value="">No Qameti Yet</option>';
+        return;
+      }
+
+      const sorted = [...data].sort((a, b) => {
+        const aTime = new Date((a.startMonth || '1900-01') + '-01').getTime();
+        const bTime = new Date((b.startMonth || '1900-01') + '-01').getTime();
+        return bTime - aTime;
+      });
+
+      select.innerHTML = sorted.map(item => {
+        const status = getQametiPaidCount(item) >= Number(item.months || 0) ? 'Previous / Completed' : 'Running';
+        return `<option value="${escapeHtml(item.id)}">${escapeHtml(item.name)} — ${status}</option>`;
+      }).join('');
+
+      if (currentQametiId) select.value = currentQametiId;
+    }
+
+    function renderQametiPaymentRows(qameti) {
+      const payments = qameti.payments || [];
+      if (!payments.length) {
+        return '<div class="result-placeholder">No payment months were created.</div>';
+      }
+
+      return payments.map((payment, index) => {
+        const isPaid = !!payment.paidDate;
+        const rowClass = isPaid ? 'paid' : 'pending';
+        const statusText = isPaid ? '✅ Paid' : '⏳ Pending';
+        const method = payment.method || '—';
+        const paidDate = payment.paidDate || 'Not yet';
+        const amount = Number(payment.amount || qameti.monthly || 0);
+
+        return `
+          <button class="qameti-month-row ${rowClass}" onclick="openQametiPaymentPopup(${index})">
+            <div class="qameti-month-title-row">
+              <div class="qameti-month-title">${escapeHtml(payment.label || ('Month ' + (index + 1)))}</div>
+              <div class="qameti-status-pill ${rowClass}">${statusText}</div>
+            </div>
+            <div class="qameti-month-details">
+              Due: ${escapeHtml(payment.dueDate || '—')}<br>
+              Paid: ${escapeHtml(paidDate)}<br>
+              Method: ${escapeHtml(method)}<br>
+              Amount: ${escapeHtml(qameti.currency)}${formatQametiMoney(amount)}
+            </div>
+          </button>
+        `;
+      }).join('');
+    }
+
+    function openAddQametiPopup() {
+      const popup = document.getElementById('qametiAddPopup');
+      if (!popup) return;
+
+      document.getElementById('qametiNameInput').value = '';
+      document.getElementById('qametiCurrencyInput').value = '$';
+      document.getElementById('qametiCustomCurrencyInput').value = '';
+      document.getElementById('qametiMembersInput').value = '';
+      document.getElementById('qametiMonthlyInput').value = '';
+      document.getElementById('qametiTotalInput').value = '';
+      document.getElementById('qametiMonthsInput').value = '';
+      document.getElementById('qametiStartMonthInput').value = getCurrentMonthInputValue();
+      document.getElementById('qametiDueDayInput').value = '5';
+      document.getElementById('qametiReceiveMonthInput').value = '';
+
+      popup.style.display = 'block';
+    }
+
+    function closeAddQametiPopup() {
+      const popup = document.getElementById('qametiAddPopup');
+      if (popup) popup.style.display = 'none';
+    }
+
+    function updateQametiAutoTotal() {
+      const members = Number(document.getElementById('qametiMembersInput').value || 0);
+      const monthly = Number(document.getElementById('qametiMonthlyInput').value || 0);
+      const totalInput = document.getElementById('qametiTotalInput');
+      const monthsInput = document.getElementById('qametiMonthsInput');
+
+      if (members > 0 && monthly > 0 && totalInput) {
+        totalInput.value = (members * monthly).toFixed(2);
+      }
+
+      if (members > 0 && monthsInput && !monthsInput.value) {
+        monthsInput.value = members;
+      }
+    }
+
+    function createNewQameti() {
+      const name = document.getElementById('qametiNameInput').value.trim() || 'New Qameti';
+      const currencyChoice = document.getElementById('qametiCurrencyInput').value;
+      const customCurrency = document.getElementById('qametiCustomCurrencyInput').value.trim();
+      const currency = currencyChoice === 'Custom' ? (customCurrency || '') : currencyChoice;
+      const members = Number(document.getElementById('qametiMembersInput').value || 0);
+      const monthly = Number(document.getElementById('qametiMonthlyInput').value || 0);
+      const total = Number(document.getElementById('qametiTotalInput').value || (members * monthly));
+      const months = Number(document.getElementById('qametiMonthsInput').value || members);
+      const startMonth = document.getElementById('qametiStartMonthInput').value || getCurrentMonthInputValue();
+      const dueDay = Number(document.getElementById('qametiDueDayInput').value || 5);
+      const receiveMonth = Number(document.getElementById('qametiReceiveMonthInput').value || 0);
+
+      if (members <= 0) {
+        alert('Please enter number of members.');
+        return;
+      }
+
+      if (monthly <= 0) {
+        alert('Please enter monthly contribution.');
+        return;
+      }
+
+      if (months <= 0) {
+        alert('Please enter how many months.');
+        return;
+      }
+
+      const payments = [];
+      for (let i = 0; i < months; i++) {
+        const monthInfo = getQametiMonthInfo(startMonth, i, dueDay);
+        payments.push({
+          label: monthInfo.label,
+          dueDate: monthInfo.date,
+          paidDate: '',
+          method: '',
+          amount: monthly,
+          notes: ''
+        });
+      }
+
+      const newQameti = {
+        id: 'qameti-' + Date.now(),
+        name: name,
+        currency: currency,
+        members: members,
+        monthly: monthly,
+        total: total,
+        months: months,
+        startMonth: startMonth,
+        dueDay: dueDay,
+        receiveMonth: receiveMonth,
+        createdAt: new Date().toISOString(),
+        payments: payments
+      };
+
+      const data = getQametiData();
+      data.unshift(newQameti);
+      saveQametiData(data);
+      currentQametiId = newQameti.id;
+      closeAddQametiPopup();
+      renderQametiPage();
+    }
+
+    function openQametiPaymentPopup(index) {
+      const qameti = getCurrentQameti();
+      if (!qameti || !qameti.payments || !qameti.payments[index]) return;
+
+      const payment = qameti.payments[index];
+      document.getElementById('qametiEditingPaymentIndex').value = String(index);
+      document.getElementById('qametiPaymentPopupTitle').innerText = payment.label || ('Month ' + (index + 1));
+      document.getElementById('qametiPaymentDueDateInput').value = payment.dueDate || '';
+      document.getElementById('qametiPaymentPaidDateInput').value = payment.paidDate || '';
+      document.getElementById('qametiPaymentAmountInput').value = payment.amount || qameti.monthly || '';
+      document.getElementById('qametiPaymentMethodInput').value = payment.method || '';
+      document.getElementById('qametiPaymentNotesInput').value = payment.notes || '';
+
+      document.getElementById('qametiPaymentPopup').style.display = 'block';
+    }
+
+    function closeQametiPaymentPopup() {
+      const popup = document.getElementById('qametiPaymentPopup');
+      if (popup) popup.style.display = 'none';
+    }
+
+    function saveQametiPayment() {
+      const index = Number(document.getElementById('qametiEditingPaymentIndex').value);
+      const data = getQametiData();
+      const qameti = data.find(item => item.id === currentQametiId);
+      if (!qameti || !qameti.payments || !qameti.payments[index]) return;
+
+      qameti.payments[index].dueDate = document.getElementById('qametiPaymentDueDateInput').value;
+      qameti.payments[index].paidDate = document.getElementById('qametiPaymentPaidDateInput').value;
+      qameti.payments[index].amount = Number(document.getElementById('qametiPaymentAmountInput').value || qameti.monthly || 0);
+      qameti.payments[index].method = document.getElementById('qametiPaymentMethodInput').value;
+      qameti.payments[index].notes = document.getElementById('qametiPaymentNotesInput').value.trim();
+
+      saveQametiData(data);
+      closeQametiPaymentPopup();
+      renderQametiPage();
+    }
+
+    function markQametiPaymentUnpaid() {
+      const paidDateInput = document.getElementById('qametiPaymentPaidDateInput');
+      const methodInput = document.getElementById('qametiPaymentMethodInput');
+      if (paidDateInput) paidDateInput.value = '';
+      if (methodInput) methodInput.value = '';
+      saveQametiPayment();
+    }
+
+    function deleteCurrentQameti() {
+      const qameti = getCurrentQameti();
+      if (!qameti) return;
+
+      const confirmed = confirm('Delete this qameti? This cannot be undone.');
+      if (!confirmed) return;
+
+      const data = getQametiData().filter(item => item.id !== qameti.id);
+      saveQametiData(data);
+      currentQametiId = null;
+      chooseLatestQametiIfNeeded();
+      renderQametiPage();
+    }
+
+    function getQametiPaidCount(qameti) {
+      return (qameti.payments || []).filter(payment => payment.paidDate).length;
+    }
+
+    function getQametiTotalPaid(qameti) {
+      return (qameti.payments || []).reduce((sum, payment) => {
+        if (!payment.paidDate) return sum;
+        return sum + Number(payment.amount || 0);
+      }, 0);
+    }
+
+    function getQametiReceiveText(qameti) {
+      const receiveMonth = Number(qameti.receiveMonth || 0);
+      if (!receiveMonth || receiveMonth < 1) {
+        return 'Receiving month is not set yet. You can still track all monthly payments.';
+      }
+
+      const payment = (qameti.payments || [])[receiveMonth - 1];
+      if (!payment) return 'Receiving month is outside the qameti month list.';
+
+      return 'Your turn: <strong>' + escapeHtml(payment.label) + '</strong><br>Expected payout: <strong>' + escapeHtml(qameti.currency) + formatQametiMoney(qameti.total) + '</strong>';
+    }
+
+    function getCurrentMonthInputValue() {
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+      return year + '-' + month;
+    }
+
+    function getQametiMonthInfo(startMonth, addMonthsAmount, dueDay) {
+      const parts = String(startMonth || getCurrentMonthInputValue()).split('-');
+      const year = Number(parts[0]);
+      const monthIndex = Number(parts[1]) - 1;
+      const date = new Date(year, monthIndex + addMonthsAmount, 1);
+      const realYear = date.getFullYear();
+      const realMonth = date.getMonth();
+      const lastDay = new Date(realYear, realMonth + 1, 0).getDate();
+      const safeDay = Math.min(Math.max(Number(dueDay || 5), 1), lastDay);
+      const dueDate = new Date(realYear, realMonth, safeDay);
+      const yyyy = dueDate.getFullYear();
+      const mm = String(dueDate.getMonth() + 1).padStart(2, '0');
+      const dd = String(dueDate.getDate()).padStart(2, '0');
+      const label = dueDate.toLocaleDateString(undefined, { month: 'long', year: 'numeric' });
+
+      return {
+        label: label,
+        date: yyyy + '-' + mm + '-' + dd
+      };
+    }
+
+    function formatQametiMoney(value) {
+      const num = Number(value || 0);
+      return num.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     }
 
     // =========================
