@@ -1186,11 +1186,17 @@
 
     // =========================
     // CLEAN PAYEE
+    // Removes commas from check name so CSV does not need quotes
+    // Example:
+    // Jeanine C. Driscoll, Receiver of Taxes
+    // becomes:
+    // Jeanine C. Driscoll Receiver of Taxes
     // =========================
     function cleanPayee(value) {
       return String(value || "")
-        .replace(/\s+/g, " ")
         .replace(/"/g, "")
+        .replace(/,/g, "")
+        .replace(/\s+/g, " ")
         .trim();
     }
 
