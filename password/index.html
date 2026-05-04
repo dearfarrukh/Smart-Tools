@@ -825,7 +825,7 @@
     // Same key as main page: smartToolsTheme
     // =========================
     function applySmartToolsTheme() {
-      const savedTheme = localStorage.getItem("smartToolsTheme") || "color";
+      const savedTheme = localStorage.getItem("smartToolsHomeTheme") || "dark";
       const themeBtn = document.getElementById("smartThemeToggleBtn");
 
       document.body.classList.remove("smart-tools-color-theme");
@@ -844,9 +844,9 @@
       const isDark = document.body.classList.contains("smart-tools-dark-theme");
 
       if (isDark) {
-        localStorage.setItem("smartToolsTheme", "color");
+        localStorage.setItem("smartToolsHomeTheme", "color");
       } else {
-        localStorage.setItem("smartToolsTheme", "dark");
+        localStorage.setItem("smartToolsHomeTheme", "dark");
       }
 
       applySmartToolsTheme();
