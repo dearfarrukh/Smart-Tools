@@ -1,1 +1,1045 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
 
+  <!-- =========================
+       IPHONE HOME SCREEN ICON
+  ========================= -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Password Generator">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+
+  <link rel="apple-touch-icon" href="../images/icon.png">
+  <link rel="icon" type="image/png" href="../images/icon.png">
+
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Password Generator</title>
+
+  <style>
+    /* =========================
+       RESET
+    ========================= */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html,
+    body {
+      width: 100%;
+      min-height: 100%;
+      font-family: Arial, Helvetica, sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(34,197,94,0.12), transparent 30%),
+        radial-gradient(circle at top right, rgba(14,165,233,0.10), transparent 32%),
+        linear-gradient(180deg, #07111f 0%, #0b1626 52%, #07111f 100%);
+      color: #f8fafc;
+    }
+
+    body {
+      min-height: 100vh;
+      padding-bottom: 34px;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    /* =========================
+       PAGE TOP BAR
+    ========================= */
+    .top-bar-wrap {
+      width: 100%;
+      padding: 20px 4% 0 4%;
+    }
+
+    .top-bar {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .back-btn {
+      border: none;
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: linear-gradient(180deg, rgba(30,41,59,0.88), rgba(15,23,42,0.84));
+      color: #f8fafc;
+      font-size: 24px;
+      font-weight: 900;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 14px 34px rgba(0,0,0,0.22);
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .top-bar-title {
+      flex: 1;
+      text-align: center;
+      font-size: 22px;
+      font-weight: 900;
+      color: #f8fafc;
+      letter-spacing: -0.4px;
+    }
+
+    .top-bar-spacer {
+      width: 52px;
+      height: 52px;
+      flex-shrink: 0;
+    }
+
+    /* =========================
+       PAGE LAYOUT
+    ========================= */
+    .page-inner {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 4% 40px 4%;
+    }
+
+    .inner-page-hero {
+      margin-top: 18px;
+      background: linear-gradient(135deg, #0ea5e9 0%, #2563eb 45%, #7c3aed 100%);
+      color: white;
+      border-radius: 30px;
+      padding: 32px 24px;
+      box-shadow: 0 14px 32px rgba(37, 99, 235, 0.20);
+    }
+
+    .inner-page-hero h1 {
+      font-size: 34px;
+      font-weight: 900;
+      line-height: 1.1;
+      margin-bottom: 12px;
+      letter-spacing: -0.8px;
+    }
+
+    .inner-page-hero p {
+      font-size: 17px;
+      line-height: 1.6;
+      color: rgba(255,255,255,0.95);
+      max-width: 760px;
+    }
+
+    /* =========================
+       CARDS
+    ========================= */
+    .card {
+      background: linear-gradient(180deg, rgba(30,41,59,0.88), rgba(15,23,42,0.84));
+      border: 1px solid rgba(148,163,184,0.20);
+      color: #f8fafc;
+      border-radius: 28px;
+      padding: 24px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 14px 34px rgba(0,0,0,0.22);
+    }
+
+    .card + .card {
+      margin-top: 22px;
+    }
+
+    .card-title {
+      font-size: 24px;
+      font-weight: 900;
+      color: #f8fafc;
+      margin-bottom: 8px;
+      letter-spacing: -0.5px;
+    }
+
+    .card-subtitle {
+      font-size: 15px;
+      line-height: 1.6;
+      color: #cbd5e1;
+      margin-bottom: 18px;
+    }
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+
+    .action-btn {
+      border: none;
+      min-height: 58px;
+      border-radius: 18px;
+      padding: 0 24px;
+      cursor: pointer;
+      font-size: 17px;
+      font-weight: 900;
+      flex: 1;
+      transition: transform 0.16s ease, opacity 0.16s ease;
+      color: white;
+    }
+
+    .action-btn:active {
+      transform: scale(0.97);
+    }
+
+    .blue-btn {
+      background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
+    }
+
+    .find-btn {
+      background: linear-gradient(135deg, #22c55e 0%, #14b8a6 100%);
+    }
+
+    .reset-btn {
+      background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);
+    }
+
+    /* =========================
+       PASSWORD GENERATOR
+    ========================= */
+    .password-generator-layout {
+      margin-top: 24px;
+      display: grid;
+      grid-template-columns: 0.95fr 1.05fr;
+      gap: 22px;
+      align-items: start;
+    }
+
+    .password-display-box {
+      width: 100%;
+      min-height: 76px;
+      border-radius: 22px;
+      padding: 18px;
+      background: linear-gradient(180deg, rgba(15,23,42,0.82), rgba(30,41,59,0.82));
+      border: 2px solid rgba(96,165,250,0.38);
+      color: #f8fafc;
+      font-size: 25px;
+      font-weight: 900;
+      line-height: 1.35;
+      word-break: break-all;
+      letter-spacing: 0.3px;
+    }
+
+    .password-strength-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 14px;
+      min-height: 42px;
+      padding: 0 18px;
+      border-radius: 999px;
+      background: rgba(148,163,184,0.16);
+      color: #cbd5e1;
+      font-size: 15px;
+      font-weight: 900;
+    }
+
+    .copy-message {
+      display: none;
+      margin-top: 14px;
+      border-radius: 18px;
+      padding: 14px;
+      background: #dcfce7;
+      color: #166534;
+      font-size: 16px;
+      font-weight: 900;
+      text-align: center;
+    }
+
+    .password-range {
+      width: 100%;
+      accent-color: #2563eb;
+    }
+
+    .password-option-row {
+      width: 100%;
+      min-height: 62px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      border-bottom: 1px solid rgba(148,163,184,0.18);
+      cursor: pointer;
+    }
+
+    .password-option-row span {
+      font-size: 17px;
+      font-weight: 900;
+      color: #f8fafc;
+    }
+
+    .password-option-row input[type="checkbox"] {
+      width: 24px;
+      height: 24px;
+      accent-color: #2563eb;
+      flex-shrink: 0;
+      cursor: pointer;
+    }
+
+    .custom-mix-toggle-row {
+      margin-top: 18px;
+      margin-bottom: 8px;
+      min-height: 58px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 14px 16px;
+      border-radius: 22px;
+      background: rgba(15,23,42,0.82);
+      border: 1px solid rgba(148,163,184,0.20);
+    }
+
+    .custom-mix-toggle-text {
+      min-width: 0;
+    }
+
+    .custom-mix-toggle-title {
+      font-size: 17px;
+      font-weight: 900;
+      color: #f8fafc;
+    }
+
+    .custom-mix-toggle-subtitle {
+      margin-top: 4px;
+      font-size: 13px;
+      font-weight: 800;
+      color: #cbd5e1;
+      line-height: 1.35;
+    }
+
+    .custom-mix-switch {
+      width: 68px;
+      height: 38px;
+      border: none;
+      border-radius: 999px;
+      background: #4b5563;
+      padding: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      flex-shrink: 0;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    .custom-mix-switch.on {
+      background: #22c55e;
+      justify-content: flex-end;
+    }
+
+    .custom-mix-switch-dot {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: white;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.22);
+    }
+
+    .custom-mix-option-content {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .custom-mix-controls {
+      display: none;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .custom-mix-controls.show {
+      display: flex;
+    }
+
+    .custom-mix-btn {
+      width: 34px;
+      height: 34px;
+      border: none;
+      border-radius: 50%;
+      background: #e0f2fe;
+      color: #0369a1;
+      font-size: 21px;
+      font-weight: 900;
+      cursor: pointer;
+      line-height: 1;
+    }
+
+    .custom-mix-count {
+      min-width: 30px;
+      text-align: center;
+      font-size: 19px;
+      font-weight: 900;
+      color: #f8fafc;
+    }
+
+    .custom-mix-total-box {
+      display: none;
+      margin-top: 14px;
+      border-radius: 18px;
+      padding: 14px 16px;
+      background: rgba(20,83,45,0.42);
+      border: 1px solid rgba(34,197,94,0.28);
+      color: #bbf7d0;
+      font-size: 16px;
+      font-weight: 900;
+      text-align: center;
+    }
+
+    .custom-mix-total-box.show {
+      display: block;
+    }
+
+    .length-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 14px;
+    }
+
+    .length-label {
+      font-size: 18px;
+      font-weight: 900;
+      color: #f8fafc;
+    }
+
+    .length-number {
+      font-size: 28px;
+      font-weight: 900;
+      color: #60a5fa;
+    }
+
+    .range-numbers {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      font-weight: 900;
+      color: #94a3b8;
+      margin-top: 10px;
+    }
+
+    /* =========================
+       RESPONSIVE
+    ========================= */
+    @media (max-width: 900px) {
+      .password-generator-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .page-inner {
+        padding: 0 5% 30px 5%;
+      }
+
+      .inner-page-hero {
+        padding: 26px 18px;
+        border-radius: 24px;
+      }
+
+      .inner-page-hero h1 {
+        font-size: 28px;
+      }
+
+      .card {
+        border-radius: 24px;
+        padding: 20px;
+      }
+
+      .card-title {
+        font-size: 21px;
+      }
+
+      .top-bar-title {
+        font-size: 20px;
+      }
+
+      .custom-mix-option-content {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .custom-mix-controls {
+        width: 100%;
+        justify-content: flex-start;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- =========================
+       PASSWORD GENERATOR PAGE
+  ========================= -->
+  <div class="top-bar-wrap">
+    <div class="top-bar">
+      <button class="back-btn" onclick="goBackToMainPage()">←</button>
+      <div class="top-bar-title">Password Generator</div>
+      <div class="top-bar-spacer"></div>
+    </div>
+  </div>
+
+  <div class="page-inner">
+
+    <div class="inner-page-hero">
+      <h1>Password Generator</h1>
+      <p>
+        Make a strong password with capital letters, small letters, numbers, and symbols.
+        You can choose the length, generate again, and copy it with one click.
+      </p>
+    </div>
+
+    <div class="password-generator-layout">
+
+      <!-- =========================
+           LEFT SIDE
+      ========================= -->
+      <div>
+
+        <div class="card">
+          <div class="card-title">Generated Password</div>
+          <div class="card-subtitle">Your new secure password will show here.</div>
+
+          <div id="generatedPasswordBox" class="password-display-box">Tap Generate Password</div>
+
+          <div id="passwordStrengthText" class="password-strength-pill">
+            Strength: Not generated yet
+          </div>
+
+          <div id="passwordCopyMessage" class="copy-message">
+            Password copied!
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Actions</div>
+          <div class="card-subtitle">Generate a new password or copy the current password.</div>
+
+          <div class="button-row">
+            <button class="action-btn blue-btn" onclick="generatePassword()">Generate Password</button>
+            <button class="action-btn find-btn" onclick="copyGeneratedPassword()">Copy Password</button>
+          </div>
+
+          <div class="button-row" style="margin-top:14px;">
+            <button class="action-btn reset-btn" onclick="resetPasswordGenerator()">Reset</button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- =========================
+           RIGHT SIDE
+      ========================= -->
+      <div>
+
+        <div class="card">
+          <div class="card-title">Password Length</div>
+          <div class="card-subtitle">Move the slider to choose how long the password should be.</div>
+
+          <div class="length-row">
+            <div class="length-label">Length</div>
+            <div id="passwordLengthNumber" class="length-number">16</div>
+          </div>
+
+          <input
+            id="passwordLengthSlider"
+            class="password-range"
+            type="range"
+            min="6"
+            max="40"
+            value="16"
+            oninput="updatePasswordLengthLabel()"
+          />
+
+          <div class="range-numbers">
+            <span>6</span>
+            <span>40</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Options</div>
+          <div class="card-subtitle">Turn on what you want inside the password.</div>
+
+          <div class="custom-mix-toggle-row">
+            <div class="custom-mix-toggle-text">
+              <div class="custom-mix-toggle-title">Custom Mix Optional</div>
+              <div class="custom-mix-toggle-subtitle">OFF uses the normal length slider. ON lets you choose exact amounts.</div>
+            </div>
+
+            <button id="customMixToggleBtn" class="custom-mix-switch" onclick="toggleCustomPasswordMix()" aria-label="Turn custom password mix on or off">
+              <span class="custom-mix-switch-dot"></span>
+            </button>
+          </div>
+
+          <label class="password-option-row">
+            <div class="custom-mix-option-content">
+              <span>Capital Letters A B C</span>
+              <div id="uppercaseMixControls" class="custom-mix-controls">
+                <button type="button" class="custom-mix-btn" onclick="event.preventDefault(); changePasswordMixCount('uppercase', -1);">−</button>
+                <div id="uppercaseMixCount" class="custom-mix-count">4</div>
+                <button type="button" class="custom-mix-btn" onclick="event.preventDefault(); changePasswordMixCount('uppercase', 1);">+</button>
+              </div>
+            </div>
+            <input id="includeUppercase" type="checkbox" checked onchange="updateCustomPasswordMixUI()">
+          </label>
+
+          <label class="password-option-row">
+            <div class="custom-mix-option-content">
+              <span>Small Letters a b c</span>
+              <div id="lowercaseMixControls" class="custom-mix-controls">
+                <button type="button" class="custom-mix-btn" onclick="event.preventDefault(); changePasswordMixCount('lowercase', -1);">−</button>
+                <div id="lowercaseMixCount" class="custom-mix-count">6</div>
+                <button type="button" class="custom-mix-btn" onclick="event.preventDefault(); changePasswordMixCount('lowercase', 1);">+</button>
+              </div>
+            </div>
+            <input id="includeLowercase" type="checkbox" checked onchange="updateCustomPasswordMixUI()">
+          </label>
+
+          <label class="password-option-row">
+            <div class="custom-mix-option-content">
+              <span>Numbers 1 2 3</span>
+              <div id="numbersMixControls" class="custom-mix-controls">
+                <button type="button" class="custom-mix-btn" onclick="event.preventDefault(); changePasswordMixCount('numbers', -1);">−</button>
+                <div id="numbersMixCount" class="custom-mix-count">3</div>
+                <button type="button" class="custom-mix-btn" onclick="event.preventDefault(); changePasswordMixCount('numbers', 1);">+</button>
+              </div>
+            </div>
+            <input id="includeNumbers" type="checkbox" checked onchange="updateCustomPasswordMixUI()">
+          </label>
+
+          <label class="password-option-row" style="border-bottom:none;">
+            <div class="custom-mix-option-content">
+              <span>Symbols @ # $</span>
+              <div id="symbolsMixControls" class="custom-mix-controls">
+                <button type="button" class="custom-mix-btn" onclick="event.preventDefault(); changePasswordMixCount('symbols', -1);">−</button>
+                <div id="symbolsMixCount" class="custom-mix-count">2</div>
+                <button type="button" class="custom-mix-btn" onclick="event.preventDefault(); changePasswordMixCount('symbols', 1);">+</button>
+              </div>
+            </div>
+            <input id="includeSymbols" type="checkbox" checked onchange="updateCustomPasswordMixUI()">
+          </label>
+
+          <div id="customMixTotalBox" class="custom-mix-total-box">Custom Mix Total Length: 15</div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // =========================
+    // BACK TO MAIN PAGE
+    // =========================
+    function goBackToMainPage() {
+      window.location.href = "../";
+    }
+
+    // =========================
+    // PASSWORD GENERATOR STATE
+    // =========================
+    let isCustomPasswordMixOn = false;
+
+    const passwordMixCounts = {
+      uppercase: 4,
+      lowercase: 6,
+      numbers: 3,
+      symbols: 2
+    };
+
+    // =========================
+    // UPDATE PASSWORD LENGTH LABEL
+    // =========================
+    function updatePasswordLengthLabel() {
+      const slider = document.getElementById("passwordLengthSlider");
+      const label = document.getElementById("passwordLengthNumber");
+
+      if (!slider || !label) return;
+
+      label.innerText = isCustomPasswordMixOn ? getCustomPasswordMixTotal() : slider.value;
+    }
+
+    // =========================
+    // TOGGLE CUSTOM PASSWORD MIX
+    // =========================
+    function toggleCustomPasswordMix() {
+      isCustomPasswordMixOn = !isCustomPasswordMixOn;
+      updateCustomPasswordMixUI();
+    }
+
+    // =========================
+    // UPDATE CUSTOM PASSWORD MIX UI
+    // =========================
+    function updateCustomPasswordMixUI() {
+      const toggleBtn = document.getElementById("customMixToggleBtn");
+      const totalBox = document.getElementById("customMixTotalBox");
+      const slider = document.getElementById("passwordLengthSlider");
+
+      const controls = [
+        document.getElementById("uppercaseMixControls"),
+        document.getElementById("lowercaseMixControls"),
+        document.getElementById("numbersMixControls"),
+        document.getElementById("symbolsMixControls")
+      ];
+
+      if (toggleBtn) {
+        toggleBtn.classList.toggle("on", isCustomPasswordMixOn);
+        toggleBtn.setAttribute("aria-label", isCustomPasswordMixOn ? "Custom password mix is on" : "Custom password mix is off");
+      }
+
+      controls.forEach(control => {
+        if (control) control.classList.toggle("show", isCustomPasswordMixOn);
+      });
+
+      if (slider) slider.disabled = isCustomPasswordMixOn;
+
+      updatePasswordMixCountLabels();
+
+      if (totalBox) {
+        totalBox.classList.toggle("show", isCustomPasswordMixOn);
+        totalBox.innerText = "Custom Mix Total Length: " + getCustomPasswordMixTotal();
+      }
+
+      updatePasswordLengthLabel();
+    }
+
+    // =========================
+    // CHANGE PASSWORD MIX COUNT
+    // =========================
+    function changePasswordMixCount(type, amount) {
+      if (!Object.prototype.hasOwnProperty.call(passwordMixCounts, type)) return;
+
+      passwordMixCounts[type] += amount;
+
+      if (passwordMixCounts[type] < 0) passwordMixCounts[type] = 0;
+      if (passwordMixCounts[type] > 40) passwordMixCounts[type] = 40;
+
+      updateCustomPasswordMixUI();
+    }
+
+    // =========================
+    // UPDATE PASSWORD MIX COUNT LABELS
+    // =========================
+    function updatePasswordMixCountLabels() {
+      const uppercaseLabel = document.getElementById("uppercaseMixCount");
+      const lowercaseLabel = document.getElementById("lowercaseMixCount");
+      const numbersLabel = document.getElementById("numbersMixCount");
+      const symbolsLabel = document.getElementById("symbolsMixCount");
+
+      if (uppercaseLabel) uppercaseLabel.innerText = passwordMixCounts.uppercase;
+      if (lowercaseLabel) lowercaseLabel.innerText = passwordMixCounts.lowercase;
+      if (numbersLabel) numbersLabel.innerText = passwordMixCounts.numbers;
+      if (symbolsLabel) symbolsLabel.innerText = passwordMixCounts.symbols;
+    }
+
+    // =========================
+    // GET CUSTOM PASSWORD MIX TOTAL
+    // =========================
+    function getCustomPasswordMixTotal() {
+      const uppercaseInput = document.getElementById("includeUppercase");
+      const lowercaseInput = document.getElementById("includeLowercase");
+      const numbersInput = document.getElementById("includeNumbers");
+      const symbolsInput = document.getElementById("includeSymbols");
+
+      let total = 0;
+
+      if (!uppercaseInput || uppercaseInput.checked) total += passwordMixCounts.uppercase;
+      if (!lowercaseInput || lowercaseInput.checked) total += passwordMixCounts.lowercase;
+      if (!numbersInput || numbersInput.checked) total += passwordMixCounts.numbers;
+      if (!symbolsInput || symbolsInput.checked) total += passwordMixCounts.symbols;
+
+      return total;
+    }
+
+    // =========================
+    // GENERATE PASSWORD
+    // =========================
+    function generatePassword() {
+      const passwordBox = document.getElementById("generatedPasswordBox");
+      const strengthText = document.getElementById("passwordStrengthText");
+      const copyMessage = document.getElementById("passwordCopyMessage");
+
+      const lengthInput = document.getElementById("passwordLengthSlider");
+      const uppercaseInput = document.getElementById("includeUppercase");
+      const lowercaseInput = document.getElementById("includeLowercase");
+      const numbersInput = document.getElementById("includeNumbers");
+      const symbolsInput = document.getElementById("includeSymbols");
+
+      if (copyMessage) copyMessage.style.display = "none";
+
+      const length = lengthInput ? parseInt(lengthInput.value, 10) : 16;
+
+      const uppercaseChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+      const lowercaseChars = "abcdefghijklmnopqrstuvwxyz";
+      const numberChars = "0123456789";
+      const symbolChars = "!@#$%^&*-_+=?";
+
+      let passwordArray = [];
+
+      if (isCustomPasswordMixOn) {
+        if (uppercaseInput && uppercaseInput.checked) {
+          addPasswordCharacters(passwordArray, uppercaseChars, passwordMixCounts.uppercase);
+        }
+
+        if (lowercaseInput && lowercaseInput.checked) {
+          addPasswordCharacters(passwordArray, lowercaseChars, passwordMixCounts.lowercase);
+        }
+
+        if (numbersInput && numbersInput.checked) {
+          addPasswordCharacters(passwordArray, numberChars, passwordMixCounts.numbers);
+        }
+
+        if (symbolsInput && symbolsInput.checked) {
+          addPasswordCharacters(passwordArray, symbolChars, passwordMixCounts.symbols);
+        }
+
+        if (passwordArray.length === 0) {
+          if (passwordBox) passwordBox.innerText = "Choose at least one custom mix amount";
+
+          if (strengthText) {
+            strengthText.innerText = "Strength: Cannot generate";
+            strengthText.style.background = "#fee2e2";
+            strengthText.style.color = "#991b1b";
+          }
+
+          return;
+        }
+
+        passwordArray = shufflePasswordArray(passwordArray);
+
+        const customPassword = passwordArray.join("");
+
+        if (passwordBox) passwordBox.innerText = customPassword;
+
+        updatePasswordStrength(customPassword);
+        return;
+      }
+
+      let selectedGroups = [];
+      let allChars = "";
+
+      if (uppercaseInput && uppercaseInput.checked) {
+        selectedGroups.push(uppercaseChars);
+        allChars += uppercaseChars;
+      }
+
+      if (lowercaseInput && lowercaseInput.checked) {
+        selectedGroups.push(lowercaseChars);
+        allChars += lowercaseChars;
+      }
+
+      if (numbersInput && numbersInput.checked) {
+        selectedGroups.push(numberChars);
+        allChars += numberChars;
+      }
+
+      if (symbolsInput && symbolsInput.checked) {
+        selectedGroups.push(symbolChars);
+        allChars += symbolChars;
+      }
+
+      if (allChars === "") {
+        if (passwordBox) passwordBox.innerText = "Choose at least one option";
+
+        if (strengthText) {
+          strengthText.innerText = "Strength: Cannot generate";
+          strengthText.style.background = "#fee2e2";
+          strengthText.style.color = "#991b1b";
+        }
+
+        return;
+      }
+
+      selectedGroups.forEach(group => {
+        passwordArray.push(getRandomCharacter(group));
+      });
+
+      while (passwordArray.length < length) {
+        passwordArray.push(getRandomCharacter(allChars));
+      }
+
+      passwordArray = shufflePasswordArray(passwordArray);
+
+      const password = passwordArray.join("");
+
+      if (passwordBox) passwordBox.innerText = password;
+
+      updatePasswordStrength(password);
+    }
+
+    // =========================
+    // ADD PASSWORD CHARACTERS
+    // =========================
+    function addPasswordCharacters(passwordArray, characterSet, amount) {
+      for (let i = 0; i < amount; i++) {
+        passwordArray.push(getRandomCharacter(characterSet));
+      }
+    }
+
+    // =========================
+    // GET RANDOM CHARACTER
+    // =========================
+    function getRandomCharacter(characterSet) {
+      const randomIndex = Math.floor(Math.random() * characterSet.length);
+      return characterSet.charAt(randomIndex);
+    }
+
+    // =========================
+    // SHUFFLE PASSWORD ARRAY
+    // =========================
+    function shufflePasswordArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const randomIndex = Math.floor(Math.random() * (i + 1));
+        const temp = array[i];
+        array[i] = array[randomIndex];
+        array[randomIndex] = temp;
+      }
+
+      return array;
+    }
+
+    // =========================
+    // UPDATE PASSWORD STRENGTH
+    // =========================
+    function updatePasswordStrength(password) {
+      const strengthText = document.getElementById("passwordStrengthText");
+
+      if (!strengthText) return;
+
+      let score = 0;
+
+      if (password.length >= 10) score++;
+      if (password.length >= 16) score++;
+      if (/[A-Z]/.test(password)) score++;
+      if (/[a-z]/.test(password)) score++;
+      if (/[0-9]/.test(password)) score++;
+      if (/[^A-Za-z0-9]/.test(password)) score++;
+
+      if (score <= 2) {
+        strengthText.innerText = "Strength: Weak";
+        strengthText.style.background = "#fee2e2";
+        strengthText.style.color = "#991b1b";
+        return;
+      }
+
+      if (score <= 4) {
+        strengthText.innerText = "Strength: Good";
+        strengthText.style.background = "#fef3c7";
+        strengthText.style.color = "#92400e";
+        return;
+      }
+
+      strengthText.innerText = "Strength: Strong";
+      strengthText.style.background = "#dcfce7";
+      strengthText.style.color = "#166534";
+    }
+
+    // =========================
+    // COPY GENERATED PASSWORD
+    // =========================
+    async function copyGeneratedPassword() {
+      const passwordBox = document.getElementById("generatedPasswordBox");
+      const copyMessage = document.getElementById("passwordCopyMessage");
+
+      if (!passwordBox) return;
+
+      const password = passwordBox.innerText.trim();
+
+      if (
+        password === "" ||
+        password === "Tap Generate Password" ||
+        password === "Choose at least one option" ||
+        password === "Choose at least one custom mix amount"
+      ) {
+        if (copyMessage) {
+          copyMessage.style.display = "block";
+          copyMessage.style.background = "#fee2e2";
+          copyMessage.style.color = "#991b1b";
+          copyMessage.innerText = "Generate a password first.";
+        }
+
+        return;
+      }
+
+      try {
+        await navigator.clipboard.writeText(password);
+
+        if (copyMessage) {
+          copyMessage.style.display = "block";
+          copyMessage.style.background = "#dcfce7";
+          copyMessage.style.color = "#166534";
+          copyMessage.innerText = "Password copied!";
+        }
+      } catch (error) {
+        if (copyMessage) {
+          copyMessage.style.display = "block";
+          copyMessage.style.background = "#fef3c7";
+          copyMessage.style.color = "#92400e";
+          copyMessage.innerText = "Copy did not work. Select password and copy manually.";
+        }
+      }
+    }
+
+    // =========================
+    // RESET PASSWORD GENERATOR
+    // =========================
+    function resetPasswordGenerator() {
+      const passwordBox = document.getElementById("generatedPasswordBox");
+      const strengthText = document.getElementById("passwordStrengthText");
+      const copyMessage = document.getElementById("passwordCopyMessage");
+      const slider = document.getElementById("passwordLengthSlider");
+
+      if (slider) slider.value = 16;
+
+      isCustomPasswordMixOn = false;
+
+      passwordMixCounts.uppercase = 4;
+      passwordMixCounts.lowercase = 6;
+      passwordMixCounts.numbers = 3;
+      passwordMixCounts.symbols = 2;
+
+      const uppercaseInput = document.getElementById("includeUppercase");
+      const lowercaseInput = document.getElementById("includeLowercase");
+      const numbersInput = document.getElementById("includeNumbers");
+      const symbolsInput = document.getElementById("includeSymbols");
+
+      if (uppercaseInput) uppercaseInput.checked = true;
+      if (lowercaseInput) lowercaseInput.checked = true;
+      if (numbersInput) numbersInput.checked = true;
+      if (symbolsInput) symbolsInput.checked = true;
+
+      updateCustomPasswordMixUI();
+      updatePasswordLengthLabel();
+
+      if (passwordBox) passwordBox.innerText = "Tap Generate Password";
+
+      if (strengthText) {
+        strengthText.innerText = "Strength: Not generated yet";
+        strengthText.style.background = "rgba(148,163,184,0.16)";
+        strengthText.style.color = "#cbd5e1";
+      }
+
+      if (copyMessage) copyMessage.style.display = "none";
+    }
+
+    // =========================
+    // PAGE LOAD
+    // =========================
+    document.addEventListener("DOMContentLoaded", function() {
+      updatePasswordLengthLabel();
+      updateCustomPasswordMixUI();
+    });
+  </script>
+
+</body>
+</html>
