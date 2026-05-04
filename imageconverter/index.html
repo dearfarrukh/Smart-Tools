@@ -1,0 +1,1572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <!-- =========================
+       IPHONE HOME SCREEN ICON
+  ========================= -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Image Tools">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+
+  <link rel="apple-touch-icon" href="../images/icon.png">
+  <link rel="icon" type="image/png" href="../images/icon.png">
+
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>PDF / Image Tools</title>
+
+  <!-- PDF READER -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+
+  <!-- ZIP DOWNLOAD -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+  <!-- PDF MAKER -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <!-- PDF EDIT / MERGE -->
+  <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+
+  <style>
+    /* =========================
+       RESET
+    ========================= */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html,
+    body {
+      width: 100%;
+      min-height: 100%;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      padding-bottom: 34px;
+      color: #111827;
+      background:
+        radial-gradient(circle at top left, rgba(96,165,250,0.24), transparent 30%),
+        radial-gradient(circle at top right, rgba(244,114,182,0.22), transparent 32%),
+        linear-gradient(180deg, #f4f7ff 0%, #eef2ff 48%, #f8fafc 100%);
+    }
+
+    button,
+    input,
+    textarea,
+    select {
+      font: inherit;
+    }
+
+    /* =========================
+       PAGE TOP BAR
+    ========================= */
+    .top-bar-wrap {
+      width: 100%;
+      padding: 20px 4% 0 4%;
+    }
+
+    .top-bar {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .back-btn {
+      border: none;
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: white;
+      color: #111827;
+      font-size: 24px;
+      font-weight: 900;
+      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.10);
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .back-btn:active {
+      transform: scale(0.96);
+    }
+
+    .top-bar-title {
+      flex: 1;
+      text-align: center;
+      font-size: 22px;
+      font-weight: 900;
+      color: #111827;
+      letter-spacing: -0.4px;
+    }
+
+    .top-bar-spacer {
+      width: 52px;
+      height: 52px;
+      flex-shrink: 0;
+    }
+
+    /* =========================
+       PAGE LAYOUT
+    ========================= */
+    .page-inner {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 4% 40px 4%;
+    }
+
+    .inner-page-hero {
+      margin-top: 18px;
+      background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 45%, #0ea5e9 100%);
+      color: white;
+      border-radius: 30px;
+      padding: 32px 24px;
+      box-shadow: 0 14px 32px rgba(139, 92, 246, 0.20);
+    }
+
+    .inner-page-hero h1 {
+      font-size: 34px;
+      font-weight: 900;
+      line-height: 1.1;
+      margin-bottom: 12px;
+      letter-spacing: -0.8px;
+    }
+
+    .inner-page-hero p {
+      font-size: 17px;
+      line-height: 1.6;
+      color: rgba(255,255,255,0.95);
+      max-width: 760px;
+    }
+
+    /* =========================
+       CARDS
+    ========================= */
+    .card {
+      background: white;
+      border: 1px solid rgba(15,23,42,0.07);
+      color: #111827;
+      border-radius: 28px;
+      padding: 24px;
+      box-shadow: 0 14px 34px rgba(15,23,42,0.10);
+    }
+
+    .card + .card {
+      margin-top: 22px;
+    }
+
+    .card-title {
+      font-size: 24px;
+      font-weight: 900;
+      color: #111827;
+      margin-bottom: 8px;
+      letter-spacing: -0.5px;
+    }
+
+    .card-subtitle {
+      font-size: 15px;
+      line-height: 1.6;
+      color: #64748b;
+      margin-bottom: 18px;
+    }
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+
+    .action-btn {
+      border: none;
+      min-height: 58px;
+      border-radius: 18px;
+      padding: 0 20px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 900;
+      flex: 1;
+      transition: transform 0.16s ease, opacity 0.16s ease;
+      color: white;
+    }
+
+    .action-btn:active {
+      transform: scale(0.97);
+    }
+
+    .blue-btn {
+      background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
+    }
+
+    .green-btn {
+      background: linear-gradient(135deg, #22c55e 0%, #14b8a6 100%);
+    }
+
+    .purple-btn {
+      background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+    }
+
+    .orange-btn {
+      background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);
+    }
+
+    .pink-btn {
+      background: linear-gradient(135deg, #ec4899 0%, #f43f5e 100%);
+    }
+
+    .gray-btn {
+      background: linear-gradient(135deg, #64748b 0%, #334155 100%);
+    }
+
+    /* =========================
+       IMAGE TOOLS
+    ========================= */
+    .tools-layout {
+      margin-top: 24px;
+      display: grid;
+      grid-template-columns: 0.95fr 1.05fr;
+      gap: 22px;
+      align-items: start;
+    }
+
+    .file-upload-box {
+      border: 2px dashed #c4b5fd;
+      border-radius: 24px;
+      padding: 26px;
+      text-align: center;
+      background: linear-gradient(180deg, #faf5ff 0%, #eef2ff 100%);
+      cursor: pointer;
+    }
+
+    .file-upload-icon {
+      font-size: 48px;
+      margin-bottom: 10px;
+    }
+
+    .file-upload-title {
+      font-size: 20px;
+      font-weight: 900;
+      color: #111827;
+      margin-bottom: 6px;
+    }
+
+    .file-upload-subtitle {
+      font-size: 14px;
+      line-height: 1.6;
+      color: #64748b;
+    }
+
+    .hidden-file-input {
+      display: none;
+    }
+
+    .file-pill {
+      margin-top: 12px;
+      border-radius: 16px;
+      padding: 12px 14px;
+      background: #f8fafc;
+      border: 1px solid #e5e7eb;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 14px;
+      color: #334155;
+      font-weight: 800;
+      word-break: break-word;
+    }
+
+    .smart-action-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .smart-tool-btn {
+      border: none;
+      min-height: 86px;
+      border-radius: 20px;
+      padding: 14px;
+      cursor: pointer;
+      color: white;
+      text-align: left;
+      box-shadow: 0 10px 24px rgba(15,23,42,0.12);
+    }
+
+    .smart-tool-btn-icon {
+      font-size: 26px;
+      margin-bottom: 8px;
+    }
+
+    .smart-tool-btn-title {
+      font-size: 16px;
+      font-weight: 900;
+      line-height: 1.25;
+    }
+
+    .smart-tool-btn-sub {
+      margin-top: 4px;
+      font-size: 12px;
+      line-height: 1.35;
+      opacity: 0.92;
+      font-weight: 700;
+    }
+
+    .result-box {
+      min-height: 150px;
+      border-radius: 22px;
+      padding: 18px;
+      background: linear-gradient(180deg, #f9fafb 0%, #f3f4f6 100%);
+      border: 1px solid #eef2f7;
+    }
+
+    .result-success {
+      background: linear-gradient(180deg, #ecfdf5 0%, #d1fae5 100%);
+      border: 1px solid #86efac;
+    }
+
+    .result-error {
+      background: linear-gradient(180deg, #fff7ed 0%, #ffedd5 100%);
+      border: 1px solid #fdba74;
+    }
+
+    .result-heading {
+      font-size: 22px;
+      font-weight: 900;
+      margin-bottom: 10px;
+      color: #111827;
+      letter-spacing: -0.4px;
+    }
+
+    .result-placeholder {
+      color: #64748b;
+      font-size: 16px;
+      line-height: 1.7;
+    }
+
+    .preview-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+    }
+
+    .preview-item {
+      border-radius: 20px;
+      overflow: hidden;
+      background: white;
+      border: 1px solid #e5e7eb;
+      box-shadow: 0 8px 18px rgba(15,23,42,0.08);
+    }
+
+    .preview-item img {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+      display: block;
+      background: #f8fafc;
+    }
+
+    .preview-item-info {
+      padding: 12px;
+      font-size: 13px;
+      font-weight: 900;
+      color: #334155;
+      line-height: 1.45;
+      word-break: break-word;
+    }
+
+    .setting-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .setting-label {
+      font-size: 13px;
+      font-weight: 900;
+      color: #475569;
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    .setting-input {
+      width: 100%;
+      height: 52px;
+      border: 2px solid #e5e7eb;
+      border-radius: 16px;
+      padding: 0 14px;
+      outline: none;
+      background: #fcfcff;
+      color: #111827;
+      font-size: 16px;
+      font-weight: 800;
+    }
+
+    .small-help {
+      margin-top: 12px;
+      font-size: 14px;
+      line-height: 1.7;
+      color: #64748b;
+    }
+
+    /* =========================
+       DARK THEME
+    ========================= */
+    body.smart-tools-dark-theme {
+      background:
+        radial-gradient(circle at top left, rgba(34,197,94,0.12), transparent 30%),
+        radial-gradient(circle at top right, rgba(14,165,233,0.10), transparent 32%),
+        linear-gradient(180deg, #07111f 0%, #0b1626 52%, #07111f 100%);
+      color: #f8fafc;
+    }
+
+    body.smart-tools-dark-theme .top-bar-title,
+    body.smart-tools-dark-theme .card-title,
+    body.smart-tools-dark-theme .file-upload-title,
+    body.smart-tools-dark-theme .result-heading {
+      color: #f8fafc;
+    }
+
+    body.smart-tools-dark-theme .back-btn,
+    body.smart-tools-dark-theme .card,
+    body.smart-tools-dark-theme .result-box,
+    body.smart-tools-dark-theme .file-upload-box,
+    body.smart-tools-dark-theme .file-pill,
+    body.smart-tools-dark-theme .preview-item {
+      background: linear-gradient(180deg, rgba(30,41,59,0.88), rgba(15,23,42,0.84));
+      border-color: rgba(148,163,184,0.20);
+      color: #f8fafc;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 14px 34px rgba(0,0,0,0.22);
+    }
+
+    body.smart-tools-dark-theme .card-subtitle,
+    body.smart-tools-dark-theme .file-upload-subtitle,
+    body.smart-tools-dark-theme .result-placeholder,
+    body.smart-tools-dark-theme .file-pill,
+    body.smart-tools-dark-theme .preview-item-info,
+    body.smart-tools-dark-theme .setting-label,
+    body.smart-tools-dark-theme .small-help {
+      color: #cbd5e1;
+    }
+
+    body.smart-tools-dark-theme .setting-input {
+      background: rgba(15,23,42,0.82);
+      color: #f8fafc;
+      border-color: rgba(148,163,184,0.30);
+    }
+
+    body.smart-tools-dark-theme .setting-input::placeholder {
+      color: #94a3b8;
+    }
+
+    /* =========================
+       COLOR THEME
+    ========================= */
+    body.smart-tools-color-theme {
+      background:
+        radial-gradient(circle at top left, rgba(96,165,250,0.24), transparent 30%),
+        radial-gradient(circle at top right, rgba(244,114,182,0.22), transparent 32%),
+        linear-gradient(180deg, #f4f7ff 0%, #eef2ff 48%, #f8fafc 100%);
+      color: #111827;
+    }
+
+    body.smart-tools-color-theme .top-bar-title,
+    body.smart-tools-color-theme .card-title,
+    body.smart-tools-color-theme .file-upload-title,
+    body.smart-tools-color-theme .result-heading {
+      color: #111827;
+    }
+
+    body.smart-tools-color-theme .back-btn,
+    body.smart-tools-color-theme .card {
+      background: white;
+      color: #111827;
+      border-color: rgba(15,23,42,0.07);
+      box-shadow: 0 14px 34px rgba(15,23,42,0.10);
+    }
+
+    /* =========================
+       RESPONSIVE
+    ========================= */
+    @media (max-width: 900px) {
+      .tools-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .top-bar-wrap {
+        padding: 16px 4% 0 4%;
+      }
+
+      .page-inner {
+        padding: 0 5% 30px 5%;
+      }
+
+      .inner-page-hero {
+        padding: 26px 18px;
+        border-radius: 24px;
+      }
+
+      .inner-page-hero h1 {
+        font-size: 28px;
+      }
+
+      .inner-page-hero p {
+        font-size: 16px;
+      }
+
+      .card {
+        border-radius: 24px;
+        padding: 20px;
+      }
+
+      .card-title {
+        font-size: 21px;
+      }
+
+      .top-bar-title {
+        font-size: 20px;
+      }
+
+      .back-btn,
+      .top-bar-spacer {
+        width: 48px;
+        height: 48px;
+      }
+
+      .smart-action-grid,
+      .preview-grid,
+      .setting-row {
+        grid-template-columns: 1fr;
+      }
+
+      .button-row {
+        flex-direction: column;
+      }
+
+      .action-btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body class="smart-tools-color-theme">
+
+  <!-- =========================
+       PDF / IMAGE TOOLS PAGE
+  ========================= -->
+  <div class="top-bar-wrap">
+    <div class="top-bar">
+      <button class="back-btn" onclick="goBackToMainPage()">←</button>
+      <div class="top-bar-title">PDF / Image Tools</div>
+      <div class="top-bar-spacer"></div>
+    </div>
+  </div>
+
+  <div class="page-inner">
+
+    <div class="inner-page-hero">
+      <h1>PDF / Image Tools</h1>
+      <p>
+        Upload PDF or image files in one place. The app will decide what tools are available:
+        PDF to PNG, image to PDF, convert images, compress images, merge PDFs, or keep selected PDF pages.
+      </p>
+    </div>
+
+    <div class="tools-layout">
+
+      <!-- =========================
+           LEFT SIDE
+      ========================= -->
+      <div>
+
+        <div class="card">
+          <div class="card-title">Upload PDF or Images</div>
+          <div class="card-subtitle">
+            Select PDF, PNG, JPG, JPEG, or WEBP files. You can choose multiple files.
+          </div>
+
+          <label class="file-upload-box" for="smartFileInput">
+            <div class="file-upload-icon">🖼️</div>
+            <div class="file-upload-title">Tap to Choose Files</div>
+            <div class="file-upload-subtitle">
+              Supported: PDF, PNG, JPG, JPEG, WEBP
+            </div>
+          </label>
+
+          <input
+            id="smartFileInput"
+            class="hidden-file-input"
+            type="file"
+            multiple
+            accept=".pdf,.png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp,application/pdf"
+            onchange="handleSmartFileSelection(event)"
+          />
+
+          <div id="smartFileList">
+            <div class="result-placeholder" style="margin-top:16px;">
+              No files selected yet.
+            </div>
+          </div>
+
+          <div class="button-row" style="margin-top:18px;">
+            <button class="action-btn orange-btn" onclick="resetSmartTools()">Reset</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Tool Settings</div>
+          <div class="card-subtitle">
+            Use these only when needed for selected tools.
+          </div>
+
+          <div class="setting-row">
+            <label>
+              <span class="setting-label">PDF Pages to Keep</span>
+              <input id="pdfPagesInput" class="setting-input" type="text" placeholder="Example: 1,3,5-7">
+            </label>
+
+            <label>
+              <span class="setting-label">Image Quality</span>
+              <select id="imageQualityInput" class="setting-input">
+                <option value="0.92">High Quality</option>
+                <option value="0.72" selected>Medium Quality</option>
+                <option value="0.48">Small Size</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="small-help">
+            For PDF page selection, write page numbers like <strong>1,3,5-7</strong>.
+            Image quality works for JPG/WEBP/compress downloads.
+          </div>
+        </div>
+
+      </div>
+
+      <!-- =========================
+           RIGHT SIDE
+      ========================= -->
+      <div>
+
+        <div class="card">
+          <div class="card-title">Available Actions</div>
+          <div class="card-subtitle">
+            Buttons will appear depending on the file type you selected.
+          </div>
+
+          <div id="smartActionsBox" class="result-box">
+            <div class="result-placeholder">
+              Choose files first.
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Status</div>
+          <div class="card-subtitle">
+            Tool messages will show here.
+          </div>
+
+          <div id="smartStatusBox" class="result-box">
+            <div class="result-placeholder">
+              Waiting for files.
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Preview</div>
+          <div class="card-subtitle">
+            Image previews will show here.
+          </div>
+
+          <div id="smartPreviewBox" class="result-box">
+            <div class="result-placeholder">
+              No preview yet.
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // =========================
+    // PDF JS WORKER
+    // =========================
+    if (window.pdfjsLib) {
+      pdfjsLib.GlobalWorkerOptions.workerSrc =
+        "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+    }
+
+    // =========================
+    // BACK TO MAIN PAGE
+    // =========================
+    function goBackToMainPage() {
+      window.location.href = "../";
+    }
+
+    // =========================
+    // SMART TOOLS THEME
+    // Follows main page key: smartToolsHomeTheme
+    // =========================
+    function applySmartToolsTheme() {
+      const savedTheme = localStorage.getItem("smartToolsHomeTheme") || "dark";
+
+      document.body.classList.remove("smart-tools-color-theme");
+      document.body.classList.remove("smart-tools-dark-theme");
+
+      if (savedTheme === "color") {
+        document.body.classList.add("smart-tools-color-theme");
+      } else {
+        document.body.classList.add("smart-tools-dark-theme");
+      }
+    }
+
+    // =========================
+    // SMART FILE TOOLS STATE
+    // =========================
+    let smartSelectedFiles = [];
+    let smartRotatedImages = [];
+
+    // =========================
+    // HANDLE SMART FILE SELECTION
+    // =========================
+    function handleSmartFileSelection(event) {
+      smartSelectedFiles = Array.from(event.target.files || []);
+      smartRotatedImages = [];
+
+      renderSmartFileList();
+      renderSmartActions();
+      renderSmartFilePreview();
+
+      if (!smartSelectedFiles.length) {
+        setSmartStatus("ready", "Waiting for files.");
+        return;
+      }
+
+      setSmartStatus("success", smartSelectedFiles.length + " file(s) selected.");
+    }
+
+    // =========================
+    // RENDER SMART FILE LIST
+    // =========================
+    function renderSmartFileList() {
+      const fileList = document.getElementById("smartFileList");
+
+      if (!fileList) return;
+
+      if (!smartSelectedFiles.length) {
+        fileList.innerHTML = `
+          <div class="result-placeholder" style="margin-top:16px;">
+            No files selected yet.
+          </div>
+        `;
+        applySmartToolsTheme();
+        return;
+      }
+
+      fileList.innerHTML = smartSelectedFiles.map(file => `
+        <div class="file-pill">
+          <span>${escapeHtml(file.name)}</span>
+          <span>${formatFileSize(file.size)}</span>
+        </div>
+      `).join("");
+
+      applySmartToolsTheme();
+    }
+
+    // =========================
+    // RENDER SMART ACTIONS
+    // =========================
+    function renderSmartActions() {
+      const actionsBox = document.getElementById("smartActionsBox");
+
+      if (!actionsBox) return;
+
+      if (!smartSelectedFiles.length) {
+        actionsBox.className = "result-box";
+        actionsBox.innerHTML = `
+          <div class="result-placeholder">
+            Choose files first.
+          </div>
+        `;
+        applySmartToolsTheme();
+        return;
+      }
+
+      const hasPdf = smartSelectedFiles.some(file => isPdfFile(file));
+      const hasImage = smartSelectedFiles.some(file => isImageFile(file));
+      const pdfCount = smartSelectedFiles.filter(file => isPdfFile(file)).length;
+      const imageCount = smartSelectedFiles.filter(file => isImageFile(file)).length;
+
+      let buttons = "";
+
+      if (hasPdf) {
+        buttons += `
+          <button class="smart-tool-btn blue-btn" onclick="smartPdfToPng()">
+            <div class="smart-tool-btn-icon">📄</div>
+            <div class="smart-tool-btn-title">PDF to PNG</div>
+            <div class="smart-tool-btn-sub">Convert PDF pages into PNG images.</div>
+          </button>
+        `;
+
+        buttons += `
+          <button class="smart-tool-btn purple-btn" onclick="smartKeepPdfPages()">
+            <div class="smart-tool-btn-icon">✂️</div>
+            <div class="smart-tool-btn-title">Keep PDF Pages</div>
+            <div class="smart-tool-btn-sub">Make a new PDF with selected pages.</div>
+          </button>
+        `;
+      }
+
+      if (pdfCount >= 2) {
+        buttons += `
+          <button class="smart-tool-btn green-btn" onclick="smartMergePdfs()">
+            <div class="smart-tool-btn-icon">🧩</div>
+            <div class="smart-tool-btn-title">Merge PDFs</div>
+            <div class="smart-tool-btn-sub">Combine selected PDF files together.</div>
+          </button>
+        `;
+      }
+
+      if (hasImage) {
+        buttons += `
+          <button class="smart-tool-btn green-btn" onclick="smartImagesToPdf()">
+            <div class="smart-tool-btn-icon">📕</div>
+            <div class="smart-tool-btn-title">Images to PDF</div>
+            <div class="smart-tool-btn-sub">Make one PDF from selected images.</div>
+          </button>
+        `;
+
+        buttons += `
+          <button class="smart-tool-btn blue-btn" onclick="smartConvertImages('image/png', 'png')">
+            <div class="smart-tool-btn-icon">🖼️</div>
+            <div class="smart-tool-btn-title">Convert to PNG</div>
+            <div class="smart-tool-btn-sub">Download images as PNG.</div>
+          </button>
+        `;
+
+        buttons += `
+          <button class="smart-tool-btn purple-btn" onclick="smartConvertImages('image/jpeg', 'jpg')">
+            <div class="smart-tool-btn-icon">🌄</div>
+            <div class="smart-tool-btn-title">Convert to JPG</div>
+            <div class="smart-tool-btn-sub">Download images as JPG.</div>
+          </button>
+        `;
+
+        buttons += `
+          <button class="smart-tool-btn pink-btn" onclick="smartConvertImages('image/webp', 'webp')">
+            <div class="smart-tool-btn-icon">⚡</div>
+            <div class="smart-tool-btn-title">Convert to WEBP</div>
+            <div class="smart-tool-btn-sub">Download images as WEBP.</div>
+          </button>
+        `;
+
+        buttons += `
+          <button class="smart-tool-btn orange-btn" onclick="smartCompressImages()">
+            <div class="smart-tool-btn-icon">🗜️</div>
+            <div class="smart-tool-btn-title">Compress Images</div>
+            <div class="smart-tool-btn-sub">Reduce image file size.</div>
+          </button>
+        `;
+
+        buttons += `
+          <button class="smart-tool-btn gray-btn" onclick="smartRotateImagesRight()">
+            <div class="smart-tool-btn-icon">↻</div>
+            <div class="smart-tool-btn-title">Rotate Right</div>
+            <div class="smart-tool-btn-sub">Rotate images 90 degrees right.</div>
+          </button>
+        `;
+      }
+
+      actionsBox.className = "result-box result-success";
+      actionsBox.innerHTML = `
+        <div class="result-heading">Ready</div>
+        <div class="result-placeholder">
+          PDF files: ${pdfCount}<br>
+          Image files: ${imageCount}
+        </div>
+        <div class="smart-action-grid">${buttons}</div>
+      `;
+
+      applySmartToolsTheme();
+    }
+
+    // =========================
+    // RENDER SMART FILE PREVIEW
+    // =========================
+    async function renderSmartFilePreview() {
+      const previewBox = document.getElementById("smartPreviewBox");
+
+      if (!previewBox) return;
+
+      const imageFiles = smartSelectedFiles.filter(file => isImageFile(file));
+
+      if (!imageFiles.length) {
+        previewBox.className = "result-box";
+        previewBox.innerHTML = `
+          <div class="result-placeholder">
+            No image preview yet.
+          </div>
+        `;
+        applySmartToolsTheme();
+        return;
+      }
+
+      const previews = [];
+
+      for (let i = 0; i < imageFiles.length; i++) {
+        const file = imageFiles[i];
+        const url = URL.createObjectURL(file);
+
+        previews.push(`
+          <div class="preview-item">
+            <img src="${url}" alt="">
+            <div class="preview-item-info">
+              ${escapeHtml(file.name)}<br>
+              ${formatFileSize(file.size)}
+            </div>
+          </div>
+        `);
+      }
+
+      previewBox.className = "result-box result-success";
+      previewBox.innerHTML = `
+        <div class="preview-grid">
+          ${previews.join("")}
+        </div>
+      `;
+
+      applySmartToolsTheme();
+    }
+
+    // =========================
+    // SET SMART STATUS
+    // =========================
+    function setSmartStatus(type, message) {
+      const statusBox = document.getElementById("smartStatusBox");
+
+      if (!statusBox) return;
+
+      if (type === "success") {
+        statusBox.className = "result-box result-success";
+        statusBox.innerHTML = `
+          <div class="result-heading">Success</div>
+          <div class="result-placeholder">${escapeHtml(message)}</div>
+        `;
+        applySmartToolsTheme();
+        return;
+      }
+
+      if (type === "error") {
+        statusBox.className = "result-box result-error";
+        statusBox.innerHTML = `
+          <div class="result-heading">Check File</div>
+          <div class="result-placeholder">${escapeHtml(message)}</div>
+        `;
+        applySmartToolsTheme();
+        return;
+      }
+
+      statusBox.className = "result-box";
+      statusBox.innerHTML = `
+        <div class="result-heading">Ready</div>
+        <div class="result-placeholder">${escapeHtml(message)}</div>
+      `;
+
+      applySmartToolsTheme();
+    }
+
+    // =========================
+    // PDF TO PNG
+    // =========================
+    async function smartPdfToPng() {
+      const pdfFiles = smartSelectedFiles.filter(file => isPdfFile(file));
+
+      if (!pdfFiles.length) {
+        setSmartStatus("error", "Please choose at least one PDF file.");
+        return;
+      }
+
+      if (!window.pdfjsLib || !window.JSZip) {
+        setSmartStatus("error", "PDF or ZIP library did not load.");
+        return;
+      }
+
+      try {
+        setSmartStatus("ready", "Converting PDF pages to PNG...");
+
+        const zip = new JSZip();
+        let totalImages = 0;
+
+        for (const file of pdfFiles) {
+          const arrayBuffer = await file.arrayBuffer();
+          const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+          const folderName = removeFileExtension(file.name);
+          const folder = zip.folder(folderName);
+
+          for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber++) {
+            const page = await pdf.getPage(pageNumber);
+            const viewport = page.getViewport({ scale: 2 });
+
+            const canvas = document.createElement("canvas");
+            const context = canvas.getContext("2d");
+
+            canvas.width = viewport.width;
+            canvas.height = viewport.height;
+
+            await page.render({
+              canvasContext: context,
+              viewport: viewport
+            }).promise;
+
+            const blob = await canvasToBlob(canvas, "image/png", 1);
+            folder.file("page-" + String(pageNumber).padStart(3, "0") + ".png", blob);
+
+            totalImages++;
+          }
+        }
+
+        const zipBlob = await zip.generateAsync({ type: "blob" });
+        downloadBlob(zipBlob, "pdf-pages-png.zip");
+
+        setSmartStatus("success", "Done. " + totalImages + " PNG image(s) created and downloaded.");
+      } catch (error) {
+        console.error(error);
+        setSmartStatus("error", "PDF to PNG failed. Try another PDF file.");
+      }
+    }
+
+    // =========================
+    // MERGE PDFS
+    // =========================
+    async function smartMergePdfs() {
+      const pdfFiles = smartSelectedFiles.filter(file => isPdfFile(file));
+
+      if (pdfFiles.length < 2) {
+        setSmartStatus("error", "Choose at least 2 PDF files to merge.");
+        return;
+      }
+
+      if (!window.PDFLib) {
+        setSmartStatus("error", "PDF merge library did not load.");
+        return;
+      }
+
+      try {
+        setSmartStatus("ready", "Merging PDFs...");
+
+        const mergedPdf = await PDFLib.PDFDocument.create();
+
+        for (const file of pdfFiles) {
+          const arrayBuffer = await file.arrayBuffer();
+          const sourcePdf = await PDFLib.PDFDocument.load(arrayBuffer);
+          const copiedPages = await mergedPdf.copyPages(sourcePdf, sourcePdf.getPageIndices());
+
+          copiedPages.forEach(page => mergedPdf.addPage(page));
+        }
+
+        const mergedBytes = await mergedPdf.save();
+        const blob = new Blob([mergedBytes], { type: "application/pdf" });
+
+        downloadBlob(blob, "merged.pdf");
+
+        setSmartStatus("success", "Done. PDFs merged and downloaded.");
+      } catch (error) {
+        console.error(error);
+        setSmartStatus("error", "PDF merge failed. Try different PDF files.");
+      }
+    }
+
+    // =========================
+    // KEEP PDF PAGES
+    // =========================
+    async function smartKeepPdfPages() {
+      const pdfFiles = smartSelectedFiles.filter(file => isPdfFile(file));
+
+      if (!pdfFiles.length) {
+        setSmartStatus("error", "Please choose one PDF file first.");
+        return;
+      }
+
+      if (pdfFiles.length > 1) {
+        setSmartStatus("error", "For Keep PDF Pages, choose only one PDF at a time.");
+        return;
+      }
+
+      const pagesText = document.getElementById("pdfPagesInput").value.trim();
+
+      if (!pagesText) {
+        setSmartStatus("error", "Type pages to keep first. Example: 1,3,5-7");
+        return;
+      }
+
+      if (!window.PDFLib) {
+        setSmartStatus("error", "PDF edit library did not load.");
+        return;
+      }
+
+      try {
+        setSmartStatus("ready", "Making selected pages PDF...");
+
+        const file = pdfFiles[0];
+        const arrayBuffer = await file.arrayBuffer();
+        const sourcePdf = await PDFLib.PDFDocument.load(arrayBuffer);
+        const pageCount = sourcePdf.getPageCount();
+        const selectedPages = parsePageSelection(pagesText, pageCount);
+
+        if (!selectedPages.length) {
+          setSmartStatus("error", "No valid pages found. Example: 1,3,5-7");
+          return;
+        }
+
+        const newPdf = await PDFLib.PDFDocument.create();
+        const zeroBasedPages = selectedPages.map(page => page - 1);
+        const copiedPages = await newPdf.copyPages(sourcePdf, zeroBasedPages);
+
+        copiedPages.forEach(page => newPdf.addPage(page));
+
+        const newBytes = await newPdf.save();
+        const blob = new Blob([newBytes], { type: "application/pdf" });
+
+        downloadBlob(blob, removeFileExtension(file.name) + "-selected-pages.pdf");
+
+        setSmartStatus("success", "Done. Selected pages PDF downloaded.");
+      } catch (error) {
+        console.error(error);
+        setSmartStatus("error", "Could not keep selected pages. Check page numbers and try again.");
+      }
+    }
+
+    // =========================
+    // IMAGES TO PDF
+    // =========================
+    async function smartImagesToPdf() {
+      const imageFiles = smartSelectedFiles.filter(file => isImageFile(file));
+
+      if (!imageFiles.length) {
+        setSmartStatus("error", "Please choose image files first.");
+        return;
+      }
+
+      if (!window.jspdf || !window.jspdf.jsPDF) {
+        setSmartStatus("error", "PDF maker library did not load.");
+        return;
+      }
+
+      try {
+        setSmartStatus("ready", "Making PDF from images...");
+
+        const { jsPDF } = window.jspdf;
+        let pdf = null;
+
+        for (let i = 0; i < imageFiles.length; i++) {
+          const file = imageFiles[i];
+          const imageData = await fileToDataUrl(file);
+          const imageInfo = await loadImageInfo(imageData);
+
+          const orientation = imageInfo.width > imageInfo.height ? "landscape" : "portrait";
+
+          if (i === 0) {
+            pdf = new jsPDF({
+              orientation: orientation,
+              unit: "pt",
+              format: [imageInfo.width, imageInfo.height]
+            });
+          } else {
+            pdf.addPage([imageInfo.width, imageInfo.height], orientation);
+          }
+
+          pdf.addImage(
+            imageData,
+            getJsPdfImageType(file),
+            0,
+            0,
+            imageInfo.width,
+            imageInfo.height
+          );
+        }
+
+        pdf.save("images-to-pdf.pdf");
+
+        setSmartStatus("success", "Done. PDF downloaded.");
+      } catch (error) {
+        console.error(error);
+        setSmartStatus("error", "Images to PDF failed. Try different images.");
+      }
+    }
+
+    // =========================
+    // CONVERT IMAGES
+    // =========================
+    async function smartConvertImages(outputType, extension) {
+      const imageFiles = smartSelectedFiles.filter(file => isImageFile(file));
+
+      if (!imageFiles.length) {
+        setSmartStatus("error", "Please choose image files first.");
+        return;
+      }
+
+      try {
+        setSmartStatus("ready", "Converting images...");
+
+        const quality = getImageQuality();
+        const zip = new JSZip();
+
+        for (const file of imageFiles) {
+          const canvas = await fileToCanvas(file, 0);
+          const blob = await canvasToBlob(canvas, outputType, quality);
+          zip.file(removeFileExtension(file.name) + "." + extension, blob);
+        }
+
+        const zipBlob = await zip.generateAsync({ type: "blob" });
+        downloadBlob(zipBlob, "converted-images-" + extension + ".zip");
+
+        setSmartStatus("success", "Done. Converted images downloaded.");
+      } catch (error) {
+        console.error(error);
+        setSmartStatus("error", "Image conversion failed. Try another image.");
+      }
+    }
+
+    // =========================
+    // COMPRESS IMAGES
+    // =========================
+    async function smartCompressImages() {
+      const imageFiles = smartSelectedFiles.filter(file => isImageFile(file));
+
+      if (!imageFiles.length) {
+        setSmartStatus("error", "Please choose image files first.");
+        return;
+      }
+
+      try {
+        setSmartStatus("ready", "Compressing images...");
+
+        const quality = getImageQuality();
+        const zip = new JSZip();
+
+        for (const file of imageFiles) {
+          const canvas = await fileToCanvas(file, 0);
+          const blob = await canvasToBlob(canvas, "image/jpeg", quality);
+          zip.file(removeFileExtension(file.name) + "-compressed.jpg", blob);
+        }
+
+        const zipBlob = await zip.generateAsync({ type: "blob" });
+        downloadBlob(zipBlob, "compressed-images.zip");
+
+        setSmartStatus("success", "Done. Compressed images downloaded.");
+      } catch (error) {
+        console.error(error);
+        setSmartStatus("error", "Image compression failed. Try another image.");
+      }
+    }
+
+    // =========================
+    // ROTATE IMAGES RIGHT
+    // =========================
+    async function smartRotateImagesRight() {
+      const imageFiles = smartSelectedFiles.filter(file => isImageFile(file));
+
+      if (!imageFiles.length) {
+        setSmartStatus("error", "Please choose image files first.");
+        return;
+      }
+
+      try {
+        setSmartStatus("ready", "Rotating images...");
+
+        const zip = new JSZip();
+
+        for (const file of imageFiles) {
+          const canvas = await fileToCanvas(file, 90);
+          const blob = await canvasToBlob(canvas, "image/png", 1);
+          zip.file(removeFileExtension(file.name) + "-rotated.png", blob);
+        }
+
+        const zipBlob = await zip.generateAsync({ type: "blob" });
+        downloadBlob(zipBlob, "rotated-images.zip");
+
+        setSmartStatus("success", "Done. Rotated images downloaded.");
+      } catch (error) {
+        console.error(error);
+        setSmartStatus("error", "Image rotate failed. Try another image.");
+      }
+    }
+
+    // =========================
+    // FILE TO CANVAS
+    // rotationDegrees can be 0 or 90
+    // =========================
+    async function fileToCanvas(file, rotationDegrees) {
+      const dataUrl = await fileToDataUrl(file);
+      const image = await loadImageElement(dataUrl);
+
+      const canvas = document.createElement("canvas");
+      const context = canvas.getContext("2d");
+
+      if (rotationDegrees === 90) {
+        canvas.width = image.height;
+        canvas.height = image.width;
+
+        context.translate(canvas.width, 0);
+        context.rotate(90 * Math.PI / 180);
+        context.drawImage(image, 0, 0);
+      } else {
+        canvas.width = image.width;
+        canvas.height = image.height;
+        context.drawImage(image, 0, 0);
+      }
+
+      return canvas;
+    }
+
+    // =========================
+    // FILE TO DATA URL
+    // =========================
+    function fileToDataUrl(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+
+        reader.readAsDataURL(file);
+      });
+    }
+
+    // =========================
+    // LOAD IMAGE ELEMENT
+    // =========================
+    function loadImageElement(dataUrl) {
+      return new Promise((resolve, reject) => {
+        const image = new Image();
+
+        image.onload = () => resolve(image);
+        image.onerror = reject;
+
+        image.src = dataUrl;
+      });
+    }
+
+    // =========================
+    // LOAD IMAGE INFO
+    // =========================
+    async function loadImageInfo(dataUrl) {
+      const image = await loadImageElement(dataUrl);
+
+      return {
+        width: image.width,
+        height: image.height
+      };
+    }
+
+    // =========================
+    // CANVAS TO BLOB
+    // =========================
+    function canvasToBlob(canvas, type, quality) {
+      return new Promise(resolve => {
+        canvas.toBlob(blob => {
+          resolve(blob);
+        }, type, quality);
+      });
+    }
+
+    // =========================
+    // PARSE PAGE SELECTION
+    // Example: 1,3,5-7
+    // =========================
+    function parsePageSelection(text, maxPage) {
+      const result = [];
+      const parts = String(text || "").split(",");
+
+      parts.forEach(part => {
+        const clean = part.trim();
+
+        if (!clean) return;
+
+        if (clean.includes("-")) {
+          const rangeParts = clean.split("-");
+          const start = parseInt(rangeParts[0], 10);
+          const end = parseInt(rangeParts[1], 10);
+
+          if (isNaN(start) || isNaN(end)) return;
+
+          const realStart = Math.min(start, end);
+          const realEnd = Math.max(start, end);
+
+          for (let page = realStart; page <= realEnd; page++) {
+            if (page >= 1 && page <= maxPage && !result.includes(page)) {
+              result.push(page);
+            }
+          }
+
+          return;
+        }
+
+        const pageNumber = parseInt(clean, 10);
+
+        if (!isNaN(pageNumber) && pageNumber >= 1 && pageNumber <= maxPage && !result.includes(pageNumber)) {
+          result.push(pageNumber);
+        }
+      });
+
+      return result.sort((a, b) => a - b);
+    }
+
+    // =========================
+    // GET IMAGE QUALITY
+    // =========================
+    function getImageQuality() {
+      const input = document.getElementById("imageQualityInput");
+      const value = input ? parseFloat(input.value) : 0.72;
+
+      if (isNaN(value)) return 0.72;
+
+      return value;
+    }
+
+    // =========================
+    // GET JSPDF IMAGE TYPE
+    // =========================
+    function getJsPdfImageType(file) {
+      const lowerName = file.name.toLowerCase();
+
+      if (lowerName.endsWith(".png")) return "PNG";
+      if (lowerName.endsWith(".webp")) return "WEBP";
+
+      return "JPEG";
+    }
+
+    // =========================
+    // IS PDF FILE
+    // =========================
+    function isPdfFile(file) {
+      return file && (
+        file.type === "application/pdf" ||
+        file.name.toLowerCase().endsWith(".pdf")
+      );
+    }
+
+    // =========================
+    // IS IMAGE FILE
+    // =========================
+    function isImageFile(file) {
+      if (!file) return false;
+
+      const lowerName = file.name.toLowerCase();
+
+      return (
+        file.type.startsWith("image/") ||
+        lowerName.endsWith(".png") ||
+        lowerName.endsWith(".jpg") ||
+        lowerName.endsWith(".jpeg") ||
+        lowerName.endsWith(".webp")
+      );
+    }
+
+    // =========================
+    // REMOVE FILE EXTENSION
+    // =========================
+    function removeFileExtension(fileName) {
+      return String(fileName || "file").replace(/\.[^/.]+$/, "");
+    }
+
+    // =========================
+    // DOWNLOAD BLOB
+    // =========================
+    function downloadBlob(blob, fileName) {
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+
+      link.href = url;
+      link.download = fileName;
+
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      URL.revokeObjectURL(url);
+    }
+
+    // =========================
+    // FORMAT FILE SIZE
+    // =========================
+    function formatFileSize(bytes) {
+      if (!bytes && bytes !== 0) return "";
+      if (bytes < 1024) return bytes + " B";
+      if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + " KB";
+      return (bytes / (1024 * 1024)).toFixed(1) + " MB";
+    }
+
+    // =========================
+    // RESET SMART TOOLS
+    // =========================
+    function resetSmartTools() {
+      smartSelectedFiles = [];
+      smartRotatedImages = [];
+
+      const fileInput = document.getElementById("smartFileInput");
+      if (fileInput) fileInput.value = "";
+
+      const pagesInput = document.getElementById("pdfPagesInput");
+      if (pagesInput) pagesInput.value = "";
+
+      const qualityInput = document.getElementById("imageQualityInput");
+      if (qualityInput) qualityInput.value = "0.72";
+
+      renderSmartFileList();
+      renderSmartActions();
+
+      document.getElementById("smartPreviewBox").className = "result-box";
+      document.getElementById("smartPreviewBox").innerHTML = `
+        <div class="result-placeholder">
+          No preview yet.
+        </div>
+      `;
+
+      setSmartStatus("ready", "Waiting for files.");
+      applySmartToolsTheme();
+    }
+
+    // =========================
+    // ESCAPE HTML
+    // =========================
+    function escapeHtml(value) {
+      return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    // =========================
+    // PAGE LOAD
+    // =========================
+    document.addEventListener("DOMContentLoaded", function() {
+      applySmartToolsTheme();
+      renderSmartFileList();
+      renderSmartActions();
+      setSmartStatus("ready", "Waiting for files.");
+    });
+  </script>
+
+</body>
+</html>
