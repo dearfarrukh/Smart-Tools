@@ -32,16 +32,16 @@
       width: 100%;
       min-height: 100%;
       font-family: Arial, Helvetica, sans-serif;
-      background:
-        radial-gradient(circle at top left, rgba(34,197,94,0.12), transparent 30%),
-        radial-gradient(circle at top right, rgba(14,165,233,0.10), transparent 32%),
-        linear-gradient(180deg, #07111f 0%, #0b1626 52%, #07111f 100%);
-      color: #f8fafc;
     }
 
     body {
       min-height: 100vh;
       padding-bottom: 34px;
+      color: #111827;
+      background:
+        radial-gradient(circle at top left, rgba(96,165,250,0.24), transparent 30%),
+        radial-gradient(circle at top right, rgba(244,114,182,0.22), transparent 32%),
+        linear-gradient(180deg, #f4f7ff 0%, #eef2ff 48%, #f8fafc 100%);
     }
 
     button,
@@ -72,13 +72,17 @@
       width: 52px;
       height: 52px;
       border-radius: 50%;
-      background: linear-gradient(180deg, rgba(30,41,59,0.88), rgba(15,23,42,0.84));
-      color: #f8fafc;
+      background: white;
+      color: #111827;
       font-size: 24px;
       font-weight: 900;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 14px 34px rgba(0,0,0,0.22);
+      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.10);
       cursor: pointer;
       flex-shrink: 0;
+    }
+
+    .back-btn:active {
+      transform: scale(0.96);
     }
 
     .top-bar-title {
@@ -86,14 +90,26 @@
       text-align: center;
       font-size: 22px;
       font-weight: 900;
-      color: #f8fafc;
+      color: #111827;
       letter-spacing: -0.4px;
     }
 
-    .top-bar-spacer {
+    .theme-toggle-btn {
+      border: none;
       width: 52px;
       height: 52px;
+      border-radius: 50%;
+      background: white;
+      color: #111827;
+      font-size: 24px;
+      font-weight: 900;
+      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.10);
+      cursor: pointer;
       flex-shrink: 0;
+    }
+
+    .theme-toggle-btn:active {
+      transform: scale(0.96);
     }
 
     /* =========================
@@ -134,12 +150,12 @@
        CARDS
     ========================= */
     .card {
-      background: linear-gradient(180deg, rgba(30,41,59,0.88), rgba(15,23,42,0.84));
-      border: 1px solid rgba(148,163,184,0.20);
-      color: #f8fafc;
+      background: white;
+      border: 1px solid rgba(15,23,42,0.07);
+      color: #111827;
       border-radius: 28px;
       padding: 24px;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 14px 34px rgba(0,0,0,0.22);
+      box-shadow: 0 14px 34px rgba(15,23,42,0.10);
     }
 
     .card + .card {
@@ -149,7 +165,7 @@
     .card-title {
       font-size: 24px;
       font-weight: 900;
-      color: #f8fafc;
+      color: #111827;
       margin-bottom: 8px;
       letter-spacing: -0.5px;
     }
@@ -157,7 +173,7 @@
     .card-subtitle {
       font-size: 15px;
       line-height: 1.6;
-      color: #cbd5e1;
+      color: #64748b;
       margin-bottom: 18px;
     }
 
@@ -212,9 +228,9 @@
       min-height: 76px;
       border-radius: 22px;
       padding: 18px;
-      background: linear-gradient(180deg, rgba(15,23,42,0.82), rgba(30,41,59,0.82));
-      border: 2px solid rgba(96,165,250,0.38);
-      color: #f8fafc;
+      background: linear-gradient(180deg, #f8fafc 0%, #eef2ff 100%);
+      border: 2px solid #dbeafe;
+      color: #111827;
       font-size: 25px;
       font-weight: 900;
       line-height: 1.35;
@@ -230,8 +246,8 @@
       min-height: 42px;
       padding: 0 18px;
       border-radius: 999px;
-      background: rgba(148,163,184,0.16);
-      color: #cbd5e1;
+      background: #f3f4f6;
+      color: #6b7280;
       font-size: 15px;
       font-weight: 900;
     }
@@ -260,14 +276,14 @@
       align-items: center;
       justify-content: space-between;
       gap: 16px;
-      border-bottom: 1px solid rgba(148,163,184,0.18);
+      border-bottom: 1px solid #eef2f7;
       cursor: pointer;
     }
 
     .password-option-row span {
       font-size: 17px;
       font-weight: 900;
-      color: #f8fafc;
+      color: #111827;
     }
 
     .password-option-row input[type="checkbox"] {
@@ -288,8 +304,8 @@
       gap: 16px;
       padding: 14px 16px;
       border-radius: 22px;
-      background: rgba(15,23,42,0.82);
-      border: 1px solid rgba(148,163,184,0.20);
+      background: #f8fafc;
+      border: 1px solid #e5e7eb;
     }
 
     .custom-mix-toggle-text {
@@ -299,14 +315,14 @@
     .custom-mix-toggle-title {
       font-size: 17px;
       font-weight: 900;
-      color: #f8fafc;
+      color: #111827;
     }
 
     .custom-mix-toggle-subtitle {
       margin-top: 4px;
       font-size: 13px;
       font-weight: 800;
-      color: #cbd5e1;
+      color: #64748b;
       line-height: 1.35;
     }
 
@@ -315,7 +331,7 @@
       height: 38px;
       border: none;
       border-radius: 999px;
-      background: #4b5563;
+      background: #d1d5db;
       padding: 4px;
       display: flex;
       align-items: center;
@@ -376,7 +392,7 @@
       text-align: center;
       font-size: 19px;
       font-weight: 900;
-      color: #f8fafc;
+      color: #111827;
     }
 
     .custom-mix-total-box {
@@ -384,9 +400,8 @@
       margin-top: 14px;
       border-radius: 18px;
       padding: 14px 16px;
-      background: rgba(20,83,45,0.42);
-      border: 1px solid rgba(34,197,94,0.28);
-      color: #bbf7d0;
+      background: #ecfdf5;
+      color: #166534;
       font-size: 16px;
       font-weight: 900;
       text-align: center;
@@ -407,13 +422,13 @@
     .length-label {
       font-size: 18px;
       font-weight: 900;
-      color: #f8fafc;
+      color: #111827;
     }
 
     .length-number {
       font-size: 28px;
       font-weight: 900;
-      color: #60a5fa;
+      color: #2563eb;
     }
 
     .range-numbers {
@@ -426,6 +441,152 @@
     }
 
     /* =========================
+       DARK THEME
+    ========================= */
+    body.smart-tools-dark-theme {
+      background:
+        radial-gradient(circle at top left, rgba(34,197,94,0.12), transparent 30%),
+        radial-gradient(circle at top right, rgba(14,165,233,0.10), transparent 32%),
+        linear-gradient(180deg, #07111f 0%, #0b1626 52%, #07111f 100%);
+      color: #f8fafc;
+    }
+
+    body.smart-tools-dark-theme .top-bar-title,
+    body.smart-tools-dark-theme .card-title,
+    body.smart-tools-dark-theme .password-option-row span,
+    body.smart-tools-dark-theme .custom-mix-toggle-title,
+    body.smart-tools-dark-theme .custom-mix-count,
+    body.smart-tools-dark-theme .length-label {
+      color: #f8fafc;
+    }
+
+    body.smart-tools-dark-theme .back-btn,
+    body.smart-tools-dark-theme .theme-toggle-btn,
+    body.smart-tools-dark-theme .card,
+    body.smart-tools-dark-theme .password-display-box,
+    body.smart-tools-dark-theme .custom-mix-toggle-row {
+      background: linear-gradient(180deg, rgba(30,41,59,0.88), rgba(15,23,42,0.84));
+      border-color: rgba(148,163,184,0.20);
+      color: #f8fafc;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 14px 34px rgba(0,0,0,0.22);
+    }
+
+    body.smart-tools-dark-theme .card-subtitle,
+    body.smart-tools-dark-theme .custom-mix-toggle-subtitle {
+      color: #cbd5e1;
+    }
+
+    body.smart-tools-dark-theme .password-display-box {
+      background: linear-gradient(180deg, rgba(15,23,42,0.82), rgba(30,41,59,0.82));
+      border: 2px solid rgba(96,165,250,0.38);
+    }
+
+    body.smart-tools-dark-theme .password-option-row {
+      border-bottom: 1px solid rgba(148,163,184,0.18);
+    }
+
+    body.smart-tools-dark-theme .custom-mix-toggle-row {
+      background: rgba(15,23,42,0.82);
+      border: 1px solid rgba(148,163,184,0.20);
+    }
+
+    body.smart-tools-dark-theme .custom-mix-switch {
+      background: #4b5563;
+    }
+
+    body.smart-tools-dark-theme .custom-mix-switch.on {
+      background: #22c55e;
+    }
+
+    body.smart-tools-dark-theme .custom-mix-total-box {
+      background: rgba(20,83,45,0.42);
+      border: 1px solid rgba(34,197,94,0.28);
+      color: #bbf7d0;
+    }
+
+    body.smart-tools-dark-theme .password-strength-pill {
+      background: rgba(148,163,184,0.16);
+      color: #cbd5e1;
+    }
+
+    body.smart-tools-dark-theme .length-number {
+      color: #60a5fa;
+    }
+
+    /* =========================
+       COLOR THEME
+    ========================= */
+    body.smart-tools-color-theme {
+      background:
+        radial-gradient(circle at top left, rgba(96,165,250,0.24), transparent 30%),
+        radial-gradient(circle at top right, rgba(244,114,182,0.22), transparent 32%),
+        linear-gradient(180deg, #f4f7ff 0%, #eef2ff 48%, #f8fafc 100%);
+      color: #111827;
+    }
+
+    body.smart-tools-color-theme .top-bar-title,
+    body.smart-tools-color-theme .card-title,
+    body.smart-tools-color-theme .password-option-row span,
+    body.smart-tools-color-theme .custom-mix-toggle-title,
+    body.smart-tools-color-theme .custom-mix-count,
+    body.smart-tools-color-theme .length-label {
+      color: #111827;
+    }
+
+    body.smart-tools-color-theme .back-btn,
+    body.smart-tools-color-theme .theme-toggle-btn,
+    body.smart-tools-color-theme .card,
+    body.smart-tools-color-theme .password-display-box,
+    body.smart-tools-color-theme .custom-mix-toggle-row {
+      background: white;
+      color: #111827;
+      border-color: rgba(15,23,42,0.07);
+      box-shadow: 0 14px 34px rgba(15,23,42,0.10);
+    }
+
+    body.smart-tools-color-theme .card-subtitle,
+    body.smart-tools-color-theme .custom-mix-toggle-subtitle {
+      color: #64748b;
+    }
+
+    body.smart-tools-color-theme .password-display-box {
+      background: linear-gradient(180deg, #f8fafc 0%, #eef2ff 100%);
+      border: 2px solid #dbeafe;
+    }
+
+    body.smart-tools-color-theme .password-option-row {
+      border-bottom: 1px solid #eef2f7;
+    }
+
+    body.smart-tools-color-theme .custom-mix-toggle-row {
+      background: #f8fafc;
+      border: 1px solid #e5e7eb;
+    }
+
+    body.smart-tools-color-theme .custom-mix-switch {
+      background: #d1d5db;
+    }
+
+    body.smart-tools-color-theme .custom-mix-switch.on {
+      background: #22c55e;
+    }
+
+    body.smart-tools-color-theme .custom-mix-total-box {
+      background: #ecfdf5;
+      border: none;
+      color: #166534;
+    }
+
+    body.smart-tools-color-theme .password-strength-pill {
+      background: #f3f4f6;
+      color: #6b7280;
+    }
+
+    body.smart-tools-color-theme .length-number {
+      color: #2563eb;
+    }
+
+    /* =========================
        RESPONSIVE
     ========================= */
     @media (max-width: 900px) {
@@ -435,6 +596,10 @@
     }
 
     @media (max-width: 640px) {
+      .top-bar-wrap {
+        padding: 16px 4% 0 4%;
+      }
+
       .page-inner {
         padding: 0 5% 30px 5%;
       }
@@ -448,6 +613,10 @@
         font-size: 28px;
       }
 
+      .inner-page-hero p {
+        font-size: 16px;
+      }
+
       .card {
         border-radius: 24px;
         padding: 20px;
@@ -459,6 +628,12 @@
 
       .top-bar-title {
         font-size: 20px;
+      }
+
+      .back-btn,
+      .theme-toggle-btn {
+        width: 48px;
+        height: 48px;
       }
 
       .custom-mix-option-content {
@@ -475,7 +650,7 @@
   </style>
 </head>
 
-<body>
+<body class="smart-tools-color-theme">
 
   <!-- =========================
        PASSWORD GENERATOR PAGE
@@ -484,7 +659,7 @@
     <div class="top-bar">
       <button class="back-btn" onclick="goBackToMainPage()">←</button>
       <div class="top-bar-title">Password Generator</div>
-      <div class="top-bar-spacer"></div>
+      <button id="smartThemeToggleBtn" class="theme-toggle-btn" onclick="toggleSmartToolsTheme()" aria-label="Switch day and dark mode">☾</button>
     </div>
   </div>
 
@@ -643,6 +818,38 @@
     // =========================
     function goBackToMainPage() {
       window.location.href = "../";
+    }
+
+    // =========================
+    // SMART TOOLS THEME
+    // Same key as main page: smartToolsTheme
+    // =========================
+    function applySmartToolsTheme() {
+      const savedTheme = localStorage.getItem("smartToolsTheme") || "color";
+      const themeBtn = document.getElementById("smartThemeToggleBtn");
+
+      document.body.classList.remove("smart-tools-color-theme");
+      document.body.classList.remove("smart-tools-dark-theme");
+
+      if (savedTheme === "dark") {
+        document.body.classList.add("smart-tools-dark-theme");
+        if (themeBtn) themeBtn.innerText = "☀";
+      } else {
+        document.body.classList.add("smart-tools-color-theme");
+        if (themeBtn) themeBtn.innerText = "☾";
+      }
+    }
+
+    function toggleSmartToolsTheme() {
+      const isDark = document.body.classList.contains("smart-tools-dark-theme");
+
+      if (isDark) {
+        localStorage.setItem("smartToolsTheme", "color");
+      } else {
+        localStorage.setItem("smartToolsTheme", "dark");
+      }
+
+      applySmartToolsTheme();
     }
 
     // =========================
@@ -1025,17 +1232,20 @@
 
       if (strengthText) {
         strengthText.innerText = "Strength: Not generated yet";
-        strengthText.style.background = "rgba(148,163,184,0.16)";
-        strengthText.style.color = "#cbd5e1";
+        strengthText.style.background = "#f3f4f6";
+        strengthText.style.color = "#6b7280";
       }
 
       if (copyMessage) copyMessage.style.display = "none";
+
+      applySmartToolsTheme();
     }
 
     // =========================
     // PAGE LOAD
     // =========================
     document.addEventListener("DOMContentLoaded", function() {
+      applySmartToolsTheme();
       updatePasswordLengthLabel();
       updateCustomPasswordMixUI();
     });
