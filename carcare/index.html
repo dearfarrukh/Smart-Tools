@@ -1,0 +1,1202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <!-- =========================
+       IPHONE HOME SCREEN ICON
+  ========================= -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Car Care">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+
+  <link rel="apple-touch-icon" href="../images/icon.png">
+  <link rel="icon" type="image/png" href="../images/icon.png">
+
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Car Care</title>
+
+  <style>
+    /* =========================
+       RESET
+    ========================= */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html,
+    body {
+      width: 100%;
+      min-height: 100%;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      padding-bottom: 34px;
+      color: #111827;
+      background:
+        radial-gradient(circle at top left, rgba(96,165,250,0.24), transparent 30%),
+        radial-gradient(circle at top right, rgba(244,114,182,0.22), transparent 32%),
+        linear-gradient(180deg, #f4f7ff 0%, #eef2ff 48%, #f8fafc 100%);
+    }
+
+    button,
+    input,
+    textarea,
+    select {
+      font: inherit;
+    }
+
+    /* =========================
+       PAGE TOP BAR
+    ========================= */
+    .top-bar-wrap {
+      width: 100%;
+      padding: 20px 4% 0 4%;
+    }
+
+    .top-bar {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .back-btn {
+      border: none;
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: white;
+      color: #111827;
+      font-size: 24px;
+      font-weight: 900;
+      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.10);
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .back-btn:active {
+      transform: scale(0.96);
+    }
+
+    .top-bar-title {
+      flex: 1;
+      text-align: center;
+      font-size: 22px;
+      font-weight: 900;
+      color: #111827;
+      letter-spacing: -0.4px;
+    }
+
+    .top-bar-spacer {
+      width: 52px;
+      height: 52px;
+      flex-shrink: 0;
+    }
+
+    /* =========================
+       PAGE LAYOUT
+    ========================= */
+    .page-inner {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 4% 40px 4%;
+    }
+
+    .inner-page-hero {
+      margin-top: 18px;
+      background: linear-gradient(135deg, #0ea5e9 0%, #2563eb 45%, #7c3aed 100%);
+      color: white;
+      border-radius: 30px;
+      padding: 32px 24px;
+      box-shadow: 0 14px 32px rgba(37, 99, 235, 0.20);
+    }
+
+    .inner-page-hero h1 {
+      font-size: 34px;
+      font-weight: 900;
+      line-height: 1.1;
+      margin-bottom: 12px;
+      letter-spacing: -0.8px;
+    }
+
+    .inner-page-hero p {
+      font-size: 17px;
+      line-height: 1.6;
+      color: rgba(255,255,255,0.95);
+      max-width: 760px;
+    }
+
+    /* =========================
+       CARDS
+    ========================= */
+    .card {
+      background: white;
+      border: 1px solid rgba(15,23,42,0.07);
+      color: #111827;
+      border-radius: 28px;
+      padding: 24px;
+      box-shadow: 0 14px 34px rgba(15,23,42,0.10);
+    }
+
+    .card + .card {
+      margin-top: 22px;
+    }
+
+    .card-title {
+      font-size: 24px;
+      font-weight: 900;
+      color: #111827;
+      margin-bottom: 8px;
+      letter-spacing: -0.5px;
+    }
+
+    .card-subtitle {
+      font-size: 15px;
+      line-height: 1.6;
+      color: #64748b;
+      margin-bottom: 18px;
+    }
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+
+    .action-btn {
+      border: none;
+      min-height: 58px;
+      border-radius: 18px;
+      padding: 0 24px;
+      cursor: pointer;
+      font-size: 17px;
+      font-weight: 900;
+      flex: 1;
+      transition: transform 0.16s ease, opacity 0.16s ease;
+      color: white;
+    }
+
+    .action-btn:active {
+      transform: scale(0.97);
+    }
+
+    .save-btn {
+      background: linear-gradient(135deg, #22c55e 0%, #14b8a6 100%);
+    }
+
+    .reset-btn {
+      background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);
+    }
+
+    .edit-btn {
+      background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
+    }
+
+    .delete-btn {
+      background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
+    }
+
+    /* =========================
+       CAR CARE MAIN
+    ========================= */
+    .car-grid {
+      margin-top: 24px;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 22px;
+    }
+
+    .car-card {
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      min-height: 230px;
+    }
+
+    .car-card:active {
+      transform: scale(0.98);
+    }
+
+    .car-icon {
+      width: 76px;
+      height: 76px;
+      border-radius: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 38px;
+      margin-bottom: 18px;
+      background: linear-gradient(135deg, #dbeafe 0%, #eef2ff 100%);
+    }
+
+    .car-name {
+      font-size: 28px;
+      font-weight: 900;
+      color: #111827;
+      margin-bottom: 10px;
+      letter-spacing: -0.7px;
+    }
+
+    .car-info {
+      font-size: 15px;
+      line-height: 1.6;
+      color: #64748b;
+      margin-bottom: 18px;
+    }
+
+    .car-stat-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .car-stat-box {
+      border-radius: 18px;
+      padding: 14px 10px;
+      background: #f8fafc;
+      text-align: center;
+      border: 1px solid #eef2f7;
+    }
+
+    .car-stat-number {
+      font-size: 19px;
+      font-weight: 900;
+      color: #2563eb;
+      margin-bottom: 4px;
+    }
+
+    .car-stat-label {
+      font-size: 11px;
+      font-weight: 900;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
+    /* =========================
+       CAR DETAILS PAGE
+    ========================= */
+    #carDetailsPage {
+      display: none;
+    }
+
+    .car-details-layout {
+      margin-top: 24px;
+      display: grid;
+      grid-template-columns: 0.92fr 1.08fr;
+      gap: 22px;
+      align-items: start;
+    }
+
+    .car-input,
+    .car-select {
+      width: 100%;
+      height: 58px;
+      border: 2px solid #e5e7eb;
+      border-radius: 18px;
+      outline: none;
+      background: #fcfcff;
+      color: #111827;
+      padding: 0 16px;
+      font-size: 17px;
+      font-weight: 800;
+      margin-bottom: 14px;
+    }
+
+    .car-textarea {
+      width: 100%;
+      min-height: 130px;
+      resize: vertical;
+      border: 2px solid #e5e7eb;
+      border-radius: 18px;
+      outline: none;
+      background: #fcfcff;
+      color: #111827;
+      padding: 16px;
+      font-size: 17px;
+      line-height: 1.6;
+      margin-bottom: 14px;
+    }
+
+    .car-input:focus,
+    .car-select:focus,
+    .car-textarea:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 4px rgba(37,99,235,0.10);
+    }
+
+    .service-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .service-card {
+      background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+      border: 1px solid rgba(15,23,42,0.07);
+      border-radius: 24px;
+      padding: 18px;
+      box-shadow: 0 10px 24px rgba(15,23,42,0.08);
+    }
+
+    .service-top-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 14px;
+      margin-bottom: 10px;
+    }
+
+    .service-title {
+      font-size: 20px;
+      font-weight: 900;
+      color: #111827;
+      line-height: 1.25;
+      word-break: break-word;
+    }
+
+    .service-cost {
+      font-size: 18px;
+      font-weight: 900;
+      color: #16a34a;
+      white-space: nowrap;
+    }
+
+    .service-meta {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin: 14px 0;
+    }
+
+    .service-meta-box {
+      border-radius: 16px;
+      background: #f8fafc;
+      border: 1px solid #eef2f7;
+      padding: 12px 10px;
+      text-align: center;
+    }
+
+    .service-meta-label {
+      font-size: 11px;
+      font-weight: 900;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      margin-bottom: 4px;
+    }
+
+    .service-meta-value {
+      font-size: 14px;
+      font-weight: 900;
+      color: #111827;
+      word-break: break-word;
+    }
+
+    .service-note {
+      font-size: 15px;
+      line-height: 1.6;
+      color: #475569;
+      white-space: pre-wrap;
+      word-break: break-word;
+      margin-bottom: 16px;
+    }
+
+    .service-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .small-car-btn {
+      border: none;
+      min-height: 44px;
+      border-radius: 14px;
+      padding: 0 16px;
+      cursor: pointer;
+      color: white;
+      font-size: 14px;
+      font-weight: 900;
+      flex: 1;
+    }
+
+    .empty-service-box {
+      border-radius: 22px;
+      padding: 22px;
+      background: linear-gradient(180deg, #f9fafb 0%, #f3f4f6 100%);
+      border: 1px dashed #cbd5e1;
+      color: #64748b;
+      font-size: 16px;
+      line-height: 1.7;
+      text-align: center;
+      font-weight: 800;
+    }
+
+    .editing-pill {
+      display: none;
+      margin-bottom: 14px;
+      border-radius: 999px;
+      padding: 10px 14px;
+      background: #fef3c7;
+      color: #92400e;
+      font-size: 14px;
+      font-weight: 900;
+      text-align: center;
+    }
+
+    .editing-pill.show {
+      display: block;
+    }
+
+    /* =========================
+       DARK THEME
+    ========================= */
+    body.smart-tools-dark-theme {
+      background:
+        radial-gradient(circle at top left, rgba(34,197,94,0.12), transparent 30%),
+        radial-gradient(circle at top right, rgba(14,165,233,0.10), transparent 32%),
+        linear-gradient(180deg, #07111f 0%, #0b1626 52%, #07111f 100%);
+      color: #f8fafc;
+    }
+
+    body.smart-tools-dark-theme .top-bar-title,
+    body.smart-tools-dark-theme .card-title,
+    body.smart-tools-dark-theme .car-name,
+    body.smart-tools-dark-theme .service-title,
+    body.smart-tools-dark-theme .service-meta-value {
+      color: #f8fafc;
+    }
+
+    body.smart-tools-dark-theme .back-btn,
+    body.smart-tools-dark-theme .card,
+    body.smart-tools-dark-theme .car-stat-box,
+    body.smart-tools-dark-theme .service-card,
+    body.smart-tools-dark-theme .service-meta-box,
+    body.smart-tools-dark-theme .empty-service-box {
+      background: linear-gradient(180deg, rgba(30,41,59,0.88), rgba(15,23,42,0.84));
+      border-color: rgba(148,163,184,0.20);
+      color: #f8fafc;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 14px 34px rgba(0,0,0,0.22);
+    }
+
+    body.smart-tools-dark-theme .card-subtitle,
+    body.smart-tools-dark-theme .car-info,
+    body.smart-tools-dark-theme .car-stat-label,
+    body.smart-tools-dark-theme .service-meta-label,
+    body.smart-tools-dark-theme .service-note,
+    body.smart-tools-dark-theme .empty-service-box {
+      color: #cbd5e1;
+    }
+
+    body.smart-tools-dark-theme .car-input,
+    body.smart-tools-dark-theme .car-select,
+    body.smart-tools-dark-theme .car-textarea {
+      background: rgba(15,23,42,0.82);
+      color: #f8fafc;
+      border-color: rgba(148,163,184,0.30);
+    }
+
+    body.smart-tools-dark-theme .car-input::placeholder,
+    body.smart-tools-dark-theme .car-textarea::placeholder {
+      color: #94a3b8;
+    }
+
+    body.smart-tools-dark-theme .car-icon {
+      background: linear-gradient(135deg, rgba(37,99,235,0.30), rgba(124,58,237,0.25));
+    }
+
+    body.smart-tools-dark-theme .service-cost {
+      color: #bbf7d0;
+    }
+
+    /* =========================
+       COLOR THEME
+    ========================= */
+    body.smart-tools-color-theme {
+      background:
+        radial-gradient(circle at top left, rgba(96,165,250,0.24), transparent 30%),
+        radial-gradient(circle at top right, rgba(244,114,182,0.22), transparent 32%),
+        linear-gradient(180deg, #f4f7ff 0%, #eef2ff 48%, #f8fafc 100%);
+      color: #111827;
+    }
+
+    body.smart-tools-color-theme .top-bar-title,
+    body.smart-tools-color-theme .card-title,
+    body.smart-tools-color-theme .car-name,
+    body.smart-tools-color-theme .service-title,
+    body.smart-tools-color-theme .service-meta-value {
+      color: #111827;
+    }
+
+    body.smart-tools-color-theme .back-btn,
+    body.smart-tools-color-theme .card,
+    body.smart-tools-color-theme .service-card {
+      background: white;
+      color: #111827;
+      border-color: rgba(15,23,42,0.07);
+      box-shadow: 0 14px 34px rgba(15,23,42,0.10);
+    }
+
+    body.smart-tools-color-theme .card-subtitle,
+    body.smart-tools-color-theme .car-info,
+    body.smart-tools-color-theme .service-note {
+      color: #64748b;
+    }
+
+    body.smart-tools-color-theme .car-input,
+    body.smart-tools-color-theme .car-select,
+    body.smart-tools-color-theme .car-textarea {
+      background: #fcfcff;
+      color: #111827;
+      border-color: #e5e7eb;
+    }
+
+    /* =========================
+       RESPONSIVE
+    ========================= */
+    @media (max-width: 900px) {
+      .car-grid,
+      .car-details-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .top-bar-wrap {
+        padding: 16px 4% 0 4%;
+      }
+
+      .page-inner {
+        padding: 0 5% 30px 5%;
+      }
+
+      .inner-page-hero {
+        padding: 26px 18px;
+        border-radius: 24px;
+      }
+
+      .inner-page-hero h1 {
+        font-size: 28px;
+      }
+
+      .inner-page-hero p {
+        font-size: 16px;
+      }
+
+      .card {
+        border-radius: 24px;
+        padding: 20px;
+      }
+
+      .card-title {
+        font-size: 21px;
+      }
+
+      .top-bar-title {
+        font-size: 20px;
+      }
+
+      .back-btn,
+      .top-bar-spacer {
+        width: 48px;
+        height: 48px;
+      }
+
+      .car-stat-row,
+      .service-meta {
+        grid-template-columns: 1fr;
+      }
+
+      .button-row {
+        flex-direction: column;
+      }
+
+      .action-btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body class="smart-tools-color-theme">
+
+  <!-- =========================
+       CAR MAIN PAGE
+  ========================= -->
+  <div id="carMainPage">
+
+    <div class="top-bar-wrap">
+      <div class="top-bar">
+        <button class="back-btn" onclick="goBackToMainPage()">←</button>
+        <div class="top-bar-title">Car Care</div>
+        <div class="top-bar-spacer"></div>
+      </div>
+    </div>
+
+    <div class="page-inner">
+
+      <div class="inner-page-hero">
+        <h1>Car Care</h1>
+        <p>
+          Track maintenance, repairs, oil changes, inspections, and expenses for both cars.
+          Choose a car below to add or view service records.
+        </p>
+      </div>
+
+      <div class="car-grid">
+
+        <div class="card car-card" onclick="openCarDetails('mazdaCx50')">
+          <div class="car-icon">🚙</div>
+          <div class="car-name">Mazda CX-50</div>
+          <div class="car-info">Tap to open service history, costs, notes, and maintenance records.</div>
+
+          <div class="car-stat-row">
+            <div class="car-stat-box">
+              <div id="mazdaCx50ServiceCount" class="car-stat-number">0</div>
+              <div class="car-stat-label">Services</div>
+            </div>
+
+            <div class="car-stat-box">
+              <div id="mazdaCx50TotalCost" class="car-stat-number">$0</div>
+              <div class="car-stat-label">Total Cost</div>
+            </div>
+
+            <div class="car-stat-box">
+              <div id="mazdaCx50LastMileage" class="car-stat-number">0</div>
+              <div class="car-stat-label">Last Miles</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card car-card" onclick="openCarDetails('toyotaCamry')">
+          <div class="car-icon">🚗</div>
+          <div class="car-name">Toyota Camry</div>
+          <div class="car-info">Tap to open service history, costs, notes, and maintenance records.</div>
+
+          <div class="car-stat-row">
+            <div class="car-stat-box">
+              <div id="toyotaCamryServiceCount" class="car-stat-number">0</div>
+              <div class="car-stat-label">Services</div>
+            </div>
+
+            <div class="car-stat-box">
+              <div id="toyotaCamryTotalCost" class="car-stat-number">$0</div>
+              <div class="car-stat-label">Total Cost</div>
+            </div>
+
+            <div class="car-stat-box">
+              <div id="toyotaCamryLastMileage" class="car-stat-number">0</div>
+              <div class="car-stat-label">Last Miles</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- =========================
+       CAR DETAILS PAGE
+  ========================= -->
+  <div id="carDetailsPage">
+
+    <div class="top-bar-wrap">
+      <div class="top-bar">
+        <button class="back-btn" onclick="closeCarDetails()">←</button>
+        <div id="carDetailsTitle" class="top-bar-title">Car Details</div>
+        <div class="top-bar-spacer"></div>
+      </div>
+    </div>
+
+    <div class="page-inner">
+
+      <div class="inner-page-hero">
+        <h1 id="carDetailsHeroTitle">Car Details</h1>
+        <p>
+          Add service, repair, oil change, inspection, tire, or other car expense records.
+        </p>
+      </div>
+
+      <div class="car-details-layout">
+
+        <!-- =========================
+             SERVICE FORM
+        ========================= -->
+        <div>
+          <div class="card">
+            <div class="card-title">Add Service</div>
+            <div class="card-subtitle">Save date, mileage, service type, cost, and notes.</div>
+
+            <div id="editingServicePill" class="editing-pill">
+              Editing service
+            </div>
+
+            <input id="serviceDateInput" class="car-input" type="date">
+
+            <input id="serviceMileageInput" class="car-input" type="number" inputmode="numeric" placeholder="Mileage">
+
+            <select id="serviceTypeInput" class="car-select">
+              <option value="Oil Change">Oil Change</option>
+              <option value="Inspection">Inspection</option>
+              <option value="Tires">Tires</option>
+              <option value="Brakes">Brakes</option>
+              <option value="Battery">Battery</option>
+              <option value="Repair">Repair</option>
+              <option value="Gas / Fuel">Gas / Fuel</option>
+              <option value="Insurance">Insurance</option>
+              <option value="Other">Other</option>
+            </select>
+
+            <input id="serviceCostInput" class="car-input" type="number" inputmode="decimal" placeholder="Cost">
+
+            <textarea id="serviceNotesInput" class="car-textarea" placeholder="Notes"></textarea>
+
+            <div class="button-row">
+              <button id="saveServiceBtn" class="action-btn save-btn" onclick="saveCarService()">Save Service</button>
+              <button class="action-btn reset-btn" onclick="resetCarForm()">Clear</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- =========================
+             SERVICE LIST
+        ========================= -->
+        <div>
+          <div class="card">
+            <div class="card-title">Service History</div>
+            <div class="card-subtitle">Saved services will show below.</div>
+
+            <div id="serviceList" class="service-list"></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // =========================
+    // BACK TO MAIN PAGE
+    // =========================
+    function goBackToMainPage() {
+      window.location.href = "../";
+    }
+
+    // =========================
+    // SMART TOOLS THEME
+    // Follows main page key: smartToolsHomeTheme
+    // =========================
+    function applySmartToolsTheme() {
+      const savedTheme = localStorage.getItem("smartToolsHomeTheme") || "dark";
+
+      document.body.classList.remove("smart-tools-color-theme");
+      document.body.classList.remove("smart-tools-dark-theme");
+
+      if (savedTheme === "color") {
+        document.body.classList.add("smart-tools-color-theme");
+      } else {
+        document.body.classList.add("smart-tools-dark-theme");
+      }
+    }
+
+    // =========================
+    // CAR CARE STATE
+    // =========================
+    let selectedCarKey = null;
+    let editingServiceId = null;
+
+    const carNames = {
+      mazdaCx50: "Mazda CX-50",
+      toyotaCamry: "Toyota Camry"
+    };
+
+    // =========================
+    // GET CAR DATA
+    // =========================
+    function getCarData() {
+      const saved = localStorage.getItem("pocketToolsCarData");
+
+      if (!saved) {
+        return {
+          mazdaCx50: [],
+          toyotaCamry: []
+        };
+      }
+
+      try {
+        const parsed = JSON.parse(saved);
+
+        return {
+          mazdaCx50: Array.isArray(parsed.mazdaCx50) ? parsed.mazdaCx50 : [],
+          toyotaCamry: Array.isArray(parsed.toyotaCamry) ? parsed.toyotaCamry : []
+        };
+      } catch (error) {
+        return {
+          mazdaCx50: [],
+          toyotaCamry: []
+        };
+      }
+    }
+
+    // =========================
+    // SAVE CAR DATA
+    // =========================
+    function saveCarData(data) {
+      localStorage.setItem("pocketToolsCarData", JSON.stringify(data));
+    }
+
+    // =========================
+    // OPEN CAR DETAILS
+    // =========================
+    function openCarDetails(carKey) {
+      selectedCarKey = carKey;
+      editingServiceId = null;
+
+      const carMainPage = document.getElementById("carMainPage");
+      const carDetailsPage = document.getElementById("carDetailsPage");
+      const title = document.getElementById("carDetailsTitle");
+      const heroTitle = document.getElementById("carDetailsHeroTitle");
+
+      if (carMainPage) carMainPage.style.display = "none";
+      if (carDetailsPage) carDetailsPage.style.display = "block";
+
+      if (title) title.innerText = carNames[carKey] || "Car Details";
+      if (heroTitle) heroTitle.innerText = carNames[carKey] || "Car Details";
+
+      resetCarForm();
+      renderCarDetails();
+
+      window.scrollTo(0, 0);
+    }
+
+    // =========================
+    // CLOSE CAR DETAILS
+    // =========================
+    function closeCarDetails() {
+      selectedCarKey = null;
+      editingServiceId = null;
+
+      const carMainPage = document.getElementById("carMainPage");
+      const carDetailsPage = document.getElementById("carDetailsPage");
+
+      if (carDetailsPage) carDetailsPage.style.display = "none";
+      if (carMainPage) carMainPage.style.display = "block";
+
+      resetCarForm();
+      renderCarMainStats();
+
+      window.scrollTo(0, 0);
+    }
+
+    // =========================
+    // SAVE CAR SERVICE
+    // =========================
+    function saveCarService() {
+      if (!selectedCarKey) return;
+
+      const dateInput = document.getElementById("serviceDateInput");
+      const mileageInput = document.getElementById("serviceMileageInput");
+      const typeInput = document.getElementById("serviceTypeInput");
+      const costInput = document.getElementById("serviceCostInput");
+      const notesInput = document.getElementById("serviceNotesInput");
+
+      const date = dateInput.value;
+      const mileage = mileageInput.value.trim();
+      const type = typeInput.value;
+      const cost = costInput.value.trim();
+      const notes = notesInput.value.trim();
+
+      if (date === "" && mileage === "" && cost === "" && notes === "") {
+        alert("Please enter service details first.");
+        return;
+      }
+
+      const data = getCarData();
+      const list = data[selectedCarKey] || [];
+      const now = new Date().toISOString();
+
+      if (editingServiceId) {
+        const index = list.findIndex(item => item.id === editingServiceId);
+
+        if (index !== -1) {
+          list[index].date = date;
+          list[index].mileage = mileage;
+          list[index].type = type;
+          list[index].cost = cost;
+          list[index].notes = notes;
+          list[index].updatedAt = now;
+        }
+      } else {
+        list.unshift({
+          id: "service_" + Date.now(),
+          date: date,
+          mileage: mileage,
+          type: type,
+          cost: cost,
+          notes: notes,
+          createdAt: now,
+          updatedAt: now
+        });
+      }
+
+      data[selectedCarKey] = list;
+      saveCarData(data);
+
+      resetCarForm();
+      renderCarDetails();
+      renderCarMainStats();
+    }
+
+    // =========================
+    // RENDER CAR DETAILS
+    // =========================
+    function renderCarDetails() {
+      const serviceList = document.getElementById("serviceList");
+      const data = getCarData();
+
+      if (!serviceList || !selectedCarKey) return;
+
+      const list = data[selectedCarKey] || [];
+
+      if (list.length === 0) {
+        serviceList.innerHTML = `
+          <div class="empty-service-box">
+            No service records yet.<br>
+            Add the first service from the left side.
+          </div>
+        `;
+        applySmartToolsTheme();
+        return;
+      }
+
+      serviceList.innerHTML = list.map(service => {
+        const safeType = escapeHtml(service.type || "Service");
+        const safeDate = escapeHtml(formatServiceDate(service.date));
+        const safeMileage = escapeHtml(service.mileage || "0");
+        const safeCost = escapeHtml(formatMoney(service.cost));
+        const safeNotes = escapeHtml(service.notes || "");
+
+        return `
+          <div class="service-card">
+            <div class="service-top-row">
+              <div class="service-title">${safeType}</div>
+              <div class="service-cost">${safeCost}</div>
+            </div>
+
+            <div class="service-meta">
+              <div class="service-meta-box">
+                <div class="service-meta-label">Date</div>
+                <div class="service-meta-value">${safeDate}</div>
+              </div>
+
+              <div class="service-meta-box">
+                <div class="service-meta-label">Mileage</div>
+                <div class="service-meta-value">${safeMileage}</div>
+              </div>
+
+              <div class="service-meta-box">
+                <div class="service-meta-label">Type</div>
+                <div class="service-meta-value">${safeType}</div>
+              </div>
+            </div>
+
+            <div class="service-note">${safeNotes || "No notes."}</div>
+
+            <div class="service-actions">
+              <button class="small-car-btn edit-btn" onclick="editCarService('${service.id}')">Edit</button>
+              <button class="small-car-btn delete-btn" onclick="deleteCarService('${service.id}')">Delete</button>
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      applySmartToolsTheme();
+    }
+
+    // =========================
+    // EDIT CAR SERVICE
+    // =========================
+    function editCarService(serviceId) {
+      if (!selectedCarKey) return;
+
+      const data = getCarData();
+      const list = data[selectedCarKey] || [];
+      const service = list.find(item => item.id === serviceId);
+
+      if (!service) return;
+
+      editingServiceId = serviceId;
+
+      document.getElementById("serviceDateInput").value = service.date || "";
+      document.getElementById("serviceMileageInput").value = service.mileage || "";
+      document.getElementById("serviceTypeInput").value = service.type || "Other";
+      document.getElementById("serviceCostInput").value = service.cost || "";
+      document.getElementById("serviceNotesInput").value = service.notes || "";
+
+      const editingPill = document.getElementById("editingServicePill");
+      const saveBtn = document.getElementById("saveServiceBtn");
+
+      if (editingPill) editingPill.classList.add("show");
+      if (saveBtn) saveBtn.innerText = "Update Service";
+
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+    }
+
+    // =========================
+    // DELETE CAR SERVICE
+    // =========================
+    function deleteCarService(serviceId) {
+      if (!selectedCarKey) return;
+
+      const confirmDelete = confirm("Delete this service record?");
+
+      if (!confirmDelete) return;
+
+      const data = getCarData();
+      let list = data[selectedCarKey] || [];
+
+      list = list.filter(item => item.id !== serviceId);
+      data[selectedCarKey] = list;
+
+      saveCarData(data);
+
+      if (editingServiceId === serviceId) {
+        resetCarForm();
+      }
+
+      renderCarDetails();
+      renderCarMainStats();
+    }
+
+    // =========================
+    // RESET CAR FORM
+    // =========================
+    function resetCarForm() {
+      editingServiceId = null;
+
+      const dateInput = document.getElementById("serviceDateInput");
+      const mileageInput = document.getElementById("serviceMileageInput");
+      const typeInput = document.getElementById("serviceTypeInput");
+      const costInput = document.getElementById("serviceCostInput");
+      const notesInput = document.getElementById("serviceNotesInput");
+      const editingPill = document.getElementById("editingServicePill");
+      const saveBtn = document.getElementById("saveServiceBtn");
+
+      if (dateInput) dateInput.value = "";
+      if (mileageInput) mileageInput.value = "";
+      if (typeInput) typeInput.value = "Oil Change";
+      if (costInput) costInput.value = "";
+      if (notesInput) notesInput.value = "";
+      if (editingPill) editingPill.classList.remove("show");
+      if (saveBtn) saveBtn.innerText = "Save Service";
+    }
+
+    // =========================
+    // RENDER CAR MAIN STATS
+    // =========================
+    function renderCarMainStats() {
+      const data = getCarData();
+
+      updateCarStats("mazdaCx50", data.mazdaCx50 || []);
+      updateCarStats("toyotaCamry", data.toyotaCamry || []);
+
+      applySmartToolsTheme();
+    }
+
+    // =========================
+    // UPDATE CAR STATS
+    // =========================
+    function updateCarStats(carKey, list) {
+      const countEl = document.getElementById(carKey + "ServiceCount");
+      const totalCostEl = document.getElementById(carKey + "TotalCost");
+      const lastMileageEl = document.getElementById(carKey + "LastMileage");
+
+      const totalCost = list.reduce((sum, item) => {
+        const value = parseFloat(item.cost || "0");
+        return sum + (isNaN(value) ? 0 : value);
+      }, 0);
+
+      let lastMileage = 0;
+
+      list.forEach(item => {
+        const miles = parseFloat(item.mileage || "0");
+        if (!isNaN(miles) && miles > lastMileage) {
+          lastMileage = miles;
+        }
+      });
+
+      if (countEl) countEl.innerText = list.length;
+      if (totalCostEl) totalCostEl.innerText = "$" + totalCost.toFixed(0);
+      if (lastMileageEl) lastMileageEl.innerText = lastMileage ? Math.round(lastMileage).toLocaleString() : "0";
+    }
+
+    // =========================
+    // FORMAT MONEY
+    // =========================
+    function formatMoney(value) {
+      const numberValue = parseFloat(value || "0");
+
+      if (isNaN(numberValue)) {
+        return "$0.00";
+      }
+
+      return "$" + numberValue.toFixed(2);
+    }
+
+    // =========================
+    // FORMAT SERVICE DATE
+    // =========================
+    function formatServiceDate(value) {
+      if (!value) return "No date";
+
+      const date = new Date(value + "T00:00:00");
+
+      if (isNaN(date.getTime())) {
+        return value;
+      }
+
+      return date.toLocaleDateString([], {
+        month: "short",
+        day: "numeric",
+        year: "numeric"
+      });
+    }
+
+    // =========================
+    // ESCAPE HTML
+    // =========================
+    function escapeHtml(value) {
+      return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    // =========================
+    // PAGE LOAD
+    // =========================
+    document.addEventListener("DOMContentLoaded", function() {
+      applySmartToolsTheme();
+      renderCarMainStats();
+    });
+  </script>
+
+</body>
+</html>
