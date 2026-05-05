@@ -1,0 +1,1237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Password Vault</title>
+
+<style>
+*{
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
+}
+
+html,body{
+  margin:0;
+  padding:0;
+  width:100%;
+  min-height:100%;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+  background:#e9e9ee;
+  color:#111;
+}
+
+body{
+  overflow-x:hidden;
+}
+
+button,input,textarea{
+  font-family:inherit;
+}
+
+button{
+  border:none;
+  cursor:pointer;
+}
+
+.page{
+  width:100%;
+  min-height:100vh;
+  padding:18px 5% 34px 5%;
+}
+
+/* =========================
+   TOP BAR
+========================= */
+.topBar{
+  width:100%;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:16px;
+}
+
+.backBtn{
+  width:44px;
+  height:44px;
+  border-radius:50%;
+  background:white;
+  color:#111;
+  font-size:24px;
+  font-weight:800;
+  box-shadow:0 8px 20px rgba(0,0,0,0.08);
+}
+
+.topTitle{
+  flex:1;
+  text-align:center;
+  font-size:22px;
+  font-weight:900;
+  letter-spacing:-0.4px;
+}
+
+.topSpacer{
+  width:44px;
+  height:44px;
+}
+
+/* =========================
+   HERO CARD
+========================= */
+.heroCard{
+  width:100%;
+  border-radius:30px;
+  padding:22px 6%;
+  background:linear-gradient(135deg,#111827,#334155);
+  color:white;
+  box-shadow:0 16px 34px rgba(0,0,0,0.18);
+  margin-bottom:16px;
+}
+
+.heroIcon{
+  width:62px;
+  height:62px;
+  border-radius:22px;
+  background:rgba(255,255,255,0.15);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:31px;
+  margin-bottom:14px;
+}
+
+.heroTitle{
+  font-size:26px;
+  font-weight:950;
+  margin-bottom:6px;
+}
+
+.heroText{
+  font-size:14px;
+  line-height:1.45;
+  color:rgba(255,255,255,0.82);
+}
+
+/* =========================
+   CARDS
+========================= */
+.card{
+  width:100%;
+  background:white;
+  border-radius:28px;
+  padding:18px 5%;
+  box-shadow:0 8px 24px rgba(0,0,0,0.07);
+  border:1px solid rgba(0,0,0,0.04);
+  margin-bottom:14px;
+}
+
+.sectionTitle{
+  font-size:18px;
+  font-weight:900;
+  margin-bottom:12px;
+}
+
+.smallText{
+  font-size:13px;
+  color:#666;
+  line-height:1.45;
+}
+
+.inputLabel{
+  display:block;
+  font-size:13px;
+  font-weight:800;
+  color:#333;
+  margin:12px 0 7px 0;
+}
+
+.inputBox{
+  width:100%;
+  min-height:48px;
+  border-radius:16px;
+  border:1px solid #ddd;
+  background:#f7f7fa;
+  padding:0 14px;
+  font-size:16px;
+  outline:none;
+}
+
+.inputBox:focus{
+  border-color:#007aff;
+  background:white;
+  box-shadow:0 0 0 4px rgba(0,122,255,0.10);
+}
+
+.textArea{
+  width:100%;
+  min-height:84px;
+  border-radius:16px;
+  border:1px solid #ddd;
+  background:#f7f7fa;
+  padding:12px 14px;
+  font-size:15px;
+  resize:none;
+  outline:none;
+}
+
+.textArea:focus{
+  border-color:#007aff;
+  background:white;
+  box-shadow:0 0 0 4px rgba(0,122,255,0.10);
+}
+
+/* =========================
+   BUTTONS
+========================= */
+.primaryBtn{
+  width:100%;
+  height:52px;
+  border-radius:18px;
+  background:#007aff;
+  color:white;
+  font-size:16px;
+  font-weight:900;
+  margin-top:14px;
+  box-shadow:0 10px 22px rgba(0,122,255,0.25);
+}
+
+.greenBtn{
+  background:#28a745;
+  box-shadow:0 10px 22px rgba(40,167,69,0.22);
+}
+
+.redBtn{
+  background:#ff3b30;
+  box-shadow:0 10px 22px rgba(255,59,48,0.20);
+}
+
+.grayBtn{
+  width:100%;
+  height:48px;
+  border-radius:16px;
+  background:#f1f1f4;
+  color:#111;
+  font-size:15px;
+  font-weight:850;
+  margin-top:10px;
+}
+
+.row{
+  display:flex;
+  gap:10px;
+}
+
+.row > button{
+  flex:1;
+}
+
+/* =========================
+   LOCK SCREEN
+========================= */
+#lockScreen{
+  display:block;
+}
+
+.passDots{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:12px;
+  margin:18px 0;
+}
+
+.passDot{
+  width:15px;
+  height:15px;
+  border-radius:50%;
+  background:#d1d5db;
+}
+
+.passDot.filled{
+  background:#007aff;
+}
+
+.keypad{
+  width:100%;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+  margin-top:14px;
+}
+
+.keyBtn{
+  height:64px;
+  border-radius:22px;
+  background:#fff;
+  color:#111;
+  font-size:25px;
+  font-weight:850;
+  box-shadow:0 7px 18px rgba(0,0,0,0.06);
+}
+
+.keyBtn:active{
+  transform:scale(0.96);
+}
+
+.keyAction{
+  font-size:15px;
+  color:#007aff;
+}
+
+/* =========================
+   VAULT SCREEN
+========================= */
+#vaultScreen{
+  display:none;
+}
+
+.searchBox{
+  width:100%;
+  height:48px;
+  border-radius:18px;
+  border:none;
+  background:white;
+  padding:0 16px;
+  font-size:15px;
+  outline:none;
+  box-shadow:0 8px 22px rgba(0,0,0,0.06);
+  margin-bottom:14px;
+}
+
+.vaultItem{
+  width:100%;
+  background:white;
+  border-radius:24px;
+  padding:16px 5%;
+  box-shadow:0 8px 22px rgba(0,0,0,0.06);
+  border:1px solid rgba(0,0,0,0.04);
+  margin-bottom:12px;
+}
+
+.vaultTop{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  align-items:flex-start;
+}
+
+.vaultName{
+  font-size:18px;
+  font-weight:950;
+  color:#111;
+  margin-bottom:3px;
+  word-break:break-word;
+}
+
+.vaultUser{
+  font-size:13px;
+  color:#666;
+  word-break:break-word;
+}
+
+.vaultPass{
+  margin-top:12px;
+  width:100%;
+  background:#f7f7fa;
+  border-radius:16px;
+  padding:12px;
+  font-size:15px;
+  font-weight:800;
+  color:#111;
+  word-break:break-all;
+}
+
+.vaultNotes{
+  margin-top:10px;
+  font-size:13px;
+  color:#666;
+  line-height:1.45;
+  word-break:break-word;
+}
+
+.actionGrid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:8px;
+  margin-top:12px;
+}
+
+.miniBtn{
+  height:38px;
+  border-radius:13px;
+  font-size:12px;
+  font-weight:850;
+  background:#f1f1f4;
+  color:#111;
+}
+
+.copyBtn{
+  background:#e8f1ff;
+  color:#007aff;
+}
+
+.editBtn{
+  background:#fff4d7;
+  color:#9a6a00;
+}
+
+.deleteBtn{
+  background:#ffe8e8;
+  color:#ff3b30;
+}
+
+.emptyBox{
+  width:100%;
+  background:white;
+  border-radius:26px;
+  padding:26px 6%;
+  text-align:center;
+  box-shadow:0 8px 22px rgba(0,0,0,0.06);
+  color:#666;
+}
+
+/* =========================
+   MODAL
+========================= */
+.modalOverlay{
+  display:none;
+  position:fixed;
+  inset:0;
+  z-index:999;
+  background:rgba(0,0,0,0.38);
+  align-items:flex-end;
+  justify-content:center;
+}
+
+.modalBox{
+  width:100%;
+  max-height:88vh;
+  overflow:auto;
+  background:#e9e9ee;
+  border-radius:30px 30px 0 0;
+  padding:20px 5% 28px 5%;
+  box-shadow:0 -12px 35px rgba(0,0,0,0.22);
+}
+
+.modalHandle{
+  width:46px;
+  height:5px;
+  border-radius:20px;
+  background:#c7c7cc;
+  margin:0 auto 16px auto;
+}
+
+.toast{
+  position:fixed;
+  left:50%;
+  bottom:28px;
+  transform:translateX(-50%);
+  background:#111;
+  color:white;
+  padding:12px 18px;
+  border-radius:18px;
+  font-size:14px;
+  font-weight:800;
+  z-index:2000;
+  display:none;
+  max-width:88%;
+  text-align:center;
+}
+
+/* =========================
+   DESKTOP WIDTH
+========================= */
+@media(min-width:700px){
+  .page{
+    max-width:520px;
+    margin:0 auto;
+    padding-left:18px;
+    padding-right:18px;
+  }
+
+  .modalBox{
+    max-width:520px;
+    border-radius:30px;
+    margin-bottom:24px;
+  }
+
+  .modalOverlay{
+    align-items:flex-end;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- =========================
+     LOCK SCREEN
+========================= -->
+<div id="lockScreen" class="page">
+
+  <div class="topBar">
+    <button class="backBtn" onclick="goBackHome()">‹</button>
+    <div class="topTitle">Password Vault</div>
+    <div class="topSpacer"></div>
+  </div>
+
+  <div class="heroCard">
+    <div class="heroIcon">🔐</div>
+    <div class="heroTitle">Secure Vault</div>
+    <div id="lockHeroText" class="heroText">
+      Enter your passcode to unlock your saved usernames and passwords.
+    </div>
+  </div>
+
+  <div class="card">
+    <div id="lockTitle" class="sectionTitle">Enter Passcode</div>
+    <div id="lockSubText" class="smallText">
+      Your saved data stays on this device.
+    </div>
+
+    <div class="passDots">
+      <div id="dot1" class="passDot"></div>
+      <div id="dot2" class="passDot"></div>
+      <div id="dot3" class="passDot"></div>
+      <div id="dot4" class="passDot"></div>
+      <div id="dot5" class="passDot"></div>
+      <div id="dot6" class="passDot"></div>
+    </div>
+
+    <div class="keypad">
+      <button class="keyBtn" onclick="pressKey('1')">1</button>
+      <button class="keyBtn" onclick="pressKey('2')">2</button>
+      <button class="keyBtn" onclick="pressKey('3')">3</button>
+
+      <button class="keyBtn" onclick="pressKey('4')">4</button>
+      <button class="keyBtn" onclick="pressKey('5')">5</button>
+      <button class="keyBtn" onclick="pressKey('6')">6</button>
+
+      <button class="keyBtn" onclick="pressKey('7')">7</button>
+      <button class="keyBtn" onclick="pressKey('8')">8</button>
+      <button class="keyBtn" onclick="pressKey('9')">9</button>
+
+      <button class="keyBtn keyAction" onclick="clearPasscode()">Clear</button>
+      <button class="keyBtn" onclick="pressKey('0')">0</button>
+      <button class="keyBtn keyAction" onclick="deleteKey()">⌫</button>
+    </div>
+
+    <button id="resetVaultBtn" class="grayBtn" onclick="confirmResetVault()" style="display:none;">
+      Forgot Passcode / Reset Vault
+    </button>
+  </div>
+
+</div>
+
+<!-- =========================
+     VAULT SCREEN
+========================= -->
+<div id="vaultScreen" class="page">
+
+  <div class="topBar">
+    <button class="backBtn" onclick="goBackHome()">‹</button>
+    <div class="topTitle">Password Vault</div>
+    <button class="backBtn" onclick="lockVault()" style="font-size:19px;">🔒</button>
+  </div>
+
+  <div class="heroCard">
+    <div class="heroIcon">🗝️</div>
+    <div class="heroTitle">My Logins</div>
+    <div class="heroText">
+      Save website name, username, password, and notes. Use copy buttons when needed.
+    </div>
+  </div>
+
+  <input id="searchInput" class="searchBox" placeholder="Search saved passwords..." oninput="renderVaultList()">
+
+  <div class="row">
+    <button class="primaryBtn greenBtn" onclick="openAddModal()">＋ Add Login</button>
+    <button class="primaryBtn" onclick="openBackupModal()">Backup</button>
+  </div>
+
+  <div id="vaultList" style="margin-top:14px;"></div>
+
+</div>
+
+<!-- =========================
+     ADD / EDIT MODAL
+========================= -->
+<div id="loginModal" class="modalOverlay">
+  <div class="modalBox">
+    <div class="modalHandle"></div>
+
+    <div id="modalTitle" class="sectionTitle">Add Login</div>
+
+    <label class="inputLabel">Website / App Name</label>
+    <input id="siteInput" class="inputBox" placeholder="Example: Gmail">
+
+    <label class="inputLabel">Username / Email</label>
+    <input id="usernameInput" class="inputBox" placeholder="Example: myemail@gmail.com">
+
+    <label class="inputLabel">Password</label>
+    <input id="passwordInput" class="inputBox" placeholder="Enter password">
+
+    <label class="inputLabel">Notes</label>
+    <textarea id="notesInput" class="textArea" placeholder="Optional notes"></textarea>
+
+    <button class="primaryBtn greenBtn" onclick="saveLogin()">Save Login</button>
+    <button class="grayBtn" onclick="closeLoginModal()">Cancel</button>
+  </div>
+</div>
+
+<!-- =========================
+     BACKUP MODAL
+========================= -->
+<div id="backupModal" class="modalOverlay">
+  <div class="modalBox">
+    <div class="modalHandle"></div>
+
+    <div class="sectionTitle">Backup / Restore</div>
+    <div class="smallText">
+      Export backup saves an encrypted copy of your vault. Restore backup imports it back.
+    </div>
+
+    <button class="primaryBtn greenBtn" onclick="exportBackup()">Export Backup</button>
+
+    <label class="inputLabel">Import Backup File</label>
+    <input id="backupFileInput" class="inputBox" type="file" accept=".json,application/json" onchange="importBackupFile(event)">
+
+    <button class="grayBtn" onclick="closeBackupModal()">Close</button>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+/* =========================
+   PASSWORD VAULT STORAGE
+========================= */
+const VAULT_STORAGE_KEY = "smartToolsPasswordVaultEncryptedV1";
+
+let enteredPasscode = "";
+let newSetupPasscode = "";
+let vaultUnlocked = false;
+let vaultData = [];
+let cryptoKey = null;
+let editIndex = null;
+let isNewVault = false;
+
+/* =========================
+   PAGE START
+========================= */
+document.addEventListener("DOMContentLoaded", function(){
+  initializeVaultPage();
+});
+
+/* =========================
+   GO BACK HOME
+========================= */
+function goBackHome(){
+  window.location.href = "../";
+}
+
+/* =========================
+   INITIALIZE VAULT PAGE
+========================= */
+function initializeVaultPage(){
+
+  let saved = localStorage.getItem(VAULT_STORAGE_KEY);
+
+  if(!saved){
+    isNewVault = true;
+    document.getElementById("lockTitle").innerText = "Create 6-Digit Passcode";
+    document.getElementById("lockSubText").innerText = "Choose a 6-digit passcode. You will use it to unlock this vault.";
+    document.getElementById("lockHeroText").innerText = "First time setup. Create a passcode for your Password Vault.";
+    document.getElementById("resetVaultBtn").style.display = "none";
+  }else{
+    isNewVault = false;
+    document.getElementById("lockTitle").innerText = "Enter Passcode";
+    document.getElementById("lockSubText").innerText = "Enter your 6-digit passcode to unlock.";
+    document.getElementById("lockHeroText").innerText = "Enter your passcode to unlock your saved usernames and passwords.";
+    document.getElementById("resetVaultBtn").style.display = "block";
+  }
+
+  updateDots();
+}
+
+/* =========================
+   KEYPAD FUNCTIONS
+========================= */
+function pressKey(num){
+
+  if(enteredPasscode.length >= 6) return;
+
+  enteredPasscode += num;
+  updateDots();
+
+  if(enteredPasscode.length === 6){
+    setTimeout(function(){
+      handleFullPasscode();
+    },180);
+  }
+}
+
+function deleteKey(){
+  enteredPasscode = enteredPasscode.slice(0,-1);
+  updateDots();
+}
+
+function clearPasscode(){
+  enteredPasscode = "";
+  updateDots();
+}
+
+function updateDots(){
+
+  for(let i = 1; i <= 6; i++){
+    let dot = document.getElementById("dot" + i);
+    if(!dot) continue;
+
+    if(i <= enteredPasscode.length){
+      dot.classList.add("filled");
+    }else{
+      dot.classList.remove("filled");
+    }
+  }
+}
+
+/* =========================
+   HANDLE FULL PASSCODE
+========================= */
+async function handleFullPasscode(){
+
+  if(isNewVault){
+    await createNewVault();
+  }else{
+    await unlockExistingVault();
+  }
+}
+
+/* =========================
+   CREATE NEW VAULT
+========================= */
+async function createNewVault(){
+
+  try{
+
+    let salt = crypto.getRandomValues(new Uint8Array(16));
+    cryptoKey = await deriveKeyFromPasscode(enteredPasscode, salt);
+
+    vaultData = [];
+
+    let encrypted = await encryptVaultData(vaultData, cryptoKey);
+
+    let vaultRecord = {
+      version:1,
+      salt:arrayBufferToBase64(salt),
+      iv:encrypted.iv,
+      data:encrypted.data
+    };
+
+    localStorage.setItem(VAULT_STORAGE_KEY, JSON.stringify(vaultRecord));
+
+    vaultUnlocked = true;
+    showToast("Vault created");
+    openVaultScreen();
+
+  }catch(error){
+    console.error(error);
+    showToast("Could not create vault");
+    clearPasscode();
+  }
+}
+
+/* =========================
+   UNLOCK EXISTING VAULT
+========================= */
+async function unlockExistingVault(){
+
+  try{
+
+    let record = JSON.parse(localStorage.getItem(VAULT_STORAGE_KEY));
+    let salt = base64ToArrayBuffer(record.salt);
+
+    cryptoKey = await deriveKeyFromPasscode(enteredPasscode, salt);
+
+    vaultData = await decryptVaultData(record.data, record.iv, cryptoKey);
+
+    if(!Array.isArray(vaultData)){
+      vaultData = [];
+    }
+
+    vaultUnlocked = true;
+    showToast("Unlocked");
+    openVaultScreen();
+
+  }catch(error){
+    console.error(error);
+    showToast("Wrong passcode");
+    enteredPasscode = "";
+    updateDots();
+  }
+}
+
+/* =========================
+   OPEN VAULT SCREEN
+========================= */
+function openVaultScreen(){
+  document.getElementById("lockScreen").style.display = "none";
+  document.getElementById("vaultScreen").style.display = "block";
+  enteredPasscode = "";
+  updateDots();
+  renderVaultList();
+}
+
+/* =========================
+   LOCK VAULT
+========================= */
+function lockVault(){
+
+  vaultUnlocked = false;
+  vaultData = [];
+  cryptoKey = null;
+  enteredPasscode = "";
+
+  document.getElementById("vaultScreen").style.display = "none";
+  document.getElementById("lockScreen").style.display = "block";
+
+  initializeVaultPage();
+  showToast("Locked");
+}
+
+/* =========================
+   ENCRYPTION HELPERS
+========================= */
+async function deriveKeyFromPasscode(passcode, salt){
+
+  let encoder = new TextEncoder();
+
+  let baseKey = await crypto.subtle.importKey(
+    "raw",
+    encoder.encode(passcode),
+    {name:"PBKDF2"},
+    false,
+    ["deriveKey"]
+  );
+
+  let key = await crypto.subtle.deriveKey(
+    {
+      name:"PBKDF2",
+      salt:salt,
+      iterations:250000,
+      hash:"SHA-256"
+    },
+    baseKey,
+    {name:"AES-GCM", length:256},
+    false,
+    ["encrypt","decrypt"]
+  );
+
+  return key;
+}
+
+async function encryptVaultData(data, key){
+
+  let encoder = new TextEncoder();
+  let iv = crypto.getRandomValues(new Uint8Array(12));
+  let plainText = encoder.encode(JSON.stringify(data));
+
+  let cipherBuffer = await crypto.subtle.encrypt(
+    {name:"AES-GCM", iv:iv},
+    key,
+    plainText
+  );
+
+  return {
+    iv:arrayBufferToBase64(iv),
+    data:arrayBufferToBase64(cipherBuffer)
+  };
+}
+
+async function decryptVaultData(dataBase64, ivBase64, key){
+
+  let decoder = new TextDecoder();
+  let iv = base64ToArrayBuffer(ivBase64);
+  let data = base64ToArrayBuffer(dataBase64);
+
+  let plainBuffer = await crypto.subtle.decrypt(
+    {name:"AES-GCM", iv:iv},
+    key,
+    data
+  );
+
+  let plainText = decoder.decode(plainBuffer);
+  return JSON.parse(plainText);
+}
+
+function arrayBufferToBase64(buffer){
+
+  let bytes = new Uint8Array(buffer);
+  let binary = "";
+
+  for(let i = 0; i < bytes.byteLength; i++){
+    binary += String.fromCharCode(bytes[i]);
+  }
+
+  return btoa(binary);
+}
+
+function base64ToArrayBuffer(base64){
+
+  let binary = atob(base64);
+  let bytes = new Uint8Array(binary.length);
+
+  for(let i = 0; i < binary.length; i++){
+    bytes[i] = binary.charCodeAt(i);
+  }
+
+  return bytes;
+}
+
+/* =========================
+   SAVE ENCRYPTED VAULT
+========================= */
+async function saveEncryptedVault(){
+
+  if(!cryptoKey){
+    showToast("Vault is locked");
+    return;
+  }
+
+  let record = JSON.parse(localStorage.getItem(VAULT_STORAGE_KEY));
+  let encrypted = await encryptVaultData(vaultData, cryptoKey);
+
+  record.iv = encrypted.iv;
+  record.data = encrypted.data;
+
+  localStorage.setItem(VAULT_STORAGE_KEY, JSON.stringify(record));
+}
+
+/* =========================
+   ADD / EDIT LOGIN MODAL
+========================= */
+function openAddModal(){
+
+  editIndex = null;
+
+  document.getElementById("modalTitle").innerText = "Add Login";
+  document.getElementById("siteInput").value = "";
+  document.getElementById("usernameInput").value = "";
+  document.getElementById("passwordInput").value = "";
+  document.getElementById("notesInput").value = "";
+
+  document.getElementById("loginModal").style.display = "flex";
+}
+
+function openEditModal(index){
+
+  editIndex = index;
+
+  let item = vaultData[index];
+  if(!item) return;
+
+  document.getElementById("modalTitle").innerText = "Edit Login";
+  document.getElementById("siteInput").value = item.site || "";
+  document.getElementById("usernameInput").value = item.username || "";
+  document.getElementById("passwordInput").value = item.password || "";
+  document.getElementById("notesInput").value = item.notes || "";
+
+  document.getElementById("loginModal").style.display = "flex";
+}
+
+function closeLoginModal(){
+  document.getElementById("loginModal").style.display = "none";
+}
+
+/* =========================
+   SAVE LOGIN
+========================= */
+async function saveLogin(){
+
+  let site = document.getElementById("siteInput").value.trim();
+  let username = document.getElementById("usernameInput").value.trim();
+  let password = document.getElementById("passwordInput").value;
+  let notes = document.getElementById("notesInput").value.trim();
+
+  if(!site){
+    showToast("Enter website or app name");
+    return;
+  }
+
+  if(!username){
+    showToast("Enter username or email");
+    return;
+  }
+
+  if(!password){
+    showToast("Enter password");
+    return;
+  }
+
+  let loginItem = {
+    site:site,
+    username:username,
+    password:password,
+    notes:notes,
+    updatedAt:new Date().toISOString()
+  };
+
+  if(editIndex === null){
+    loginItem.createdAt = new Date().toISOString();
+    vaultData.unshift(loginItem);
+    showToast("Login saved");
+  }else{
+    loginItem.createdAt = vaultData[editIndex].createdAt || new Date().toISOString();
+    vaultData[editIndex] = loginItem;
+    showToast("Login updated");
+  }
+
+  await saveEncryptedVault();
+
+  closeLoginModal();
+  renderVaultList();
+}
+
+/* =========================
+   RENDER VAULT LIST
+========================= */
+function renderVaultList(){
+
+  let container = document.getElementById("vaultList");
+  let search = document.getElementById("searchInput").value.toLowerCase().trim();
+
+  container.innerHTML = "";
+
+  let filtered = vaultData
+    .map(function(item,index){
+      return {item:item,index:index};
+    })
+    .filter(function(row){
+
+      let text = [
+        row.item.site || "",
+        row.item.username || "",
+        row.item.notes || ""
+      ].join(" ").toLowerCase();
+
+      return text.includes(search);
+    });
+
+  if(filtered.length === 0){
+    container.innerHTML = `
+      <div class="emptyBox">
+        <div style="font-size:34px;margin-bottom:8px;">🔐</div>
+        <div style="font-weight:900;color:#111;margin-bottom:5px;">No saved logins</div>
+        <div>Add your first website, username, and password.</div>
+      </div>
+    `;
+    return;
+  }
+
+  filtered.forEach(function(row){
+
+    let item = row.item;
+    let index = row.index;
+
+    let div = document.createElement("div");
+    div.className = "vaultItem";
+
+    div.innerHTML = `
+      <div class="vaultTop">
+        <div>
+          <div class="vaultName">${escapeHTML(item.site || "")}</div>
+          <div class="vaultUser">${escapeHTML(item.username || "")}</div>
+        </div>
+        <div style="font-size:24px;">🔑</div>
+      </div>
+
+      <div class="vaultPass" id="passBox${index}">••••••••••••</div>
+
+      ${item.notes ? `<div class="vaultNotes">${escapeHTML(item.notes)}</div>` : ""}
+
+      <div class="actionGrid">
+        <button class="miniBtn copyBtn" onclick="copyUsername(${index})">User</button>
+        <button class="miniBtn copyBtn" onclick="copyPassword(${index})">Pass</button>
+        <button class="miniBtn editBtn" onclick="openEditModal(${index})">Edit</button>
+        <button class="miniBtn deleteBtn" onclick="deleteLogin(${index})">Delete</button>
+      </div>
+    `;
+
+    container.appendChild(div);
+  });
+}
+
+/* =========================
+   COPY FUNCTIONS
+========================= */
+async function copyUsername(index){
+
+  let item = vaultData[index];
+  if(!item) return;
+
+  await navigator.clipboard.writeText(item.username || "");
+  showToast("Username copied");
+}
+
+async function copyPassword(index){
+
+  let item = vaultData[index];
+  if(!item) return;
+
+  await navigator.clipboard.writeText(item.password || "");
+  showToast("Password copied");
+}
+
+/* =========================
+   DELETE LOGIN
+========================= */
+async function deleteLogin(index){
+
+  let item = vaultData[index];
+  if(!item) return;
+
+  let ok = confirm("Delete this saved login?");
+  if(!ok) return;
+
+  vaultData.splice(index,1);
+  await saveEncryptedVault();
+
+  showToast("Deleted");
+  renderVaultList();
+}
+
+/* =========================
+   BACKUP MODAL
+========================= */
+function openBackupModal(){
+  document.getElementById("backupModal").style.display = "flex";
+}
+
+function closeBackupModal(){
+  document.getElementById("backupModal").style.display = "none";
+}
+
+/* =========================
+   EXPORT BACKUP
+========================= */
+function exportBackup(){
+
+  let saved = localStorage.getItem(VAULT_STORAGE_KEY);
+
+  if(!saved){
+    showToast("No vault found");
+    return;
+  }
+
+  let backup = {
+    app:"Smart Tools Password Vault",
+    type:"encrypted-password-vault",
+    exportedAt:new Date().toISOString(),
+    vault:JSON.parse(saved)
+  };
+
+  let blob = new Blob([JSON.stringify(backup,null,2)], {type:"application/json"});
+  let url = URL.createObjectURL(blob);
+
+  let a = document.createElement("a");
+  a.href = url;
+  a.download = "password-vault-backup.json";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+
+  URL.revokeObjectURL(url);
+  showToast("Backup exported");
+}
+
+/* =========================
+   IMPORT BACKUP FILE
+========================= */
+function importBackupFile(event){
+
+  let file = event.target.files[0];
+  if(!file) return;
+
+  let reader = new FileReader();
+
+  reader.onload = function(e){
+
+    try{
+
+      let backup = JSON.parse(e.target.result);
+
+      if(!backup.vault || !backup.vault.salt || !backup.vault.iv || !backup.vault.data){
+        showToast("Invalid backup file");
+        return;
+      }
+
+      let ok = confirm("Restore this backup? Current vault on this device will be replaced.");
+      if(!ok) return;
+
+      localStorage.setItem(VAULT_STORAGE_KEY, JSON.stringify(backup.vault));
+
+      showToast("Backup imported. Unlock again.");
+      closeBackupModal();
+      lockVault();
+
+    }catch(error){
+      console.error(error);
+      showToast("Could not import backup");
+    }
+  };
+
+  reader.readAsText(file);
+}
+
+/* =========================
+   RESET VAULT
+========================= */
+function confirmResetVault(){
+
+  let first = confirm("This will delete your saved password vault from this device. Continue?");
+  if(!first) return;
+
+  let second = confirm("Are you sure? If you forgot the passcode, saved passwords cannot be recovered.");
+  if(!second) return;
+
+  localStorage.removeItem(VAULT_STORAGE_KEY);
+
+  enteredPasscode = "";
+  vaultData = [];
+  cryptoKey = null;
+  vaultUnlocked = false;
+
+  initializeVaultPage();
+  showToast("Vault reset");
+}
+
+/* =========================
+   HELPER FUNCTIONS
+========================= */
+function escapeHTML(text){
+
+  return String(text)
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
+
+function showToast(message){
+
+  let toast = document.getElementById("toast");
+  toast.innerText = message;
+  toast.style.display = "block";
+
+  clearTimeout(window.toastTimer);
+
+  window.toastTimer = setTimeout(function(){
+    toast.style.display = "none";
+  },1800);
+}
+</script>
+
+</body>
+</html>
