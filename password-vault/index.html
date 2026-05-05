@@ -25,6 +25,22 @@ body{
   overflow-x:hidden;
 }
 
+body.smart-tools-dark-theme{
+  background:
+    radial-gradient(circle at top left, rgba(34,197,94,0.16), transparent 32%),
+    radial-gradient(circle at top right, rgba(14,165,233,0.12), transparent 30%),
+    linear-gradient(180deg, #07111f 0%, #0b1626 52%, #07111f 100%);
+  color:#f8fafc;
+}
+
+body.smart-tools-color-theme{
+  background:
+    radial-gradient(circle at top left, rgba(96,165,250,0.24), transparent 30%),
+    radial-gradient(circle at top right, rgba(244,114,182,0.22), transparent 32%),
+    linear-gradient(180deg, #f4f7ff 0%, #eef2ff 48%, #f8fafc 100%);
+  color:#111827;
+}
+
 button,input,textarea{
   font-family:inherit;
 }
@@ -69,6 +85,7 @@ button{
   font-size:22px;
   font-weight:900;
   letter-spacing:-0.4px;
+  color:#111;
 }
 
 .topSpacer{
@@ -130,6 +147,7 @@ button{
   font-size:18px;
   font-weight:900;
   margin-bottom:12px;
+  color:#111;
 }
 
 .smallText{
@@ -155,6 +173,7 @@ button{
   padding:0 14px;
   font-size:16px;
   outline:none;
+  color:#111;
 }
 
 .inputBox:focus{
@@ -173,6 +192,7 @@ button{
   font-size:15px;
   resize:none;
   outline:none;
+  color:#111;
 }
 
 .textArea:focus{
@@ -297,6 +317,7 @@ button{
   outline:none;
   box-shadow:0 8px 22px rgba(0,0,0,0.06);
   margin-bottom:14px;
+  color:#111;
 }
 
 .vaultItem{
@@ -391,6 +412,12 @@ button{
   color:#666;
 }
 
+.emptyTitle{
+  font-weight:900;
+  color:#111;
+  margin-bottom:5px;
+}
+
 /* =========================
    MODAL
 ========================= */
@@ -437,6 +464,107 @@ button{
   display:none;
   max-width:88%;
   text-align:center;
+}
+
+/* =========================
+   MAIN PAGE THEME SUPPORT
+   Follows localStorage key: smartToolsHomeTheme
+========================= */
+body.smart-tools-dark-theme .topTitle,
+body.smart-tools-dark-theme .sectionTitle,
+body.smart-tools-dark-theme .vaultName,
+body.smart-tools-dark-theme .vaultPass,
+body.smart-tools-dark-theme .emptyTitle{
+  color:#f8fafc;
+}
+
+body.smart-tools-dark-theme .card,
+body.smart-tools-dark-theme .vaultItem,
+body.smart-tools-dark-theme .emptyBox,
+body.smart-tools-dark-theme .modalBox,
+body.smart-tools-dark-theme .keyBtn,
+body.smart-tools-dark-theme .backBtn{
+  background:linear-gradient(180deg, rgba(30,41,59,0.92), rgba(15,23,42,0.92));
+  color:#f8fafc;
+  border:1px solid rgba(148,163,184,0.18);
+}
+
+body.smart-tools-dark-theme .smallText,
+body.smart-tools-dark-theme .vaultUser,
+body.smart-tools-dark-theme .vaultNotes,
+body.smart-tools-dark-theme .inputLabel,
+body.smart-tools-dark-theme .emptyBox{
+  color:#cbd5e1;
+}
+
+body.smart-tools-dark-theme .inputBox,
+body.smart-tools-dark-theme .textArea,
+body.smart-tools-dark-theme .searchBox,
+body.smart-tools-dark-theme .vaultPass{
+  background:rgba(15,23,42,0.82);
+  color:#f8fafc;
+  border:1px solid rgba(148,163,184,0.22);
+}
+
+body.smart-tools-dark-theme .inputBox::placeholder,
+body.smart-tools-dark-theme .textArea::placeholder,
+body.smart-tools-dark-theme .searchBox::placeholder{
+  color:#94a3b8;
+}
+
+body.smart-tools-dark-theme .grayBtn,
+body.smart-tools-dark-theme .miniBtn{
+  background:rgba(148,163,184,0.14);
+  color:#f8fafc;
+}
+
+body.smart-tools-dark-theme .copyBtn{
+  background:rgba(0,122,255,0.18);
+  color:#60a5fa;
+}
+
+body.smart-tools-dark-theme .editBtn{
+  background:rgba(251,191,36,0.16);
+  color:#fbbf24;
+}
+
+body.smart-tools-dark-theme .deleteBtn{
+  background:rgba(255,59,48,0.16);
+  color:#fb7185;
+}
+
+body.smart-tools-dark-theme .heroCard{
+  background:linear-gradient(135deg,#0f172a,#1e293b);
+  border:1px solid rgba(148,163,184,0.18);
+}
+
+body.smart-tools-color-theme .topTitle,
+body.smart-tools-color-theme .sectionTitle,
+body.smart-tools-color-theme .vaultName,
+body.smart-tools-color-theme .vaultPass,
+body.smart-tools-color-theme .emptyTitle{
+  color:#111827;
+}
+
+body.smart-tools-color-theme .card,
+body.smart-tools-color-theme .vaultItem,
+body.smart-tools-color-theme .emptyBox,
+body.smart-tools-color-theme .modalBox,
+body.smart-tools-color-theme .keyBtn,
+body.smart-tools-color-theme .backBtn{
+  background:white;
+  color:#111827;
+}
+
+body.smart-tools-color-theme .smallText,
+body.smart-tools-color-theme .vaultUser,
+body.smart-tools-color-theme .vaultNotes,
+body.smart-tools-color-theme .inputLabel{
+  color:#64748b;
+}
+
+body.smart-tools-color-theme .heroCard{
+  background:linear-gradient(135deg,#2563eb,#9333ea);
 }
 
 /* =========================
@@ -610,7 +738,6 @@ button{
 const VAULT_STORAGE_KEY = "smartToolsPasswordVaultEncryptedV1";
 
 let enteredPasscode = "";
-let newSetupPasscode = "";
 let vaultUnlocked = false;
 let vaultData = [];
 let cryptoKey = null;
@@ -621,8 +748,27 @@ let isNewVault = false;
    PAGE START
 ========================= */
 document.addEventListener("DOMContentLoaded", function(){
+  applyPasswordVaultTheme();
   initializeVaultPage();
 });
+
+/* =========================
+   APPLY PASSWORD VAULT THEME
+   Follows main Smart Tools theme key: smartToolsHomeTheme
+========================= */
+function applyPasswordVaultTheme(){
+
+  let savedTheme = localStorage.getItem("smartToolsHomeTheme") || "dark";
+
+  document.body.classList.remove("smart-tools-color-theme");
+  document.body.classList.remove("smart-tools-dark-theme");
+
+  if(savedTheme === "color"){
+    document.body.classList.add("smart-tools-color-theme");
+  }else{
+    document.body.classList.add("smart-tools-dark-theme");
+  }
+}
 
 /* =========================
    GO BACK HOME
@@ -999,7 +1145,8 @@ async function saveLogin(){
 function renderVaultList(){
 
   let container = document.getElementById("vaultList");
-  let search = document.getElementById("searchInput").value.toLowerCase().trim();
+  let searchInput = document.getElementById("searchInput");
+  let search = searchInput ? searchInput.value.toLowerCase().trim() : "";
 
   container.innerHTML = "";
 
@@ -1022,7 +1169,7 @@ function renderVaultList(){
     container.innerHTML = `
       <div class="emptyBox">
         <div style="font-size:34px;margin-bottom:8px;">🔐</div>
-        <div style="font-weight:900;color:#111;margin-bottom:5px;">No saved logins</div>
+        <div class="emptyTitle">No saved logins</div>
         <div>Add your first website, username, and password.</div>
       </div>
     `;
@@ -1070,8 +1217,12 @@ async function copyUsername(index){
   let item = vaultData[index];
   if(!item) return;
 
-  await navigator.clipboard.writeText(item.username || "");
-  showToast("Username copied");
+  try{
+    await navigator.clipboard.writeText(item.username || "");
+    showToast("Username copied");
+  }catch(error){
+    showToast("Could not copy username");
+  }
 }
 
 async function copyPassword(index){
@@ -1079,8 +1230,12 @@ async function copyPassword(index){
   let item = vaultData[index];
   if(!item) return;
 
-  await navigator.clipboard.writeText(item.password || "");
-  showToast("Password copied");
+  try{
+    await navigator.clipboard.writeText(item.password || "");
+    showToast("Password copied");
+  }catch(error){
+    showToast("Could not copy password");
+  }
 }
 
 /* =========================
