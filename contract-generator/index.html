@@ -668,14 +668,16 @@
         town: { x: 382, y: 658, size: 10.5 }
       },
       NFC: {
-        offerDate: { x: 458, y: 125, size: 10.5 },
-        expiryDate: { x: 288, y: 269, size: 10.5 },
-        fixedPrice: { x: 435, y: 477, size: 11 },
-        acceptanceDate: { x: 421, y: 620, size: 10.5 },
+        // NFC/Nuzzi template has a different scan position than WFC,
+        // so these fields use separate coordinates.
+        offerDate: { x: 495, y: 128, size: 10.5 },
+        expiryDate: { x: 305, y: 269, size: 10.5 },
+        fixedPrice: { x: 501, y: 477, size: 11 },
+        acceptanceDate: { x: 495, y: 620, size: 10.5 },
         name: { x: 235, y: 641, size: 10.5 },
-        account: { x: 425, y: 641, size: 10.5, prefix: "Acc# " },
+        account: { x: 448, y: 641, size: 10.5, prefix: "Acc# " },
         address: { x: 235, y: 658, size: 10.5 },
-        town: { x: 382, y: 658, size: 10.5 }
+        town: { x: 445, y: 658, size: 10.5 }
       }
     };
 
