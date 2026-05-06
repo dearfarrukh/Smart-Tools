@@ -1,1 +1,1030 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <!-- =========================
+       IPHONE HOME SCREEN ICON
+  ========================= -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Contract Generator">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+
+  <link rel="apple-touch-icon" href="../images/icon.png">
+  <link rel="icon" type="image/png" href="../images/icon.png">
+
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+  <title>Contract Generator</title>
+
+  <!-- PDF MAKER -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <style>
+    /* =========================
+       RESET
+    ========================= */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html,
+    body {
+      width: 100%;
+      min-height: 100%;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      padding-bottom: 34px;
+      color: #111827;
+      background:
+        radial-gradient(circle at top left, rgba(96,165,250,0.24), transparent 30%),
+        radial-gradient(circle at top right, rgba(244,114,182,0.22), transparent 32%),
+        linear-gradient(180deg, #f4f7ff 0%, #eef2ff 48%, #f8fafc 100%);
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    /* =========================
+       PAGE TOP BAR
+    ========================= */
+    .top-bar-wrap {
+      width: 100%;
+      padding: 20px 4% 0 4%;
+    }
+
+    .top-bar {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .back-btn {
+      border: none;
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: white;
+      color: #111827;
+      font-size: 24px;
+      font-weight: 900;
+      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.10);
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .back-btn:active {
+      transform: scale(0.96);
+    }
+
+    .top-bar-title {
+      flex: 1;
+      text-align: center;
+      font-size: 22px;
+      font-weight: 900;
+      color: #111827;
+      letter-spacing: -0.4px;
+    }
+
+    .top-bar-spacer {
+      width: 52px;
+      height: 52px;
+      flex-shrink: 0;
+    }
+
+    /* =========================
+       PAGE LAYOUT
+    ========================= */
+    .page-inner {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 4% 40px 4%;
+    }
+
+    .inner-page-hero {
+      margin-top: 18px;
+      background: linear-gradient(135deg, #f59e0b 0%, #ec4899 50%, #8b5cf6 100%);
+      color: white;
+      border-radius: 30px;
+      padding: 32px 24px;
+      box-shadow: 0 14px 32px rgba(139, 92, 246, 0.20);
+    }
+
+    .inner-page-hero h1 {
+      font-size: 34px;
+      font-weight: 900;
+      line-height: 1.1;
+      margin-bottom: 12px;
+      letter-spacing: -0.8px;
+    }
+
+    .inner-page-hero p {
+      font-size: 17px;
+      line-height: 1.6;
+      color: rgba(255,255,255,0.95);
+      max-width: 800px;
+    }
+
+    /* =========================
+       CARDS AND LAYOUT
+    ========================= */
+    .contract-layout {
+      margin-top: 24px;
+      display: grid;
+      grid-template-columns: 0.90fr 1.10fr;
+      gap: 22px;
+      align-items: start;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.88);
+      border: 1px solid rgba(15,23,42,0.07);
+      border-radius: 28px;
+      padding: 22px;
+      box-shadow: 0 14px 34px rgba(15,23,42,0.10);
+    }
+
+    .card + .card {
+      margin-top: 18px;
+    }
+
+    .card-title {
+      font-size: 24px;
+      font-weight: 900;
+      color: #111827;
+      margin-bottom: 8px;
+      letter-spacing: -0.5px;
+    }
+
+    .card-subtitle {
+      font-size: 15px;
+      line-height: 1.6;
+      color: #64748b;
+      margin-bottom: 18px;
+      font-weight: 700;
+    }
+
+    .contract-type-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .contract-type-btn {
+      border: 2px solid transparent;
+      min-height: 86px;
+      border-radius: 22px;
+      padding: 14px;
+      cursor: pointer;
+      background: #f8fafc;
+      color: #111827;
+      text-align: left;
+      box-shadow: 0 8px 20px rgba(15,23,42,0.08);
+    }
+
+    .contract-type-btn.active {
+      border-color: #2563eb;
+      background: linear-gradient(135deg, #dbeafe, #ffffff);
+    }
+
+    .contract-type-title {
+      font-size: 20px;
+      font-weight: 900;
+      margin-bottom: 6px;
+    }
+
+    .contract-type-sub {
+      font-size: 13px;
+      color: #64748b;
+      font-weight: 800;
+      line-height: 1.35;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .field-full {
+      grid-column: 1 / -1;
+    }
+
+    .field-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 900;
+      color: #475569;
+      margin-bottom: 7px;
+    }
+
+    .field-input {
+      width: 100%;
+      height: 52px;
+      border: 2px solid #e5e7eb;
+      border-radius: 16px;
+      padding: 0 14px;
+      outline: none;
+      background: #ffffff;
+      color: #111827;
+      font-size: 16px;
+      font-weight: 800;
+    }
+
+    .field-input:focus {
+      border-color: #2563eb;
+    }
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .action-btn {
+      border: none;
+      min-height: 56px;
+      border-radius: 18px;
+      padding: 0 18px;
+      cursor: pointer;
+      font-size: 15px;
+      font-weight: 900;
+      flex: 1;
+      color: white;
+    }
+
+    .action-btn:active {
+      transform: scale(0.97);
+    }
+
+    .blue-btn {
+      background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
+    }
+
+    .green-btn {
+      background: linear-gradient(135deg, #22c55e 0%, #14b8a6 100%);
+    }
+
+    .orange-btn {
+      background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);
+    }
+
+    .purple-btn {
+      background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+    }
+
+    .status-box {
+      min-height: 90px;
+      border-radius: 22px;
+      padding: 16px;
+      background: #f8fafc;
+      border: 1px solid #e5e7eb;
+      color: #475569;
+      font-size: 15px;
+      line-height: 1.6;
+      font-weight: 800;
+    }
+
+    .status-box.success {
+      background: #ecfdf5;
+      border-color: #86efac;
+      color: #166534;
+    }
+
+    .status-box.error {
+      background: #fff7ed;
+      border-color: #fdba74;
+      color: #9a3412;
+    }
+
+    /* =========================
+       PREVIEW
+    ========================= */
+    .preview-wrap {
+      width: 100%;
+      overflow: auto;
+      background: #e5e7eb;
+      border-radius: 24px;
+      padding: 14px;
+      display: flex;
+      justify-content: center;
+      min-height: 520px;
+    }
+
+    .preview-page {
+      width: 100%;
+      max-width: 612px;
+      aspect-ratio: 612 / 792;
+      background: white;
+      box-shadow: 0 12px 32px rgba(15,23,42,0.18);
+      position: relative;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .preview-page img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+      background: white;
+    }
+
+    .preview-text {
+      position: absolute;
+      background: white;
+      color: #000;
+      font-family: Arial, Helvetica, sans-serif;
+      font-weight: 700;
+      white-space: nowrap;
+      line-height: 1;
+      padding: 1px 2px;
+    }
+
+    .preview-help {
+      font-size: 13px;
+      line-height: 1.6;
+      color: #64748b;
+      margin-top: 12px;
+      font-weight: 700;
+    }
+
+    /* =========================
+       DARK THEME
+    ========================= */
+    body.smart-tools-dark-theme {
+      background:
+        radial-gradient(circle at top left, rgba(34,197,94,0.12), transparent 30%),
+        radial-gradient(circle at top right, rgba(14,165,233,0.10), transparent 32%),
+        linear-gradient(180deg, #07111f 0%, #0b1626 52%, #07111f 100%);
+      color: #f8fafc;
+    }
+
+    body.smart-tools-dark-theme .top-bar-title,
+    body.smart-tools-dark-theme .card-title {
+      color: #f8fafc;
+    }
+
+    body.smart-tools-dark-theme .back-btn,
+    body.smart-tools-dark-theme .card,
+    body.smart-tools-dark-theme .contract-type-btn,
+    body.smart-tools-dark-theme .status-box {
+      background: linear-gradient(180deg, rgba(30,41,59,0.88), rgba(15,23,42,0.84));
+      border-color: rgba(148,163,184,0.20);
+      color: #f8fafc;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 14px 34px rgba(0,0,0,0.22);
+    }
+
+    body.smart-tools-dark-theme .contract-type-btn.active {
+      border-color: #60a5fa;
+      background: linear-gradient(180deg, rgba(37,99,235,0.32), rgba(15,23,42,0.84));
+    }
+
+    body.smart-tools-dark-theme .card-subtitle,
+    body.smart-tools-dark-theme .contract-type-sub,
+    body.smart-tools-dark-theme .field-label,
+    body.smart-tools-dark-theme .preview-help {
+      color: #cbd5e1;
+    }
+
+    body.smart-tools-dark-theme .field-input {
+      background: rgba(15,23,42,0.82);
+      color: #f8fafc;
+      border-color: rgba(148,163,184,0.30);
+    }
+
+    body.smart-tools-dark-theme .preview-wrap {
+      background: #020617;
+    }
+
+    body.smart-tools-dark-theme .status-box.success {
+      background: rgba(20,83,45,0.55);
+      border-color: rgba(134,239,172,0.35);
+      color: #dcfce7;
+    }
+
+    body.smart-tools-dark-theme .status-box.error {
+      background: rgba(124,45,18,0.55);
+      border-color: rgba(253,186,116,0.35);
+      color: #ffedd5;
+    }
+
+    /* =========================
+       RESPONSIVE
+    ========================= */
+    @media (max-width: 940px) {
+      .contract-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .top-bar-wrap {
+        padding: 16px 4% 0 4%;
+      }
+
+      .page-inner {
+        padding: 0 5% 30px 5%;
+      }
+
+      .inner-page-hero {
+        padding: 26px 18px;
+        border-radius: 24px;
+      }
+
+      .inner-page-hero h1 {
+        font-size: 28px;
+      }
+
+      .inner-page-hero p {
+        font-size: 16px;
+      }
+
+      .top-bar-title {
+        font-size: 20px;
+      }
+
+      .back-btn,
+      .top-bar-spacer {
+        width: 48px;
+        height: 48px;
+      }
+
+      .card {
+        border-radius: 24px;
+        padding: 18px;
+      }
+
+      .contract-type-grid,
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .button-row {
+        flex-direction: column;
+      }
+
+      .action-btn {
+        width: 100%;
+      }
+
+      .preview-wrap {
+        min-height: 360px;
+        padding: 10px;
+      }
+    }
+  </style>
+</head>
+
+<body class="smart-tools-color-theme">
+
+  <!-- =========================
+       CONTRACT GENERATOR PAGE
+  ========================= -->
+  <div class="top-bar-wrap">
+    <div class="top-bar">
+      <button class="back-btn" onclick="goBackToOfficePage()">←</button>
+      <div class="top-bar-title">Contract Generator</div>
+      <div class="top-bar-spacer"></div>
+    </div>
+  </div>
+
+  <div class="page-inner">
+
+    <div class="inner-page-hero">
+      <h1>WFC / NFC Contract Generator</h1>
+      <p>
+        Choose Windsor Fuel Co. or Nuzzi Fuel Co., fill the customer details, and generate a ready PDF contract.
+      </p>
+    </div>
+
+    <div class="contract-layout">
+
+      <!-- =========================
+           LEFT SIDE FORM
+      ========================= -->
+      <div>
+
+        <div class="card">
+          <div class="card-title">Choose Contract</div>
+          <div class="card-subtitle">
+            Select which company contract you want to generate.
+          </div>
+
+          <div class="contract-type-grid">
+            <button id="wfcTypeBtn" class="contract-type-btn active" onclick="selectContractType('WFC')">
+              <div class="contract-type-title">WFC</div>
+              <div class="contract-type-sub">Windsor Fuel Co., Inc.</div>
+            </button>
+
+            <button id="nfcTypeBtn" class="contract-type-btn" onclick="selectContractType('NFC')">
+              <div class="contract-type-title">NFC</div>
+              <div class="contract-type-sub">Nuzzi Fuel Co.</div>
+            </button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Contract Details</div>
+          <div class="card-subtitle">
+            Date is filled with today. Expiry is automatically 1 day less than next year.
+          </div>
+
+          <div class="form-grid">
+
+            <label>
+              <span class="field-label">Date of Offer</span>
+              <input id="offerDateInput" class="field-input" type="text" placeholder="MM/DD/YY" oninput="updateContractPreview()">
+            </label>
+
+            <label>
+              <span class="field-label">Expiry Date</span>
+              <input id="expiryDateInput" class="field-input" type="text" placeholder="MM/DD/YY" oninput="updateContractPreview()">
+            </label>
+
+            <label class="field-full">
+              <span class="field-label">Name</span>
+              <input id="customerNameInput" class="field-input" type="text" placeholder="Customer name" oninput="updateContractPreview()">
+            </label>
+
+            <label class="field-full">
+              <span class="field-label">Address</span>
+              <input id="addressInput" class="field-input" type="text" placeholder="Street address" oninput="updateContractPreview()">
+            </label>
+
+            <label>
+              <span class="field-label">Town</span>
+              <input id="townInput" class="field-input" type="text" placeholder="Town" oninput="updateContractPreview()">
+            </label>
+
+            <label>
+              <span class="field-label">Account #</span>
+              <input id="accountInput" class="field-input" type="text" placeholder="Account number" oninput="updateContractPreview()">
+            </label>
+
+            <label>
+              <span class="field-label">Fixed Price</span>
+              <input id="fixedPriceInput" class="field-input" type="text" placeholder="Example: 4.199" oninput="updateContractPreview()">
+            </label>
+
+            <label>
+              <span class="field-label">Acceptance Date</span>
+              <input id="acceptanceDateInput" class="field-input" type="text" placeholder="MM/DD/YY" oninput="updateContractPreview()">
+            </label>
+
+          </div>
+
+          <div class="button-row">
+            <button class="action-btn blue-btn" onclick="fillDefaultDates()">Reset Dates</button>
+            <button class="action-btn orange-btn" onclick="clearContractForm()">Clear</button>
+            <button class="action-btn green-btn" onclick="generateContractPdf()">Generate PDF</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Status</div>
+          <div id="contractStatusBox" class="status-box">
+            Ready. Choose WFC or NFC and fill the form.
+          </div>
+        </div>
+
+      </div>
+
+      <!-- =========================
+           RIGHT SIDE PREVIEW
+      ========================= -->
+      <div>
+        <div class="card">
+          <div class="card-title">Preview</div>
+          <div class="card-subtitle">
+            This preview shows page 1. The generated PDF includes page 1 and page 2 terms.
+          </div>
+
+          <div class="preview-wrap">
+            <div id="previewPage" class="preview-page">
+              <img id="previewTemplateImage" src="templates/wfc-page1.png" alt="Contract preview" onerror="handleTemplateImageMissing()">
+              <div id="previewOverlay"></div>
+            </div>
+          </div>
+
+          <div class="preview-help">
+            Template files must be saved in <strong>Smart-Tools/contract-generator/templates/</strong> using the exact names listed below.
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // =========================
+    // CONTRACT TEMPLATE FILES
+    // Put these image files in:
+    // Smart-Tools/contract-generator/templates/
+    // =========================
+    const CONTRACT_TEMPLATES = {
+      WFC: {
+        label: "Windsor Fuel Co.",
+        page1: "templates/wfc-page1.png",
+        page2: "templates/wfc-page2.png"
+      },
+      NFC: {
+        label: "Nuzzi Fuel Co.",
+        page1: "templates/nfc-page1.png",
+        page2: "templates/nfc-page2.png"
+      }
+    };
+
+    // =========================
+    // FIELD POSITIONS
+    // x and y are PDF points on a Letter page 612 x 792.
+    // If any text is slightly off, we can adjust these numbers later.
+    // =========================
+    const CONTRACT_POSITIONS = {
+      WFC: {
+        offerDate: { x: 458, y: 125, size: 10.5 },
+        expiryDate: { x: 288, y: 269, size: 10.5 },
+        fixedPrice: { x: 435, y: 477, size: 11 },
+        acceptanceDate: { x: 421, y: 620, size: 10.5 },
+        name: { x: 235, y: 641, size: 10.5 },
+        address: { x: 235, y: 658, size: 10.5 },
+        town: { x: 382, y: 658, size: 10.5 },
+        account: { x: 162, y: 727, size: 10.5 }
+      },
+      NFC: {
+        offerDate: { x: 458, y: 125, size: 10.5 },
+        expiryDate: { x: 288, y: 269, size: 10.5 },
+        fixedPrice: { x: 435, y: 477, size: 11 },
+        acceptanceDate: { x: 421, y: 620, size: 10.5 },
+        name: { x: 235, y: 641, size: 10.5 },
+        address: { x: 235, y: 658, size: 10.5 },
+        town: { x: 382, y: 658, size: 10.5 },
+        account: { x: 162, y: 727, size: 10.5 }
+      }
+    };
+
+    // =========================
+    // CONTRACT GENERATOR STATE
+    // =========================
+    let selectedContractType = "WFC";
+    const pdfPageWidth = 612;
+    const pdfPageHeight = 792;
+
+    // =========================
+    // BACK TO OFFICE PAGE
+    // =========================
+    function goBackToOfficePage() {
+      window.location.href = "../office/";
+    }
+
+    // =========================
+    // APPLY THEME
+    // Follows main page key: smartToolsHomeTheme
+    // =========================
+    function applyContractTheme() {
+      const savedTheme = localStorage.getItem("smartToolsHomeTheme") || "dark";
+
+      document.body.classList.remove("smart-tools-color-theme");
+      document.body.classList.remove("smart-tools-dark-theme");
+
+      if (savedTheme === "color") {
+        document.body.classList.add("smart-tools-color-theme");
+      } else {
+        document.body.classList.add("smart-tools-dark-theme");
+      }
+    }
+
+    // =========================
+    // SELECT CONTRACT TYPE
+    // =========================
+    function selectContractType(type) {
+      selectedContractType = type;
+
+      const wfcBtn = document.getElementById("wfcTypeBtn");
+      const nfcBtn = document.getElementById("nfcTypeBtn");
+
+      if (wfcBtn) wfcBtn.classList.toggle("active", type === "WFC");
+      if (nfcBtn) nfcBtn.classList.toggle("active", type === "NFC");
+
+      const template = CONTRACT_TEMPLATES[selectedContractType];
+      const image = document.getElementById("previewTemplateImage");
+
+      if (image && template) {
+        image.src = template.page1;
+      }
+
+      setContractStatus("ready", selectedContractType + " selected.");
+      updateContractPreview();
+    }
+
+    // =========================
+    // FILL DEFAULT DATES
+    // Date of offer = today
+    // Expiry date = 1 day less next year
+    // =========================
+    function fillDefaultDates() {
+      const today = new Date();
+      const expiry = new Date(today);
+      expiry.setFullYear(expiry.getFullYear() + 1);
+      expiry.setDate(expiry.getDate() - 1);
+
+      document.getElementById("offerDateInput").value = formatShortDate(today);
+      document.getElementById("expiryDateInput").value = formatShortDate(expiry);
+      document.getElementById("acceptanceDateInput").value = formatShortDate(today);
+
+      updateContractPreview();
+    }
+
+    // =========================
+    // FORMAT SHORT DATE MM/DD/YY
+    // =========================
+    function formatShortDate(date) {
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      const year = String(date.getFullYear()).slice(-2);
+
+      return month + "/" + day + "/" + year;
+    }
+
+    // =========================
+    // GET CONTRACT FORM DATA
+    // =========================
+    function getContractFormData() {
+      return {
+        offerDate: getInputValue("offerDateInput"),
+        expiryDate: getInputValue("expiryDateInput"),
+        customerName: getInputValue("customerNameInput"),
+        address: getInputValue("addressInput"),
+        town: getInputValue("townInput"),
+        account: getInputValue("accountInput"),
+        fixedPrice: formatFixedPrice(getInputValue("fixedPriceInput")),
+        acceptanceDate: getInputValue("acceptanceDateInput")
+      };
+    }
+
+    // =========================
+    // GET INPUT VALUE
+    // =========================
+    function getInputValue(id) {
+      const input = document.getElementById(id);
+      return input ? input.value.trim() : "";
+    }
+
+    // =========================
+    // FORMAT FIXED PRICE
+    // =========================
+    function formatFixedPrice(value) {
+      const clean = String(value || "").trim();
+
+      if (!clean) return "";
+      if (clean.startsWith("$")) return clean;
+
+      return "$" + clean;
+    }
+
+    // =========================
+    // UPDATE CONTRACT PREVIEW
+    // =========================
+    function updateContractPreview() {
+      const overlay = document.getElementById("previewOverlay");
+      const previewPage = document.getElementById("previewPage");
+
+      if (!overlay || !previewPage) return;
+
+      const data = getContractFormData();
+      const positions = CONTRACT_POSITIONS[selectedContractType];
+      const previewWidth = previewPage.clientWidth || 612;
+      const previewHeight = previewPage.clientHeight || 792;
+
+      overlay.innerHTML = "";
+
+      addPreviewText(overlay, previewWidth, previewHeight, positions.offerDate, data.offerDate);
+      addPreviewText(overlay, previewWidth, previewHeight, positions.expiryDate, data.expiryDate);
+      addPreviewText(overlay, previewWidth, previewHeight, positions.fixedPrice, data.fixedPrice);
+      addPreviewText(overlay, previewWidth, previewHeight, positions.acceptanceDate, data.acceptanceDate);
+      addPreviewText(overlay, previewWidth, previewHeight, positions.name, data.customerName.toUpperCase());
+      addPreviewText(overlay, previewWidth, previewHeight, positions.address, data.address.toUpperCase());
+      addPreviewText(overlay, previewWidth, previewHeight, positions.town, data.town.toUpperCase());
+      addPreviewText(overlay, previewWidth, previewHeight, positions.account, data.account);
+    }
+
+    // =========================
+    // ADD PREVIEW TEXT
+    // =========================
+    function addPreviewText(overlay, previewWidth, previewHeight, position, text) {
+      if (!text) return;
+
+      const div = document.createElement("div");
+      div.className = "preview-text";
+      div.innerText = text;
+
+      div.style.left = ((position.x / pdfPageWidth) * previewWidth) + "px";
+      div.style.top = ((position.y / pdfPageHeight) * previewHeight) + "px";
+      div.style.fontSize = ((position.size / pdfPageWidth) * previewWidth) + "px";
+
+      overlay.appendChild(div);
+    }
+
+    // =========================
+    // CLEAR CONTRACT FORM
+    // =========================
+    function clearContractForm() {
+      document.getElementById("customerNameInput").value = "";
+      document.getElementById("addressInput").value = "";
+      document.getElementById("townInput").value = "";
+      document.getElementById("accountInput").value = "";
+      document.getElementById("fixedPriceInput").value = "";
+
+      fillDefaultDates();
+      setContractStatus("ready", "Form cleared.");
+    }
+
+    // =========================
+    // GENERATE CONTRACT PDF
+    // =========================
+    async function generateContractPdf() {
+      if (!window.jspdf || !window.jspdf.jsPDF) {
+        setContractStatus("error", "PDF maker did not load. Check internet and try again.");
+        return;
+      }
+
+      const data = getContractFormData();
+
+      if (!data.customerName || !data.address || !data.town || !data.account || !data.fixedPrice) {
+        setContractStatus("error", "Please fill name, address, town, account #, and fixed price.");
+        return;
+      }
+
+      try {
+        setContractStatus("ready", "Generating contract PDF...");
+
+        const template = CONTRACT_TEMPLATES[selectedContractType];
+        const page1DataUrl = await loadImageAsDataUrl(template.page1);
+        const page2DataUrl = await loadImageAsDataUrl(template.page2);
+
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF({
+          orientation: "portrait",
+          unit: "pt",
+          format: "letter"
+        });
+
+        pdf.addImage(page1DataUrl, "PNG", 0, 0, pdfPageWidth, pdfPageHeight);
+        drawContractFields(pdf, data, selectedContractType);
+
+        pdf.addPage("letter", "portrait");
+        pdf.addImage(page2DataUrl, "PNG", 0, 0, pdfPageWidth, pdfPageHeight);
+
+        const safeName = makeSafeFileName(data.customerName || "customer");
+        const fileName = selectedContractType + "-contract-" + safeName + ".pdf";
+
+        pdf.save(fileName);
+
+        setContractStatus("success", "Done. Contract PDF downloaded: " + fileName);
+      } catch (error) {
+        console.error(error);
+        setContractStatus("error", "Could not generate PDF. Make sure template images are uploaded with exact names.");
+      }
+    }
+
+    // =========================
+    // DRAW CONTRACT FIELDS ON PDF
+    // =========================
+    function drawContractFields(pdf, data, type) {
+      const positions = CONTRACT_POSITIONS[type];
+
+      pdf.setFont("helvetica", "bold");
+      pdf.setTextColor(0, 0, 0);
+
+      drawTextWithTightWhiteCover(pdf, data.offerDate, positions.offerDate);
+      drawTextWithTightWhiteCover(pdf, data.expiryDate, positions.expiryDate);
+      drawTextWithTightWhiteCover(pdf, data.fixedPrice, positions.fixedPrice);
+      drawTextWithTightWhiteCover(pdf, data.acceptanceDate, positions.acceptanceDate);
+      drawTextWithTightWhiteCover(pdf, data.customerName.toUpperCase(), positions.name);
+      drawTextWithTightWhiteCover(pdf, data.address.toUpperCase(), positions.address);
+      drawTextWithTightWhiteCover(pdf, data.town.toUpperCase(), positions.town);
+      drawTextWithTightWhiteCover(pdf, data.account, positions.account);
+    }
+
+    // =========================
+    // DRAW TEXT WITH TIGHT WHITE COVER
+    // Keeps old text/line behind hidden but narrow.
+    // =========================
+    function drawTextWithTightWhiteCover(pdf, text, position) {
+      if (!text) return;
+
+      const size = position.size || 10.5;
+      const textWidth = pdf.getTextWidth(text);
+      const coverPaddingX = 2;
+      const coverPaddingY = 1.5;
+
+      pdf.setFillColor(255, 255, 255);
+      pdf.rect(
+        position.x - coverPaddingX,
+        position.y - size - coverPaddingY + 2,
+        textWidth + coverPaddingX * 2,
+        size + coverPaddingY * 2,
+        "F"
+      );
+
+      pdf.setFontSize(size);
+      pdf.setFont("helvetica", "bold");
+      pdf.setTextColor(0, 0, 0);
+      pdf.text(text, position.x, position.y);
+    }
+
+    // =========================
+    // LOAD IMAGE AS DATA URL
+    // =========================
+    function loadImageAsDataUrl(url) {
+      return new Promise((resolve, reject) => {
+        const image = new Image();
+        image.crossOrigin = "anonymous";
+
+        image.onload = function() {
+          const canvas = document.createElement("canvas");
+          canvas.width = image.naturalWidth;
+          canvas.height = image.naturalHeight;
+
+          const context = canvas.getContext("2d");
+          context.drawImage(image, 0, 0);
+
+          resolve(canvas.toDataURL("image/png"));
+        };
+
+        image.onerror = function() {
+          reject(new Error("Template image missing: " + url));
+        };
+
+        image.src = url + "?v=" + Date.now();
+      });
+    }
+
+    // =========================
+    // HANDLE TEMPLATE IMAGE MISSING
+    // =========================
+    function handleTemplateImageMissing() {
+      setContractStatus(
+        "error",
+        "Template image is missing. Upload template PNG files inside Smart-Tools/contract-generator/templates/ with exact names."
+      );
+    }
+
+    // =========================
+    // SET CONTRACT STATUS
+    // =========================
+    function setContractStatus(type, message) {
+      const box = document.getElementById("contractStatusBox");
+
+      if (!box) return;
+
+      box.className = "status-box";
+
+      if (type === "success") box.classList.add("success");
+      if (type === "error") box.classList.add("error");
+
+      box.innerText = message;
+    }
+
+    // =========================
+    // MAKE SAFE FILE NAME
+    // =========================
+    function makeSafeFileName(value) {
+      return String(value || "file")
+        .trim()
+        .replace(/[^a-z0-9]/gi, "-")
+        .replace(/-+/g, "-")
+        .replace(/^-|-$/g, "")
+        .toLowerCase();
+    }
+
+    // =========================
+    // PAGE LOAD
+    // =========================
+    document.addEventListener("DOMContentLoaded", function() {
+      applyContractTheme();
+      fillDefaultDates();
+      selectContractType("WFC");
+      window.addEventListener("resize", updateContractPreview);
+    });
+  </script>
+
+</body>
+</html>
 
