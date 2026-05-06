@@ -469,7 +469,7 @@
     #pdfEditorCanvas { display: block; }
     .pdf-editor-overlay-layer { position: absolute; inset: 0; z-index: 3; }
     /* Text looks clean. No blue box on the PDF preview. */
-    .pdf-editor-item { position: absolute; min-width: 28px; min-height: 24px; padding: 2px 4px; border: 1px dashed transparent; background: white; color: #111; font-weight: 400; cursor: move; user-select: none; touch-action: none; border-radius: 5px; font-family: Arial, Helvetica, sans-serif; line-height: 1.15; }
+    .pdf-editor-item { position: absolute; min-width: 10px; min-height: 12px; padding: 0 1px; border: 1px dashed transparent; background: white; color: #111; font-weight: 400; cursor: move; user-select: none; touch-action: none; border-radius: 2px; font-family: Arial, Helvetica, sans-serif; line-height: 1.02; }
     .pdf-editor-item:active { border-color: rgba(37,99,235,0.28); background: white; }
     .pdf-editor-item.signature { font-family: "Brush Script MT", cursive; font-size: 28px; }
     .pdf-editor-item.check { font-size: 30px; color: #111; font-weight: 900; }
@@ -804,7 +804,7 @@
           <div class="pdf-editor-small-row">
             <label>
               <span class="pdf-editor-label">Font Size</span>
-              <input id="pdfEditorFontSizeInput" class="pdf-editor-input" type="number" value="18" min="8" max="72">
+              <input id="pdfEditorFontSizeInput" class="pdf-editor-input" type="number" value="11" min="6" max="72">
             </label>
             <label>
               <span class="pdf-editor-label">Cover Size</span>
@@ -1754,13 +1754,13 @@
     function addPdfEditorSignature() {
       const text = document.getElementById("pdfEditorTextInput").value.trim();
       if (!text) { alert("Type signature name first."); return; }
-      addPdfEditorItem({ type: "signature", text: text, fontSize: Math.max(22, getPdfEditorFontSize()) });
+      addPdfEditorItem({ type: "signature", text: text, fontSize: getPdfEditorFontSize() });
     }
 
     // =========================
     // ADD PDF EDITOR CHECK MARK
     // =========================
-    function addPdfEditorCheck() { addPdfEditorItem({ type: "check", text: "✓", fontSize: 30 }); }
+    function addPdfEditorCheck() { addPdfEditorItem({ type: "check", text: "✓", fontSize: 18 }); }
 
     // =========================
     // ADD PDF EDITOR WHITE COVER BOX
@@ -1817,7 +1817,7 @@
         page: pdfEditorCurrentPage,
         type: item.type,
         text: item.text || "",
-        fontSize: item.fontSize || 18,
+        fontSize: item.fontSize || 11,
         bold: item.type === "check" ? true : textStyle.bold,
         italic: item.type === "signature" ? true : textStyle.italic,
         underline: textStyle.underline,
@@ -1915,7 +1915,7 @@
     function getPdfEditorFontSize() {
       const input = document.getElementById("pdfEditorFontSizeInput");
       const value = parseInt(input.value, 10);
-      if (!value || value < 8) return 18;
+      if (!value || value < 6) return 11;
       if (value > 72) return 72;
       return value;
     }
@@ -1967,28 +1967,32 @@
             return;
           }
           let font = helveticaFont;
-          let size = item.fontSize || 18;
+          let size = item.fontSize || 11;
           let text = item.text || "";
 
           if (item.bold && item.italic) font = helveticaBoldObliqueFont;
           else if (item.bold) font = helveticaBoldFont;
           else if (item.italic) font = helveticaObliqueFont;
 
-          if (item.type === "signature") { size = Math.max(22, size); }
-          if (item.type === "check") { font = helveticaBoldFont; size = 30; text = "✓"; }
+          if (item.type === "signature") { size = size; }
+          if (item.type === "check") { font = helveticaBoldFont; size = item.fontSize || 18; text = "✓"; }
 
           const textY = pageHeight - topY - size;
           const textWidth = font.widthOfTextAtSize(text, size);
-          const coverPaddingX = Math.max(3, size * 0.18);
-          const coverPaddingY = Math.max(2, size * 0.16);
 
-          // White background behind added text/date/signature/check mark
-          // This hides old PDF text behind the new item.
+          // Very narrow white background behind the new item.
+          // It hugs the text closely so it hides old text behind it
+          // without covering nearby PDF content.
+          const coverPaddingX = Math.max(0.6, size * 0.045);
+          const coverTopPadding = Math.max(0.5, size * 0.04);
+          const coverBottomPadding = item.underline ? Math.max(2, size * 0.18) : Math.max(0.7, size * 0.07);
+          const coverHeight = size + coverTopPadding + coverBottomPadding;
+
           page.drawRectangle({
             x: Math.max(0, x - coverPaddingX),
-            y: textY - coverPaddingY,
+            y: textY - coverBottomPadding,
             width: textWidth + (coverPaddingX * 2),
-            height: size + (coverPaddingY * 2),
+            height: coverHeight,
             color: PDFLib.rgb(1, 1, 1),
             borderColor: PDFLib.rgb(1, 1, 1),
             borderWidth: 0
