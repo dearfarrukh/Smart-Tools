@@ -13,7 +13,7 @@
   <link rel="icon" type="image/png" href="../images/icon.png">
 
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 
   <title>PDF / Image Tools</title>
 
@@ -228,7 +228,7 @@
     }
 
     /* =========================
-       IMAGE / PDF TOOLS
+       LAYOUT
     ========================= */
     .tools-layout {
       margin-top: 24px;
@@ -238,7 +238,9 @@
       align-items: start;
     }
 
-    /* NO DOTTED BORDER */
+    /* =========================
+       UPLOAD BOX - NO DOTTED BORDER
+    ========================= */
     .file-upload-box {
       border: 1px solid rgba(15,23,42,0.08);
       border-radius: 24px;
@@ -247,6 +249,7 @@
       background: linear-gradient(180deg, #faf5ff 0%, #eef2ff 100%);
       cursor: pointer;
       box-shadow: inset 0 1px 0 rgba(255,255,255,0.75), 0 10px 24px rgba(15,23,42,0.08);
+      display: block;
     }
 
     .file-upload-icon {
@@ -391,6 +394,9 @@
       word-break: break-word;
     }
 
+    /* =========================
+       SETTINGS
+    ========================= */
     .setting-row {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -427,6 +433,135 @@
     }
 
     /* =========================
+       IMAGE RESIZE PANEL
+    ========================= */
+    .image-resize-panel {
+      display: none;
+      margin-top: 16px;
+      padding: 18px;
+      border-radius: 24px;
+      background: linear-gradient(180deg, #f8fafc 0%, #eef2ff 100%);
+      border: 1px solid rgba(15,23,42,0.07);
+    }
+
+    .image-resize-panel.show {
+      display: block;
+    }
+
+    .image-resize-title {
+      font-size: 20px;
+      font-weight: 900;
+      margin-bottom: 8px;
+      color: #111827;
+    }
+
+    .image-resize-sub {
+      font-size: 14px;
+      line-height: 1.6;
+      color: #64748b;
+      margin-bottom: 14px;
+    }
+
+    .quick-resize-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .quick-resize-btn {
+      border: none;
+      border-radius: 16px;
+      min-height: 48px;
+      background: #e5e7eb;
+      color: #111827;
+      font-size: 14px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .quick-resize-btn.active {
+      background: #2563eb;
+      color: white;
+    }
+
+    .ratio-row {
+      margin-top: 12px;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      background: rgba(255,255,255,0.72);
+      border-radius: 18px;
+      padding: 14px;
+      border: 1px solid rgba(15,23,42,0.06);
+    }
+
+    .ratio-text {
+      font-size: 15px;
+      font-weight: 900;
+      color: #111827;
+    }
+
+    .switch {
+      width: 56px;
+      height: 32px;
+      border-radius: 999px;
+      background: #c7c7cc;
+      padding: 3px;
+      cursor: pointer;
+      transition: 0.2s;
+      flex-shrink: 0;
+    }
+
+    .switch.on {
+      background: #34c759;
+    }
+
+    .switch-dot {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: white;
+      transition: 0.2s;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+
+    .switch.on .switch-dot {
+      transform: translateX(24px);
+    }
+
+    .image-info-grid {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .image-info-box {
+      background: rgba(255,255,255,0.75);
+      border-radius: 18px;
+      padding: 12px;
+      border: 1px solid rgba(15,23,42,0.06);
+    }
+
+    .image-info-label {
+      font-size: 12px;
+      color: #64748b;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+
+    .image-info-value {
+      font-size: 15px;
+      font-weight: 900;
+      color: #111827;
+      word-break: break-word;
+    }
+
+    /* =========================
        DARK THEME
     ========================= */
     body.smart-tools-dark-theme {
@@ -440,7 +575,10 @@
     body.smart-tools-dark-theme .top-bar-title,
     body.smart-tools-dark-theme .card-title,
     body.smart-tools-dark-theme .file-upload-title,
-    body.smart-tools-dark-theme .result-heading {
+    body.smart-tools-dark-theme .result-heading,
+    body.smart-tools-dark-theme .image-resize-title,
+    body.smart-tools-dark-theme .ratio-text,
+    body.smart-tools-dark-theme .image-info-value {
       color: #f8fafc;
     }
 
@@ -449,7 +587,10 @@
     body.smart-tools-dark-theme .result-box,
     body.smart-tools-dark-theme .file-upload-box,
     body.smart-tools-dark-theme .file-pill,
-    body.smart-tools-dark-theme .preview-item {
+    body.smart-tools-dark-theme .preview-item,
+    body.smart-tools-dark-theme .image-resize-panel,
+    body.smart-tools-dark-theme .image-info-box,
+    body.smart-tools-dark-theme .ratio-row {
       background: linear-gradient(180deg, rgba(30,41,59,0.88), rgba(15,23,42,0.84));
       border-color: rgba(148,163,184,0.20);
       color: #f8fafc;
@@ -467,7 +608,9 @@
     body.smart-tools-dark-theme .file-pill,
     body.smart-tools-dark-theme .preview-item-info,
     body.smart-tools-dark-theme .setting-label,
-    body.smart-tools-dark-theme .small-help {
+    body.smart-tools-dark-theme .small-help,
+    body.smart-tools-dark-theme .image-resize-sub,
+    body.smart-tools-dark-theme .image-info-label {
       color: #cbd5e1;
     }
 
@@ -479,6 +622,16 @@
 
     body.smart-tools-dark-theme .setting-input::placeholder {
       color: #94a3b8;
+    }
+
+    body.smart-tools-dark-theme .quick-resize-btn {
+      background: rgba(148,163,184,0.20);
+      color: #f8fafc;
+    }
+
+    body.smart-tools-dark-theme .quick-resize-btn.active {
+      background: #2563eb;
+      color: white;
     }
 
     /* =========================
@@ -559,7 +712,12 @@
 
       .smart-action-grid,
       .preview-grid,
-      .setting-row {
+      .setting-row,
+      .image-info-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .quick-resize-row {
         grid-template-columns: 1fr;
       }
 
@@ -593,7 +751,7 @@
       <h1>PDF / Image Tools</h1>
       <p>
         Merge PDFs, split PDFs, compress PDFs, turn PDF pages into images,
-        and make one PDF from images. Upload your files in one place and choose the tool you need.
+        make PDF from images, resize images, and compress images.
       </p>
     </div>
 
@@ -658,6 +816,53 @@
                 <option value="0.48">Small Size</option>
               </select>
             </label>
+          </div>
+
+          <!-- =========================
+               IMAGE RESIZE SETTINGS PANEL
+          ========================= -->
+          <div id="imageResizePanel" class="image-resize-panel">
+            <div class="image-resize-title">Image Resize</div>
+            <div class="image-resize-sub">
+              These settings work when you choose image files. Use quick size or enter custom width and height.
+            </div>
+
+            <div class="quick-resize-row">
+              <button id="resize25Btn" class="quick-resize-btn" onclick="setResizePercent(25)">25%</button>
+              <button id="resize50Btn" class="quick-resize-btn" onclick="setResizePercent(50)">50%</button>
+              <button id="resize75Btn" class="quick-resize-btn" onclick="setResizePercent(75)">75%</button>
+            </div>
+
+            <div class="setting-row">
+              <label>
+                <span class="setting-label">Resize Width</span>
+                <input id="resizeWidthInput" class="setting-input" type="number" placeholder="Width" oninput="handleWidthInput()">
+              </label>
+
+              <label>
+                <span class="setting-label">Resize Height</span>
+                <input id="resizeHeightInput" class="setting-input" type="number" placeholder="Height" oninput="handleHeightInput()">
+              </label>
+            </div>
+
+            <div class="ratio-row">
+              <div class="ratio-text">Keep Ratio</div>
+              <div id="ratioSwitch" class="switch on" onclick="toggleKeepRatio()">
+                <div class="switch-dot"></div>
+              </div>
+            </div>
+
+            <div class="image-info-grid">
+              <div class="image-info-box">
+                <div class="image-info-label">First Image Size</div>
+                <div id="firstImageSizeText" class="image-info-value">-</div>
+              </div>
+
+              <div class="image-info-box">
+                <div class="image-info-label">First Image Dimensions</div>
+                <div id="firstImageDimensionText" class="image-info-value">-</div>
+              </div>
+            </div>
           </div>
 
           <div class="small-help">
@@ -755,6 +960,9 @@
     // SMART FILE TOOLS STATE
     // =========================
     let smartSelectedFiles = [];
+    let firstImageOriginalWidth = 0;
+    let firstImageOriginalHeight = 0;
+    let keepRatio = true;
 
     // =========================
     // HANDLE SMART FILE SELECTION
@@ -762,9 +970,13 @@
     function handleSmartFileSelection(event) {
       smartSelectedFiles = Array.from(event.target.files || []);
 
+      firstImageOriginalWidth = 0;
+      firstImageOriginalHeight = 0;
+
       renderSmartFileList();
       renderSmartActions();
       renderSmartFilePreview();
+      setupImageResizePanel();
 
       if (!smartSelectedFiles.length) {
         setSmartStatus("ready", "Waiting for files.");
@@ -882,6 +1094,14 @@
         `;
 
         buttons += `
+          <button class="smart-tool-btn orange-btn" onclick="smartResizeAndCompressImages()">
+            <div class="smart-tool-btn-icon">📷</div>
+            <div class="smart-tool-btn-title">Resize + Compress</div>
+            <div class="smart-tool-btn-sub">Resize images and reduce file size.</div>
+          </button>
+        `;
+
+        buttons += `
           <button class="smart-tool-btn blue-btn" onclick="smartConvertImages('image/png', 'png')">
             <div class="smart-tool-btn-icon">🖼️</div>
             <div class="smart-tool-btn-title">Convert to PNG</div>
@@ -909,7 +1129,7 @@
           <button class="smart-tool-btn orange-btn" onclick="smartCompressImages()">
             <div class="smart-tool-btn-icon">🗜️</div>
             <div class="smart-tool-btn-title">Compress Images</div>
-            <div class="smart-tool-btn-sub">Reduce image file size.</div>
+            <div class="smart-tool-btn-sub">Reduce image file size only.</div>
           </button>
         `;
 
@@ -979,6 +1199,48 @@
           ${previews.join("")}
         </div>
       `;
+
+      applySmartToolsTheme();
+    }
+
+    // =========================
+    // SETUP IMAGE RESIZE PANEL
+    // =========================
+    async function setupImageResizePanel() {
+      const panel = document.getElementById("imageResizePanel");
+      const imageFiles = smartSelectedFiles.filter(file => isImageFile(file));
+
+      if (!panel) return;
+
+      if (!imageFiles.length) {
+        panel.classList.remove("show");
+        document.getElementById("firstImageSizeText").innerText = "-";
+        document.getElementById("firstImageDimensionText").innerText = "-";
+        document.getElementById("resizeWidthInput").value = "";
+        document.getElementById("resizeHeightInput").value = "";
+        return;
+      }
+
+      panel.classList.add("show");
+
+      try {
+        const firstFile = imageFiles[0];
+        const dataUrl = await fileToDataUrl(firstFile);
+        const info = await loadImageInfo(dataUrl);
+
+        firstImageOriginalWidth = info.width;
+        firstImageOriginalHeight = info.height;
+
+        document.getElementById("firstImageSizeText").innerText = formatFileSize(firstFile.size);
+        document.getElementById("firstImageDimensionText").innerText = info.width + " × " + info.height;
+
+        document.getElementById("resizeWidthInput").value = info.width;
+        document.getElementById("resizeHeightInput").value = info.height;
+
+        clearResizeButtons();
+      } catch (error) {
+        console.log(error);
+      }
 
       applySmartToolsTheme();
     }
@@ -1377,6 +1639,53 @@
     }
 
     // =========================
+    // RESIZE + COMPRESS IMAGES
+    // Uses resize width and height panel
+    // =========================
+    async function smartResizeAndCompressImages() {
+      const imageFiles = smartSelectedFiles.filter(file => isImageFile(file));
+
+      if (!imageFiles.length) {
+        setSmartStatus("error", "Please choose image files first.");
+        return;
+      }
+
+      if (!window.JSZip) {
+        setSmartStatus("error", "ZIP library did not load.");
+        return;
+      }
+
+      let width = parseInt(document.getElementById("resizeWidthInput").value, 10);
+      let height = parseInt(document.getElementById("resizeHeightInput").value, 10);
+
+      if (!width || !height || width <= 0 || height <= 0) {
+        setSmartStatus("error", "Please enter valid resize width and height.");
+        return;
+      }
+
+      try {
+        setSmartStatus("ready", "Resizing and compressing images...");
+
+        const quality = getImageQuality();
+        const zip = new JSZip();
+
+        for (const file of imageFiles) {
+          const canvas = await fileToResizedCanvas(file, width, height);
+          const blob = await canvasToBlob(canvas, "image/jpeg", quality);
+          zip.file(removeFileExtension(file.name) + "-resized-compressed.jpg", blob);
+        }
+
+        const zipBlob = await zip.generateAsync({ type: "blob" });
+        downloadBlob(zipBlob, "resized-compressed-images.zip");
+
+        setSmartStatus("success", "Done. Images resized, compressed, and downloaded.");
+      } catch (error) {
+        console.error(error);
+        setSmartStatus("error", "Resize + compress failed. Try another image.");
+      }
+    }
+
+    // =========================
     // CONVERT IMAGES
     // =========================
     async function smartConvertImages(outputType, extension) {
@@ -1415,7 +1724,7 @@
     }
 
     // =========================
-    // COMPRESS IMAGES
+    // COMPRESS IMAGES ONLY
     // =========================
     async function smartCompressImages() {
       const imageFiles = smartSelectedFiles.filter(file => isImageFile(file));
@@ -1514,6 +1823,122 @@
       }
 
       return canvas;
+    }
+
+    // =========================
+    // FILE TO RESIZED CANVAS
+    // =========================
+    async function fileToResizedCanvas(file, width, height) {
+      const dataUrl = await fileToDataUrl(file);
+      const image = await loadImageElement(dataUrl);
+
+      const canvas = document.createElement("canvas");
+      const context = canvas.getContext("2d");
+
+      canvas.width = width;
+      canvas.height = height;
+
+      context.drawImage(image, 0, 0, width, height);
+
+      return canvas;
+    }
+
+    // =========================
+    // IMAGE RESIZE BUTTONS
+    // =========================
+    function setResizePercent(percent) {
+      if (!firstImageOriginalWidth || !firstImageOriginalHeight) {
+        alert("Please choose an image first.");
+        return;
+      }
+
+      clearResizeButtons();
+
+      if (percent === 25) document.getElementById("resize25Btn").classList.add("active");
+      if (percent === 50) document.getElementById("resize50Btn").classList.add("active");
+      if (percent === 75) document.getElementById("resize75Btn").classList.add("active");
+
+      const newWidth = Math.round(firstImageOriginalWidth * (percent / 100));
+      const newHeight = Math.round(firstImageOriginalHeight * (percent / 100));
+
+      document.getElementById("resizeWidthInput").value = newWidth;
+      document.getElementById("resizeHeightInput").value = newHeight;
+    }
+
+    // =========================
+    // CLEAR RESIZE BUTTONS
+    // =========================
+    function clearResizeButtons() {
+      const btn25 = document.getElementById("resize25Btn");
+      const btn50 = document.getElementById("resize50Btn");
+      const btn75 = document.getElementById("resize75Btn");
+
+      if (btn25) btn25.classList.remove("active");
+      if (btn50) btn50.classList.remove("active");
+      if (btn75) btn75.classList.remove("active");
+    }
+
+    // =========================
+    // TOGGLE KEEP RATIO
+    // =========================
+    function toggleKeepRatio() {
+      keepRatio = !keepRatio;
+
+      const switchBox = document.getElementById("ratioSwitch");
+
+      if (!switchBox) return;
+
+      if (keepRatio) {
+        switchBox.classList.add("on");
+      } else {
+        switchBox.classList.remove("on");
+      }
+    }
+
+    // =========================
+    // HANDLE WIDTH INPUT
+    // =========================
+    function handleWidthInput() {
+      clearResizeButtons();
+
+      if (!keepRatio || !firstImageOriginalWidth || !firstImageOriginalHeight) {
+        return;
+      }
+
+      const widthInput = document.getElementById("resizeWidthInput");
+      const heightInput = document.getElementById("resizeHeightInput");
+
+      const newWidth = parseInt(widthInput.value, 10);
+
+      if (!newWidth || newWidth <= 0) {
+        return;
+      }
+
+      const newHeight = Math.round(newWidth * firstImageOriginalHeight / firstImageOriginalWidth);
+      heightInput.value = newHeight;
+    }
+
+    // =========================
+    // HANDLE HEIGHT INPUT
+    // =========================
+    function handleHeightInput() {
+      clearResizeButtons();
+
+      if (!keepRatio || !firstImageOriginalWidth || !firstImageOriginalHeight) {
+        return;
+      }
+
+      const widthInput = document.getElementById("resizeWidthInput");
+      const heightInput = document.getElementById("resizeHeightInput");
+
+      const newHeight = parseInt(heightInput.value, 10);
+
+      if (!newHeight || newHeight <= 0) {
+        return;
+      }
+
+      const newWidth = Math.round(newHeight * firstImageOriginalWidth / firstImageOriginalHeight);
+      widthInput.value = newWidth;
     }
 
     // =========================
@@ -1699,6 +2124,9 @@
     // =========================
     function resetSmartTools() {
       smartSelectedFiles = [];
+      firstImageOriginalWidth = 0;
+      firstImageOriginalHeight = 0;
+      keepRatio = true;
 
       const fileInput = document.getElementById("smartFileInput");
       if (fileInput) fileInput.value = "";
@@ -1709,6 +2137,22 @@
       const qualityInput = document.getElementById("imageQualityInput");
       if (qualityInput) qualityInput.value = "0.72";
 
+      const resizeWidthInput = document.getElementById("resizeWidthInput");
+      if (resizeWidthInput) resizeWidthInput.value = "";
+
+      const resizeHeightInput = document.getElementById("resizeHeightInput");
+      if (resizeHeightInput) resizeHeightInput.value = "";
+
+      const ratioSwitch = document.getElementById("ratioSwitch");
+      if (ratioSwitch) ratioSwitch.classList.add("on");
+
+      const resizePanel = document.getElementById("imageResizePanel");
+      if (resizePanel) resizePanel.classList.remove("show");
+
+      document.getElementById("firstImageSizeText").innerText = "-";
+      document.getElementById("firstImageDimensionText").innerText = "-";
+
+      clearResizeButtons();
       renderSmartFileList();
       renderSmartActions();
 
