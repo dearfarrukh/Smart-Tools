@@ -26,7 +26,7 @@
   <!-- PDF MAKER -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
-  <!-- PDF EDIT / MERGE -->
+  <!-- PDF EDIT / MERGE / SPLIT / COMPRESS -->
   <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
 
   <style>
@@ -37,6 +37,7 @@
       box-sizing: border-box;
       margin: 0;
       padding: 0;
+      -webkit-tap-highlight-color: transparent;
     }
 
     html,
@@ -227,7 +228,7 @@
     }
 
     /* =========================
-       IMAGE TOOLS
+       IMAGE / PDF TOOLS
     ========================= */
     .tools-layout {
       margin-top: 24px;
@@ -237,13 +238,15 @@
       align-items: start;
     }
 
+    /* NO DOTTED BORDER */
     .file-upload-box {
-      border: 2px dashed #c4b5fd;
+      border: 1px solid rgba(15,23,42,0.08);
       border-radius: 24px;
       padding: 26px;
       text-align: center;
       background: linear-gradient(180deg, #faf5ff 0%, #eef2ff 100%);
       cursor: pointer;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.75), 0 10px 24px rgba(15,23,42,0.08);
     }
 
     .file-upload-icon {
@@ -300,6 +303,10 @@
       color: white;
       text-align: left;
       box-shadow: 0 10px 24px rgba(15,23,42,0.12);
+    }
+
+    .smart-tool-btn:active {
+      transform: scale(0.98);
     }
 
     .smart-tool-btn-icon {
@@ -449,6 +456,11 @@
       box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 14px 34px rgba(0,0,0,0.22);
     }
 
+    body.smart-tools-dark-theme .file-upload-box {
+      border: 1px solid rgba(148,163,184,0.20);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 14px 34px rgba(0,0,0,0.22);
+    }
+
     body.smart-tools-dark-theme .card-subtitle,
     body.smart-tools-dark-theme .file-upload-subtitle,
     body.smart-tools-dark-theme .result-placeholder,
@@ -580,8 +592,8 @@
     <div class="inner-page-hero">
       <h1>PDF / Image Tools</h1>
       <p>
-        Upload PDF or image files in one place. The app will decide what tools are available:
-        PDF to PNG, image to PDF, convert images, compress images, merge PDFs, or keep selected PDF pages.
+        Merge PDFs, split PDFs, compress PDFs, turn PDF pages into images,
+        and make one PDF from images. Upload your files in one place and choose the tool you need.
       </p>
     </div>
 
@@ -649,8 +661,9 @@
           </div>
 
           <div class="small-help">
-            For PDF page selection, write page numbers like <strong>1,3,5-7</strong>.
-            Image quality works for JPG/WEBP/compress downloads.
+            <strong>Split PDF</strong> makes one separate PDF for every page.
+            <strong>Keep PDF Pages</strong> lets you choose pages like <strong>1,3,5-7</strong>.
+            PDF compression works best on some PDFs; scanned/image-heavy PDFs may not shrink much.
           </div>
         </div>
 
@@ -742,14 +755,12 @@
     // SMART FILE TOOLS STATE
     // =========================
     let smartSelectedFiles = [];
-    let smartRotatedImages = [];
 
     // =========================
     // HANDLE SMART FILE SELECTION
     // =========================
     function handleSmartFileSelection(event) {
       smartSelectedFiles = Array.from(event.target.files || []);
-      smartRotatedImages = [];
 
       renderSmartFileList();
       renderSmartActions();
@@ -821,16 +832,32 @@
         buttons += `
           <button class="smart-tool-btn blue-btn" onclick="smartPdfToPng()">
             <div class="smart-tool-btn-icon">📄</div>
-            <div class="smart-tool-btn-title">PDF to PNG</div>
+            <div class="smart-tool-btn-title">PDF to Images</div>
             <div class="smart-tool-btn-sub">Convert PDF pages into PNG images.</div>
           </button>
         `;
 
         buttons += `
-          <button class="smart-tool-btn purple-btn" onclick="smartKeepPdfPages()">
+          <button class="smart-tool-btn orange-btn" onclick="smartSplitPdf()">
             <div class="smart-tool-btn-icon">✂️</div>
+            <div class="smart-tool-btn-title">Split PDF</div>
+            <div class="smart-tool-btn-sub">Make separate PDF files for each page.</div>
+          </button>
+        `;
+
+        buttons += `
+          <button class="smart-tool-btn purple-btn" onclick="smartKeepPdfPages()">
+            <div class="smart-tool-btn-icon">📌</div>
             <div class="smart-tool-btn-title">Keep PDF Pages</div>
             <div class="smart-tool-btn-sub">Make a new PDF with selected pages.</div>
+          </button>
+        `;
+
+        buttons += `
+          <button class="smart-tool-btn pink-btn" onclick="smartCompressPdfs()">
+            <div class="smart-tool-btn-icon">🗜️</div>
+            <div class="smart-tool-btn-title">Compress PDF</div>
+            <div class="smart-tool-btn-sub">Try to reduce PDF size and download.</div>
           </button>
         `;
       }
@@ -994,7 +1021,7 @@
     }
 
     // =========================
-    // PDF TO PNG
+    // PDF TO IMAGES
     // =========================
     async function smartPdfToPng() {
       const pdfFiles = smartSelectedFiles.filter(file => isPdfFile(file));
@@ -1044,12 +1071,12 @@
         }
 
         const zipBlob = await zip.generateAsync({ type: "blob" });
-        downloadBlob(zipBlob, "pdf-pages-png.zip");
+        downloadBlob(zipBlob, "pdf-pages-images.zip");
 
         setSmartStatus("success", "Done. " + totalImages + " PNG image(s) created and downloaded.");
       } catch (error) {
         console.error(error);
-        setSmartStatus("error", "PDF to PNG failed. Try another PDF file.");
+        setSmartStatus("error", "PDF to images failed. Try another PDF file.");
       }
     }
 
@@ -1082,7 +1109,10 @@
           copiedPages.forEach(page => mergedPdf.addPage(page));
         }
 
-        const mergedBytes = await mergedPdf.save();
+        const mergedBytes = await mergedPdf.save({
+          useObjectStreams: true
+        });
+
         const blob = new Blob([mergedBytes], { type: "application/pdf" });
 
         downloadBlob(blob, "merged.pdf");
@@ -1091,6 +1121,60 @@
       } catch (error) {
         console.error(error);
         setSmartStatus("error", "PDF merge failed. Try different PDF files.");
+      }
+    }
+
+    // =========================
+    // SPLIT PDF
+    // Makes each page a separate PDF
+    // =========================
+    async function smartSplitPdf() {
+      const pdfFiles = smartSelectedFiles.filter(file => isPdfFile(file));
+
+      if (!pdfFiles.length) {
+        setSmartStatus("error", "Please choose at least one PDF file.");
+        return;
+      }
+
+      if (!window.PDFLib || !window.JSZip) {
+        setSmartStatus("error", "PDF split or ZIP library did not load.");
+        return;
+      }
+
+      try {
+        setSmartStatus("ready", "Splitting PDF pages...");
+
+        const zip = new JSZip();
+        let totalPages = 0;
+
+        for (const file of pdfFiles) {
+          const arrayBuffer = await file.arrayBuffer();
+          const sourcePdf = await PDFLib.PDFDocument.load(arrayBuffer);
+          const folder = zip.folder(removeFileExtension(file.name));
+
+          for (let pageIndex = 0; pageIndex < sourcePdf.getPageCount(); pageIndex++) {
+            const newPdf = await PDFLib.PDFDocument.create();
+            const [copiedPage] = await newPdf.copyPages(sourcePdf, [pageIndex]);
+
+            newPdf.addPage(copiedPage);
+
+            const newBytes = await newPdf.save({
+              useObjectStreams: true
+            });
+
+            folder.file("page-" + String(pageIndex + 1).padStart(3, "0") + ".pdf", newBytes);
+            totalPages++;
+          }
+        }
+
+        const zipBlob = await zip.generateAsync({ type: "blob" });
+
+        downloadBlob(zipBlob, "split-pdf-pages.zip");
+
+        setSmartStatus("success", "Done. " + totalPages + " PDF page file(s) created.");
+      } catch (error) {
+        console.error(error);
+        setSmartStatus("error", "Split PDF failed. Try another PDF file.");
       }
     }
 
@@ -1142,7 +1226,10 @@
 
         copiedPages.forEach(page => newPdf.addPage(page));
 
-        const newBytes = await newPdf.save();
+        const newBytes = await newPdf.save({
+          useObjectStreams: true
+        });
+
         const blob = new Blob([newBytes], { type: "application/pdf" });
 
         downloadBlob(blob, removeFileExtension(file.name) + "-selected-pages.pdf");
@@ -1152,6 +1239,83 @@
         console.error(error);
         setSmartStatus("error", "Could not keep selected pages. Check page numbers and try again.");
       }
+    }
+
+    // =========================
+    // COMPRESS PDFS
+    // Browser PDF compression is limited.
+    // This re-saves PDFs in optimized object-stream format.
+    // =========================
+    async function smartCompressPdfs() {
+      const pdfFiles = smartSelectedFiles.filter(file => isPdfFile(file));
+
+      if (!pdfFiles.length) {
+        setSmartStatus("error", "Please choose at least one PDF file.");
+        return;
+      }
+
+      if (!window.PDFLib || !window.JSZip) {
+        setSmartStatus("error", "PDF compression or ZIP library did not load.");
+        return;
+      }
+
+      try {
+        setSmartStatus("ready", "Compressing PDF...");
+
+        if (pdfFiles.length === 1) {
+          const file = pdfFiles[0];
+          const compressedBlob = await compressSinglePdf(file);
+
+          downloadBlob(compressedBlob, removeFileExtension(file.name) + "-compressed.pdf");
+
+          const savedBytes = file.size - compressedBlob.size;
+          const message = savedBytes > 0
+            ? "Done. PDF compressed. Saved " + formatFileSize(savedBytes) + "."
+            : "Done. PDF optimized, but this PDF did not shrink much.";
+
+          setSmartStatus("success", message);
+          return;
+        }
+
+        const zip = new JSZip();
+        let totalSaved = 0;
+
+        for (const file of pdfFiles) {
+          const compressedBlob = await compressSinglePdf(file);
+          totalSaved += Math.max(0, file.size - compressedBlob.size);
+          zip.file(removeFileExtension(file.name) + "-compressed.pdf", compressedBlob);
+        }
+
+        const zipBlob = await zip.generateAsync({ type: "blob" });
+        downloadBlob(zipBlob, "compressed-pdfs.zip");
+
+        const message = totalSaved > 0
+          ? "Done. PDFs compressed. Total saved " + formatFileSize(totalSaved) + "."
+          : "Done. PDFs optimized, but these PDFs did not shrink much.";
+
+        setSmartStatus("success", message);
+      } catch (error) {
+        console.error(error);
+        setSmartStatus("error", "PDF compression failed. Some protected or scanned PDFs may not compress.");
+      }
+    }
+
+    // =========================
+    // COMPRESS SINGLE PDF
+    // =========================
+    async function compressSinglePdf(file) {
+      const arrayBuffer = await file.arrayBuffer();
+      const sourcePdf = await PDFLib.PDFDocument.load(arrayBuffer);
+
+      const compressedBytes = await sourcePdf.save({
+        useObjectStreams: true,
+        addDefaultPage: false,
+        objectsPerTick: 50
+      });
+
+      return new Blob([compressedBytes], {
+        type: "application/pdf"
+      });
     }
 
     // =========================
@@ -1223,6 +1387,11 @@
         return;
       }
 
+      if (!window.JSZip) {
+        setSmartStatus("error", "ZIP library did not load.");
+        return;
+      }
+
       try {
         setSmartStatus("ready", "Converting images...");
 
@@ -1256,6 +1425,11 @@
         return;
       }
 
+      if (!window.JSZip) {
+        setSmartStatus("error", "ZIP library did not load.");
+        return;
+      }
+
       try {
         setSmartStatus("ready", "Compressing images...");
 
@@ -1286,6 +1460,11 @@
 
       if (!imageFiles.length) {
         setSmartStatus("error", "Please choose image files first.");
+        return;
+      }
+
+      if (!window.JSZip) {
+        setSmartStatus("error", "ZIP library did not load.");
         return;
       }
 
@@ -1520,7 +1699,6 @@
     // =========================
     function resetSmartTools() {
       smartSelectedFiles = [];
-      smartRotatedImages = [];
 
       const fileInput = document.getElementById("smartFileInput");
       if (fileInput) fileInput.value = "";
