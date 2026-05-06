@@ -494,6 +494,106 @@
     }
 
     /* =========================
+       SELECTED IMAGE CHANGES
+    ========================= */
+    .selected-change-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .selected-change-option {
+      border: 2px solid #e5e7eb;
+      border-radius: 18px;
+      padding: 12px;
+      background: #f8fafc;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      color: #111827;
+      font-size: 14px;
+      font-weight: 900;
+      line-height: 1.35;
+      user-select: none;
+    }
+
+    .selected-change-option input {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+    }
+
+    .selected-change-option:has(input:checked) {
+      border-color: #2563eb;
+      background: #eff6ff;
+      color: #1d4ed8;
+    }
+
+    .main-apply-btn {
+      width: 100%;
+      min-height: 62px;
+      border: none;
+      border-radius: 20px;
+      margin-top: 16px;
+      color: white;
+      font-size: 18px;
+      font-weight: 900;
+      cursor: pointer;
+      background: linear-gradient(135deg, #16a34a 0%, #2563eb 100%);
+      box-shadow: 0 12px 26px rgba(37,99,235,0.22);
+    }
+
+    .preview-compare-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-top: 14px;
+    }
+
+    .preview-compare-card {
+      border-radius: 20px;
+      overflow: hidden;
+      background: white;
+      border: 1px solid #e5e7eb;
+      box-shadow: 0 8px 18px rgba(15,23,42,0.08);
+    }
+
+    .preview-compare-card img {
+      width: 100%;
+      height: 210px;
+      object-fit: contain;
+      background: #f8fafc;
+      display: block;
+    }
+
+    .preview-compare-info {
+      padding: 12px;
+      font-size: 13px;
+      font-weight: 900;
+      line-height: 1.5;
+      color: #334155;
+      word-break: break-word;
+    }
+
+    .selected-change-list {
+      margin-top: 12px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .selected-change-pill {
+      border-radius: 14px;
+      padding: 10px 12px;
+      background: rgba(37,99,235,0.10);
+      color: #1d4ed8;
+      font-size: 14px;
+      font-weight: 900;
+      line-height: 1.45;
+    }
+
+    /* =========================
        PDF EDITOR LITE
     ========================= */
     .pdf-editor-modal {
@@ -797,6 +897,28 @@
       color: white;
     }
 
+    body.smart-tools-dark-theme .selected-change-option,
+    body.smart-tools-dark-theme .preview-compare-card {
+      background: rgba(15,23,42,0.82);
+      color: #f8fafc;
+      border-color: rgba(148,163,184,0.28);
+    }
+
+    body.smart-tools-dark-theme .selected-change-option:has(input:checked) {
+      background: rgba(37,99,235,0.24);
+      border-color: #60a5fa;
+      color: #dbeafe;
+    }
+
+    body.smart-tools-dark-theme .preview-compare-info {
+      color: #cbd5e1;
+    }
+
+    body.smart-tools-dark-theme .selected-change-pill {
+      background: rgba(96,165,250,0.18);
+      color: #dbeafe;
+    }
+
     body.smart-tools-dark-theme .pdf-editor-card {
       background: #0f172a;
       color: #f8fafc;
@@ -934,6 +1056,8 @@
 
       .smart-action-grid,
       .preview-grid,
+      .preview-compare-grid,
+      .selected-change-grid,
       .setting-row,
       .setting-row-three {
         grid-template-columns: 1fr;
@@ -1174,6 +1298,75 @@
             <button id="imageBoldBtn" class="mini-format-btn" onclick="toggleImageFormatButton('bold')">Bold</button>
             <button id="imageItalicBtn" class="mini-format-btn italic-label" onclick="toggleImageFormatButton('italic')">Italic</button>
             <button id="imageUnderlineBtn" class="mini-format-btn underline-label" onclick="toggleImageFormatButton('underline')">Underline</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Choose Image Changes</div>
+          <div class="card-subtitle">
+            Select any changes you want, preview the result, then press one main button.
+          </div>
+
+          <div class="selected-change-grid">
+            <label class="selected-change-option">
+              <input id="selectChangeRotate" type="checkbox" onchange="scheduleSelectedPreview()">
+              Rotate Right
+            </label>
+
+            <label class="selected-change-option">
+              <input id="selectChangeResize" type="checkbox" onchange="scheduleSelectedPreview()">
+              Resize
+            </label>
+
+            <label class="selected-change-option">
+              <input id="selectChangeCrop" type="checkbox" onchange="scheduleSelectedPreview()">
+              Crop
+            </label>
+
+            <label class="selected-change-option">
+              <input id="selectChangeAddText" type="checkbox" onchange="scheduleSelectedPreview()">
+              Add Text
+            </label>
+
+            <label class="selected-change-option">
+              <input id="selectChangeWatermark" type="checkbox" onchange="scheduleSelectedPreview()">
+              Watermark
+            </label>
+
+            <label class="selected-change-option">
+              <input id="selectChangeIdPhoto" type="checkbox" onchange="scheduleSelectedPreview()">
+              2x2 ID Photo
+            </label>
+
+            <label class="selected-change-option">
+              <input id="selectChangeReduce" type="checkbox" onchange="scheduleSelectedPreview()">
+              Reduce MB / KB
+            </label>
+
+            <label class="selected-change-option">
+              <input id="selectChangeConvert" type="checkbox" onchange="scheduleSelectedPreview()">
+              Convert Format
+            </label>
+          </div>
+
+          <label style="margin-top:14px; display:block;">
+            <span class="setting-label">Convert Format</span>
+            <select id="selectedOutputFormatInput" class="setting-input" onchange="scheduleSelectedPreview()">
+              <option value="jpg" selected>JPG - smaller size</option>
+              <option value="png">PNG - best clarity</option>
+              <option value="webp">WEBP - modern small size</option>
+            </select>
+          </label>
+
+          <div class="button-row" style="margin-top:16px;">
+            <button class="action-btn blue-btn" onclick="previewSelectedImageChanges()">Preview Selected Changes</button>
+          </div>
+
+          <button class="main-apply-btn" onclick="applySelectedImageChanges()">Apply Selected Changes</button>
+
+          <div class="small-help">
+            Example: select <strong>Resize</strong>, <strong>Watermark</strong>, and <strong>Reduce MB / KB</strong>,
+            then press <strong>Apply Selected Changes</strong>. The preview shows the first image before and after.
           </div>
         </div>
 
@@ -2140,6 +2333,506 @@
         width: drawWidth,
         height: drawHeight
       };
+    }
+
+    // =========================
+    // GET SELECTED IMAGE CHANGES
+    // =========================
+    function getSelectedImageChanges() {
+      const outputFormatInput = document.getElementById("selectedOutputFormatInput");
+      const outputFormat = outputFormatInput ? outputFormatInput.value : "jpg";
+
+      let outputType = "image/jpeg";
+      let extension = "jpg";
+
+      if (outputFormat === "png") {
+        outputType = "image/png";
+        extension = "png";
+      }
+
+      if (outputFormat === "webp") {
+        outputType = "image/webp";
+        extension = "webp";
+      }
+
+      const reduceSelected = isCheckboxChecked("selectChangeReduce");
+
+      if (reduceSelected) {
+        outputType = "image/jpeg";
+        extension = "jpg";
+      }
+
+      return {
+        rotate: isCheckboxChecked("selectChangeRotate"),
+        resize: isCheckboxChecked("selectChangeResize"),
+        crop: isCheckboxChecked("selectChangeCrop"),
+        addText: isCheckboxChecked("selectChangeAddText"),
+        watermark: isCheckboxChecked("selectChangeWatermark"),
+        idPhoto: isCheckboxChecked("selectChangeIdPhoto"),
+        reduce: reduceSelected,
+        convert: isCheckboxChecked("selectChangeConvert"),
+        outputType: outputType,
+        extension: extension
+      };
+    }
+
+    // =========================
+    // IS CHECKBOX CHECKED
+    // =========================
+    function isCheckboxChecked(id) {
+      const input = document.getElementById(id);
+      return !!(input && input.checked);
+    }
+
+    // =========================
+    // HAS ANY SELECTED IMAGE CHANGE
+    // =========================
+    function hasAnySelectedImageChange(changes) {
+      return !!(
+        changes.rotate ||
+        changes.resize ||
+        changes.crop ||
+        changes.addText ||
+        changes.watermark ||
+        changes.idPhoto ||
+        changes.reduce ||
+        changes.convert
+      );
+    }
+
+    // =========================
+    // GET SELECTED CHANGES TEXT LIST
+    // Shows exactly what will happen.
+    // =========================
+    function getSelectedChangesTextList(changes) {
+      const list = [];
+
+      if (changes.rotate) list.push("Rotate: 90° right");
+
+      if (changes.resize) {
+        const preset = getResizePreset();
+        const widthInput = parseInt(document.getElementById("resizeWidthInput").value, 10);
+        const heightInput = parseInt(document.getElementById("resizeHeightInput").value, 10);
+
+        if (preset === "percent-50") list.push("Resize: make image 50% smaller");
+        else if (preset === "percent-25") list.push("Resize: make image 25% size");
+        else if (preset === "width-1200") list.push("Resize: fit width to 1200px");
+        else if (preset === "width-800") list.push("Resize: fit width to 800px");
+        else list.push("Resize: custom " + (widthInput || "auto") + " × " + (heightInput || "auto") + " px");
+      }
+
+      if (changes.crop) {
+        const cropWidth = parseInt(document.getElementById("cropWidthInput").value, 10);
+        const cropHeight = parseInt(document.getElementById("cropHeightInput").value, 10);
+        list.push("Crop: center crop " + (cropWidth || "?") + " × " + (cropHeight || "?") + " px");
+      }
+
+      if (changes.addText) {
+        const text = document.getElementById("imageTextInput").value.trim();
+        const position = document.getElementById("imageTextPositionInput").value || "center";
+        list.push("Add Text: " + (text ? "\u201c" + text + "\u201d" : "text not typed yet") + " at " + position);
+      }
+
+      if (changes.watermark) {
+        const text = document.getElementById("imageTextInput").value.trim();
+        list.push("Watermark: " + (text ? "\u201c" + text + "\u201d" : "watermark text not typed yet"));
+      }
+
+      if (changes.idPhoto) list.push("2x2 ID Photo: make square 600 × 600 image");
+
+      if (changes.convert && !changes.reduce) list.push("Convert: final format " + changes.extension.toUpperCase());
+
+      if (changes.reduce) {
+        const targetKb = parseInt(document.getElementById("targetImageSizeKbInput").value, 10);
+        list.push("Reduce MB / KB: target about " + (targetKb || "?") + " KB, final format JPG");
+      }
+
+      return list;
+    }
+
+    // =========================
+    // VALIDATE SELECTED IMAGE CHANGES
+    // =========================
+    function validateSelectedImageChanges(changes) {
+      if (!hasAnySelectedImageChange(changes)) {
+        return "Select at least one image change first.";
+      }
+
+      if (changes.resize) {
+        const preset = getResizePreset();
+        const widthInput = parseInt(document.getElementById("resizeWidthInput").value, 10);
+        const heightInput = parseInt(document.getElementById("resizeHeightInput").value, 10);
+
+        if (preset === "custom" && !widthInput && !heightInput) {
+          return "Resize is selected. Choose a simple resize option or type custom width/height.";
+        }
+      }
+
+      if (changes.crop) {
+        const cropWidth = parseInt(document.getElementById("cropWidthInput").value, 10);
+        const cropHeight = parseInt(document.getElementById("cropHeightInput").value, 10);
+
+        if (!cropWidth || !cropHeight) {
+          return "Crop is selected. Type crop width and crop height first.";
+        }
+      }
+
+      if (changes.addText || changes.watermark) {
+        const text = document.getElementById("imageTextInput").value.trim();
+
+        if (!text) {
+          return "Text or Watermark is selected. Type text first.";
+        }
+      }
+
+      if (changes.reduce) {
+        const targetKb = parseInt(document.getElementById("targetImageSizeKbInput").value, 10);
+
+        if (!targetKb || targetKb < 1) {
+          return "Reduce MB / KB is selected. Type target size in KB first. Example: 500";
+        }
+      }
+
+      return "";
+    }
+
+    // =========================
+    // SCHEDULE SELECTED PREVIEW
+    // =========================
+    let selectedPreviewTimer = null;
+
+    function scheduleSelectedPreview() {
+      if (selectedPreviewTimer) clearTimeout(selectedPreviewTimer);
+
+      selectedPreviewTimer = setTimeout(() => {
+        previewSelectedImageChanges(false);
+      }, 450);
+    }
+
+    // =========================
+    // PREVIEW SELECTED IMAGE CHANGES
+    // Shows first image before and after.
+    // =========================
+    async function previewSelectedImageChanges(showErrors) {
+      const imageFiles = smartSelectedFiles.filter(file => isImageFile(file));
+
+      if (!imageFiles.length) {
+        if (showErrors !== false) setSmartStatus("error", "Please choose image files first.");
+        return;
+      }
+
+      const changes = getSelectedImageChanges();
+      const selectedList = getSelectedChangesTextList(changes);
+      const validationMessage = validateSelectedImageChanges(changes);
+
+      if (validationMessage) {
+        renderSelectedChangesOnlyPreview(selectedList, validationMessage);
+        if (showErrors !== false) setSmartStatus("error", validationMessage);
+        return;
+      }
+
+      try {
+        const file = imageFiles[0];
+        const originalDataUrl = await fileToDataUrl(file);
+        const originalInfo = await loadImageInfo(originalDataUrl);
+        const result = await processImageWithSelectedChanges(file, changes, true);
+        const finalDataUrl = await blobToDataUrl(result.blob);
+
+        renderBeforeAfterPreview({
+          file: file,
+          originalDataUrl: originalDataUrl,
+          originalInfo: originalInfo,
+          finalDataUrl: finalDataUrl,
+          finalWidth: result.width,
+          finalHeight: result.height,
+          finalSize: result.blob.size,
+          finalExtension: result.extension,
+          selectedList: selectedList,
+          imageCount: imageFiles.length
+        });
+
+        setSmartStatus("success", "Preview updated. This shows the first image before and after selected changes.");
+      } catch (error) {
+        console.error(error);
+        if (showErrors !== false) setSmartStatus("error", "Preview failed. Check selected settings.");
+      }
+    }
+
+    // =========================
+    // RENDER SELECTED CHANGES ONLY PREVIEW
+    // =========================
+    function renderSelectedChangesOnlyPreview(selectedList, message) {
+      const previewBox = document.getElementById("smartPreviewBox");
+      if (!previewBox) return;
+
+      previewBox.className = "result-box result-error";
+      previewBox.innerHTML = `
+        <div class="result-heading">Selected Changes</div>
+        <div class="result-placeholder">${escapeHtml(message)}</div>
+        ${renderSelectedChangePills(selectedList)}
+      `;
+      applySmartToolsTheme();
+    }
+
+    // =========================
+    // RENDER BEFORE AFTER PREVIEW
+    // =========================
+    function renderBeforeAfterPreview(data) {
+      const previewBox = document.getElementById("smartPreviewBox");
+      if (!previewBox) return;
+
+      const multiNote = data.imageCount > 1
+        ? `<div class="small-help"><strong>${data.imageCount} images</strong> will use the same selected changes. Preview shows the first image only.</div>`
+        : "";
+
+      previewBox.className = "result-box result-success";
+      previewBox.innerHTML = `
+        <div class="result-heading">Preview: Before / After</div>
+        ${multiNote}
+        ${renderSelectedChangePills(data.selectedList)}
+        <div class="preview-compare-grid">
+          <div class="preview-compare-card">
+            <img src="${data.originalDataUrl}" alt="Original image">
+            <div class="preview-compare-info">
+              Original<br>
+              ${escapeHtml(data.file.name)}<br>
+              ${data.originalInfo.width} × ${data.originalInfo.height} px<br>
+              ${formatFileSize(data.file.size)}
+            </div>
+          </div>
+
+          <div class="preview-compare-card">
+            <img src="${data.finalDataUrl}" alt="Final preview image">
+            <div class="preview-compare-info">
+              After Changes<br>
+              ${data.finalWidth} × ${data.finalHeight} px<br>
+              ${formatFileSize(data.finalSize)}<br>
+              Format: ${escapeHtml(data.finalExtension.toUpperCase())}
+            </div>
+          </div>
+        </div>
+      `;
+      applySmartToolsTheme();
+    }
+
+    // =========================
+    // RENDER SELECTED CHANGE PILLS
+    // =========================
+    function renderSelectedChangePills(selectedList) {
+      if (!selectedList || !selectedList.length) {
+        return `
+          <div class="selected-change-list">
+            <div class="selected-change-pill">No selected image changes yet.</div>
+          </div>
+        `;
+      }
+
+      return `
+        <div class="selected-change-list">
+          ${selectedList.map(item => `<div class="selected-change-pill">${escapeHtml(item)}</div>`).join("")}
+        </div>
+      `;
+    }
+
+    // =========================
+    // APPLY SELECTED IMAGE CHANGES
+    // One main button for selected changes.
+    // =========================
+    async function applySelectedImageChanges() {
+      const imageFiles = smartSelectedFiles.filter(file => isImageFile(file));
+
+      if (!imageFiles.length) {
+        setSmartStatus("error", "Please choose image files first.");
+        return;
+      }
+
+      const changes = getSelectedImageChanges();
+      const validationMessage = validateSelectedImageChanges(changes);
+
+      if (validationMessage) {
+        setSmartStatus("error", validationMessage);
+        renderSelectedChangesOnlyPreview(getSelectedChangesTextList(changes), validationMessage);
+        return;
+      }
+
+      if (imageFiles.length > 1 && !window.JSZip) {
+        setSmartStatus("error", "ZIP library did not load.");
+        return;
+      }
+
+      try {
+        setSmartStatus("ready", "Applying selected image changes...");
+
+        const results = [];
+
+        for (let i = 0; i < imageFiles.length; i++) {
+          const file = imageFiles[i];
+          const result = await processImageWithSelectedChanges(file, changes, false);
+
+          results.push({
+            blob: result.blob,
+            fileName: getIndexedFileName(file, i, result.extension, "selected-changes")
+          });
+        }
+
+        await downloadImageResults(
+          imageFiles,
+          results,
+          getPrefixName("selected-image-changes") + ".zip",
+          "Done. 1 image changed and downloaded directly.",
+          "Done. Selected changes applied and downloaded as ZIP."
+        );
+
+        await previewSelectedImageChanges(false);
+      } catch (error) {
+        console.error(error);
+        setSmartStatus("error", "Apply selected changes failed. Check settings and try again.");
+      }
+    }
+
+    // =========================
+    // PROCESS IMAGE WITH SELECTED CHANGES
+    // Order: rotate, resize, crop, ID photo, text, watermark, convert/reduce.
+    // =========================
+    async function processImageWithSelectedChanges(file, changes, forPreview) {
+      let canvas = await fileToCanvas(file, changes.rotate ? 90 : 0);
+
+      if (changes.resize) {
+        const resizePreset = getResizePreset();
+        const widthInput = parseInt(document.getElementById("resizeWidthInput").value, 10);
+        const heightInput = parseInt(document.getElementById("resizeHeightInput").value, 10);
+        const newSize = getSimpleResizeSize(canvas.width, canvas.height, resizePreset, widthInput, heightInput);
+        canvas = resizeCanvasToSize(canvas, newSize.width, newSize.height);
+      }
+
+      if (changes.crop) {
+        const cropWidth = parseInt(document.getElementById("cropWidthInput").value, 10);
+        const cropHeight = parseInt(document.getElementById("cropHeightInput").value, 10);
+        canvas = cropCanvasCenter(canvas, cropWidth, cropHeight);
+      }
+
+      if (changes.idPhoto) {
+        canvas = makeIdPhotoCanvasFromCanvas(canvas);
+      }
+
+      const text = document.getElementById("imageTextInput").value.trim();
+
+      if (changes.addText) {
+        drawTextOnImageCanvas(canvas, text, false);
+      }
+
+      if (changes.watermark) {
+        drawTextOnImageCanvas(canvas, text, true);
+      }
+
+      let blob;
+      let extension = changes.extension;
+
+      if (changes.reduce) {
+        const targetKb = parseInt(document.getElementById("targetImageSizeKbInput").value, 10);
+        blob = await compressCanvasNearTarget(canvas, targetKb * 1024);
+        extension = "jpg";
+      } else if (changes.convert) {
+        blob = await canvasToBlob(canvas, changes.outputType, getImageQuality());
+      } else {
+        blob = await canvasToBlob(canvas, "image/jpeg", getImageQuality());
+        extension = "jpg";
+      }
+
+      return {
+        blob: blob,
+        width: canvas.width,
+        height: canvas.height,
+        extension: extension
+      };
+    }
+
+    // =========================
+    // RESIZE CANVAS TO SIZE
+    // =========================
+    function resizeCanvasToSize(sourceCanvas, width, height) {
+      const canvas = document.createElement("canvas");
+      const context = canvas.getContext("2d");
+
+      canvas.width = Math.max(1, Math.round(width));
+      canvas.height = Math.max(1, Math.round(height));
+      context.drawImage(sourceCanvas, 0, 0, canvas.width, canvas.height);
+
+      return canvas;
+    }
+
+    // =========================
+    // CROP CANVAS CENTER
+    // =========================
+    function cropCanvasCenter(sourceCanvas, cropWidth, cropHeight) {
+      const realCropWidth = Math.min(cropWidth, sourceCanvas.width);
+      const realCropHeight = Math.min(cropHeight, sourceCanvas.height);
+      const sx = Math.floor((sourceCanvas.width - realCropWidth) / 2);
+      const sy = Math.floor((sourceCanvas.height - realCropHeight) / 2);
+      const canvas = document.createElement("canvas");
+      const context = canvas.getContext("2d");
+
+      canvas.width = realCropWidth;
+      canvas.height = realCropHeight;
+
+      context.drawImage(
+        sourceCanvas,
+        sx,
+        sy,
+        realCropWidth,
+        realCropHeight,
+        0,
+        0,
+        realCropWidth,
+        realCropHeight
+      );
+
+      return canvas;
+    }
+
+    // =========================
+    // MAKE ID PHOTO CANVAS FROM CANVAS
+    // =========================
+    function makeIdPhotoCanvasFromCanvas(sourceCanvas) {
+      const canvas = document.createElement("canvas");
+      const context = canvas.getContext("2d");
+
+      canvas.width = 600;
+      canvas.height = 600;
+
+      context.fillStyle = "#ffffff";
+      context.fillRect(0, 0, canvas.width, canvas.height);
+
+      const sourceRatio = sourceCanvas.width / sourceCanvas.height;
+      const targetRatio = canvas.width / canvas.height;
+      let sx = 0;
+      let sy = 0;
+      let sw = sourceCanvas.width;
+      let sh = sourceCanvas.height;
+
+      if (sourceRatio > targetRatio) {
+        sw = sourceCanvas.height * targetRatio;
+        sx = (sourceCanvas.width - sw) / 2;
+      } else {
+        sh = sourceCanvas.width / targetRatio;
+        sy = (sourceCanvas.height - sh) / 2;
+      }
+
+      context.drawImage(sourceCanvas, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
+
+      return canvas;
+    }
+
+    // =========================
+    // BLOB TO DATA URL
+    // =========================
+    function blobToDataUrl(blob) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+      });
     }
 
     // =========================
@@ -3180,6 +3873,7 @@
       if (!button) return;
 
       button.classList.toggle("active");
+      scheduleSelectedPreview();
     }
 
     // =========================
@@ -3620,6 +4314,7 @@
       if (!button) return;
 
       button.classList.toggle("active");
+      scheduleSelectedPreview();
     }
 
     // =========================
@@ -3846,6 +4541,25 @@
       document.getElementById("imageItalicBtn").classList.remove("active");
       document.getElementById("imageUnderlineBtn").classList.remove("active");
 
+      const selectedChangeIds = [
+        "selectChangeRotate",
+        "selectChangeResize",
+        "selectChangeCrop",
+        "selectChangeAddText",
+        "selectChangeWatermark",
+        "selectChangeIdPhoto",
+        "selectChangeReduce",
+        "selectChangeConvert"
+      ];
+
+      selectedChangeIds.forEach(id => {
+        const input = document.getElementById(id);
+        if (input) input.checked = false;
+      });
+
+      const selectedOutputFormatInput = document.getElementById("selectedOutputFormatInput");
+      if (selectedOutputFormatInput) selectedOutputFormatInput.value = "jpg";
+
       renderSmartFileList();
       renderSmartActions();
 
@@ -3879,8 +4593,36 @@
       applySmartToolsTheme();
       renderSmartFileList();
       renderSmartActions();
+      setupSelectedPreviewAutoUpdate();
       setSmartStatus("ready", "Waiting for files.");
     });
+
+    // =========================
+    // SETUP SELECTED PREVIEW AUTO UPDATE
+    // =========================
+    function setupSelectedPreviewAutoUpdate() {
+      const ids = [
+        "resizePresetInput",
+        "resizeWidthInput",
+        "resizeHeightInput",
+        "keepAspectInput",
+        "cropWidthInput",
+        "cropHeightInput",
+        "targetImageSizeKbInput",
+        "imageTextInput",
+        "imageTextFontSizeInput",
+        "imageTextPositionInput",
+        "selectedOutputFormatInput"
+      ];
+
+      ids.forEach(id => {
+        const element = document.getElementById(id);
+        if (!element) return;
+
+        element.addEventListener("input", scheduleSelectedPreview);
+        element.addEventListener("change", scheduleSelectedPreview);
+      });
+    }
   </script>
 
 </body>
