@@ -348,13 +348,13 @@
 
     .preview-text {
       position: absolute;
-      background: white;
+      background: transparent;
       color: #000;
       font-family: Arial, Helvetica, sans-serif;
       font-weight: 700;
       white-space: nowrap;
       line-height: 1;
-      padding: 1px 2px;
+      padding: 0;
     }
 
     .preview-help {
@@ -624,7 +624,7 @@
           </div>
 
           <div class="preview-help">
-            Template files must be saved in <strong>Smart-Tools/contract-generator/templates/</strong> using the exact names listed below.
+            Template files must be saved in <strong>Smart-Tools/contract-generator/templates/</strong>. PDF download is compressed to keep file size smaller.
           </div>
         </div>
       </div>
@@ -663,9 +663,9 @@
         fixedPrice: { x: 435, y: 477, size: 11 },
         acceptanceDate: { x: 421, y: 620, size: 10.5 },
         name: { x: 235, y: 641, size: 10.5 },
+        account: { x: 425, y: 641, size: 10.5, prefix: "Acc# " },
         address: { x: 235, y: 658, size: 10.5 },
-        town: { x: 382, y: 658, size: 10.5 },
-        account: { x: 162, y: 727, size: 10.5 }
+        town: { x: 382, y: 658, size: 10.5 }
       },
       NFC: {
         offerDate: { x: 458, y: 125, size: 10.5 },
@@ -673,9 +673,9 @@
         fixedPrice: { x: 435, y: 477, size: 11 },
         acceptanceDate: { x: 421, y: 620, size: 10.5 },
         name: { x: 235, y: 641, size: 10.5 },
+        account: { x: 425, y: 641, size: 10.5, prefix: "Acc# " },
         address: { x: 235, y: 658, size: 10.5 },
-        town: { x: 382, y: 658, size: 10.5 },
-        account: { x: 162, y: 727, size: 10.5 }
+        town: { x: 382, y: 658, size: 10.5 }
       }
     };
 
@@ -819,9 +819,9 @@
       addPreviewText(overlay, previewWidth, previewHeight, positions.fixedPrice, data.fixedPrice);
       addPreviewText(overlay, previewWidth, previewHeight, positions.acceptanceDate, data.acceptanceDate);
       addPreviewText(overlay, previewWidth, previewHeight, positions.name, data.customerName.toUpperCase());
+      addPreviewText(overlay, previewWidth, previewHeight, positions.account, data.account);
       addPreviewText(overlay, previewWidth, previewHeight, positions.address, data.address.toUpperCase());
       addPreviewText(overlay, previewWidth, previewHeight, positions.town, data.town.toUpperCase());
-      addPreviewText(overlay, previewWidth, previewHeight, positions.account, data.account);
     }
 
     // =========================
@@ -832,7 +832,7 @@
 
       const div = document.createElement("div");
       div.className = "preview-text";
-      div.innerText = text;
+      div.innerText = (position.prefix || "") + text;
 
       div.style.left = ((position.x / pdfPageWidth) * previewWidth) + "px";
       div.style.top = ((position.y / pdfPageHeight) * previewHeight) + "px";
@@ -875,8 +875,8 @@
         setContractStatus("ready", "Generating contract PDF...");
 
         const template = CONTRACT_TEMPLATES[selectedContractType];
-        const page1DataUrl = await loadImageAsDataUrl(template.page1);
-        const page2DataUrl = await loadImageAsDataUrl(template.page2);
+        const page1DataUrl = await loadImageAsCompressedJpegDataUrl(template.page1);
+        const page2DataUrl = await loadImageAsCompressedJpegDataUrl(template.page2);
 
         const { jsPDF } = window.jspdf;
         const pdf = new jsPDF({
@@ -885,18 +885,18 @@
           format: "letter"
         });
 
-        pdf.addImage(page1DataUrl, "PNG", 0, 0, pdfPageWidth, pdfPageHeight);
+        pdf.addImage(page1DataUrl, "JPEG", 0, 0, pdfPageWidth, pdfPageHeight, undefined, "FAST");
         drawContractFields(pdf, data, selectedContractType);
 
         pdf.addPage("letter", "portrait");
-        pdf.addImage(page2DataUrl, "PNG", 0, 0, pdfPageWidth, pdfPageHeight);
+        pdf.addImage(page2DataUrl, "JPEG", 0, 0, pdfPageWidth, pdfPageHeight, undefined, "FAST");
 
         const safeName = makeSafeFileName(data.customerName || "customer");
         const fileName = selectedContractType + "-contract-" + safeName + ".pdf";
 
         pdf.save(fileName);
 
-        setContractStatus("success", "Done. Contract PDF downloaded: " + fileName);
+        setContractStatus("success", "Done. Smaller contract PDF downloaded: " + fileName);
       } catch (error) {
         console.error(error);
         setContractStatus("error", "Could not generate PDF. Make sure template images are uploaded with exact names.");
@@ -912,47 +912,37 @@
       pdf.setFont("helvetica", "bold");
       pdf.setTextColor(0, 0, 0);
 
-      drawTextWithTightWhiteCover(pdf, data.offerDate, positions.offerDate);
-      drawTextWithTightWhiteCover(pdf, data.expiryDate, positions.expiryDate);
-      drawTextWithTightWhiteCover(pdf, data.fixedPrice, positions.fixedPrice);
-      drawTextWithTightWhiteCover(pdf, data.acceptanceDate, positions.acceptanceDate);
-      drawTextWithTightWhiteCover(pdf, data.customerName.toUpperCase(), positions.name);
-      drawTextWithTightWhiteCover(pdf, data.address.toUpperCase(), positions.address);
-      drawTextWithTightWhiteCover(pdf, data.town.toUpperCase(), positions.town);
-      drawTextWithTightWhiteCover(pdf, data.account, positions.account);
+      drawContractText(pdf, data.offerDate, positions.offerDate);
+      drawContractText(pdf, data.expiryDate, positions.expiryDate);
+      drawContractText(pdf, data.fixedPrice, positions.fixedPrice);
+      drawContractText(pdf, data.acceptanceDate, positions.acceptanceDate);
+      drawContractText(pdf, data.customerName.toUpperCase(), positions.name);
+      drawContractText(pdf, data.account, positions.account);
+      drawContractText(pdf, data.address.toUpperCase(), positions.address);
+      drawContractText(pdf, data.town.toUpperCase(), positions.town);
     }
 
     // =========================
-    // DRAW TEXT WITH TIGHT WHITE COVER
-    // Keeps old text/line behind hidden but narrow.
+    // DRAW CONTRACT TEXT
+    // No white box here, so the contract form lines stay clean.
     // =========================
-    function drawTextWithTightWhiteCover(pdf, text, position) {
+    function drawContractText(pdf, text, position) {
       if (!text) return;
 
       const size = position.size || 10.5;
-      const textWidth = pdf.getTextWidth(text);
-      const coverPaddingX = 2;
-      const coverPaddingY = 1.5;
-
-      pdf.setFillColor(255, 255, 255);
-      pdf.rect(
-        position.x - coverPaddingX,
-        position.y - size - coverPaddingY + 2,
-        textWidth + coverPaddingX * 2,
-        size + coverPaddingY * 2,
-        "F"
-      );
+      const finalText = (position.prefix || "") + text;
 
       pdf.setFontSize(size);
       pdf.setFont("helvetica", "bold");
       pdf.setTextColor(0, 0, 0);
-      pdf.text(text, position.x, position.y);
+      pdf.text(finalText, position.x, position.y);
     }
 
     // =========================
-    // LOAD IMAGE AS DATA URL
+    // LOAD IMAGE AS COMPRESSED JPEG DATA URL
+    // This makes the downloaded PDF much smaller than PNG.
     // =========================
-    function loadImageAsDataUrl(url) {
+    function loadImageAsCompressedJpegDataUrl(url) {
       return new Promise((resolve, reject) => {
         const image = new Image();
         image.crossOrigin = "anonymous";
@@ -963,9 +953,11 @@
           canvas.height = image.naturalHeight;
 
           const context = canvas.getContext("2d");
+          context.fillStyle = "#ffffff";
+          context.fillRect(0, 0, canvas.width, canvas.height);
           context.drawImage(image, 0, 0);
 
-          resolve(canvas.toDataURL("image/png"));
+          resolve(canvas.toDataURL("image/jpeg", 0.62));
         };
 
         image.onerror = function() {
@@ -1027,4 +1019,3 @@
 
 </body>
 </html>
-
