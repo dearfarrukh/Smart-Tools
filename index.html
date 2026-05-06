@@ -472,8 +472,12 @@
       background: linear-gradient(135deg, #f0fdf4, #ffffff);
     }
 
-        body.smart-tools-color-theme .dashboard-tool-card:nth-child(8) {
+    body.smart-tools-color-theme .dashboard-tool-card:nth-child(8) {
       background: linear-gradient(135deg, #eef2ff, #ffffff);
+    }
+
+    body.smart-tools-color-theme .dashboard-tool-card:nth-child(9) {
+      background: linear-gradient(135deg, #ecfeff, #ffffff);
     }
 
     body.smart-tools-color-theme .dashboard-tool-card:hover {
@@ -722,6 +726,13 @@
         <div class="dashboard-card-arrow">›</div>
       </button>
 
+      <button class="dashboard-tool-card" onclick="openFolderPage('image-compressor/')">
+        <div class="dashboard-tool-icon cyan">📷</div>
+        <h3>Image Compressor</h3>
+        <p>Compress images, resize width and height, preview, and download.</p>
+        <div class="dashboard-card-arrow">›</div>
+      </button>
+
       <button class="dashboard-tool-card" onclick="openFolderPage('csvconverter/')">
         <div class="dashboard-tool-icon purple">📄</div>
         <h3>PDF / Excel to CSV</h3>
@@ -736,14 +747,13 @@
         <div class="dashboard-card-arrow">›</div>
       </button>
 
-            <button class="dashboard-tool-card" onclick="openFolderPage('password-vault/')">
+      <button class="dashboard-tool-card" onclick="openFolderPage('password-vault/')">
         <div class="dashboard-tool-icon purple">🔐</div>
         <h3>Password Vault</h3>
         <p>Save usernames and passwords with passcode lock.</p>
         <div class="dashboard-card-arrow">›</div>
       </button>
 
-      
       <button class="dashboard-tool-card" onclick="openFolderPage('numbermatch/')">
         <div class="dashboard-tool-icon green">#</div>
         <h3>Number Match</h3>
