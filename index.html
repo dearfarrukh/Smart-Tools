@@ -480,6 +480,11 @@
       background: linear-gradient(135deg, #ecfeff, #ffffff);
     }
 
+
+    body.smart-tools-color-theme .dashboard-tool-card:nth-child(10) {
+      background: linear-gradient(135deg, #fef3c7, #ffffff);
+    }
+
     body.smart-tools-color-theme .dashboard-tool-card:hover {
       background: #ffffff;
       border-color: rgba(37,99,235,0.18);
@@ -722,16 +727,16 @@
       <button class="dashboard-tool-card" onclick="openFolderPage('imageconverter/')">
         <div class="dashboard-tool-icon cyan">🖼️</div>
         <h3>Image / PDF Tools</h3>
-        <p>Merge, split, compress PDFs, resize images, and convert files.</p>
+        <p>Convert images, PDFs, compress files, and merge PDFs.</p>
         <div class="dashboard-card-arrow">›</div>
       </button>
 
-     <button class="dashboard-tool-card" onclick="openFolderPage('qr-barcode/')">
-  <div class="dashboard-tool-icon purple">▣</div>
-  <h3>QR Generator</h3>
-  <p>Create QR codes, save them in app, show big QR, share, print, and download PNG.</p>
-  <div class="dashboard-card-arrow">›</div>
-</button>
+      <button class="dashboard-tool-card" onclick="openFolderPage('image-compressor/')">
+        <div class="dashboard-tool-icon cyan">📷</div>
+        <h3>Image Compressor</h3>
+        <p>Compress images, resize width and height, preview, and download.</p>
+        <div class="dashboard-card-arrow">›</div>
+      </button>
 
       <button class="dashboard-tool-card" onclick="openFolderPage('csvconverter/')">
         <div class="dashboard-tool-icon purple">📄</div>
@@ -760,6 +765,14 @@
         <p>Find numbers that match your target total.</p>
         <div class="dashboard-card-arrow">›</div>
       </button>
+
+      <button class="dashboard-tool-card" onclick="openFolderPage('office/')">
+        <div class="dashboard-tool-icon orange">🏢</div>
+        <h3>Office</h3>
+        <p>Office-only tools like WFC / NFC contract generator and more.</p>
+        <div class="dashboard-card-arrow">›</div>
+      </button>
+
 
     </div>
 
