@@ -469,8 +469,8 @@
     #pdfEditorCanvas { display: block; }
     .pdf-editor-overlay-layer { position: absolute; inset: 0; z-index: 3; }
     /* Text looks clean. No blue box on the PDF preview. */
-    .pdf-editor-item { position: absolute; min-width: 28px; min-height: 24px; padding: 2px 4px; border: 1px dashed transparent; background: transparent; color: #111; font-weight: 400; cursor: move; user-select: none; touch-action: none; border-radius: 5px; font-family: Arial, Helvetica, sans-serif; line-height: 1.15; }
-    .pdf-editor-item:active { border-color: rgba(37,99,235,0.35); background: rgba(255,255,255,0.28); }
+    .pdf-editor-item { position: absolute; min-width: 28px; min-height: 24px; padding: 2px 4px; border: 1px dashed transparent; background: white; color: #111; font-weight: 400; cursor: move; user-select: none; touch-action: none; border-radius: 5px; font-family: Arial, Helvetica, sans-serif; line-height: 1.15; }
+    .pdf-editor-item:active { border-color: rgba(37,99,235,0.28); background: white; }
     .pdf-editor-item.signature { font-family: "Brush Script MT", cursive; font-size: 28px; }
     .pdf-editor-item.check { font-size: 30px; color: #111; font-weight: 900; }
     .pdf-editor-item.cover { background: white; border: 2px dashed #ef4444; padding: 0; min-width: 120px; min-height: 45px; }
@@ -1978,11 +1978,25 @@
           if (item.type === "check") { font = helveticaBoldFont; size = 30; text = "✓"; }
 
           const textY = pageHeight - topY - size;
+          const textWidth = font.widthOfTextAtSize(text, size);
+          const coverPaddingX = Math.max(3, size * 0.18);
+          const coverPaddingY = Math.max(2, size * 0.16);
+
+          // White background behind added text/date/signature/check mark
+          // This hides old PDF text behind the new item.
+          page.drawRectangle({
+            x: Math.max(0, x - coverPaddingX),
+            y: textY - coverPaddingY,
+            width: textWidth + (coverPaddingX * 2),
+            height: size + (coverPaddingY * 2),
+            color: PDFLib.rgb(1, 1, 1),
+            borderColor: PDFLib.rgb(1, 1, 1),
+            borderWidth: 0
+          });
 
           page.drawText(text, { x: x, y: textY, size: size, font: font, color: PDFLib.rgb(0, 0, 0) });
 
           if (item.underline && item.type !== "cover") {
-            const textWidth = font.widthOfTextAtSize(text, size);
             page.drawLine({
               start: { x: x, y: textY - 3 },
               end: { x: x + textWidth, y: textY - 3 },
