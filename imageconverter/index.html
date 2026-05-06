@@ -1114,6 +1114,32 @@
         </div>
 
         <div class="card">
+          <div class="card-title">Image MB Reducer</div>
+          <div class="card-subtitle">
+            Try to reduce image size close to a target KB size like 500 KB.
+            Best for making images smaller for upload or sharing.
+          </div>
+
+          <div class="setting-row">
+            <label>
+              <span class="setting-label">Target Size KB</span>
+              <input id="targetImageSizeKbInput" class="setting-input" type="number" placeholder="Example: 500">
+            </label>
+
+            <label>
+              <span class="setting-label">What it does</span>
+              <input class="setting-input" type="text" value="Makes image smaller near your target" readonly>
+            </label>
+          </div>
+
+          <div class="small-help">
+            Example: if your image is 5 MB, type <strong>500</strong>, then press
+            <strong>Reduce Image Size</strong>.
+            If you upload 1 image, it downloads directly. If you upload 2 or more, it downloads as ZIP.
+          </div>
+        </div>
+
+        <div class="card">
           <div class="card-title">Text / Watermark</div>
           <div class="card-subtitle">
             Add text or watermark on selected images.
@@ -1546,6 +1572,14 @@
             <div class="smart-tool-btn-icon">🗜️</div>
             <div class="smart-tool-btn-title">Compress Images</div>
             <div class="smart-tool-btn-sub">Reduce image file size.</div>
+          </button>
+        `;
+
+        buttons += `
+          <button class="smart-tool-btn green-btn" onclick="smartReduceImageSizeToTarget()">
+            <div class="smart-tool-btn-icon">📉</div>
+            <div class="smart-tool-btn-title">Reduce Image Size</div>
+            <div class="smart-tool-btn-sub">Try to reduce image close to your target KB.</div>
           </button>
         `;
 
@@ -2202,6 +2236,125 @@
         console.error(error);
         setSmartStatus("error", "Image compression failed. Try another image.");
       }
+    }
+
+    // =========================
+    // REDUCE IMAGE SIZE TO TARGET KB
+    // 1 image = direct download
+    // 2 or more images = ZIP download
+    // =========================
+    async function smartReduceImageSizeToTarget() {
+      const imageFiles = smartSelectedFiles.filter(file => isImageFile(file));
+
+      if (!imageFiles.length) {
+        setSmartStatus("error", "Please choose image files first.");
+        return;
+      }
+
+      const targetKb = parseInt(document.getElementById("targetImageSizeKbInput").value, 10);
+
+      if (!targetKb || targetKb < 1) {
+        setSmartStatus("error", "Type target size in KB first. Example: 500");
+        return;
+      }
+
+      if (imageFiles.length > 1 && !window.JSZip) {
+        setSmartStatus("error", "ZIP library did not load.");
+        return;
+      }
+
+      try {
+        setSmartStatus("ready", "Reducing image size close to " + targetKb + " KB...");
+
+        const targetBytes = targetKb * 1024;
+        const results = [];
+
+        for (let i = 0; i < imageFiles.length; i++) {
+          const file = imageFiles[i];
+          const canvas = await fileToCanvas(file, 0);
+          const blob = await compressCanvasNearTarget(canvas, targetBytes);
+
+          results.push({
+            blob: blob,
+            fileName: getIndexedFileName(file, i, "jpg", "reduced-" + targetKb + "kb")
+          });
+        }
+
+        await downloadImageResults(
+          imageFiles,
+          results,
+          getPrefixName("reduced-images-" + targetKb + "kb") + ".zip",
+          "Done. 1 image reduced and downloaded directly.",
+          "Done. Reduced images downloaded as ZIP."
+        );
+      } catch (error) {
+        console.error(error);
+        setSmartStatus("error", "Reduce image size failed. Try another image.");
+      }
+    }
+
+    // =========================
+    // COMPRESS CANVAS NEAR TARGET
+    // Tries to get close to target KB.
+    // If quality alone is not enough, it also makes the image smaller.
+    // =========================
+    async function compressCanvasNearTarget(sourceCanvas, targetBytes) {
+      let workingCanvas = cloneCanvas(sourceCanvas);
+      let bestBlob = await canvasToBlob(workingCanvas, "image/jpeg", 0.92);
+      let lastBlob = bestBlob;
+
+      if (bestBlob.size <= targetBytes) {
+        return bestBlob;
+      }
+
+      const qualitySteps = [0.92, 0.85, 0.78, 0.70, 0.62, 0.54, 0.46, 0.38, 0.30, 0.24, 0.18];
+
+      for (let scaleRound = 0; scaleRound < 8; scaleRound++) {
+        for (let i = 0; i < qualitySteps.length; i++) {
+          const blob = await canvasToBlob(workingCanvas, "image/jpeg", qualitySteps[i]);
+          lastBlob = blob;
+
+          if (blob.size <= targetBytes) {
+            return blob;
+          }
+
+          if (!bestBlob || Math.abs(blob.size - targetBytes) < Math.abs(bestBlob.size - targetBytes)) {
+            bestBlob = blob;
+          }
+        }
+
+        workingCanvas = scaleCanvasDown(workingCanvas, 0.90);
+      }
+
+      return bestBlob || lastBlob;
+    }
+
+    // =========================
+    // CLONE CANVAS
+    // =========================
+    function cloneCanvas(sourceCanvas) {
+      const canvas = document.createElement("canvas");
+      const context = canvas.getContext("2d");
+
+      canvas.width = sourceCanvas.width;
+      canvas.height = sourceCanvas.height;
+      context.drawImage(sourceCanvas, 0, 0);
+
+      return canvas;
+    }
+
+    // =========================
+    // SCALE CANVAS DOWN
+    // =========================
+    function scaleCanvasDown(sourceCanvas, scale) {
+      const canvas = document.createElement("canvas");
+      const context = canvas.getContext("2d");
+
+      canvas.width = Math.max(1, Math.round(sourceCanvas.width * scale));
+      canvas.height = Math.max(1, Math.round(sourceCanvas.height * scale));
+      context.drawImage(sourceCanvas, 0, 0, canvas.width, canvas.height);
+
+      return canvas;
     }
 
     // =========================
@@ -3676,6 +3829,9 @@
 
       const cropHeightInput = document.getElementById("cropHeightInput");
       if (cropHeightInput) cropHeightInput.value = "";
+
+      const targetImageSizeKbInput = document.getElementById("targetImageSizeKbInput");
+      if (targetImageSizeKbInput) targetImageSizeKbInput.value = "";
 
       const imageTextInput = document.getElementById("imageTextInput");
       if (imageTextInput) imageTextInput.value = "";
