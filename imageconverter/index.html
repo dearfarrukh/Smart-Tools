@@ -13,7 +13,7 @@
   <link rel="icon" type="image/png" href="../images/icon.png">
 
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 
   <title>PDF / Image Tools</title>
 
@@ -238,7 +238,6 @@
       align-items: start;
     }
 
-    /* NO DOTTED BORDER */
     .file-upload-box {
       border: 1px solid rgba(15,23,42,0.08);
       border-radius: 24px;
@@ -247,6 +246,7 @@
       background: linear-gradient(180deg, #faf5ff 0%, #eef2ff 100%);
       cursor: pointer;
       box-shadow: inset 0 1px 0 rgba(255,255,255,0.75), 0 10px 24px rgba(15,23,42,0.08);
+      display: block;
     }
 
     .file-upload-icon {
@@ -398,6 +398,13 @@
       margin-top: 14px;
     }
 
+    .setting-row-three {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+      margin-top: 14px;
+    }
+
     .setting-label {
       font-size: 13px;
       font-weight: 900;
@@ -419,6 +426,20 @@
       font-weight: 800;
     }
 
+    .setting-textarea {
+      width: 100%;
+      min-height: 82px;
+      border: 2px solid #e5e7eb;
+      border-radius: 16px;
+      padding: 12px 14px;
+      outline: none;
+      background: #fcfcff;
+      color: #111827;
+      font-size: 16px;
+      font-weight: 800;
+      resize: vertical;
+    }
+
     .small-help {
       margin-top: 12px;
       font-size: 14px;
@@ -426,6 +447,51 @@
       color: #64748b;
     }
 
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 14px;
+      color: #475569;
+      font-weight: 900;
+      font-size: 14px;
+    }
+
+    .toggle-row input {
+      width: 20px;
+      height: 20px;
+    }
+
+    .mini-format-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .mini-format-btn {
+      border: none;
+      min-height: 46px;
+      border-radius: 15px;
+      background: #e5e7eb;
+      color: #111827;
+      font-size: 15px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .mini-format-btn.active {
+      background: #2563eb;
+      color: white;
+    }
+
+    .mini-format-btn.italic-label {
+      font-style: italic;
+    }
+
+    .mini-format-btn.underline-label {
+      text-decoration: underline;
+    }
 
     /* =========================
        PDF EDITOR LITE
@@ -451,44 +517,222 @@
       box-shadow: 0 24px 70px rgba(0,0,0,0.28);
     }
 
-    .pdf-editor-top { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-bottom: 16px; }
-    .pdf-editor-title { font-size: 24px; font-weight: 900; letter-spacing: -0.5px; }
-    .pdf-editor-close { width: 46px; height: 46px; border: none; border-radius: 50%; background: #f1f5f9; color: #111827; font-size: 22px; font-weight: 900; cursor: pointer; }
-    .pdf-editor-layout { display: grid; grid-template-columns: 310px 1fr; gap: 16px; align-items: start; }
-    .pdf-editor-panel { background: #f8fafc; border: 1px solid #e5e7eb; border-radius: 24px; padding: 16px; }
-    .pdf-editor-label { display: block; font-size: 13px; font-weight: 900; color: #475569; margin: 12px 0 7px 0; }
-    .pdf-editor-input, .pdf-editor-select { width: 100%; height: 50px; border: 2px solid #e5e7eb; border-radius: 16px; padding: 0 13px; outline: none; background: white; color: #111827; font-size: 16px; font-weight: 800; }
-    .pdf-editor-btn-grid { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 14px; }
-    .pdf-editor-btn { border: none; min-height: 52px; border-radius: 17px; padding: 0 14px; color: white; font-size: 15px; font-weight: 900; cursor: pointer; }
-    .pdf-editor-btn:active { transform: scale(0.98); }
-    .pdf-editor-help { margin-top: 12px; font-size: 13px; line-height: 1.55; color: #64748b; }
-    .pdf-editor-preview-card { background: #f8fafc; border: 1px solid #e5e7eb; border-radius: 24px; padding: 14px; min-height: 420px; }
-    .pdf-editor-preview-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; color: #475569; font-size: 14px; font-weight: 900; }
-    .pdf-editor-scroll { width: 100%; overflow: auto; background: #e5e7eb; border-radius: 20px; padding: 12px; display: flex; justify-content: center; }
-    .pdf-editor-page-shell { position: relative; background: white; box-shadow: 0 10px 28px rgba(15,23,42,0.18); overflow: hidden; flex-shrink: 0; }
-    #pdfEditorCanvas { display: block; }
-    .pdf-editor-overlay-layer { position: absolute; inset: 0; z-index: 3; }
-    /* Text looks clean. No blue box on the PDF preview. */
-    .pdf-editor-item { position: absolute; min-width: 10px; min-height: 12px; padding: 0 1px; border: 1px dashed transparent; background: white; color: #111; font-weight: 400; cursor: move; user-select: none; touch-action: none; border-radius: 2px; font-family: Arial, Helvetica, sans-serif; line-height: 1.02; white-space: nowrap; }
-    .pdf-editor-item:active { border-color: rgba(37,99,235,0.28); background: white; }
-    .pdf-editor-item.signature { font-family: "Brush Script MT", cursive; font-size: 28px; }
-    .pdf-editor-item.check { font-size: 30px; color: #111; font-weight: 900; }
-    .pdf-editor-item.cover { background: white; border: 2px dashed #ef4444; padding: 0; min-width: 120px; min-height: 45px; }
-    .pdf-editor-small-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    .pdf-editor-format-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 12px; }
-    .pdf-editor-format-btn { border: none; min-height: 46px; border-radius: 15px; background: #e5e7eb; color: #111827; font-size: 15px; font-weight: 900; cursor: pointer; }
-    .pdf-editor-format-btn.active { background: #2563eb; color: white; }
-    .pdf-editor-format-btn.italic-label { font-style: italic; }
-    .pdf-editor-format-btn.underline-label { text-decoration: underline; }
-    body.smart-tools-dark-theme .pdf-editor-card { background: #0f172a; color: #f8fafc; }
-    body.smart-tools-dark-theme .pdf-editor-title { color: #f8fafc; }
-    body.smart-tools-dark-theme .pdf-editor-close, body.smart-tools-dark-theme .pdf-editor-panel, body.smart-tools-dark-theme .pdf-editor-preview-card { background: rgba(30,41,59,0.92); border-color: rgba(148,163,184,0.22); color: #f8fafc; }
-    body.smart-tools-dark-theme .pdf-editor-label, body.smart-tools-dark-theme .pdf-editor-help, body.smart-tools-dark-theme .pdf-editor-preview-top { color: #cbd5e1; }
-    body.smart-tools-dark-theme .pdf-editor-input, body.smart-tools-dark-theme .pdf-editor-select { background: rgba(15,23,42,0.82); color: #f8fafc; border-color: rgba(148,163,184,0.28); }
-    body.smart-tools-dark-theme .pdf-editor-format-btn { background: rgba(148,163,184,0.20); color: #f8fafc; }
-    body.smart-tools-dark-theme .pdf-editor-format-btn.active { background: #2563eb; color: white; }
-    body.smart-tools-dark-theme .pdf-editor-scroll { background: #020617; }
-    @media (max-width: 820px) { .pdf-editor-layout { grid-template-columns: 1fr; } .pdf-editor-card { border-radius: 24px; padding: 16px; } .pdf-editor-title { font-size: 21px; } }
+    .pdf-editor-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+
+    .pdf-editor-title {
+      font-size: 24px;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+    }
+
+    .pdf-editor-close {
+      width: 46px;
+      height: 46px;
+      border: none;
+      border-radius: 50%;
+      background: #f1f5f9;
+      color: #111827;
+      font-size: 22px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .pdf-editor-layout {
+      display: grid;
+      grid-template-columns: 310px 1fr;
+      gap: 16px;
+      align-items: start;
+    }
+
+    .pdf-editor-panel {
+      background: #f8fafc;
+      border: 1px solid #e5e7eb;
+      border-radius: 24px;
+      padding: 16px;
+    }
+
+    .pdf-editor-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 900;
+      color: #475569;
+      margin: 12px 0 7px 0;
+    }
+
+    .pdf-editor-input,
+    .pdf-editor-select {
+      width: 100%;
+      height: 50px;
+      border: 2px solid #e5e7eb;
+      border-radius: 16px;
+      padding: 0 13px;
+      outline: none;
+      background: white;
+      color: #111827;
+      font-size: 16px;
+      font-weight: 800;
+    }
+
+    .pdf-editor-btn-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .pdf-editor-btn {
+      border: none;
+      min-height: 52px;
+      border-radius: 17px;
+      padding: 0 14px;
+      color: white;
+      font-size: 15px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .pdf-editor-btn:active {
+      transform: scale(0.98);
+    }
+
+    .pdf-editor-help {
+      margin-top: 12px;
+      font-size: 13px;
+      line-height: 1.55;
+      color: #64748b;
+    }
+
+    .pdf-editor-preview-card {
+      background: #f8fafc;
+      border: 1px solid #e5e7eb;
+      border-radius: 24px;
+      padding: 14px;
+      min-height: 420px;
+    }
+
+    .pdf-editor-preview-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+      color: #475569;
+      font-size: 14px;
+      font-weight: 900;
+    }
+
+    .pdf-editor-scroll {
+      width: 100%;
+      overflow: auto;
+      background: #e5e7eb;
+      border-radius: 20px;
+      padding: 12px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .pdf-editor-page-shell {
+      position: relative;
+      background: white;
+      box-shadow: 0 10px 28px rgba(15,23,42,0.18);
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    #pdfEditorCanvas {
+      display: block;
+    }
+
+    .pdf-editor-overlay-layer {
+      position: absolute;
+      inset: 0;
+      z-index: 3;
+    }
+
+    .pdf-editor-item {
+      position: absolute;
+      min-width: 10px;
+      min-height: 12px;
+      padding: 0 1px;
+      border: 1px dashed transparent;
+      background: white;
+      color: #111;
+      font-weight: 400;
+      cursor: move;
+      user-select: none;
+      touch-action: none;
+      border-radius: 2px;
+      font-family: Arial, Helvetica, sans-serif;
+      line-height: 1.02;
+      white-space: nowrap;
+    }
+
+    .pdf-editor-item:active {
+      border-color: rgba(37,99,235,0.28);
+      background: white;
+    }
+
+    .pdf-editor-item.signature {
+      font-family: "Brush Script MT", cursive;
+      font-size: 28px;
+    }
+
+    .pdf-editor-item.check {
+      font-size: 30px;
+      color: #111;
+      font-weight: 900;
+    }
+
+    .pdf-editor-item.cover {
+      background: white;
+      border: 2px dashed #ef4444;
+      padding: 0;
+      min-width: 120px;
+      min-height: 45px;
+    }
+
+    .pdf-editor-small-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .pdf-editor-format-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .pdf-editor-format-btn {
+      border: none;
+      min-height: 46px;
+      border-radius: 15px;
+      background: #e5e7eb;
+      color: #111827;
+      font-size: 15px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .pdf-editor-format-btn.active {
+      background: #2563eb;
+      color: white;
+    }
+
+    .pdf-editor-format-btn.italic-label {
+      font-style: italic;
+    }
+
+    .pdf-editor-format-btn.underline-label {
+      text-decoration: underline;
+    }
 
     /* =========================
        DARK THEME
@@ -520,29 +764,81 @@
       box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 14px 34px rgba(0,0,0,0.22);
     }
 
-    body.smart-tools-dark-theme .file-upload-box {
-      border: 1px solid rgba(148,163,184,0.20);
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 14px 34px rgba(0,0,0,0.22);
-    }
-
     body.smart-tools-dark-theme .card-subtitle,
     body.smart-tools-dark-theme .file-upload-subtitle,
     body.smart-tools-dark-theme .result-placeholder,
     body.smart-tools-dark-theme .file-pill,
     body.smart-tools-dark-theme .preview-item-info,
     body.smart-tools-dark-theme .setting-label,
-    body.smart-tools-dark-theme .small-help {
+    body.smart-tools-dark-theme .small-help,
+    body.smart-tools-dark-theme .toggle-row {
       color: #cbd5e1;
     }
 
-    body.smart-tools-dark-theme .setting-input {
+    body.smart-tools-dark-theme .setting-input,
+    body.smart-tools-dark-theme .setting-textarea {
       background: rgba(15,23,42,0.82);
       color: #f8fafc;
       border-color: rgba(148,163,184,0.30);
     }
 
-    body.smart-tools-dark-theme .setting-input::placeholder {
+    body.smart-tools-dark-theme .setting-input::placeholder,
+    body.smart-tools-dark-theme .setting-textarea::placeholder {
       color: #94a3b8;
+    }
+
+    body.smart-tools-dark-theme .mini-format-btn {
+      background: rgba(148,163,184,0.20);
+      color: #f8fafc;
+    }
+
+    body.smart-tools-dark-theme .mini-format-btn.active {
+      background: #2563eb;
+      color: white;
+    }
+
+    body.smart-tools-dark-theme .pdf-editor-card {
+      background: #0f172a;
+      color: #f8fafc;
+    }
+
+    body.smart-tools-dark-theme .pdf-editor-title {
+      color: #f8fafc;
+    }
+
+    body.smart-tools-dark-theme .pdf-editor-close,
+    body.smart-tools-dark-theme .pdf-editor-panel,
+    body.smart-tools-dark-theme .pdf-editor-preview-card {
+      background: rgba(30,41,59,0.92);
+      border-color: rgba(148,163,184,0.22);
+      color: #f8fafc;
+    }
+
+    body.smart-tools-dark-theme .pdf-editor-label,
+    body.smart-tools-dark-theme .pdf-editor-help,
+    body.smart-tools-dark-theme .pdf-editor-preview-top {
+      color: #cbd5e1;
+    }
+
+    body.smart-tools-dark-theme .pdf-editor-input,
+    body.smart-tools-dark-theme .pdf-editor-select {
+      background: rgba(15,23,42,0.82);
+      color: #f8fafc;
+      border-color: rgba(148,163,184,0.28);
+    }
+
+    body.smart-tools-dark-theme .pdf-editor-format-btn {
+      background: rgba(148,163,184,0.20);
+      color: #f8fafc;
+    }
+
+    body.smart-tools-dark-theme .pdf-editor-format-btn.active {
+      background: #2563eb;
+      color: white;
+    }
+
+    body.smart-tools-dark-theme .pdf-editor-scroll {
+      background: #020617;
     }
 
     /* =========================
@@ -577,6 +873,21 @@
     @media (max-width: 900px) {
       .tools-layout {
         grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 820px) {
+      .pdf-editor-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .pdf-editor-card {
+        border-radius: 24px;
+        padding: 16px;
+      }
+
+      .pdf-editor-title {
+        font-size: 21px;
       }
     }
 
@@ -623,7 +934,8 @@
 
       .smart-action-grid,
       .preview-grid,
-      .setting-row {
+      .setting-row,
+      .setting-row-three {
         grid-template-columns: 1fr;
       }
 
@@ -656,8 +968,8 @@
     <div class="inner-page-hero">
       <h1>PDF / Image Tools</h1>
       <p>
-        Merge PDFs, split PDFs, compress PDFs, turn PDF pages into images,
-        and make one PDF from images. Upload your files in one place and choose the tool you need.
+        Merge PDFs, split PDFs, compress PDFs, convert PDF pages to images,
+        resize images, crop, add text, watermark, make ID photos, and create PDFs.
       </p>
     </div>
 
@@ -703,9 +1015,9 @@
         </div>
 
         <div class="card">
-          <div class="card-title">Tool Settings</div>
+          <div class="card-title">Main Settings</div>
           <div class="card-subtitle">
-            Use these only when needed for selected tools.
+            These settings are used by PDF and image tools.
           </div>
 
           <div class="setting-row">
@@ -724,10 +1036,101 @@
             </label>
           </div>
 
+          <div class="setting-row">
+            <label>
+              <span class="setting-label">Download File Prefix</span>
+              <input id="filePrefixInput" class="setting-input" type="text" placeholder="Example: customer-file">
+            </label>
+
+            <label>
+              <span class="setting-label">Images to PDF Page Size</span>
+              <select id="imagePdfPageSizeInput" class="setting-input">
+                <option value="image" selected>Use Image Size</option>
+                <option value="letter-fit">Letter - Fit Image</option>
+                <option value="letter-fill">Letter - Fill Page</option>
+                <option value="a4-fit">A4 - Fit Image</option>
+                <option value="a4-fill">A4 - Fill Page</option>
+              </select>
+            </label>
+          </div>
+
           <div class="small-help">
-            <strong>Split PDF</strong> makes one separate PDF for every page.
-            <strong>Keep PDF Pages</strong> lets you choose pages like <strong>1,3,5-7</strong>.
-            PDF compression works best on some PDFs; scanned/image-heavy PDFs may not shrink much.
+            Prefix is optional. Example: type <strong>customer</strong>, then downloads become
+            <strong>customer-1.jpg</strong>, <strong>customer-2.jpg</strong>, etc.
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Image Resize / Crop</div>
+          <div class="card-subtitle">
+            Resize image width/height or crop from center.
+          </div>
+
+          <div class="setting-row">
+            <label>
+              <span class="setting-label">Resize Width px</span>
+              <input id="resizeWidthInput" class="setting-input" type="number" placeholder="Example: 800">
+            </label>
+
+            <label>
+              <span class="setting-label">Resize Height px</span>
+              <input id="resizeHeightInput" class="setting-input" type="number" placeholder="Example: 600">
+            </label>
+          </div>
+
+          <label class="toggle-row">
+            <input id="keepAspectInput" type="checkbox" checked>
+            Keep aspect ratio
+          </label>
+
+          <div class="setting-row">
+            <label>
+              <span class="setting-label">Crop Width px</span>
+              <input id="cropWidthInput" class="setting-input" type="number" placeholder="Example: 600">
+            </label>
+
+            <label>
+              <span class="setting-label">Crop Height px</span>
+              <input id="cropHeightInput" class="setting-input" type="number" placeholder="Example: 600">
+            </label>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Text / Watermark</div>
+          <div class="card-subtitle">
+            Add text or watermark on selected images.
+          </div>
+
+          <label>
+            <span class="setting-label">Text / Watermark</span>
+            <textarea id="imageTextInput" class="setting-textarea" placeholder="Type text here"></textarea>
+          </label>
+
+          <div class="setting-row">
+            <label>
+              <span class="setting-label">Font Size</span>
+              <input id="imageTextFontSizeInput" class="setting-input" type="number" value="36" min="8" max="200">
+            </label>
+
+            <label>
+              <span class="setting-label">Text Position</span>
+              <select id="imageTextPositionInput" class="setting-input">
+                <option value="center" selected>Center</option>
+                <option value="top-left">Top Left</option>
+                <option value="top-center">Top Center</option>
+                <option value="top-right">Top Right</option>
+                <option value="bottom-left">Bottom Left</option>
+                <option value="bottom-center">Bottom Center</option>
+                <option value="bottom-right">Bottom Right</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="mini-format-row">
+            <button id="imageBoldBtn" class="mini-format-btn" onclick="toggleImageFormatButton('bold')">Bold</button>
+            <button id="imageItalicBtn" class="mini-format-btn italic-label" onclick="toggleImageFormatButton('italic')">Italic</button>
+            <button id="imageUnderlineBtn" class="mini-format-btn underline-label" onclick="toggleImageFormatButton('underline')">Underline</button>
           </div>
         </div>
 
@@ -741,7 +1144,7 @@
         <div class="card">
           <div class="card-title">Available Actions</div>
           <div class="card-subtitle">
-            Buttons will appear depending on the file type you selected.
+            Buttons appear depending on the file type you selected.
           </div>
 
           <div id="smartActionsBox" class="result-box">
@@ -767,7 +1170,7 @@
         <div class="card">
           <div class="card-title">Preview</div>
           <div class="card-subtitle">
-            Image previews will show here.
+            Image previews and image size info will show here.
           </div>
 
           <div id="smartPreviewBox" class="result-box">
@@ -791,21 +1194,28 @@
       <div class="pdf-editor-top">
         <div>
           <div class="pdf-editor-title">PDF Editor Lite</div>
-          <div class="pdf-editor-help" style="margin-top:4px;">Add text, date, signature text, check mark, or white cover box on top of your PDF.</div>
+          <div class="pdf-editor-help" style="margin-top:4px;">
+            Add text, date, signature text, check mark, or white cover box on top of your PDF.
+          </div>
         </div>
         <button class="pdf-editor-close" onclick="closePdfEditorLite()">×</button>
       </div>
+
       <div class="pdf-editor-layout">
+
         <div class="pdf-editor-panel">
           <label class="pdf-editor-label">PDF Page</label>
           <select id="pdfEditorPageSelect" class="pdf-editor-select" onchange="changePdfEditorPage()"></select>
+
           <label class="pdf-editor-label">Text / Signature</label>
           <input id="pdfEditorTextInput" class="pdf-editor-input" type="text" placeholder="Type text here">
+
           <div class="pdf-editor-small-row">
             <label>
               <span class="pdf-editor-label">Font Size</span>
               <input id="pdfEditorFontSizeInput" class="pdf-editor-input" type="number" value="11" min="6" max="72">
             </label>
+
             <label>
               <span class="pdf-editor-label">Cover Size</span>
               <select id="pdfEditorCoverSizeSelect" class="pdf-editor-select">
@@ -815,6 +1225,7 @@
               </select>
             </label>
           </div>
+
           <div class="pdf-editor-format-row">
             <button id="pdfEditorBoldBtn" class="pdf-editor-format-btn" onclick="togglePdfEditorFormat('bold')">Bold</button>
             <button id="pdfEditorItalicBtn" class="pdf-editor-format-btn italic-label" onclick="togglePdfEditorFormat('italic')">Italic</button>
@@ -831,13 +1242,19 @@
             <button class="pdf-editor-btn orange-btn" onclick="clearAllPdfEditorItems()">Clear All</button>
             <button class="pdf-editor-btn green-btn" onclick="downloadEditedPdf()">Download Edited PDF</button>
           </div>
-          <div class="pdf-editor-help">Tip: After adding something, drag it on the PDF page. This editor adds items on top of the PDF. It does not change old text inside the original PDF.</div>
+
+          <div class="pdf-editor-help">
+            Tip: After adding something, drag it on the PDF page. This editor adds items on top of the PDF.
+            It does not change old text inside the original PDF.
+          </div>
         </div>
+
         <div class="pdf-editor-preview-card">
           <div class="pdf-editor-preview-top">
             <div id="pdfEditorFileNameText">No PDF loaded</div>
             <div id="pdfEditorPageCountText">Page 0 / 0</div>
           </div>
+
           <div class="pdf-editor-scroll">
             <div id="pdfEditorPageShell" class="pdf-editor-page-shell">
               <canvas id="pdfEditorCanvas"></canvas>
@@ -845,6 +1262,7 @@
             </div>
           </div>
         </div>
+
       </div>
     </div>
   </div>
@@ -886,6 +1304,20 @@
     // SMART FILE TOOLS STATE
     // =========================
     let smartSelectedFiles = [];
+
+    // =========================
+    // PDF EDITOR STATE
+    // =========================
+    let pdfEditorFile = null;
+    let pdfEditorArrayBuffer = null;
+    let pdfEditorPdfJsDoc = null;
+    let pdfEditorPdfLibDoc = null;
+    let pdfEditorCurrentPage = 1;
+    let pdfEditorPageCount = 0;
+    let pdfEditorItems = [];
+    let pdfEditorRenderedWidth = 0;
+    let pdfEditorRenderedHeight = 0;
+    let pdfEditorDragState = null;
 
     // =========================
     // HANDLE SMART FILE SELECTION
@@ -963,8 +1395,16 @@
         buttons += `
           <button class="smart-tool-btn blue-btn" onclick="smartPdfToPng()">
             <div class="smart-tool-btn-icon">📄</div>
-            <div class="smart-tool-btn-title">PDF to Images</div>
+            <div class="smart-tool-btn-title">PDF to PNG</div>
             <div class="smart-tool-btn-sub">Convert PDF pages into PNG images.</div>
+          </button>
+        `;
+
+        buttons += `
+          <button class="smart-tool-btn green-btn" onclick="smartPdfToJpg()">
+            <div class="smart-tool-btn-icon">🖼️</div>
+            <div class="smart-tool-btn-title">PDF to JPG</div>
+            <div class="smart-tool-btn-sub">Smaller image files using selected quality.</div>
           </button>
         `;
 
@@ -1016,7 +1456,47 @@
           <button class="smart-tool-btn green-btn" onclick="smartImagesToPdf()">
             <div class="smart-tool-btn-icon">📕</div>
             <div class="smart-tool-btn-title">Images to PDF</div>
-            <div class="smart-tool-btn-sub">Make one PDF from selected images.</div>
+            <div class="smart-tool-btn-sub">Make one PDF from selected images with page options.</div>
+          </button>
+        `;
+
+        buttons += `
+          <button class="smart-tool-btn blue-btn" onclick="smartResizeImages()">
+            <div class="smart-tool-btn-icon">📐</div>
+            <div class="smart-tool-btn-title">Resize Images</div>
+            <div class="smart-tool-btn-sub">Resize width/height with aspect ratio option.</div>
+          </button>
+        `;
+
+        buttons += `
+          <button class="smart-tool-btn orange-btn" onclick="smartCropImagesCenter()">
+            <div class="smart-tool-btn-icon">✂️</div>
+            <div class="smart-tool-btn-title">Crop Images</div>
+            <div class="smart-tool-btn-sub">Crop from center using crop width and height.</div>
+          </button>
+        `;
+
+        buttons += `
+          <button class="smart-tool-btn purple-btn" onclick="smartAddTextToImages()">
+            <div class="smart-tool-btn-icon">🔤</div>
+            <div class="smart-tool-btn-title">Add Text</div>
+            <div class="smart-tool-btn-sub">Add custom text on images.</div>
+          </button>
+        `;
+
+        buttons += `
+          <button class="smart-tool-btn pink-btn" onclick="smartWatermarkImages()">
+            <div class="smart-tool-btn-icon">💧</div>
+            <div class="smart-tool-btn-title">Watermark</div>
+            <div class="smart-tool-btn-sub">Add light transparent watermark text.</div>
+          </button>
+        `;
+
+        buttons += `
+          <button class="smart-tool-btn green-btn" onclick="smartMakePassportPhoto()">
+            <div class="smart-tool-btn-icon">🪪</div>
+            <div class="smart-tool-btn-title">2x2 ID Photo</div>
+            <div class="smart-tool-btn-sub">Make 2x2 style photo on white background.</div>
           </button>
         `;
 
@@ -1057,6 +1537,14 @@
             <div class="smart-tool-btn-icon">↻</div>
             <div class="smart-tool-btn-title">Rotate Right</div>
             <div class="smart-tool-btn-sub">Rotate images 90 degrees right.</div>
+          </button>
+        `;
+
+        buttons += `
+          <button class="smart-tool-btn gray-btn" onclick="showImageSizeInfo()">
+            <div class="smart-tool-btn-icon">ℹ️</div>
+            <div class="smart-tool-btn-title">Image Info</div>
+            <div class="smart-tool-btn-sub">Show width, height, type, and size.</div>
           </button>
         `;
       }
@@ -1101,11 +1589,21 @@
         const file = imageFiles[i];
         const url = URL.createObjectURL(file);
 
+        let imageSizeText = "Loading size...";
+
+        try {
+          const info = await loadImageInfo(url);
+          imageSizeText = info.width + " × " + info.height + " px";
+        } catch (error) {
+          imageSizeText = "Size not available";
+        }
+
         previews.push(`
           <div class="preview-item">
             <img src="${url}" alt="">
             <div class="preview-item-info">
               ${escapeHtml(file.name)}<br>
+              ${imageSizeText}<br>
               ${formatFileSize(file.size)}
             </div>
           </div>
@@ -1160,9 +1658,23 @@
     }
 
     // =========================
-    // PDF TO IMAGES
+    // PDF TO PNG
     // =========================
     async function smartPdfToPng() {
+      await smartPdfToImageType("image/png", "png", 1);
+    }
+
+    // =========================
+    // PDF TO JPG
+    // =========================
+    async function smartPdfToJpg() {
+      await smartPdfToImageType("image/jpeg", "jpg", getImageQuality());
+    }
+
+    // =========================
+    // PDF TO IMAGE TYPE
+    // =========================
+    async function smartPdfToImageType(outputType, extension, quality) {
       const pdfFiles = smartSelectedFiles.filter(file => isPdfFile(file));
 
       if (!pdfFiles.length) {
@@ -1176,7 +1688,7 @@
       }
 
       try {
-        setSmartStatus("ready", "Converting PDF pages to PNG...");
+        setSmartStatus("ready", "Converting PDF pages to " + extension.toUpperCase() + "...");
 
         const zip = new JSZip();
         let totalImages = 0;
@@ -1184,7 +1696,7 @@
         for (const file of pdfFiles) {
           const arrayBuffer = await file.arrayBuffer();
           const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-          const folderName = removeFileExtension(file.name);
+          const folderName = getDownloadBaseName(file, removeFileExtension(file.name));
           const folder = zip.folder(folderName);
 
           for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber++) {
@@ -1197,22 +1709,27 @@
             canvas.width = viewport.width;
             canvas.height = viewport.height;
 
+            if (outputType === "image/jpeg") {
+              context.fillStyle = "#ffffff";
+              context.fillRect(0, 0, canvas.width, canvas.height);
+            }
+
             await page.render({
               canvasContext: context,
               viewport: viewport
             }).promise;
 
-            const blob = await canvasToBlob(canvas, "image/png", 1);
-            folder.file("page-" + String(pageNumber).padStart(3, "0") + ".png", blob);
+            const blob = await canvasToBlob(canvas, outputType, quality);
+            folder.file("page-" + String(pageNumber).padStart(3, "0") + "." + extension, blob);
 
             totalImages++;
           }
         }
 
         const zipBlob = await zip.generateAsync({ type: "blob" });
-        downloadBlob(zipBlob, "pdf-pages-images.zip");
+        downloadBlob(zipBlob, "pdf-pages-" + extension + ".zip");
 
-        setSmartStatus("success", "Done. " + totalImages + " PNG image(s) created and downloaded.");
+        setSmartStatus("success", "Done. " + totalImages + " " + extension.toUpperCase() + " image(s) created and downloaded.");
       } catch (error) {
         console.error(error);
         setSmartStatus("error", "PDF to images failed. Try another PDF file.");
@@ -1254,7 +1771,7 @@
 
         const blob = new Blob([mergedBytes], { type: "application/pdf" });
 
-        downloadBlob(blob, "merged.pdf");
+        downloadBlob(blob, getPrefixName("merged") + ".pdf");
 
         setSmartStatus("success", "Done. PDFs merged and downloaded.");
       } catch (error) {
@@ -1289,7 +1806,7 @@
         for (const file of pdfFiles) {
           const arrayBuffer = await file.arrayBuffer();
           const sourcePdf = await PDFLib.PDFDocument.load(arrayBuffer);
-          const folder = zip.folder(removeFileExtension(file.name));
+          const folder = zip.folder(getDownloadBaseName(file, removeFileExtension(file.name)));
 
           for (let pageIndex = 0; pageIndex < sourcePdf.getPageCount(); pageIndex++) {
             const newPdf = await PDFLib.PDFDocument.create();
@@ -1308,7 +1825,7 @@
 
         const zipBlob = await zip.generateAsync({ type: "blob" });
 
-        downloadBlob(zipBlob, "split-pdf-pages.zip");
+        downloadBlob(zipBlob, getPrefixName("split-pdf-pages") + ".zip");
 
         setSmartStatus("success", "Done. " + totalPages + " PDF page file(s) created.");
       } catch (error) {
@@ -1371,7 +1888,7 @@
 
         const blob = new Blob([newBytes], { type: "application/pdf" });
 
-        downloadBlob(blob, removeFileExtension(file.name) + "-selected-pages.pdf");
+        downloadBlob(blob, getDownloadBaseName(file, removeFileExtension(file.name)) + "-selected-pages.pdf");
 
         setSmartStatus("success", "Done. Selected pages PDF downloaded.");
       } catch (error) {
@@ -1383,7 +1900,6 @@
     // =========================
     // COMPRESS PDFS
     // Browser PDF compression is limited.
-    // This re-saves PDFs in optimized object-stream format.
     // =========================
     async function smartCompressPdfs() {
       const pdfFiles = smartSelectedFiles.filter(file => isPdfFile(file));
@@ -1405,7 +1921,7 @@
           const file = pdfFiles[0];
           const compressedBlob = await compressSinglePdf(file);
 
-          downloadBlob(compressedBlob, removeFileExtension(file.name) + "-compressed.pdf");
+          downloadBlob(compressedBlob, getDownloadBaseName(file, removeFileExtension(file.name)) + "-compressed.pdf");
 
           const savedBytes = file.size - compressedBlob.size;
           const message = savedBytes > 0
@@ -1422,11 +1938,11 @@
         for (const file of pdfFiles) {
           const compressedBlob = await compressSinglePdf(file);
           totalSaved += Math.max(0, file.size - compressedBlob.size);
-          zip.file(removeFileExtension(file.name) + "-compressed.pdf", compressedBlob);
+          zip.file(getDownloadBaseName(file, removeFileExtension(file.name)) + "-compressed.pdf", compressedBlob);
         }
 
         const zipBlob = await zip.generateAsync({ type: "blob" });
-        downloadBlob(zipBlob, "compressed-pdfs.zip");
+        downloadBlob(zipBlob, getPrefixName("compressed-pdfs") + ".zip");
 
         const message = totalSaved > 0
           ? "Done. PDFs compressed. Total saved " + formatFileSize(totalSaved) + "."
@@ -1477,42 +1993,102 @@
         setSmartStatus("ready", "Making PDF from images...");
 
         const { jsPDF } = window.jspdf;
+        const pageMode = getImagePdfPageSize();
         let pdf = null;
 
         for (let i = 0; i < imageFiles.length; i++) {
           const file = imageFiles[i];
           const imageData = await fileToDataUrl(file);
           const imageInfo = await loadImageInfo(imageData);
-
-          const orientation = imageInfo.width > imageInfo.height ? "landscape" : "portrait";
+          const pdfSettings = getPdfPageSettings(pageMode, imageInfo.width, imageInfo.height);
 
           if (i === 0) {
             pdf = new jsPDF({
-              orientation: orientation,
+              orientation: pdfSettings.orientation,
               unit: "pt",
-              format: [imageInfo.width, imageInfo.height]
+              format: pdfSettings.format
             });
           } else {
-            pdf.addPage([imageInfo.width, imageInfo.height], orientation);
+            pdf.addPage(pdfSettings.format, pdfSettings.orientation);
           }
 
           pdf.addImage(
             imageData,
             getJsPdfImageType(file),
-            0,
-            0,
-            imageInfo.width,
-            imageInfo.height
+            pdfSettings.x,
+            pdfSettings.y,
+            pdfSettings.width,
+            pdfSettings.height
           );
         }
 
-        pdf.save("images-to-pdf.pdf");
+        pdf.save(getPrefixName("images-to-pdf") + ".pdf");
 
         setSmartStatus("success", "Done. PDF downloaded.");
       } catch (error) {
         console.error(error);
         setSmartStatus("error", "Images to PDF failed. Try different images.");
       }
+    }
+
+    // =========================
+    // GET PDF PAGE SETTINGS
+    // =========================
+    function getPdfPageSettings(mode, imageWidth, imageHeight) {
+      if (mode === "image") {
+        const orientation = imageWidth > imageHeight ? "landscape" : "portrait";
+
+        return {
+          orientation: orientation,
+          format: [imageWidth, imageHeight],
+          x: 0,
+          y: 0,
+          width: imageWidth,
+          height: imageHeight
+        };
+      }
+
+      let pageWidth = 612;
+      let pageHeight = 792;
+
+      if (mode.includes("a4")) {
+        pageWidth = 595.28;
+        pageHeight = 841.89;
+      }
+
+      const fillMode = mode.includes("fill");
+      const pageRatio = pageWidth / pageHeight;
+      const imageRatio = imageWidth / imageHeight;
+
+      let drawWidth;
+      let drawHeight;
+
+      if (fillMode) {
+        if (imageRatio > pageRatio) {
+          drawHeight = pageHeight;
+          drawWidth = drawHeight * imageRatio;
+        } else {
+          drawWidth = pageWidth;
+          drawHeight = drawWidth / imageRatio;
+        }
+      } else {
+        if (imageRatio > pageRatio) {
+          drawWidth = pageWidth;
+          drawHeight = drawWidth / imageRatio;
+        } else {
+          drawHeight = pageHeight;
+          drawWidth = drawHeight * imageRatio;
+        }
+      }
+
+      return {
+        orientation: "portrait",
+        format: [pageWidth, pageHeight],
+        x: (pageWidth - drawWidth) / 2,
+        y: (pageHeight - drawHeight) / 2,
+        width: drawWidth,
+        height: drawHeight
+      };
     }
 
     // =========================
@@ -1537,14 +2113,15 @@
         const quality = getImageQuality();
         const zip = new JSZip();
 
-        for (const file of imageFiles) {
+        for (let i = 0; i < imageFiles.length; i++) {
+          const file = imageFiles[i];
           const canvas = await fileToCanvas(file, 0);
           const blob = await canvasToBlob(canvas, outputType, quality);
-          zip.file(removeFileExtension(file.name) + "." + extension, blob);
+          zip.file(getIndexedFileName(file, i, extension), blob);
         }
 
         const zipBlob = await zip.generateAsync({ type: "blob" });
-        downloadBlob(zipBlob, "converted-images-" + extension + ".zip");
+        downloadBlob(zipBlob, getPrefixName("converted-images-" + extension) + ".zip");
 
         setSmartStatus("success", "Done. Converted images downloaded.");
       } catch (error) {
@@ -1575,14 +2152,15 @@
         const quality = getImageQuality();
         const zip = new JSZip();
 
-        for (const file of imageFiles) {
+        for (let i = 0; i < imageFiles.length; i++) {
+          const file = imageFiles[i];
           const canvas = await fileToCanvas(file, 0);
           const blob = await canvasToBlob(canvas, "image/jpeg", quality);
-          zip.file(removeFileExtension(file.name) + "-compressed.jpg", blob);
+          zip.file(getIndexedFileName(file, i, "jpg", "compressed"), blob);
         }
 
         const zipBlob = await zip.generateAsync({ type: "blob" });
-        downloadBlob(zipBlob, "compressed-images.zip");
+        downloadBlob(zipBlob, getPrefixName("compressed-images") + ".zip");
 
         setSmartStatus("success", "Done. Compressed images downloaded.");
       } catch (error) {
@@ -1612,19 +2190,455 @@
 
         const zip = new JSZip();
 
-        for (const file of imageFiles) {
+        for (let i = 0; i < imageFiles.length; i++) {
+          const file = imageFiles[i];
           const canvas = await fileToCanvas(file, 90);
           const blob = await canvasToBlob(canvas, "image/png", 1);
-          zip.file(removeFileExtension(file.name) + "-rotated.png", blob);
+          zip.file(getIndexedFileName(file, i, "png", "rotated"), blob);
         }
 
         const zipBlob = await zip.generateAsync({ type: "blob" });
-        downloadBlob(zipBlob, "rotated-images.zip");
+        downloadBlob(zipBlob, getPrefixName("rotated-images") + ".zip");
 
         setSmartStatus("success", "Done. Rotated images downloaded.");
       } catch (error) {
         console.error(error);
         setSmartStatus("error", "Image rotate failed. Try another image.");
+      }
+    }
+
+    // =========================
+    // RESIZE IMAGES
+    // =========================
+    async function smartResizeImages() {
+      const imageFiles = smartSelectedFiles.filter(file => isImageFile(file));
+
+      if (!imageFiles.length) {
+        setSmartStatus("error", "Please choose image files first.");
+        return;
+      }
+
+      const widthInput = parseInt(document.getElementById("resizeWidthInput").value, 10);
+      const heightInput = parseInt(document.getElementById("resizeHeightInput").value, 10);
+
+      if (!widthInput && !heightInput) {
+        setSmartStatus("error", "Type resize width or height first.");
+        return;
+      }
+
+      if (!window.JSZip) {
+        setSmartStatus("error", "ZIP library did not load.");
+        return;
+      }
+
+      try {
+        setSmartStatus("ready", "Resizing images...");
+
+        const zip = new JSZip();
+        const quality = getImageQuality();
+
+        for (let i = 0; i < imageFiles.length; i++) {
+          const file = imageFiles[i];
+          const image = await loadImageElement(await fileToDataUrl(file));
+          const newSize = calculateResizeSize(image.width, image.height, widthInput, heightInput);
+          const canvas = document.createElement("canvas");
+          const context = canvas.getContext("2d");
+
+          canvas.width = newSize.width;
+          canvas.height = newSize.height;
+
+          context.drawImage(image, 0, 0, newSize.width, newSize.height);
+
+          const blob = await canvasToBlob(canvas, "image/jpeg", quality);
+          zip.file(getIndexedFileName(file, i, "jpg", "resized"), blob);
+        }
+
+        const zipBlob = await zip.generateAsync({ type: "blob" });
+        downloadBlob(zipBlob, getPrefixName("resized-images") + ".zip");
+
+        setSmartStatus("success", "Done. Resized images downloaded.");
+      } catch (error) {
+        console.error(error);
+        setSmartStatus("error", "Image resize failed. Try another image.");
+      }
+    }
+
+    // =========================
+    // CALCULATE RESIZE SIZE
+    // =========================
+    function calculateResizeSize(originalWidth, originalHeight, wantedWidth, wantedHeight) {
+      const keepAspect = document.getElementById("keepAspectInput").checked;
+
+      let width = wantedWidth || 0;
+      let height = wantedHeight || 0;
+
+      if (keepAspect) {
+        if (width && !height) {
+          height = Math.round(width * originalHeight / originalWidth);
+        } else if (!width && height) {
+          width = Math.round(height * originalWidth / originalHeight);
+        } else if (width && height) {
+          height = Math.round(width * originalHeight / originalWidth);
+        }
+      } else {
+        if (!width) width = originalWidth;
+        if (!height) height = originalHeight;
+      }
+
+      width = Math.max(1, width || originalWidth);
+      height = Math.max(1, height || originalHeight);
+
+      return {
+        width: width,
+        height: height
+      };
+    }
+
+    // =========================
+    // CROP IMAGES CENTER
+    // =========================
+    async function smartCropImagesCenter() {
+      const imageFiles = smartSelectedFiles.filter(file => isImageFile(file));
+
+      if (!imageFiles.length) {
+        setSmartStatus("error", "Please choose image files first.");
+        return;
+      }
+
+      const cropWidth = parseInt(document.getElementById("cropWidthInput").value, 10);
+      const cropHeight = parseInt(document.getElementById("cropHeightInput").value, 10);
+
+      if (!cropWidth || !cropHeight) {
+        setSmartStatus("error", "Type crop width and crop height first.");
+        return;
+      }
+
+      if (!window.JSZip) {
+        setSmartStatus("error", "ZIP library did not load.");
+        return;
+      }
+
+      try {
+        setSmartStatus("ready", "Cropping images from center...");
+
+        const zip = new JSZip();
+        const quality = getImageQuality();
+
+        for (let i = 0; i < imageFiles.length; i++) {
+          const file = imageFiles[i];
+          const image = await loadImageElement(await fileToDataUrl(file));
+
+          const realCropWidth = Math.min(cropWidth, image.width);
+          const realCropHeight = Math.min(cropHeight, image.height);
+          const sx = Math.floor((image.width - realCropWidth) / 2);
+          const sy = Math.floor((image.height - realCropHeight) / 2);
+
+          const canvas = document.createElement("canvas");
+          const context = canvas.getContext("2d");
+
+          canvas.width = realCropWidth;
+          canvas.height = realCropHeight;
+
+          context.drawImage(
+            image,
+            sx,
+            sy,
+            realCropWidth,
+            realCropHeight,
+            0,
+            0,
+            realCropWidth,
+            realCropHeight
+          );
+
+          const blob = await canvasToBlob(canvas, "image/jpeg", quality);
+          zip.file(getIndexedFileName(file, i, "jpg", "cropped"), blob);
+        }
+
+        const zipBlob = await zip.generateAsync({ type: "blob" });
+        downloadBlob(zipBlob, getPrefixName("cropped-images") + ".zip");
+
+        setSmartStatus("success", "Done. Cropped images downloaded.");
+      } catch (error) {
+        console.error(error);
+        setSmartStatus("error", "Image crop failed. Try another image.");
+      }
+    }
+
+    // =========================
+    // ADD TEXT TO IMAGES
+    // =========================
+    async function smartAddTextToImages() {
+      const imageFiles = smartSelectedFiles.filter(file => isImageFile(file));
+      const text = document.getElementById("imageTextInput").value.trim();
+
+      if (!imageFiles.length) {
+        setSmartStatus("error", "Please choose image files first.");
+        return;
+      }
+
+      if (!text) {
+        setSmartStatus("error", "Type text first.");
+        return;
+      }
+
+      if (!window.JSZip) {
+        setSmartStatus("error", "ZIP library did not load.");
+        return;
+      }
+
+      try {
+        setSmartStatus("ready", "Adding text to images...");
+
+        const zip = new JSZip();
+        const quality = getImageQuality();
+
+        for (let i = 0; i < imageFiles.length; i++) {
+          const file = imageFiles[i];
+          const canvas = await fileToCanvas(file, 0);
+          drawTextOnImageCanvas(canvas, text, false);
+
+          const blob = await canvasToBlob(canvas, "image/jpeg", quality);
+          zip.file(getIndexedFileName(file, i, "jpg", "text"), blob);
+        }
+
+        const zipBlob = await zip.generateAsync({ type: "blob" });
+        downloadBlob(zipBlob, getPrefixName("text-images") + ".zip");
+
+        setSmartStatus("success", "Done. Text added to images.");
+      } catch (error) {
+        console.error(error);
+        setSmartStatus("error", "Add text failed. Try another image.");
+      }
+    }
+
+    // =========================
+    // WATERMARK IMAGES
+    // =========================
+    async function smartWatermarkImages() {
+      const imageFiles = smartSelectedFiles.filter(file => isImageFile(file));
+      const text = document.getElementById("imageTextInput").value.trim();
+
+      if (!imageFiles.length) {
+        setSmartStatus("error", "Please choose image files first.");
+        return;
+      }
+
+      if (!text) {
+        setSmartStatus("error", "Type watermark text first.");
+        return;
+      }
+
+      if (!window.JSZip) {
+        setSmartStatus("error", "ZIP library did not load.");
+        return;
+      }
+
+      try {
+        setSmartStatus("ready", "Adding watermark to images...");
+
+        const zip = new JSZip();
+        const quality = getImageQuality();
+
+        for (let i = 0; i < imageFiles.length; i++) {
+          const file = imageFiles[i];
+          const canvas = await fileToCanvas(file, 0);
+          drawTextOnImageCanvas(canvas, text, true);
+
+          const blob = await canvasToBlob(canvas, "image/jpeg", quality);
+          zip.file(getIndexedFileName(file, i, "jpg", "watermark"), blob);
+        }
+
+        const zipBlob = await zip.generateAsync({ type: "blob" });
+        downloadBlob(zipBlob, getPrefixName("watermarked-images") + ".zip");
+
+        setSmartStatus("success", "Done. Watermark added to images.");
+      } catch (error) {
+        console.error(error);
+        setSmartStatus("error", "Watermark failed. Try another image.");
+      }
+    }
+
+    // =========================
+    // DRAW TEXT ON IMAGE CANVAS
+    // =========================
+    function drawTextOnImageCanvas(canvas, text, watermarkMode) {
+      const context = canvas.getContext("2d");
+      const fontSize = getImageTextFontSize();
+      const style = getImageTextStyle();
+      const position = document.getElementById("imageTextPositionInput").value || "center";
+      const fontWeight = style.bold ? "900" : "500";
+      const fontStyle = style.italic ? "italic" : "normal";
+
+      context.save();
+
+      context.font = fontStyle + " " + fontWeight + " " + fontSize + "px Arial";
+      context.textAlign = "center";
+      context.textBaseline = "middle";
+
+      if (watermarkMode) {
+        context.globalAlpha = 0.22;
+        context.fillStyle = "#000000";
+        context.translate(canvas.width / 2, canvas.height / 2);
+        context.rotate(-25 * Math.PI / 180);
+        context.font = fontStyle + " " + fontWeight + " " + Math.max(fontSize, Math.round(canvas.width * 0.08)) + "px Arial";
+        context.fillText(text, 0, 0);
+
+        if (style.underline) {
+          const textWidth = context.measureText(text).width;
+          context.fillRect(-textWidth / 2, Math.max(fontSize, Math.round(canvas.width * 0.08)) * 0.62, textWidth, 3);
+        }
+
+        context.restore();
+        return;
+      }
+
+      const point = getImageTextPoint(position, canvas.width, canvas.height, fontSize);
+      const lines = String(text).split("\n").filter(line => line.trim());
+      const lineHeight = fontSize * 1.25;
+
+      context.lineWidth = Math.max(3, fontSize * 0.12);
+      context.strokeStyle = "rgba(255,255,255,0.92)";
+      context.fillStyle = "#000000";
+
+      for (let i = 0; i < lines.length; i++) {
+        const y = point.y + ((i - (lines.length - 1) / 2) * lineHeight);
+        context.strokeText(lines[i], point.x, y);
+        context.fillText(lines[i], point.x, y);
+
+        if (style.underline) {
+          const textWidth = context.measureText(lines[i]).width;
+          context.fillRect(point.x - textWidth / 2, y + fontSize * 0.58, textWidth, Math.max(2, fontSize / 16));
+        }
+      }
+
+      context.restore();
+    }
+
+    // =========================
+    // GET IMAGE TEXT POINT
+    // =========================
+    function getImageTextPoint(position, width, height, fontSize) {
+      const pad = Math.max(24, fontSize * 1.2);
+      let x = width / 2;
+      let y = height / 2;
+
+      if (position.includes("top")) y = pad;
+      if (position.includes("bottom")) y = height - pad;
+      if (position.includes("left")) x = pad;
+      if (position.includes("right")) x = width - pad;
+      if (position.includes("left")) return { x: x, y: y, align: "left" };
+
+      return { x: x, y: y };
+    }
+
+    // =========================
+    // MAKE PASSPORT / ID PHOTO
+    // =========================
+    async function smartMakePassportPhoto() {
+      const imageFiles = smartSelectedFiles.filter(file => isImageFile(file));
+
+      if (!imageFiles.length) {
+        setSmartStatus("error", "Please choose one image first.");
+        return;
+      }
+
+      if (!window.JSZip) {
+        setSmartStatus("error", "ZIP library did not load.");
+        return;
+      }
+
+      try {
+        setSmartStatus("ready", "Making 2x2 ID photo...");
+
+        const zip = new JSZip();
+
+        for (let i = 0; i < imageFiles.length; i++) {
+          const file = imageFiles[i];
+          const image = await loadImageElement(await fileToDataUrl(file));
+
+          const canvas = document.createElement("canvas");
+          const context = canvas.getContext("2d");
+
+          canvas.width = 600;
+          canvas.height = 600;
+
+          context.fillStyle = "#ffffff";
+          context.fillRect(0, 0, canvas.width, canvas.height);
+
+          const sourceRatio = image.width / image.height;
+          const targetRatio = canvas.width / canvas.height;
+          let sx = 0;
+          let sy = 0;
+          let sw = image.width;
+          let sh = image.height;
+
+          if (sourceRatio > targetRatio) {
+            sw = image.height * targetRatio;
+            sx = (image.width - sw) / 2;
+          } else {
+            sh = image.width / targetRatio;
+            sy = (image.height - sh) / 2;
+          }
+
+          context.drawImage(image, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
+
+          const blob = await canvasToBlob(canvas, "image/jpeg", 0.92);
+          zip.file(getIndexedFileName(file, i, "jpg", "2x2-id-photo"), blob);
+        }
+
+        const zipBlob = await zip.generateAsync({ type: "blob" });
+        downloadBlob(zipBlob, getPrefixName("id-photos-2x2") + ".zip");
+
+        setSmartStatus("success", "Done. 2x2 ID photo image downloaded.");
+      } catch (error) {
+        console.error(error);
+        setSmartStatus("error", "ID photo maker failed. Try another image.");
+      }
+    }
+
+    // =========================
+    // SHOW IMAGE SIZE INFO
+    // =========================
+    async function showImageSizeInfo() {
+      const imageFiles = smartSelectedFiles.filter(file => isImageFile(file));
+
+      if (!imageFiles.length) {
+        setSmartStatus("error", "Please choose image files first.");
+        return;
+      }
+
+      try {
+        const rows = [];
+
+        for (const file of imageFiles) {
+          const dataUrl = await fileToDataUrl(file);
+          const info = await loadImageInfo(dataUrl);
+
+          rows.push(`
+            <div class="file-pill">
+              <span>
+                ${escapeHtml(file.name)}<br>
+                ${info.width} × ${info.height} px<br>
+                ${escapeHtml(file.type || "image")}
+              </span>
+              <span>${formatFileSize(file.size)}</span>
+            </div>
+          `);
+        }
+
+        const previewBox = document.getElementById("smartPreviewBox");
+        previewBox.className = "result-box result-success";
+        previewBox.innerHTML = `
+          <div class="result-heading">Image Info</div>
+          ${rows.join("")}
+        `;
+
+        setSmartStatus("success", "Image size info shown in preview.");
+        applySmartToolsTheme();
+      } catch (error) {
+        console.error(error);
+        setSmartStatus("error", "Could not read image info.");
       }
     }
 
@@ -1655,14 +2669,22 @@
       return canvas;
     }
 
-
     // =========================
     // OPEN PDF EDITOR LITE
     // =========================
     async function openPdfEditorLite() {
       const pdfFiles = smartSelectedFiles.filter(file => isPdfFile(file));
-      if (!pdfFiles.length) { setSmartStatus("error", "Please choose one PDF file first."); return; }
-      if (!window.pdfjsLib || !window.PDFLib) { setSmartStatus("error", "PDF editor libraries did not load. Please check internet and try again."); return; }
+
+      if (!pdfFiles.length) {
+        setSmartStatus("error", "Please choose one PDF file first.");
+        return;
+      }
+
+      if (!window.pdfjsLib || !window.PDFLib) {
+        setSmartStatus("error", "PDF editor libraries did not load. Please check internet and try again.");
+        return;
+      }
+
       try {
         pdfEditorFile = pdfFiles[0];
         pdfEditorArrayBuffer = await pdfEditorFile.arrayBuffer();
@@ -1671,32 +2693,44 @@
         pdfEditorCurrentPage = 1;
         pdfEditorPageCount = pdfEditorPdfJsDoc.numPages;
         pdfEditorItems = [];
+
         document.getElementById("pdfEditorModal").style.display = "block";
         document.getElementById("pdfEditorFileNameText").innerText = pdfEditorFile.name;
+
         buildPdfEditorPageSelect();
         await renderPdfEditorPage();
+
         setSmartStatus("success", "PDF Editor Lite opened.");
-      } catch (error) { console.error(error); setSmartStatus("error", "Could not open PDF editor. Try another PDF."); }
+      } catch (error) {
+        console.error(error);
+        setSmartStatus("error", "Could not open PDF editor. Try another PDF.");
+      }
     }
 
     // =========================
     // CLOSE PDF EDITOR LITE
     // =========================
-    function closePdfEditorLite() { document.getElementById("pdfEditorModal").style.display = "none"; }
+    function closePdfEditorLite() {
+      document.getElementById("pdfEditorModal").style.display = "none";
+    }
 
     // =========================
     // BUILD PDF EDITOR PAGE SELECT
     // =========================
     function buildPdfEditorPageSelect() {
       const select = document.getElementById("pdfEditorPageSelect");
+
       if (!select) return;
+
       select.innerHTML = "";
+
       for (let i = 1; i <= pdfEditorPageCount; i++) {
         const option = document.createElement("option");
         option.value = i;
         option.textContent = "Page " + i;
         select.appendChild(option);
       }
+
       select.value = String(pdfEditorCurrentPage);
     }
 
@@ -1714,6 +2748,7 @@
     // =========================
     async function renderPdfEditorPage() {
       if (!pdfEditorPdfJsDoc) return;
+
       const page = await pdfEditorPdfJsDoc.getPage(pdfEditorCurrentPage);
       const viewportOriginal = page.getViewport({ scale: 1 });
       const scrollBox = document.querySelector(".pdf-editor-scroll");
@@ -1723,14 +2758,20 @@
       const canvas = document.getElementById("pdfEditorCanvas");
       const context = canvas.getContext("2d");
       const shell = document.getElementById("pdfEditorPageShell");
+
       canvas.width = Math.floor(viewport.width);
       canvas.height = Math.floor(viewport.height);
+
       pdfEditorRenderedWidth = canvas.width;
       pdfEditorRenderedHeight = canvas.height;
+
       shell.style.width = canvas.width + "px";
       shell.style.height = canvas.height + "px";
+
       await page.render({ canvasContext: context, viewport: viewport }).promise;
+
       document.getElementById("pdfEditorPageCountText").innerText = "Page " + pdfEditorCurrentPage + " / " + pdfEditorPageCount;
+
       renderPdfEditorItems();
     }
 
@@ -1739,28 +2780,58 @@
     // =========================
     function addPdfEditorText() {
       const text = document.getElementById("pdfEditorTextInput").value.trim();
-      if (!text) { alert("Type text first."); return; }
-      addPdfEditorItem({ type: "text", text: text, fontSize: getPdfEditorFontSize() });
+
+      if (!text) {
+        alert("Type text first.");
+        return;
+      }
+
+      addPdfEditorItem({
+        type: "text",
+        text: text,
+        fontSize: getPdfEditorFontSize()
+      });
     }
 
     // =========================
     // ADD PDF EDITOR DATE
     // =========================
-    function addPdfEditorDate() { addPdfEditorItem({ type: "date", text: new Date().toLocaleDateString(), fontSize: getPdfEditorFontSize() }); }
+    function addPdfEditorDate() {
+      addPdfEditorItem({
+        type: "date",
+        text: new Date().toLocaleDateString(),
+        fontSize: getPdfEditorFontSize()
+      });
+    }
 
     // =========================
     // ADD PDF EDITOR SIGNATURE TEXT
     // =========================
     function addPdfEditorSignature() {
       const text = document.getElementById("pdfEditorTextInput").value.trim();
-      if (!text) { alert("Type signature name first."); return; }
-      addPdfEditorItem({ type: "signature", text: text, fontSize: getPdfEditorFontSize() });
+
+      if (!text) {
+        alert("Type signature name first.");
+        return;
+      }
+
+      addPdfEditorItem({
+        type: "signature",
+        text: text,
+        fontSize: getPdfEditorFontSize()
+      });
     }
 
     // =========================
     // ADD PDF EDITOR CHECK MARK
     // =========================
-    function addPdfEditorCheck() { addPdfEditorItem({ type: "check", text: "✓", fontSize: 18 }); }
+    function addPdfEditorCheck() {
+      addPdfEditorItem({
+        type: "check",
+        text: "✓",
+        fontSize: 18
+      });
+    }
 
     // =========================
     // ADD PDF EDITOR WHITE COVER BOX
@@ -1769,9 +2840,24 @@
       const size = document.getElementById("pdfEditorCoverSizeSelect").value;
       let widthRatio = 0.30;
       let heightRatio = 0.055;
-      if (size === "small") { widthRatio = 0.20; heightRatio = 0.045; }
-      if (size === "large") { widthRatio = 0.48; heightRatio = 0.075; }
-      addPdfEditorItem({ type: "cover", text: "", fontSize: 1, widthRatio: widthRatio, heightRatio: heightRatio });
+
+      if (size === "small") {
+        widthRatio = 0.20;
+        heightRatio = 0.045;
+      }
+
+      if (size === "large") {
+        widthRatio = 0.48;
+        heightRatio = 0.075;
+      }
+
+      addPdfEditorItem({
+        type: "cover",
+        text: "",
+        fontSize: 1,
+        widthRatio: widthRatio,
+        heightRatio: heightRatio
+      });
     }
 
     // =========================
@@ -1808,10 +2894,15 @@
     // ADD PDF EDITOR ITEM
     // =========================
     function addPdfEditorItem(item) {
-      if (!pdfEditorPdfJsDoc) { alert("Open a PDF first."); return; }
+      if (!pdfEditorPdfJsDoc) {
+        alert("Open a PDF first.");
+        return;
+      }
+
       const pageItems = pdfEditorItems.filter(x => x.page === pdfEditorCurrentPage);
       const offset = Math.min(0.35, pageItems.length * 0.035);
       const textStyle = getPdfEditorTextStyle();
+
       const newItem = {
         id: "editor_item_" + Date.now() + "_" + Math.floor(Math.random() * 99999),
         page: pdfEditorCurrentPage,
@@ -1826,6 +2917,7 @@
         widthRatio: item.widthRatio || 0.22,
         heightRatio: item.heightRatio || 0.045
       };
+
       pdfEditorItems.push(newItem);
       renderPdfEditorItems();
     }
@@ -1835,11 +2927,16 @@
     // =========================
     function renderPdfEditorItems() {
       const layer = document.getElementById("pdfEditorOverlayLayer");
+
       if (!layer) return;
+
       layer.innerHTML = "";
+
       const currentItems = pdfEditorItems.filter(item => item.page === pdfEditorCurrentPage);
+
       currentItems.forEach(item => {
         const div = document.createElement("div");
+
         div.className = "pdf-editor-item " + item.type;
         div.dataset.id = item.id;
         div.style.left = (item.xRatio * pdfEditorRenderedWidth) + "px";
@@ -1848,6 +2945,7 @@
         div.style.fontWeight = item.bold ? "900" : "400";
         div.style.fontStyle = item.italic ? "italic" : "normal";
         div.style.textDecoration = item.underline ? "underline" : "none";
+
         if (item.type === "cover") {
           div.style.width = (item.widthRatio * pdfEditorRenderedWidth) + "px";
           div.style.height = (item.heightRatio * pdfEditorRenderedHeight) + "px";
@@ -1855,6 +2953,7 @@
         } else {
           div.textContent = item.text;
         }
+
         div.addEventListener("pointerdown", startPdfEditorDrag);
         layer.appendChild(div);
       });
@@ -1865,10 +2964,13 @@
     // =========================
     function startPdfEditorDrag(event) {
       event.preventDefault();
+
       const element = event.currentTarget;
       const id = element.dataset.id;
       const item = pdfEditorItems.find(x => x.id === id);
+
       if (!item) return;
+
       pdfEditorDragState = {
         id: id,
         startClientX: event.clientX,
@@ -1878,6 +2980,7 @@
         itemWidth: Math.max(8, element.offsetWidth || 8),
         itemHeight: Math.max(8, element.offsetHeight || 8)
       };
+
       document.addEventListener("pointermove", movePdfEditorDrag);
       document.addEventListener("pointerup", stopPdfEditorDrag);
     }
@@ -1887,12 +2990,17 @@
     // =========================
     function movePdfEditorDrag(event) {
       if (!pdfEditorDragState) return;
+
       const item = pdfEditorItems.find(x => x.id === pdfEditorDragState.id);
+
       if (!item) return;
+
       const dx = event.clientX - pdfEditorDragState.startClientX;
       const dy = event.clientY - pdfEditorDragState.startClientY;
+
       let newLeft = pdfEditorDragState.startLeft + dx;
       let newTop = pdfEditorDragState.startTop + dy;
+
       const itemWidth = item.type === "cover"
         ? item.widthRatio * pdfEditorRenderedWidth
         : (pdfEditorDragState.itemWidth || 8);
@@ -1900,10 +3008,13 @@
       const itemHeight = item.type === "cover"
         ? item.heightRatio * pdfEditorRenderedHeight
         : (pdfEditorDragState.itemHeight || (item.fontSize + 4));
+
       newLeft = Math.max(0, Math.min(pdfEditorRenderedWidth - itemWidth, newLeft));
       newTop = Math.max(0, Math.min(pdfEditorRenderedHeight - itemHeight, newTop));
+
       item.xRatio = newLeft / pdfEditorRenderedWidth;
       item.yRatio = newTop / pdfEditorRenderedHeight;
+
       renderPdfEditorItems();
     }
 
@@ -1922,8 +3033,10 @@
     function getPdfEditorFontSize() {
       const input = document.getElementById("pdfEditorFontSizeInput");
       const value = parseInt(input.value, 10);
+
       if (!value || value < 6) return 11;
       if (value > 72) return 72;
+
       return value;
     }
 
@@ -1932,6 +3045,7 @@
     // =========================
     function clearCurrentPdfEditorPage() {
       if (!confirm("Clear all added items from this page?")) return;
+
       pdfEditorItems = pdfEditorItems.filter(item => item.page !== pdfEditorCurrentPage);
       renderPdfEditorItems();
     }
@@ -1941,6 +3055,7 @@
     // =========================
     function clearAllPdfEditorItems() {
       if (!confirm("Clear all added items from all pages?")) return;
+
       pdfEditorItems = [];
       renderPdfEditorItems();
     }
@@ -1949,30 +3064,51 @@
     // DOWNLOAD EDITED PDF
     // =========================
     async function downloadEditedPdf() {
-      if (!pdfEditorPdfLibDoc || !pdfEditorFile) { alert("Open a PDF first."); return; }
+      if (!pdfEditorPdfLibDoc || !pdfEditorFile) {
+        alert("Open a PDF first.");
+        return;
+      }
+
       try {
         setSmartStatus("ready", "Creating edited PDF...");
+
         const pdfDoc = await PDFLib.PDFDocument.load(pdfEditorArrayBuffer.slice(0));
         const pages = pdfDoc.getPages();
+
         const helveticaFont = await pdfDoc.embedFont(PDFLib.StandardFonts.Helvetica);
         const helveticaBoldFont = await pdfDoc.embedFont(PDFLib.StandardFonts.HelveticaBold);
         const helveticaObliqueFont = await pdfDoc.embedFont(PDFLib.StandardFonts.HelveticaOblique);
         const helveticaBoldObliqueFont = await pdfDoc.embedFont(PDFLib.StandardFonts.HelveticaBoldOblique);
+
         pdfEditorItems.forEach(item => {
           const pageIndex = item.page - 1;
           const page = pages[pageIndex];
+
           if (!page) return;
+
           const pageSize = page.getSize();
           const pageWidth = pageSize.width;
           const pageHeight = pageSize.height;
           const x = item.xRatio * pageWidth;
           const topY = item.yRatio * pageHeight;
+
           if (item.type === "cover") {
             const boxWidth = item.widthRatio * pageWidth;
             const boxHeight = item.heightRatio * pageHeight;
-            page.drawRectangle({ x: x, y: pageHeight - topY - boxHeight, width: boxWidth, height: boxHeight, color: PDFLib.rgb(1, 1, 1), borderColor: PDFLib.rgb(1, 1, 1), borderWidth: 0 });
+
+            page.drawRectangle({
+              x: x,
+              y: pageHeight - topY - boxHeight,
+              width: boxWidth,
+              height: boxHeight,
+              color: PDFLib.rgb(1, 1, 1),
+              borderColor: PDFLib.rgb(1, 1, 1),
+              borderWidth: 0
+            });
+
             return;
           }
+
           let font = helveticaFont;
           let size = item.fontSize || 11;
           let text = item.text || "";
@@ -1981,15 +3117,14 @@
           else if (item.bold) font = helveticaBoldFont;
           else if (item.italic) font = helveticaObliqueFont;
 
-          if (item.type === "signature") { size = size; }
-          if (item.type === "check") { font = helveticaBoldFont; size = item.fontSize || 18; text = "✓"; }
+          if (item.type === "check") {
+            font = helveticaBoldFont;
+            size = item.fontSize || 18;
+            text = "✓";
+          }
 
           const textY = pageHeight - topY - size;
           const textWidth = font.widthOfTextAtSize(text, size);
-
-          // Very narrow white background behind the new item.
-          // It hugs the text closely so it hides old text behind it
-          // without covering nearby PDF content.
           const coverPaddingX = Math.max(0.6, size * 0.045);
           const coverTopPadding = Math.max(0.5, size * 0.04);
           const coverBottomPadding = item.underline ? Math.max(2, size * 0.18) : Math.max(0.7, size * 0.07);
@@ -2005,7 +3140,13 @@
             borderWidth: 0
           });
 
-          page.drawText(text, { x: x, y: textY, size: size, font: font, color: PDFLib.rgb(0, 0, 0) });
+          page.drawText(text, {
+            x: x,
+            y: textY,
+            size: size,
+            font: font,
+            color: PDFLib.rgb(0, 0, 0)
+          });
 
           if (item.underline && item.type !== "cover") {
             page.drawLine({
@@ -2016,11 +3157,21 @@
             });
           }
         });
-        const editedBytes = await pdfDoc.save({ useObjectStreams: true });
-        const blob = new Blob([editedBytes], { type: "application/pdf" });
-        downloadBlob(blob, removeFileExtension(pdfEditorFile.name) + "-edited.pdf");
+
+        const editedBytes = await pdfDoc.save({
+          useObjectStreams: true
+        });
+
+        const blob = new Blob([editedBytes], {
+          type: "application/pdf"
+        });
+
+        downloadBlob(blob, getDownloadBaseName(pdfEditorFile, removeFileExtension(pdfEditorFile.name)) + "-edited.pdf");
         setSmartStatus("success", "Done. Edited PDF downloaded.");
-      } catch (error) { console.error(error); setSmartStatus("error", "Could not create edited PDF."); }
+      } catch (error) {
+        console.error(error);
+        setSmartStatus("error", "Could not create edited PDF.");
+      }
     }
 
     // =========================
@@ -2129,6 +3280,53 @@
     }
 
     // =========================
+    // GET IMAGE PDF PAGE SIZE
+    // =========================
+    function getImagePdfPageSize() {
+      const input = document.getElementById("imagePdfPageSizeInput");
+      return input ? input.value : "image";
+    }
+
+    // =========================
+    // GET IMAGE TEXT FONT SIZE
+    // =========================
+    function getImageTextFontSize() {
+      const input = document.getElementById("imageTextFontSizeInput");
+      const value = input ? parseInt(input.value, 10) : 36;
+
+      if (!value || value < 8) return 36;
+      if (value > 200) return 200;
+
+      return value;
+    }
+
+    // =========================
+    // TOGGLE IMAGE FORMAT BUTTON
+    // =========================
+    function toggleImageFormatButton(type) {
+      let button = null;
+
+      if (type === "bold") button = document.getElementById("imageBoldBtn");
+      if (type === "italic") button = document.getElementById("imageItalicBtn");
+      if (type === "underline") button = document.getElementById("imageUnderlineBtn");
+
+      if (!button) return;
+
+      button.classList.toggle("active");
+    }
+
+    // =========================
+    // GET IMAGE TEXT STYLE
+    // =========================
+    function getImageTextStyle() {
+      return {
+        bold: document.getElementById("imageBoldBtn").classList.contains("active"),
+        italic: document.getElementById("imageItalicBtn").classList.contains("active"),
+        underline: document.getElementById("imageUnderlineBtn").classList.contains("active")
+      };
+    }
+
+    // =========================
     // GET JSPDF IMAGE TYPE
     // =========================
     function getJsPdfImageType(file) {
@@ -2175,6 +3373,56 @@
     }
 
     // =========================
+    // GET PREFIX NAME
+    // =========================
+    function getPrefixName(defaultName) {
+      const input = document.getElementById("filePrefixInput");
+      const prefix = input ? input.value.trim() : "";
+
+      if (!prefix) return defaultName;
+
+      return cleanFileName(prefix);
+    }
+
+    // =========================
+    // GET DOWNLOAD BASE NAME
+    // =========================
+    function getDownloadBaseName(file, fallback) {
+      const input = document.getElementById("filePrefixInput");
+      const prefix = input ? input.value.trim() : "";
+
+      if (!prefix) return cleanFileName(fallback || removeFileExtension(file.name));
+
+      return cleanFileName(prefix);
+    }
+
+    // =========================
+    // GET INDEXED FILE NAME
+    // =========================
+    function getIndexedFileName(file, index, extension, suffix) {
+      const input = document.getElementById("filePrefixInput");
+      const prefix = input ? input.value.trim() : "";
+      const cleanSuffix = suffix ? "-" + suffix : "";
+
+      if (prefix) {
+        return cleanFileName(prefix) + "-" + String(index + 1).padStart(2, "0") + cleanSuffix + "." + extension;
+      }
+
+      return cleanFileName(removeFileExtension(file.name)) + cleanSuffix + "." + extension;
+    }
+
+    // =========================
+    // CLEAN FILE NAME
+    // =========================
+    function cleanFileName(name) {
+      return String(name || "file")
+        .trim()
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "") || "file";
+    }
+
+    // =========================
     // DOWNLOAD BLOB
     // =========================
     function downloadBlob(blob, fileName) {
@@ -2215,6 +3463,40 @@
 
       const qualityInput = document.getElementById("imageQualityInput");
       if (qualityInput) qualityInput.value = "0.72";
+
+      const filePrefixInput = document.getElementById("filePrefixInput");
+      if (filePrefixInput) filePrefixInput.value = "";
+
+      const imagePdfPageSizeInput = document.getElementById("imagePdfPageSizeInput");
+      if (imagePdfPageSizeInput) imagePdfPageSizeInput.value = "image";
+
+      const resizeWidthInput = document.getElementById("resizeWidthInput");
+      if (resizeWidthInput) resizeWidthInput.value = "";
+
+      const resizeHeightInput = document.getElementById("resizeHeightInput");
+      if (resizeHeightInput) resizeHeightInput.value = "";
+
+      const keepAspectInput = document.getElementById("keepAspectInput");
+      if (keepAspectInput) keepAspectInput.checked = true;
+
+      const cropWidthInput = document.getElementById("cropWidthInput");
+      if (cropWidthInput) cropWidthInput.value = "";
+
+      const cropHeightInput = document.getElementById("cropHeightInput");
+      if (cropHeightInput) cropHeightInput.value = "";
+
+      const imageTextInput = document.getElementById("imageTextInput");
+      if (imageTextInput) imageTextInput.value = "";
+
+      const imageTextFontSizeInput = document.getElementById("imageTextFontSizeInput");
+      if (imageTextFontSizeInput) imageTextFontSizeInput.value = "36";
+
+      const imageTextPositionInput = document.getElementById("imageTextPositionInput");
+      if (imageTextPositionInput) imageTextPositionInput.value = "center";
+
+      document.getElementById("imageBoldBtn").classList.remove("active");
+      document.getElementById("imageItalicBtn").classList.remove("active");
+      document.getElementById("imageUnderlineBtn").classList.remove("active");
 
       renderSmartFileList();
       renderSmartActions();
