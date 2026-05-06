@@ -1063,25 +1063,42 @@
         <div class="card">
           <div class="card-title">Image Resize / Crop</div>
           <div class="card-subtitle">
-            Resize image width/height or crop from center.
+            Simple resize: choose 50%, 25%, 1200px, 800px, or use Custom Size.
+            Crop still uses crop width and crop height from the center.
           </div>
+
+          <label>
+            <span class="setting-label">Simple Resize Choice</span>
+            <select id="resizePresetInput" class="setting-input" onchange="applyResizePreset()">
+              <option value="custom" selected>Custom Size - I will type width/height</option>
+              <option value="percent-50">Make image 50% smaller</option>
+              <option value="percent-25">Make image 25% size</option>
+              <option value="width-1200">Fit width to 1200px</option>
+              <option value="width-800">Fit width to 800px</option>
+            </select>
+          </label>
 
           <div class="setting-row">
             <label>
-              <span class="setting-label">Resize Width px</span>
+              <span class="setting-label">Custom Width px</span>
               <input id="resizeWidthInput" class="setting-input" type="number" placeholder="Example: 800">
             </label>
 
             <label>
-              <span class="setting-label">Resize Height px</span>
-              <input id="resizeHeightInput" class="setting-input" type="number" placeholder="Example: 600">
+              <span class="setting-label">Custom Height px</span>
+              <input id="resizeHeightInput" class="setting-input" type="number" placeholder="Leave blank if unsure">
             </label>
           </div>
 
           <label class="toggle-row">
             <input id="keepAspectInput" type="checkbox" checked>
-            Keep aspect ratio
+            Keep picture shape normal
           </label>
+
+          <div class="small-help">
+            Easiest way: choose <strong>Make image 50% smaller</strong>, then press <strong>Resize Images</strong>.
+            If you upload only 1 image, it will download as a normal JPG file. If you upload 2 or more, it will download as ZIP.
+          </div>
 
           <div class="setting-row">
             <label>
@@ -2093,6 +2110,8 @@
 
     // =========================
     // CONVERT IMAGES
+    // 1 image = direct download
+    // 2 or more images = ZIP download
     // =========================
     async function smartConvertImages(outputType, extension) {
       const imageFiles = smartSelectedFiles.filter(file => isImageFile(file));
@@ -2102,7 +2121,7 @@
         return;
       }
 
-      if (!window.JSZip) {
+      if (imageFiles.length > 1 && !window.JSZip) {
         setSmartStatus("error", "ZIP library did not load.");
         return;
       }
@@ -2111,19 +2130,26 @@
         setSmartStatus("ready", "Converting images...");
 
         const quality = getImageQuality();
-        const zip = new JSZip();
+        const results = [];
 
         for (let i = 0; i < imageFiles.length; i++) {
           const file = imageFiles[i];
           const canvas = await fileToCanvas(file, 0);
           const blob = await canvasToBlob(canvas, outputType, quality);
-          zip.file(getIndexedFileName(file, i, extension), blob);
+
+          results.push({
+            blob: blob,
+            fileName: getIndexedFileName(file, i, extension)
+          });
         }
 
-        const zipBlob = await zip.generateAsync({ type: "blob" });
-        downloadBlob(zipBlob, getPrefixName("converted-images-" + extension) + ".zip");
-
-        setSmartStatus("success", "Done. Converted images downloaded.");
+        await downloadImageResults(
+          imageFiles,
+          results,
+          getPrefixName("converted-images-" + extension) + ".zip",
+          "Done. 1 image converted and downloaded directly.",
+          "Done. Converted images downloaded as ZIP."
+        );
       } catch (error) {
         console.error(error);
         setSmartStatus("error", "Image conversion failed. Try another image.");
@@ -2132,6 +2158,8 @@
 
     // =========================
     // COMPRESS IMAGES
+    // 1 image = direct download
+    // 2 or more images = ZIP download
     // =========================
     async function smartCompressImages() {
       const imageFiles = smartSelectedFiles.filter(file => isImageFile(file));
@@ -2141,7 +2169,7 @@
         return;
       }
 
-      if (!window.JSZip) {
+      if (imageFiles.length > 1 && !window.JSZip) {
         setSmartStatus("error", "ZIP library did not load.");
         return;
       }
@@ -2150,19 +2178,26 @@
         setSmartStatus("ready", "Compressing images...");
 
         const quality = getImageQuality();
-        const zip = new JSZip();
+        const results = [];
 
         for (let i = 0; i < imageFiles.length; i++) {
           const file = imageFiles[i];
           const canvas = await fileToCanvas(file, 0);
           const blob = await canvasToBlob(canvas, "image/jpeg", quality);
-          zip.file(getIndexedFileName(file, i, "jpg", "compressed"), blob);
+
+          results.push({
+            blob: blob,
+            fileName: getIndexedFileName(file, i, "jpg", "compressed")
+          });
         }
 
-        const zipBlob = await zip.generateAsync({ type: "blob" });
-        downloadBlob(zipBlob, getPrefixName("compressed-images") + ".zip");
-
-        setSmartStatus("success", "Done. Compressed images downloaded.");
+        await downloadImageResults(
+          imageFiles,
+          results,
+          getPrefixName("compressed-images") + ".zip",
+          "Done. 1 compressed image downloaded directly.",
+          "Done. Compressed images downloaded as ZIP."
+        );
       } catch (error) {
         console.error(error);
         setSmartStatus("error", "Image compression failed. Try another image.");
@@ -2171,6 +2206,8 @@
 
     // =========================
     // ROTATE IMAGES RIGHT
+    // 1 image = direct download
+    // 2 or more images = ZIP download
     // =========================
     async function smartRotateImagesRight() {
       const imageFiles = smartSelectedFiles.filter(file => isImageFile(file));
@@ -2180,7 +2217,7 @@
         return;
       }
 
-      if (!window.JSZip) {
+      if (imageFiles.length > 1 && !window.JSZip) {
         setSmartStatus("error", "ZIP library did not load.");
         return;
       }
@@ -2188,19 +2225,26 @@
       try {
         setSmartStatus("ready", "Rotating images...");
 
-        const zip = new JSZip();
+        const results = [];
 
         for (let i = 0; i < imageFiles.length; i++) {
           const file = imageFiles[i];
           const canvas = await fileToCanvas(file, 90);
           const blob = await canvasToBlob(canvas, "image/png", 1);
-          zip.file(getIndexedFileName(file, i, "png", "rotated"), blob);
+
+          results.push({
+            blob: blob,
+            fileName: getIndexedFileName(file, i, "png", "rotated")
+          });
         }
 
-        const zipBlob = await zip.generateAsync({ type: "blob" });
-        downloadBlob(zipBlob, getPrefixName("rotated-images") + ".zip");
-
-        setSmartStatus("success", "Done. Rotated images downloaded.");
+        await downloadImageResults(
+          imageFiles,
+          results,
+          getPrefixName("rotated-images") + ".zip",
+          "Done. 1 rotated image downloaded directly.",
+          "Done. Rotated images downloaded as ZIP."
+        );
       } catch (error) {
         console.error(error);
         setSmartStatus("error", "Image rotate failed. Try another image.");
@@ -2209,6 +2253,9 @@
 
     // =========================
     // RESIZE IMAGES
+    // Simple preset resize added
+    // 1 image = direct download
+    // 2 or more images = ZIP download
     // =========================
     async function smartResizeImages() {
       const imageFiles = smartSelectedFiles.filter(file => isImageFile(file));
@@ -2218,15 +2265,16 @@
         return;
       }
 
+      const resizePreset = getResizePreset();
       const widthInput = parseInt(document.getElementById("resizeWidthInput").value, 10);
       const heightInput = parseInt(document.getElementById("resizeHeightInput").value, 10);
 
-      if (!widthInput && !heightInput) {
-        setSmartStatus("error", "Type resize width or height first.");
+      if (resizePreset === "custom" && !widthInput && !heightInput) {
+        setSmartStatus("error", "Choose a simple resize option, or type custom width/height first.");
         return;
       }
 
-      if (!window.JSZip) {
+      if (imageFiles.length > 1 && !window.JSZip) {
         setSmartStatus("error", "ZIP library did not load.");
         return;
       }
@@ -2234,13 +2282,13 @@
       try {
         setSmartStatus("ready", "Resizing images...");
 
-        const zip = new JSZip();
         const quality = getImageQuality();
+        const results = [];
 
         for (let i = 0; i < imageFiles.length; i++) {
           const file = imageFiles[i];
           const image = await loadImageElement(await fileToDataUrl(file));
-          const newSize = calculateResizeSize(image.width, image.height, widthInput, heightInput);
+          const newSize = getSimpleResizeSize(image.width, image.height, resizePreset, widthInput, heightInput);
           const canvas = document.createElement("canvas");
           const context = canvas.getContext("2d");
 
@@ -2250,17 +2298,87 @@
           context.drawImage(image, 0, 0, newSize.width, newSize.height);
 
           const blob = await canvasToBlob(canvas, "image/jpeg", quality);
-          zip.file(getIndexedFileName(file, i, "jpg", "resized"), blob);
+
+          results.push({
+            blob: blob,
+            fileName: getIndexedFileName(file, i, "jpg", "resized")
+          });
         }
 
-        const zipBlob = await zip.generateAsync({ type: "blob" });
-        downloadBlob(zipBlob, getPrefixName("resized-images") + ".zip");
-
-        setSmartStatus("success", "Done. Resized images downloaded.");
+        await downloadImageResults(
+          imageFiles,
+          results,
+          getPrefixName("resized-images") + ".zip",
+          "Done. 1 resized image downloaded directly.",
+          "Done. Resized images downloaded as ZIP."
+        );
       } catch (error) {
         console.error(error);
         setSmartStatus("error", "Image resize failed. Try another image.");
       }
+    }
+
+    // =========================
+    // GET RESIZE PRESET
+    // =========================
+    function getResizePreset() {
+      const input = document.getElementById("resizePresetInput");
+      return input ? input.value : "custom";
+    }
+
+    // =========================
+    // APPLY RESIZE PRESET
+    // Makes resize easier for beginner use
+    // =========================
+    function applyResizePreset() {
+      const preset = getResizePreset();
+      const widthInput = document.getElementById("resizeWidthInput");
+      const heightInput = document.getElementById("resizeHeightInput");
+      const keepAspectInput = document.getElementById("keepAspectInput");
+
+      if (keepAspectInput) keepAspectInput.checked = true;
+
+      if (preset === "custom") {
+        setSmartStatus("ready", "Custom resize selected. Type width or height, then press Resize Images.");
+        return;
+      }
+
+      if (widthInput) widthInput.value = "";
+      if (heightInput) heightInput.value = "";
+
+      if (preset === "width-1200" && widthInput) widthInput.value = "1200";
+      if (preset === "width-800" && widthInput) widthInput.value = "800";
+
+      setSmartStatus("ready", "Simple resize selected. Now press Resize Images.");
+    }
+
+    // =========================
+    // GET SIMPLE RESIZE SIZE
+    // =========================
+    function getSimpleResizeSize(originalWidth, originalHeight, preset, wantedWidth, wantedHeight) {
+      if (preset === "percent-50") {
+        return {
+          width: Math.max(1, Math.round(originalWidth * 0.50)),
+          height: Math.max(1, Math.round(originalHeight * 0.50))
+        };
+      }
+
+      if (preset === "percent-25") {
+        return {
+          width: Math.max(1, Math.round(originalWidth * 0.25)),
+          height: Math.max(1, Math.round(originalHeight * 0.25))
+        };
+      }
+
+      if (preset === "width-1200") {
+        return calculateResizeSize(originalWidth, originalHeight, 1200, 0);
+      }
+
+      if (preset === "width-800") {
+        return calculateResizeSize(originalWidth, originalHeight, 800, 0);
+      }
+
+      return calculateResizeSize(originalWidth, originalHeight, wantedWidth, wantedHeight);
     }
 
     // =========================
@@ -2296,6 +2414,8 @@
 
     // =========================
     // CROP IMAGES CENTER
+    // 1 image = direct download
+    // 2 or more images = ZIP download
     // =========================
     async function smartCropImagesCenter() {
       const imageFiles = smartSelectedFiles.filter(file => isImageFile(file));
@@ -2313,7 +2433,7 @@
         return;
       }
 
-      if (!window.JSZip) {
+      if (imageFiles.length > 1 && !window.JSZip) {
         setSmartStatus("error", "ZIP library did not load.");
         return;
       }
@@ -2321,8 +2441,8 @@
       try {
         setSmartStatus("ready", "Cropping images from center...");
 
-        const zip = new JSZip();
         const quality = getImageQuality();
+        const results = [];
 
         for (let i = 0; i < imageFiles.length; i++) {
           const file = imageFiles[i];
@@ -2352,13 +2472,20 @@
           );
 
           const blob = await canvasToBlob(canvas, "image/jpeg", quality);
-          zip.file(getIndexedFileName(file, i, "jpg", "cropped"), blob);
+
+          results.push({
+            blob: blob,
+            fileName: getIndexedFileName(file, i, "jpg", "cropped")
+          });
         }
 
-        const zipBlob = await zip.generateAsync({ type: "blob" });
-        downloadBlob(zipBlob, getPrefixName("cropped-images") + ".zip");
-
-        setSmartStatus("success", "Done. Cropped images downloaded.");
+        await downloadImageResults(
+          imageFiles,
+          results,
+          getPrefixName("cropped-images") + ".zip",
+          "Done. 1 cropped image downloaded directly.",
+          "Done. Cropped images downloaded as ZIP."
+        );
       } catch (error) {
         console.error(error);
         setSmartStatus("error", "Image crop failed. Try another image.");
@@ -2367,6 +2494,8 @@
 
     // =========================
     // ADD TEXT TO IMAGES
+    // 1 image = direct download
+    // 2 or more images = ZIP download
     // =========================
     async function smartAddTextToImages() {
       const imageFiles = smartSelectedFiles.filter(file => isImageFile(file));
@@ -2382,7 +2511,7 @@
         return;
       }
 
-      if (!window.JSZip) {
+      if (imageFiles.length > 1 && !window.JSZip) {
         setSmartStatus("error", "ZIP library did not load.");
         return;
       }
@@ -2390,8 +2519,8 @@
       try {
         setSmartStatus("ready", "Adding text to images...");
 
-        const zip = new JSZip();
         const quality = getImageQuality();
+        const results = [];
 
         for (let i = 0; i < imageFiles.length; i++) {
           const file = imageFiles[i];
@@ -2399,13 +2528,20 @@
           drawTextOnImageCanvas(canvas, text, false);
 
           const blob = await canvasToBlob(canvas, "image/jpeg", quality);
-          zip.file(getIndexedFileName(file, i, "jpg", "text"), blob);
+
+          results.push({
+            blob: blob,
+            fileName: getIndexedFileName(file, i, "jpg", "text")
+          });
         }
 
-        const zipBlob = await zip.generateAsync({ type: "blob" });
-        downloadBlob(zipBlob, getPrefixName("text-images") + ".zip");
-
-        setSmartStatus("success", "Done. Text added to images.");
+        await downloadImageResults(
+          imageFiles,
+          results,
+          getPrefixName("text-images") + ".zip",
+          "Done. Text added to 1 image and downloaded directly.",
+          "Done. Text images downloaded as ZIP."
+        );
       } catch (error) {
         console.error(error);
         setSmartStatus("error", "Add text failed. Try another image.");
@@ -2414,6 +2550,8 @@
 
     // =========================
     // WATERMARK IMAGES
+    // 1 image = direct download
+    // 2 or more images = ZIP download
     // =========================
     async function smartWatermarkImages() {
       const imageFiles = smartSelectedFiles.filter(file => isImageFile(file));
@@ -2429,7 +2567,7 @@
         return;
       }
 
-      if (!window.JSZip) {
+      if (imageFiles.length > 1 && !window.JSZip) {
         setSmartStatus("error", "ZIP library did not load.");
         return;
       }
@@ -2437,8 +2575,8 @@
       try {
         setSmartStatus("ready", "Adding watermark to images...");
 
-        const zip = new JSZip();
         const quality = getImageQuality();
+        const results = [];
 
         for (let i = 0; i < imageFiles.length; i++) {
           const file = imageFiles[i];
@@ -2446,13 +2584,20 @@
           drawTextOnImageCanvas(canvas, text, true);
 
           const blob = await canvasToBlob(canvas, "image/jpeg", quality);
-          zip.file(getIndexedFileName(file, i, "jpg", "watermark"), blob);
+
+          results.push({
+            blob: blob,
+            fileName: getIndexedFileName(file, i, "jpg", "watermark")
+          });
         }
 
-        const zipBlob = await zip.generateAsync({ type: "blob" });
-        downloadBlob(zipBlob, getPrefixName("watermarked-images") + ".zip");
-
-        setSmartStatus("success", "Done. Watermark added to images.");
+        await downloadImageResults(
+          imageFiles,
+          results,
+          getPrefixName("watermarked-images") + ".zip",
+          "Done. Watermark added to 1 image and downloaded directly.",
+          "Done. Watermarked images downloaded as ZIP."
+        );
       } catch (error) {
         console.error(error);
         setSmartStatus("error", "Watermark failed. Try another image.");
@@ -2534,6 +2679,8 @@
 
     // =========================
     // MAKE PASSPORT / ID PHOTO
+    // 1 image = direct download
+    // 2 or more images = ZIP download
     // =========================
     async function smartMakePassportPhoto() {
       const imageFiles = smartSelectedFiles.filter(file => isImageFile(file));
@@ -2543,7 +2690,7 @@
         return;
       }
 
-      if (!window.JSZip) {
+      if (imageFiles.length > 1 && !window.JSZip) {
         setSmartStatus("error", "ZIP library did not load.");
         return;
       }
@@ -2551,7 +2698,7 @@
       try {
         setSmartStatus("ready", "Making 2x2 ID photo...");
 
-        const zip = new JSZip();
+        const results = [];
 
         for (let i = 0; i < imageFiles.length; i++) {
           const file = imageFiles[i];
@@ -2584,13 +2731,20 @@
           context.drawImage(image, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
 
           const blob = await canvasToBlob(canvas, "image/jpeg", 0.92);
-          zip.file(getIndexedFileName(file, i, "jpg", "2x2-id-photo"), blob);
+
+          results.push({
+            blob: blob,
+            fileName: getIndexedFileName(file, i, "jpg", "2x2-id-photo")
+          });
         }
 
-        const zipBlob = await zip.generateAsync({ type: "blob" });
-        downloadBlob(zipBlob, getPrefixName("id-photos-2x2") + ".zip");
-
-        setSmartStatus("success", "Done. 2x2 ID photo image downloaded.");
+        await downloadImageResults(
+          imageFiles,
+          results,
+          getPrefixName("id-photos-2x2") + ".zip",
+          "Done. 1 ID photo downloaded directly.",
+          "Done. 2x2 ID photos downloaded as ZIP."
+        );
       } catch (error) {
         console.error(error);
         setSmartStatus("error", "ID photo maker failed. Try another image.");
@@ -3423,6 +3577,41 @@
     }
 
     // =========================
+    // DOWNLOAD IMAGE RESULTS
+    // This is the ZIP fix used by all image tools.
+    // If there is only 1 image, download the image directly.
+    // If there are 2 or more images, download one ZIP file.
+    // =========================
+    async function downloadImageResults(imageFiles, results, zipFileName, singleMessage, zipMessage) {
+      if (!results || !results.length) {
+        setSmartStatus("error", "No image result was created.");
+        return;
+      }
+
+      if (imageFiles.length === 1 || results.length === 1) {
+        downloadBlob(results[0].blob, results[0].fileName);
+        setSmartStatus("success", singleMessage || "Done. 1 image downloaded directly.");
+        return;
+      }
+
+      if (!window.JSZip) {
+        setSmartStatus("error", "ZIP library did not load.");
+        return;
+      }
+
+      const zip = new JSZip();
+
+      results.forEach(item => {
+        zip.file(item.fileName, item.blob);
+      });
+
+      const zipBlob = await zip.generateAsync({ type: "blob" });
+      downloadBlob(zipBlob, zipFileName);
+
+      setSmartStatus("success", zipMessage || "Done. Images downloaded as ZIP.");
+    }
+
+    // =========================
     // DOWNLOAD BLOB
     // =========================
     function downloadBlob(blob, fileName) {
@@ -3469,6 +3658,9 @@
 
       const imagePdfPageSizeInput = document.getElementById("imagePdfPageSizeInput");
       if (imagePdfPageSizeInput) imagePdfPageSizeInput.value = "image";
+
+      const resizePresetInput = document.getElementById("resizePresetInput");
+      if (resizePresetInput) resizePresetInput.value = "custom";
 
       const resizeWidthInput = document.getElementById("resizeWidthInput");
       if (resizeWidthInput) resizeWidthInput.value = "";
