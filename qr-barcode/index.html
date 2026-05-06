@@ -1,0 +1,1865 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<title>QR + Barcode Tools</title>
+
+<!-- QR GENERATOR LIBRARY -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+<!-- QR / BARCODE SCANNER LIBRARY -->
+<script src="https://unpkg.com/html5-qrcode"></script>
+
+<style>
+/* =========================
+   BASIC SETUP
+========================= */
+*{
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
+}
+
+html,body{
+  margin:0;
+  padding:0;
+  width:100%;
+  min-height:100%;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+  background:#e9e9ee;
+  color:#111;
+  overflow-x:hidden;
+}
+
+body{
+  padding:16px;
+}
+
+/* =========================
+   APP WRAP
+========================= */
+.app-wrap{
+  width:100%;
+  max-width:560px;
+  margin:0 auto;
+  padding-bottom:40px;
+}
+
+/* =========================
+   TOP BAR
+========================= */
+.top-bar{
+  width:100%;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:18px;
+}
+
+.back-btn{
+  width:46px;
+  height:46px;
+  border:none;
+  border-radius:50%;
+  background:white;
+  color:#111;
+  font-size:22px;
+  font-weight:900;
+  box-shadow:0 8px 22px rgba(0,0,0,0.10);
+  cursor:pointer;
+}
+
+.top-title{
+  flex:1;
+  text-align:center;
+  font-size:20px;
+  font-weight:950;
+}
+
+.top-spacer{
+  width:46px;
+  height:46px;
+}
+
+/* =========================
+   HERO CARD
+========================= */
+.hero-card{
+  width:100%;
+  background:linear-gradient(135deg,#667eea,#764ba2);
+  border-radius:30px;
+  padding:24px 20px;
+  color:white;
+  box-shadow:0 12px 30px rgba(0,0,0,0.16);
+  margin-bottom:16px;
+}
+
+.hero-icon{
+  width:64px;
+  height:64px;
+  border-radius:22px;
+  background:rgba(255,255,255,0.22);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:34px;
+  margin-bottom:14px;
+}
+
+.hero-card h1{
+  margin:0;
+  font-size:28px;
+  line-height:1.15;
+  font-weight:950;
+}
+
+.hero-card p{
+  margin:10px 0 0 0;
+  font-size:15px;
+  line-height:1.45;
+  opacity:0.95;
+}
+
+/* =========================
+   TAB SWITCH
+========================= */
+.tab-wrap{
+  width:100%;
+  background:white;
+  border-radius:24px;
+  padding:8px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  box-shadow:0 8px 24px rgba(0,0,0,0.08);
+  margin-bottom:16px;
+}
+
+.tab-btn{
+  border:none;
+  border-radius:18px;
+  padding:13px 8px;
+  font-size:15px;
+  font-weight:950;
+  background:transparent;
+  color:#555;
+  cursor:pointer;
+}
+
+.tab-btn.active{
+  background:#007aff;
+  color:white;
+}
+
+/* =========================
+   CARD
+========================= */
+.card{
+  width:100%;
+  background:white;
+  border-radius:28px;
+  padding:18px;
+  margin-bottom:16px;
+  box-shadow:0 8px 24px rgba(0,0,0,0.08);
+  border:1px solid rgba(0,0,0,0.04);
+}
+
+.card-title{
+  font-size:18px;
+  font-weight:950;
+  margin-bottom:10px;
+}
+
+.small-text{
+  font-size:13px;
+  color:#666;
+  line-height:1.45;
+}
+
+/* =========================
+   INPUTS
+========================= */
+.input-label{
+  display:block;
+  font-size:13px;
+  font-weight:900;
+  color:#555;
+  margin:14px 0 6px 0;
+}
+
+.input-field,
+.select-field,
+.textarea-field{
+  width:100%;
+  border:none;
+  outline:none;
+  border-radius:18px;
+  background:#f1f1f6;
+  color:#111;
+  padding:14px 13px;
+  font-size:16px;
+  font-weight:750;
+}
+
+.textarea-field{
+  min-height:96px;
+  resize:none;
+  line-height:1.45;
+}
+
+.two-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+
+/* =========================
+   BUTTONS
+========================= */
+.btn{
+  width:100%;
+  border:none;
+  border-radius:20px;
+  padding:15px 16px;
+  font-size:16px;
+  font-weight:950;
+  cursor:pointer;
+  margin-top:10px;
+}
+
+.btn-primary{
+  background:#007aff;
+  color:white;
+}
+
+.btn-green{
+  background:#34c759;
+  color:white;
+}
+
+.btn-gray{
+  background:#f1f1f6;
+  color:#111;
+}
+
+.btn-red{
+  background:#ff3b30;
+  color:white;
+}
+
+.btn-purple{
+  background:#7c3aed;
+  color:white;
+}
+
+.btn-orange{
+  background:#ff9500;
+  color:white;
+}
+
+.btn:disabled{
+  opacity:0.45;
+  cursor:not-allowed;
+}
+
+.btn-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-top:10px;
+}
+
+.btn-grid .btn{
+  margin-top:0;
+}
+
+/* =========================
+   QR PREVIEW
+========================= */
+.qr-preview-box{
+  display:none;
+  width:100%;
+  background:#f7f7fb;
+  border-radius:24px;
+  padding:18px;
+  text-align:center;
+  margin-top:14px;
+  border:1px solid rgba(0,0,0,0.06);
+}
+
+.qr-name{
+  font-size:18px;
+  font-weight:950;
+  margin-bottom:12px;
+}
+
+.qr-output{
+  width:100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:12px;
+  background:white;
+  border-radius:22px;
+  margin-bottom:12px;
+}
+
+.qr-output canvas,
+.qr-output img{
+  width:220px !important;
+  height:220px !important;
+}
+
+.qr-value-box{
+  width:100%;
+  background:white;
+  border-radius:18px;
+  padding:12px;
+  font-size:13px;
+  line-height:1.4;
+  color:#333;
+  word-break:break-word;
+  text-align:left;
+}
+
+/* =========================
+   SCANNER
+========================= */
+.scanner-box{
+  width:100%;
+  overflow:hidden;
+  border-radius:24px;
+  background:#f7f7fb;
+  border:1px solid rgba(0,0,0,0.06);
+  padding:10px;
+  margin-top:12px;
+}
+
+#scannerReader{
+  width:100%;
+}
+
+.scan-result-box{
+  display:none;
+  width:100%;
+  background:#f4fff7;
+  border:1px solid rgba(52,199,89,0.25);
+  border-radius:22px;
+  padding:14px;
+  margin-top:12px;
+}
+
+.result-title{
+  font-size:16px;
+  font-weight:950;
+  color:#198c36;
+  margin-bottom:8px;
+}
+
+.result-text{
+  font-size:14px;
+  line-height:1.45;
+  color:#222;
+  word-break:break-word;
+  font-weight:750;
+}
+
+/* =========================
+   SAVED LIST
+========================= */
+.saved-list{
+  width:100%;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  margin-top:12px;
+}
+
+.saved-card{
+  width:100%;
+  border-radius:22px;
+  background:#f7f7fb;
+  border:1px solid rgba(0,0,0,0.06);
+  padding:14px;
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.saved-mini-qr{
+  width:72px;
+  height:72px;
+  background:white;
+  border-radius:16px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+  flex-shrink:0;
+}
+
+.saved-mini-qr canvas,
+.saved-mini-qr img{
+  width:62px !important;
+  height:62px !important;
+}
+
+.saved-info{
+  flex:1;
+  min-width:0;
+}
+
+.saved-title{
+  font-size:15px;
+  font-weight:950;
+  margin-bottom:4px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.saved-sub{
+  font-size:12px;
+  color:#666;
+  font-weight:750;
+  margin-bottom:5px;
+}
+
+.saved-value{
+  font-size:12px;
+  color:#777;
+  line-height:1.35;
+  max-height:34px;
+  overflow:hidden;
+  word-break:break-word;
+}
+
+.saved-actions{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  flex-shrink:0;
+}
+
+.small-action-btn{
+  border:none;
+  border-radius:14px;
+  background:#007aff;
+  color:white;
+  font-size:12px;
+  font-weight:900;
+  padding:9px 10px;
+  cursor:pointer;
+}
+
+.small-action-btn.delete{
+  background:#ff3b30;
+}
+
+.empty-text{
+  color:#777;
+  font-size:14px;
+  font-weight:750;
+  padding:8px 0;
+}
+
+/* =========================
+   BIG QR MODAL
+========================= */
+.big-modal{
+  display:none;
+  position:fixed;
+  inset:0;
+  z-index:9999;
+  background:rgba(0,0,0,0.72);
+  padding:18px;
+  align-items:center;
+  justify-content:center;
+}
+
+.big-modal-card{
+  width:100%;
+  max-width:520px;
+  max-height:92vh;
+  overflow:auto;
+  background:white;
+  color:#111;
+  border-radius:30px;
+  padding:20px;
+  text-align:center;
+}
+
+.big-modal-title{
+  font-size:22px;
+  font-weight:950;
+  margin-bottom:6px;
+}
+
+.big-modal-sub{
+  font-size:13px;
+  color:#666;
+  line-height:1.4;
+  margin-bottom:16px;
+  word-break:break-word;
+}
+
+.big-qr-output{
+  width:100%;
+  background:#f7f7fb;
+  border-radius:26px;
+  padding:18px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  margin-bottom:12px;
+}
+
+.big-qr-output canvas,
+.big-qr-output img{
+  width:300px !important;
+  height:300px !important;
+}
+
+/* =========================
+   SECTIONS
+========================= */
+.tool-section{
+  display:none;
+}
+
+.tool-section.active{
+  display:block;
+}
+
+/* =========================
+   DARK MODE
+========================= */
+body.dark-mode{
+  background:#111;
+  color:white;
+}
+
+body.dark-mode .back-btn,
+body.dark-mode .tab-wrap,
+body.dark-mode .card,
+body.dark-mode .big-modal-card{
+  background:#1c1c1e;
+  color:white;
+}
+
+body.dark-mode .tab-btn{
+  color:#b8b8c0;
+}
+
+body.dark-mode .tab-btn.active{
+  color:white;
+}
+
+body.dark-mode .input-field,
+body.dark-mode .select-field,
+body.dark-mode .textarea-field,
+body.dark-mode .btn-gray,
+body.dark-mode .qr-preview-box,
+body.dark-mode .scanner-box,
+body.dark-mode .saved-card{
+  background:#2c2c2e;
+  color:white;
+}
+
+body.dark-mode .qr-output,
+body.dark-mode .qr-value-box,
+body.dark-mode .saved-mini-qr,
+body.dark-mode .big-qr-output{
+  background:white;
+  color:#111;
+}
+
+body.dark-mode .small-text,
+body.dark-mode .input-label,
+body.dark-mode .saved-sub,
+body.dark-mode .saved-value,
+body.dark-mode .empty-text,
+body.dark-mode .big-modal-sub{
+  color:#b8b8c0;
+}
+
+body.dark-mode .scan-result-box{
+  background:#102416;
+}
+
+body.dark-mode .result-text{
+  color:white;
+}
+
+/* =========================
+   PHONE RESPONSIVE
+========================= */
+@media(max-width:430px){
+  body{
+    padding:12px;
+  }
+
+  .hero-card{
+    padding:22px 18px;
+    border-radius:28px;
+  }
+
+  .hero-card h1{
+    font-size:25px;
+  }
+
+  .card{
+    padding:16px;
+    border-radius:26px;
+  }
+
+  .btn-grid{
+    grid-template-columns:1fr;
+  }
+
+  .two-grid{
+    grid-template-columns:1fr;
+  }
+
+  .qr-output canvas,
+  .qr-output img{
+    width:205px !important;
+    height:205px !important;
+  }
+
+  .big-qr-output canvas,
+  .big-qr-output img{
+    width:270px !important;
+    height:270px !important;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app-wrap">
+
+  <!-- =========================
+       TOP BAR
+  ========================= -->
+  <div class="top-bar">
+    <button class="back-btn" onclick="goBackToMainApp()">←</button>
+    <div class="top-title">QR + Barcode</div>
+    <div class="top-spacer"></div>
+  </div>
+
+  <!-- =========================
+       HERO CARD
+  ========================= -->
+  <div class="hero-card">
+    <div class="hero-icon">▣</div>
+    <h1>QR + Barcode<br>Tools</h1>
+    <p>
+      Scan QR/barcodes, create QR codes, save them inside the app, share, print, and show full screen for scanning.
+    </p>
+  </div>
+
+  <!-- =========================
+       TABS
+  ========================= -->
+  <div class="tab-wrap">
+    <button id="scanTabBtn" class="tab-btn active" onclick="showScanTab()">Scan Code</button>
+    <button id="generateTabBtn" class="tab-btn" onclick="showGenerateTab()">Generate QR</button>
+  </div>
+
+  <!-- =========================
+       SCAN SECTION
+  ========================= -->
+  <section id="scanSection" class="tool-section active">
+
+    <div class="card">
+      <div class="card-title">Scan QR / Barcode</div>
+      <div class="small-text">
+        Use your phone camera to scan QR codes or barcodes. Camera permission is required.
+      </div>
+
+      <button id="startScannerBtn" class="btn btn-primary" onclick="startScanner()">Start Camera Scanner</button>
+      <button id="stopScannerBtn" class="btn btn-red" onclick="stopScanner()" style="display:none;">Stop Scanner</button>
+
+      <div id="scannerBox" class="scanner-box" style="display:none;">
+        <div id="scannerReader"></div>
+      </div>
+
+      <div id="scanResultBox" class="scan-result-box">
+        <div class="result-title">✅ Scanned Result</div>
+        <div id="scanResultText" class="result-text"></div>
+
+        <div class="btn-grid">
+          <button class="btn btn-gray" onclick="copyScanResult()">Copy</button>
+          <button class="btn btn-green" onclick="openScannedLink()">Open Link</button>
+          <button class="btn btn-purple" onclick="shareScanResult()">Share</button>
+          <button class="btn btn-orange" onclick="saveScanResult()">Save</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Manual Barcode / QR Text</div>
+      <div class="small-text">
+        If camera does not work, you can type or paste the code here.
+      </div>
+
+      <label class="input-label">Manual Result</label>
+      <textarea id="manualScanInput" class="textarea-field" placeholder="Type barcode number or QR text here"></textarea>
+
+      <button class="btn btn-primary" onclick="useManualScanText()">Use This Result</button>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Scan History</div>
+      <div id="scanHistoryList" class="saved-list"></div>
+      <button class="btn btn-red" onclick="clearScanHistory()">Clear Scan History</button>
+    </div>
+
+  </section>
+
+  <!-- =========================
+       GENERATE SECTION
+  ========================= -->
+  <section id="generateSection" class="tool-section">
+
+    <div class="card">
+      <div class="card-title">Create QR Code</div>
+      <div class="small-text">
+        Create QR for website, text, phone, email, or Wi-Fi. Then save it in the app so you can show it later.
+      </div>
+
+      <label class="input-label">QR Name</label>
+      <input id="qrNameInput" class="input-field" type="text" placeholder="Example: My Website">
+
+      <label class="input-label">QR Type</label>
+      <select id="qrTypeSelect" class="select-field" onchange="updateQrInputFields()">
+        <option value="website">Website Link</option>
+        <option value="text">Plain Text</option>
+        <option value="phone">Phone Number</option>
+        <option value="email">Email Address</option>
+        <option value="wifi">Wi-Fi Login</option>
+      </select>
+
+      <div id="qrDynamicFields"></div>
+
+      <button class="btn btn-primary" onclick="generateQrCode()">Generate QR Code</button>
+
+      <div id="qrPreviewBox" class="qr-preview-box">
+        <div id="qrPreviewName" class="qr-name">QR Code</div>
+        <div id="qrOutput" class="qr-output"></div>
+        <div id="qrValueBox" class="qr-value-box"></div>
+
+        <div class="btn-grid">
+          <button class="btn btn-gray" onclick="copyGeneratedQrText()">Copy Text</button>
+          <button class="btn btn-purple" onclick="shareGeneratedQr()">Share</button>
+          <button class="btn btn-green" onclick="saveGeneratedQr()">Save In App</button>
+          <button class="btn btn-orange" onclick="printGeneratedQr()">Print</button>
+          <button class="btn btn-primary" onclick="downloadGeneratedQr()">Download PNG</button>
+          <button class="btn btn-gray" onclick="openBigGeneratedQr()">Show Big QR</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Saved QR Codes</div>
+      <div class="small-text">
+        Saved QR codes stay in this app. Your main Export Backup should also include them because they are saved in localStorage.
+      </div>
+
+      <div id="savedQrList" class="saved-list"></div>
+    </div>
+
+  </section>
+
+</div>
+
+<!-- =========================
+     BIG QR MODAL
+========================= -->
+<div id="bigQrModal" class="big-modal">
+  <div class="big-modal-card">
+    <div id="bigQrTitle" class="big-modal-title">QR Code</div>
+    <div id="bigQrSub" class="big-modal-sub">Scan this QR code</div>
+    <div id="bigQrOutput" class="big-qr-output"></div>
+
+    <div class="btn-grid">
+      <button class="btn btn-purple" onclick="shareBigQr()">Share</button>
+      <button class="btn btn-orange" onclick="printBigQr()">Print</button>
+      <button class="btn btn-primary" onclick="downloadBigQr()">Download</button>
+      <button class="btn btn-gray" onclick="closeBigQr()">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* =========================
+   GLOBAL VARIABLES
+========================= */
+let html5QrScanner = null;
+let scannerRunning = false;
+
+let lastScanResult = "";
+let currentQrName = "";
+let currentQrType = "";
+let currentQrValue = "";
+
+let bigQrName = "";
+let bigQrType = "";
+let bigQrValue = "";
+
+/* =========================
+   APPLY SAVED THEME
+========================= */
+function applySavedTheme(){
+
+  let savedTheme = localStorage.getItem("smartToolsHomeTheme") || "dark";
+
+  if(savedTheme === "dark"){
+    document.body.classList.add("dark-mode");
+  }else{
+    document.body.classList.remove("dark-mode");
+  }
+
+}
+
+applySavedTheme();
+
+/* =========================
+   GO BACK TO MAIN APP
+========================= */
+function goBackToMainApp(){
+
+  stopScanner();
+  window.location.href = "../index.html";
+
+}
+
+/* =========================
+   SHOW SCAN TAB
+========================= */
+function showScanTab(){
+
+  document.getElementById("scanTabBtn").classList.add("active");
+  document.getElementById("generateTabBtn").classList.remove("active");
+
+  document.getElementById("scanSection").classList.add("active");
+  document.getElementById("generateSection").classList.remove("active");
+
+}
+
+/* =========================
+   SHOW GENERATE TAB
+========================= */
+function showGenerateTab(){
+
+  document.getElementById("generateTabBtn").classList.add("active");
+  document.getElementById("scanTabBtn").classList.remove("active");
+
+  document.getElementById("generateSection").classList.add("active");
+  document.getElementById("scanSection").classList.remove("active");
+
+}
+
+/* =========================
+   START SCANNER
+========================= */
+function startScanner(){
+
+  if(scannerRunning){
+    return;
+  }
+
+  if(typeof Html5QrcodeScanner === "undefined"){
+    alert("Scanner library did not load. Please check internet connection and try again.");
+    return;
+  }
+
+  document.getElementById("scannerBox").style.display = "block";
+  document.getElementById("startScannerBtn").style.display = "none";
+  document.getElementById("stopScannerBtn").style.display = "block";
+
+  html5QrScanner = new Html5QrcodeScanner(
+    "scannerReader",
+    {
+      fps:10,
+      qrbox:function(viewfinderWidth, viewfinderHeight){
+        let minEdge = Math.min(viewfinderWidth, viewfinderHeight);
+        let boxSize = Math.floor(minEdge * 0.72);
+        return {
+          width:boxSize,
+          height:boxSize
+        };
+      },
+      rememberLastUsedCamera:true
+    },
+    false
+  );
+
+  html5QrScanner.render(onScanSuccess, onScanFailure);
+  scannerRunning = true;
+
+}
+
+/* =========================
+   STOP SCANNER
+========================= */
+function stopScanner(){
+
+  if(html5QrScanner && scannerRunning){
+    html5QrScanner.clear().catch(function(error){
+      console.log("Scanner clear error:", error);
+    });
+  }
+
+  html5QrScanner = null;
+  scannerRunning = false;
+
+  let scannerBox = document.getElementById("scannerBox");
+  let startBtn = document.getElementById("startScannerBtn");
+  let stopBtn = document.getElementById("stopScannerBtn");
+
+  if(scannerBox) scannerBox.style.display = "none";
+  if(startBtn) startBtn.style.display = "block";
+  if(stopBtn) stopBtn.style.display = "none";
+
+}
+
+/* =========================
+   ON SCAN SUCCESS
+========================= */
+function onScanSuccess(decodedText, decodedResult){
+
+  lastScanResult = decodedText || "";
+
+  document.getElementById("scanResultText").innerText = lastScanResult;
+  document.getElementById("scanResultBox").style.display = "block";
+
+  saveScanResult();
+
+  stopScanner();
+
+}
+
+/* =========================
+   ON SCAN FAILURE
+========================= */
+function onScanFailure(error){
+
+  // Keep quiet while camera is scanning.
+
+}
+
+/* =========================
+   USE MANUAL SCAN TEXT
+========================= */
+function useManualScanText(){
+
+  let text = document.getElementById("manualScanInput").value.trim();
+
+  if(!text){
+    alert("Please type or paste something first.");
+    return;
+  }
+
+  lastScanResult = text;
+
+  document.getElementById("scanResultText").innerText = lastScanResult;
+  document.getElementById("scanResultBox").style.display = "block";
+
+  saveScanResult();
+
+}
+
+/* =========================
+   IS LINK
+========================= */
+function isLink(text){
+
+  return /^https?:\/\//i.test(text);
+
+}
+
+/* =========================
+   COPY SCAN RESULT
+========================= */
+function copyScanResult(){
+
+  if(!lastScanResult){
+    alert("No scan result to copy.");
+    return;
+  }
+
+  navigator.clipboard.writeText(lastScanResult).then(function(){
+    alert("Copied.");
+  });
+
+}
+
+/* =========================
+   OPEN SCANNED LINK
+========================= */
+function openScannedLink(){
+
+  if(!lastScanResult){
+    alert("No scan result.");
+    return;
+  }
+
+  if(isLink(lastScanResult)){
+    window.open(lastScanResult, "_blank");
+  }else{
+    alert("This result is not a website link.");
+  }
+
+}
+
+/* =========================
+   SHARE SCAN RESULT
+========================= */
+function shareScanResult(){
+
+  if(!lastScanResult){
+    alert("No scan result to share.");
+    return;
+  }
+
+  if(navigator.share){
+    navigator.share({
+      title:"Scanned Code",
+      text:lastScanResult
+    });
+  }else{
+    copyScanResult();
+  }
+
+}
+
+/* =========================
+   SAVE SCAN RESULT
+========================= */
+function saveScanResult(){
+
+  if(!lastScanResult){
+    return;
+  }
+
+  let history = getScanHistory();
+
+  let item = {
+    id:Date.now(),
+    value:lastScanResult,
+    date:new Date().toLocaleString()
+  };
+
+  history.unshift(item);
+
+  if(history.length > 50){
+    history = history.slice(0,50);
+  }
+
+  localStorage.setItem("smartToolsScanHistory", JSON.stringify(history));
+  renderScanHistory();
+
+}
+
+/* =========================
+   GET SCAN HISTORY
+========================= */
+function getScanHistory(){
+
+  try{
+    let saved = JSON.parse(localStorage.getItem("smartToolsScanHistory") || "[]");
+    return Array.isArray(saved) ? saved : [];
+  }catch(error){
+    return [];
+  }
+
+}
+
+/* =========================
+   RENDER SCAN HISTORY
+========================= */
+function renderScanHistory(){
+
+  let list = document.getElementById("scanHistoryList");
+  let history = getScanHistory();
+
+  list.innerHTML = "";
+
+  if(history.length === 0){
+    list.innerHTML = '<div class="empty-text">No scan history yet.</div>';
+    return;
+  }
+
+  history.forEach(function(item){
+
+    let card = document.createElement("div");
+    card.className = "saved-card";
+
+    card.innerHTML = `
+      <div class="saved-info">
+        <div class="saved-title">Scanned Code</div>
+        <div class="saved-sub">${item.date}</div>
+        <div class="saved-value">${escapeHtml(item.value)}</div>
+      </div>
+
+      <div class="saved-actions">
+        <button class="small-action-btn" onclick="useOldScan('${item.id}')">Use</button>
+        <button class="small-action-btn delete" onclick="deleteScanHistoryItem('${item.id}')">Delete</button>
+      </div>
+    `;
+
+    list.appendChild(card);
+
+  });
+
+}
+
+/* =========================
+   USE OLD SCAN
+========================= */
+function useOldScan(id){
+
+  let history = getScanHistory();
+  let item = history.find(function(x){ return String(x.id) === String(id); });
+
+  if(!item) return;
+
+  lastScanResult = item.value;
+  document.getElementById("scanResultText").innerText = lastScanResult;
+  document.getElementById("scanResultBox").style.display = "block";
+  window.scrollTo(0,0);
+
+}
+
+/* =========================
+   DELETE SCAN HISTORY ITEM
+========================= */
+function deleteScanHistoryItem(id){
+
+  let history = getScanHistory();
+  history = history.filter(function(item){ return String(item.id) !== String(id); });
+
+  localStorage.setItem("smartToolsScanHistory", JSON.stringify(history));
+  renderScanHistory();
+
+}
+
+/* =========================
+   CLEAR SCAN HISTORY
+========================= */
+function clearScanHistory(){
+
+  if(!confirm("Clear all scan history?")){
+    return;
+  }
+
+  localStorage.removeItem("smartToolsScanHistory");
+  renderScanHistory();
+
+}
+
+/* =========================
+   UPDATE QR INPUT FIELDS
+========================= */
+function updateQrInputFields(){
+
+  let type = document.getElementById("qrTypeSelect").value;
+  let box = document.getElementById("qrDynamicFields");
+
+  if(type === "website"){
+    box.innerHTML = `
+      <label class="input-label">Website Link</label>
+      <input id="qrMainInput" class="input-field" type="url" placeholder="https://example.com">
+    `;
+  }
+
+  if(type === "text"){
+    box.innerHTML = `
+      <label class="input-label">Text</label>
+      <textarea id="qrMainInput" class="textarea-field" placeholder="Type any text here"></textarea>
+    `;
+  }
+
+  if(type === "phone"){
+    box.innerHTML = `
+      <label class="input-label">Phone Number</label>
+      <input id="qrMainInput" class="input-field" type="tel" placeholder="+1 516 000 0000">
+    `;
+  }
+
+  if(type === "email"){
+    box.innerHTML = `
+      <label class="input-label">Email Address</label>
+      <input id="qrMainInput" class="input-field" type="email" placeholder="name@example.com">
+
+      <label class="input-label">Subject Optional</label>
+      <input id="qrEmailSubjectInput" class="input-field" type="text" placeholder="Subject">
+    `;
+  }
+
+  if(type === "wifi"){
+    box.innerHTML = `
+      <label class="input-label">Wi-Fi Name</label>
+      <input id="qrWifiNameInput" class="input-field" type="text" placeholder="Wi-Fi name">
+
+      <label class="input-label">Wi-Fi Password</label>
+      <input id="qrWifiPasswordInput" class="input-field" type="text" placeholder="Wi-Fi password">
+
+      <label class="input-label">Security</label>
+      <select id="qrWifiSecurityInput" class="select-field">
+        <option value="WPA">WPA/WPA2</option>
+        <option value="WEP">WEP</option>
+        <option value="nopass">No Password</option>
+      </select>
+    `;
+  }
+
+}
+
+/* =========================
+   BUILD QR VALUE
+========================= */
+function buildQrValue(){
+
+  let type = document.getElementById("qrTypeSelect").value;
+
+  if(type === "website"){
+    let value = document.getElementById("qrMainInput").value.trim();
+
+    if(value && !/^https?:\/\//i.test(value)){
+      value = "https://" + value;
+    }
+
+    return value;
+  }
+
+  if(type === "text"){
+    return document.getElementById("qrMainInput").value.trim();
+  }
+
+  if(type === "phone"){
+    let phone = document.getElementById("qrMainInput").value.trim();
+    return "tel:" + phone;
+  }
+
+  if(type === "email"){
+    let email = document.getElementById("qrMainInput").value.trim();
+    let subject = document.getElementById("qrEmailSubjectInput").value.trim();
+
+    if(subject){
+      return "mailto:" + email + "?subject=" + encodeURIComponent(subject);
+    }
+
+    return "mailto:" + email;
+  }
+
+  if(type === "wifi"){
+    let wifiName = document.getElementById("qrWifiNameInput").value.trim();
+    let wifiPassword = document.getElementById("qrWifiPasswordInput").value.trim();
+    let wifiSecurity = document.getElementById("qrWifiSecurityInput").value;
+
+    return "WIFI:T:" + wifiSecurity + ";S:" + escapeWifiText(wifiName) + ";P:" + escapeWifiText(wifiPassword) + ";H:false;;";
+  }
+
+  return "";
+
+}
+
+/* =========================
+   ESCAPE WIFI TEXT
+========================= */
+function escapeWifiText(text){
+
+  return text.replace(/\\/g,"\\\\").replace(/;/g,"\\;").replace(/,/g,"\\,").replace(/:/g,"\\:");
+
+}
+
+/* =========================
+   GENERATE QR CODE
+========================= */
+function generateQrCode(){
+
+  if(typeof QRCode === "undefined"){
+    alert("QR library did not load. Please check internet connection and try again.");
+    return;
+  }
+
+  let name = document.getElementById("qrNameInput").value.trim();
+  let type = document.getElementById("qrTypeSelect").value;
+  let value = buildQrValue();
+
+  if(!value){
+    alert("Please enter QR information first.");
+    return;
+  }
+
+  if(!name){
+    name = getQrTypeLabel(type) + " QR";
+  }
+
+  currentQrName = name;
+  currentQrType = type;
+  currentQrValue = value;
+
+  document.getElementById("qrPreviewName").innerText = name;
+  document.getElementById("qrValueBox").innerText = value;
+  document.getElementById("qrPreviewBox").style.display = "block";
+
+  makeQrInBox("qrOutput", value, 220);
+
+}
+
+/* =========================
+   MAKE QR IN BOX
+========================= */
+function makeQrInBox(boxId, value, size){
+
+  let box = document.getElementById(boxId);
+  box.innerHTML = "";
+
+  new QRCode(box, {
+    text:value,
+    width:size,
+    height:size,
+    colorDark:"#000000",
+    colorLight:"#ffffff",
+    correctLevel:QRCode.CorrectLevel.H
+  });
+
+}
+
+/* =========================
+   GET QR TYPE LABEL
+========================= */
+function getQrTypeLabel(type){
+
+  if(type === "website") return "Website";
+  if(type === "text") return "Text";
+  if(type === "phone") return "Phone";
+  if(type === "email") return "Email";
+  if(type === "wifi") return "Wi-Fi";
+
+  return "QR";
+
+}
+
+/* =========================
+   GET GENERATED QR CANVAS
+========================= */
+function getGeneratedQrCanvas(){
+
+  return document.querySelector("#qrOutput canvas");
+
+}
+
+/* =========================
+   COPY GENERATED QR TEXT
+========================= */
+function copyGeneratedQrText(){
+
+  if(!currentQrValue){
+    alert("Generate QR first.");
+    return;
+  }
+
+  navigator.clipboard.writeText(currentQrValue).then(function(){
+    alert("Copied.");
+  });
+
+}
+
+/* =========================
+   DOWNLOAD GENERATED QR
+========================= */
+function downloadGeneratedQr(){
+
+  let canvas = getGeneratedQrCanvas();
+
+  if(!canvas){
+    alert("Generate QR first.");
+    return;
+  }
+
+  downloadCanvasAsPng(canvas, cleanFileName(currentQrName || "qr-code") + ".png");
+
+}
+
+/* =========================
+   SHARE GENERATED QR
+========================= */
+function shareGeneratedQr(){
+
+  let canvas = getGeneratedQrCanvas();
+
+  if(!canvas){
+    alert("Generate QR first.");
+    return;
+  }
+
+  shareQrCanvas(canvas, currentQrName, currentQrValue);
+
+}
+
+/* =========================
+   PRINT GENERATED QR
+========================= */
+function printGeneratedQr(){
+
+  let canvas = getGeneratedQrCanvas();
+
+  if(!canvas){
+    alert("Generate QR first.");
+    return;
+  }
+
+  printQrCanvas(canvas, currentQrName, currentQrValue);
+
+}
+
+/* =========================
+   SAVE GENERATED QR
+========================= */
+function saveGeneratedQr(){
+
+  if(!currentQrValue){
+    alert("Generate QR first.");
+    return;
+  }
+
+  let saved = getSavedQrCodes();
+
+  let item = {
+    id:Date.now(),
+    name:currentQrName,
+    type:currentQrType,
+    value:currentQrValue,
+    date:new Date().toLocaleString()
+  };
+
+  saved.unshift(item);
+
+  localStorage.setItem("smartToolsSavedQrCodes", JSON.stringify(saved));
+
+  renderSavedQrCodes();
+
+  alert("QR saved in app.");
+
+}
+
+/* =========================
+   GET SAVED QR CODES
+========================= */
+function getSavedQrCodes(){
+
+  try{
+    let saved = JSON.parse(localStorage.getItem("smartToolsSavedQrCodes") || "[]");
+    return Array.isArray(saved) ? saved : [];
+  }catch(error){
+    return [];
+  }
+
+}
+
+/* =========================
+   RENDER SAVED QR CODES
+========================= */
+function renderSavedQrCodes(){
+
+  let list = document.getElementById("savedQrList");
+  let saved = getSavedQrCodes();
+
+  list.innerHTML = "";
+
+  if(saved.length === 0){
+    list.innerHTML = '<div class="empty-text">No saved QR codes yet.</div>';
+    return;
+  }
+
+  saved.forEach(function(item){
+
+    let card = document.createElement("div");
+    card.className = "saved-card";
+
+    let miniId = "miniQr_" + item.id;
+
+    card.innerHTML = `
+      <div id="${miniId}" class="saved-mini-qr"></div>
+
+      <div class="saved-info">
+        <div class="saved-title">${escapeHtml(item.name)}</div>
+        <div class="saved-sub">${getQrTypeLabel(item.type)} • ${item.date}</div>
+        <div class="saved-value">${escapeHtml(item.value)}</div>
+      </div>
+
+      <div class="saved-actions">
+        <button class="small-action-btn" onclick="openSavedQr('${item.id}')">Open</button>
+        <button class="small-action-btn delete" onclick="deleteSavedQr('${item.id}')">Delete</button>
+      </div>
+    `;
+
+    list.appendChild(card);
+
+    setTimeout(function(){
+      makeSmallQr(miniId, item.value);
+    }, 20);
+
+  });
+
+}
+
+/* =========================
+   MAKE SMALL QR
+========================= */
+function makeSmallQr(boxId, value){
+
+  let box = document.getElementById(boxId);
+
+  if(!box || typeof QRCode === "undefined"){
+    return;
+  }
+
+  box.innerHTML = "";
+
+  new QRCode(box, {
+    text:value,
+    width:62,
+    height:62,
+    colorDark:"#000000",
+    colorLight:"#ffffff",
+    correctLevel:QRCode.CorrectLevel.H
+  });
+
+}
+
+/* =========================
+   OPEN SAVED QR
+========================= */
+function openSavedQr(id){
+
+  let saved = getSavedQrCodes();
+  let item = saved.find(function(x){ return String(x.id) === String(id); });
+
+  if(!item) return;
+
+  openBigQr(item.name, item.type, item.value);
+
+}
+
+/* =========================
+   DELETE SAVED QR
+========================= */
+function deleteSavedQr(id){
+
+  if(!confirm("Delete this saved QR code?")){
+    return;
+  }
+
+  let saved = getSavedQrCodes();
+  saved = saved.filter(function(item){ return String(item.id) !== String(id); });
+
+  localStorage.setItem("smartToolsSavedQrCodes", JSON.stringify(saved));
+  renderSavedQrCodes();
+
+}
+
+/* =========================
+   OPEN BIG GENERATED QR
+========================= */
+function openBigGeneratedQr(){
+
+  if(!currentQrValue){
+    alert("Generate QR first.");
+    return;
+  }
+
+  openBigQr(currentQrName, currentQrType, currentQrValue);
+
+}
+
+/* =========================
+   OPEN BIG QR
+========================= */
+function openBigQr(name, type, value){
+
+  bigQrName = name || "QR Code";
+  bigQrType = type || "text";
+  bigQrValue = value || "";
+
+  document.getElementById("bigQrTitle").innerText = bigQrName;
+  document.getElementById("bigQrSub").innerText = getQrTypeLabel(bigQrType) + " • Scan this QR code";
+
+  document.getElementById("bigQrModal").style.display = "flex";
+
+  makeQrInBox("bigQrOutput", bigQrValue, 300);
+
+}
+
+/* =========================
+   CLOSE BIG QR
+========================= */
+function closeBigQr(){
+
+  document.getElementById("bigQrModal").style.display = "none";
+
+}
+
+/* =========================
+   GET BIG QR CANVAS
+========================= */
+function getBigQrCanvas(){
+
+  return document.querySelector("#bigQrOutput canvas");
+
+}
+
+/* =========================
+   SHARE BIG QR
+========================= */
+function shareBigQr(){
+
+  let canvas = getBigQrCanvas();
+
+  if(!canvas){
+    return;
+  }
+
+  shareQrCanvas(canvas, bigQrName, bigQrValue);
+
+}
+
+/* =========================
+   PRINT BIG QR
+========================= */
+function printBigQr(){
+
+  let canvas = getBigQrCanvas();
+
+  if(!canvas){
+    return;
+  }
+
+  printQrCanvas(canvas, bigQrName, bigQrValue);
+
+}
+
+/* =========================
+   DOWNLOAD BIG QR
+========================= */
+function downloadBigQr(){
+
+  let canvas = getBigQrCanvas();
+
+  if(!canvas){
+    return;
+  }
+
+  downloadCanvasAsPng(canvas, cleanFileName(bigQrName || "qr-code") + ".png");
+
+}
+
+/* =========================
+   DOWNLOAD CANVAS AS PNG
+========================= */
+function downloadCanvasAsPng(canvas, fileName){
+
+  let link = document.createElement("a");
+  link.href = canvas.toDataURL("image/png");
+  link.download = fileName;
+
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+
+}
+
+/* =========================
+   SHARE QR CANVAS
+========================= */
+function shareQrCanvas(canvas, title, text){
+
+  canvas.toBlob(function(blob){
+
+    if(!blob){
+      shareTextOnly(title, text);
+      return;
+    }
+
+    let file = new File([blob], cleanFileName(title || "qr-code") + ".png", {
+      type:"image/png"
+    });
+
+    if(navigator.canShare && navigator.canShare({ files:[file] })){
+      navigator.share({
+        title:title || "QR Code",
+        text:text || "",
+        files:[file]
+      });
+      return;
+    }
+
+    shareTextOnly(title, text);
+
+  }, "image/png");
+
+}
+
+/* =========================
+   SHARE TEXT ONLY
+========================= */
+function shareTextOnly(title, text){
+
+  if(navigator.share){
+    navigator.share({
+      title:title || "QR Code",
+      text:text || ""
+    });
+  }else{
+    navigator.clipboard.writeText(text || "").then(function(){
+      alert("Sharing is not supported here. QR text copied instead.");
+    });
+  }
+
+}
+
+/* =========================
+   PRINT QR CANVAS
+========================= */
+function printQrCanvas(canvas, title, text){
+
+  let imageData = canvas.toDataURL("image/png");
+  let safeTitle = escapeHtml(title || "QR Code");
+  let safeText = escapeHtml(text || "");
+
+  let printWindow = window.open("", "_blank");
+
+  if(!printWindow){
+    alert("Popup blocked. Please allow popups to print.");
+    return;
+  }
+
+  printWindow.document.open();
+  printWindow.document.write(`
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>${safeTitle}</title>
+      <style>
+        body{
+          margin:0;
+          padding:30px;
+          font-family:Arial,sans-serif;
+          text-align:center;
+          color:#111;
+        }
+
+        .wrap{
+          max-width:520px;
+          margin:0 auto;
+          border:1px solid #ddd;
+          border-radius:24px;
+          padding:28px;
+        }
+
+        h1{
+          margin:0 0 18px 0;
+          font-size:28px;
+        }
+
+        img{
+          width:320px;
+          height:320px;
+          display:block;
+          margin:0 auto 18px auto;
+        }
+
+        .text{
+          font-size:14px;
+          line-height:1.45;
+          word-break:break-word;
+          background:#f4f4f4;
+          border-radius:14px;
+          padding:14px;
+          text-align:left;
+        }
+
+        .scan{
+          margin-top:14px;
+          font-size:16px;
+          font-weight:800;
+        }
+
+        @media print{
+          button{display:none;}
+          body{padding:0;}
+          .wrap{border:none;}
+        }
+      </style>
+    </head>
+    <body>
+      <div class="wrap">
+        <h1>${safeTitle}</h1>
+        <img src="${imageData}" alt="QR Code">
+        <div class="scan">Scan this QR code</div>
+        <div class="text">${safeText}</div>
+      </div>
+
+      <script>
+        window.onload = function(){
+          setTimeout(function(){
+            window.print();
+          }, 300);
+        };
+      <\/script>
+    </body>
+    </html>
+  `);
+  printWindow.document.close();
+
+}
+
+/* =========================
+   CLEAN FILE NAME
+========================= */
+function cleanFileName(name){
+
+  return String(name || "qr-code")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g,"-")
+    .replace(/^-+|-+$/g,"")
+    .substring(0,50) || "qr-code";
+
+}
+
+/* =========================
+   ESCAPE HTML
+========================= */
+function escapeHtml(text){
+
+  return String(text || "")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+
+}
+
+/* =========================
+   PAGE LOAD
+========================= */
+document.addEventListener("DOMContentLoaded", function(){
+
+  updateQrInputFields();
+  renderSavedQrCodes();
+  renderScanHistory();
+
+});
+</script>
+
+</body>
+</html>
