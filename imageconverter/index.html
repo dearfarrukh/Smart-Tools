@@ -468,16 +468,25 @@
     .pdf-editor-page-shell { position: relative; background: white; box-shadow: 0 10px 28px rgba(15,23,42,0.18); overflow: hidden; flex-shrink: 0; }
     #pdfEditorCanvas { display: block; }
     .pdf-editor-overlay-layer { position: absolute; inset: 0; z-index: 3; }
-    .pdf-editor-item { position: absolute; min-width: 40px; min-height: 28px; padding: 4px 7px; border: 2px solid #2563eb; background: rgba(255,255,255,0.78); color: #111; font-weight: 900; cursor: move; user-select: none; touch-action: none; border-radius: 7px; font-family: Arial, Helvetica, sans-serif; }
-    .pdf-editor-item.signature { font-family: "Brush Script MT", cursive; font-size: 28px; font-weight: 500; border-color: #7c3aed; }
-    .pdf-editor-item.check { font-size: 30px; color: #111; border-color: #22c55e; background: rgba(255,255,255,0.70); }
-    .pdf-editor-item.cover { background: white; border: 2px solid #ef4444; padding: 0; min-width: 120px; min-height: 45px; }
+    /* Text looks clean. No blue box on the PDF preview. */
+    .pdf-editor-item { position: absolute; min-width: 28px; min-height: 24px; padding: 2px 4px; border: 1px dashed transparent; background: transparent; color: #111; font-weight: 400; cursor: move; user-select: none; touch-action: none; border-radius: 5px; font-family: Arial, Helvetica, sans-serif; line-height: 1.15; }
+    .pdf-editor-item:active { border-color: rgba(37,99,235,0.35); background: rgba(255,255,255,0.28); }
+    .pdf-editor-item.signature { font-family: "Brush Script MT", cursive; font-size: 28px; }
+    .pdf-editor-item.check { font-size: 30px; color: #111; font-weight: 900; }
+    .pdf-editor-item.cover { background: white; border: 2px dashed #ef4444; padding: 0; min-width: 120px; min-height: 45px; }
     .pdf-editor-small-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .pdf-editor-format-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 12px; }
+    .pdf-editor-format-btn { border: none; min-height: 46px; border-radius: 15px; background: #e5e7eb; color: #111827; font-size: 15px; font-weight: 900; cursor: pointer; }
+    .pdf-editor-format-btn.active { background: #2563eb; color: white; }
+    .pdf-editor-format-btn.italic-label { font-style: italic; }
+    .pdf-editor-format-btn.underline-label { text-decoration: underline; }
     body.smart-tools-dark-theme .pdf-editor-card { background: #0f172a; color: #f8fafc; }
     body.smart-tools-dark-theme .pdf-editor-title { color: #f8fafc; }
     body.smart-tools-dark-theme .pdf-editor-close, body.smart-tools-dark-theme .pdf-editor-panel, body.smart-tools-dark-theme .pdf-editor-preview-card { background: rgba(30,41,59,0.92); border-color: rgba(148,163,184,0.22); color: #f8fafc; }
     body.smart-tools-dark-theme .pdf-editor-label, body.smart-tools-dark-theme .pdf-editor-help, body.smart-tools-dark-theme .pdf-editor-preview-top { color: #cbd5e1; }
     body.smart-tools-dark-theme .pdf-editor-input, body.smart-tools-dark-theme .pdf-editor-select { background: rgba(15,23,42,0.82); color: #f8fafc; border-color: rgba(148,163,184,0.28); }
+    body.smart-tools-dark-theme .pdf-editor-format-btn { background: rgba(148,163,184,0.20); color: #f8fafc; }
+    body.smart-tools-dark-theme .pdf-editor-format-btn.active { background: #2563eb; color: white; }
     body.smart-tools-dark-theme .pdf-editor-scroll { background: #020617; }
     @media (max-width: 820px) { .pdf-editor-layout { grid-template-columns: 1fr; } .pdf-editor-card { border-radius: 24px; padding: 16px; } .pdf-editor-title { font-size: 21px; } }
 
@@ -806,6 +815,12 @@
               </select>
             </label>
           </div>
+          <div class="pdf-editor-format-row">
+            <button id="pdfEditorBoldBtn" class="pdf-editor-format-btn" onclick="togglePdfEditorFormat('bold')">Bold</button>
+            <button id="pdfEditorItalicBtn" class="pdf-editor-format-btn italic-label" onclick="togglePdfEditorFormat('italic')">Italic</button>
+            <button id="pdfEditorUnderlineBtn" class="pdf-editor-format-btn underline-label" onclick="togglePdfEditorFormat('underline')">Underline</button>
+          </div>
+
           <div class="pdf-editor-btn-grid">
             <button class="pdf-editor-btn blue-btn" onclick="addPdfEditorText()">Add Text</button>
             <button class="pdf-editor-btn green-btn" onclick="addPdfEditorDate()">Add Date</button>
@@ -1760,18 +1775,52 @@
     }
 
     // =========================
+    // TOGGLE PDF EDITOR FORMAT
+    // =========================
+    function togglePdfEditorFormat(type) {
+      let button = null;
+
+      if (type === "bold") button = document.getElementById("pdfEditorBoldBtn");
+      if (type === "italic") button = document.getElementById("pdfEditorItalicBtn");
+      if (type === "underline") button = document.getElementById("pdfEditorUnderlineBtn");
+
+      if (!button) return;
+
+      button.classList.toggle("active");
+    }
+
+    // =========================
+    // GET PDF EDITOR TEXT STYLE
+    // =========================
+    function getPdfEditorTextStyle() {
+      const boldBtn = document.getElementById("pdfEditorBoldBtn");
+      const italicBtn = document.getElementById("pdfEditorItalicBtn");
+      const underlineBtn = document.getElementById("pdfEditorUnderlineBtn");
+
+      return {
+        bold: !!(boldBtn && boldBtn.classList.contains("active")),
+        italic: !!(italicBtn && italicBtn.classList.contains("active")),
+        underline: !!(underlineBtn && underlineBtn.classList.contains("active"))
+      };
+    }
+
+    // =========================
     // ADD PDF EDITOR ITEM
     // =========================
     function addPdfEditorItem(item) {
       if (!pdfEditorPdfJsDoc) { alert("Open a PDF first."); return; }
       const pageItems = pdfEditorItems.filter(x => x.page === pdfEditorCurrentPage);
       const offset = Math.min(0.35, pageItems.length * 0.035);
+      const textStyle = getPdfEditorTextStyle();
       const newItem = {
         id: "editor_item_" + Date.now() + "_" + Math.floor(Math.random() * 99999),
         page: pdfEditorCurrentPage,
         type: item.type,
         text: item.text || "",
         fontSize: item.fontSize || 18,
+        bold: item.type === "check" ? true : textStyle.bold,
+        italic: item.type === "signature" ? true : textStyle.italic,
+        underline: textStyle.underline,
         xRatio: 0.12 + offset,
         yRatio: 0.16 + offset,
         widthRatio: item.widthRatio || 0.22,
@@ -1796,6 +1845,9 @@
         div.style.left = (item.xRatio * pdfEditorRenderedWidth) + "px";
         div.style.top = (item.yRatio * pdfEditorRenderedHeight) + "px";
         div.style.fontSize = item.fontSize + "px";
+        div.style.fontWeight = item.bold ? "900" : "400";
+        div.style.fontStyle = item.italic ? "italic" : "normal";
+        div.style.textDecoration = item.underline ? "underline" : "none";
         if (item.type === "cover") {
           div.style.width = (item.widthRatio * pdfEditorRenderedWidth) + "px";
           div.style.height = (item.heightRatio * pdfEditorRenderedHeight) + "px";
@@ -1898,6 +1950,7 @@
         const helveticaFont = await pdfDoc.embedFont(PDFLib.StandardFonts.Helvetica);
         const helveticaBoldFont = await pdfDoc.embedFont(PDFLib.StandardFonts.HelveticaBold);
         const helveticaObliqueFont = await pdfDoc.embedFont(PDFLib.StandardFonts.HelveticaOblique);
+        const helveticaBoldObliqueFont = await pdfDoc.embedFont(PDFLib.StandardFonts.HelveticaBoldOblique);
         pdfEditorItems.forEach(item => {
           const pageIndex = item.page - 1;
           const page = pages[pageIndex];
@@ -1916,9 +1969,27 @@
           let font = helveticaFont;
           let size = item.fontSize || 18;
           let text = item.text || "";
-          if (item.type === "signature") { font = helveticaObliqueFont; size = Math.max(22, size); }
+
+          if (item.bold && item.italic) font = helveticaBoldObliqueFont;
+          else if (item.bold) font = helveticaBoldFont;
+          else if (item.italic) font = helveticaObliqueFont;
+
+          if (item.type === "signature") { size = Math.max(22, size); }
           if (item.type === "check") { font = helveticaBoldFont; size = 30; text = "✓"; }
-          page.drawText(text, { x: x, y: pageHeight - topY - size, size: size, font: font, color: PDFLib.rgb(0, 0, 0) });
+
+          const textY = pageHeight - topY - size;
+
+          page.drawText(text, { x: x, y: textY, size: size, font: font, color: PDFLib.rgb(0, 0, 0) });
+
+          if (item.underline && item.type !== "cover") {
+            const textWidth = font.widthOfTextAtSize(text, size);
+            page.drawLine({
+              start: { x: x, y: textY - 3 },
+              end: { x: x + textWidth, y: textY - 3 },
+              thickness: Math.max(1, size / 14),
+              color: PDFLib.rgb(0, 0, 0)
+            });
+          }
         });
         const editedBytes = await pdfDoc.save({ useObjectStreams: true });
         const blob = new Blob([editedBytes], { type: "application/pdf" });
