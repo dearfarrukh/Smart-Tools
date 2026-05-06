@@ -4,13 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-<title>QR + Barcode Tools</title>
+<title>QR Code Generator</title>
 
 <!-- QR GENERATOR LIBRARY -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-
-<!-- QR / BARCODE SCANNER LIBRARY -->
-<script src="https://unpkg.com/html5-qrcode"></script>
 
 <style>
 /* =========================
@@ -71,6 +68,10 @@ body{
   cursor:pointer;
 }
 
+.back-btn:active{
+  transform:scale(0.96);
+}
+
 .top-title{
   flex:1;
   text-align:center;
@@ -120,37 +121,6 @@ body{
   font-size:15px;
   line-height:1.45;
   opacity:0.95;
-}
-
-/* =========================
-   TAB SWITCH
-========================= */
-.tab-wrap{
-  width:100%;
-  background:white;
-  border-radius:24px;
-  padding:8px;
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:8px;
-  box-shadow:0 8px 24px rgba(0,0,0,0.08);
-  margin-bottom:16px;
-}
-
-.tab-btn{
-  border:none;
-  border-radius:18px;
-  padding:13px 8px;
-  font-size:15px;
-  font-weight:950;
-  background:transparent;
-  color:#555;
-  cursor:pointer;
-}
-
-.tab-btn.active{
-  background:#007aff;
-  color:white;
 }
 
 /* =========================
@@ -207,12 +177,6 @@ body{
   min-height:96px;
   resize:none;
   line-height:1.45;
-}
-
-.two-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
 }
 
 /* =========================
@@ -322,48 +286,6 @@ body{
   color:#333;
   word-break:break-word;
   text-align:left;
-}
-
-/* =========================
-   SCANNER
-========================= */
-.scanner-box{
-  width:100%;
-  overflow:hidden;
-  border-radius:24px;
-  background:#f7f7fb;
-  border:1px solid rgba(0,0,0,0.06);
-  padding:10px;
-  margin-top:12px;
-}
-
-#scannerReader{
-  width:100%;
-}
-
-.scan-result-box{
-  display:none;
-  width:100%;
-  background:#f4fff7;
-  border:1px solid rgba(52,199,89,0.25);
-  border-radius:22px;
-  padding:14px;
-  margin-top:12px;
-}
-
-.result-title{
-  font-size:16px;
-  font-weight:950;
-  color:#198c36;
-  margin-bottom:8px;
-}
-
-.result-text{
-  font-size:14px;
-  line-height:1.45;
-  color:#222;
-  word-break:break-word;
-  font-weight:750;
 }
 
 /* =========================
@@ -523,17 +445,6 @@ body{
 }
 
 /* =========================
-   SECTIONS
-========================= */
-.tool-section{
-  display:none;
-}
-
-.tool-section.active{
-  display:block;
-}
-
-/* =========================
    DARK MODE
 ========================= */
 body.dark-mode{
@@ -542,18 +453,9 @@ body.dark-mode{
 }
 
 body.dark-mode .back-btn,
-body.dark-mode .tab-wrap,
 body.dark-mode .card,
 body.dark-mode .big-modal-card{
   background:#1c1c1e;
-  color:white;
-}
-
-body.dark-mode .tab-btn{
-  color:#b8b8c0;
-}
-
-body.dark-mode .tab-btn.active{
   color:white;
 }
 
@@ -562,7 +464,6 @@ body.dark-mode .select-field,
 body.dark-mode .textarea-field,
 body.dark-mode .btn-gray,
 body.dark-mode .qr-preview-box,
-body.dark-mode .scanner-box,
 body.dark-mode .saved-card{
   background:#2c2c2e;
   color:white;
@@ -583,14 +484,6 @@ body.dark-mode .saved-value,
 body.dark-mode .empty-text,
 body.dark-mode .big-modal-sub{
   color:#b8b8c0;
-}
-
-body.dark-mode .scan-result-box{
-  background:#102416;
-}
-
-body.dark-mode .result-text{
-  color:white;
 }
 
 /* =========================
@@ -619,10 +512,6 @@ body.dark-mode .result-text{
     grid-template-columns:1fr;
   }
 
-  .two-grid{
-    grid-template-columns:1fr;
-  }
-
   .qr-output canvas,
   .qr-output img{
     width:205px !important;
@@ -647,7 +536,7 @@ body.dark-mode .result-text{
   ========================= -->
   <div class="top-bar">
     <button class="back-btn" onclick="goBackToMainApp()">←</button>
-    <div class="top-title">QR + Barcode</div>
+    <div class="top-title">QR Generator</div>
     <div class="top-spacer"></div>
   </div>
 
@@ -656,124 +545,64 @@ body.dark-mode .result-text{
   ========================= -->
   <div class="hero-card">
     <div class="hero-icon">▣</div>
-    <h1>QR + Barcode<br>Tools</h1>
+    <h1>QR Code<br>Generator</h1>
     <p>
-      Scan QR/barcodes, create QR codes, save them inside the app, share, print, and show full screen for scanning.
+      Create QR codes for website, text, phone, email, or Wi-Fi. Save them inside the app, show big QR, share, print, or download PNG.
     </p>
   </div>
 
   <!-- =========================
-       TABS
+       GENERATE QR CARD
   ========================= -->
-  <div class="tab-wrap">
-    <button id="scanTabBtn" class="tab-btn active" onclick="showScanTab()">Scan Code</button>
-    <button id="generateTabBtn" class="tab-btn" onclick="showGenerateTab()">Generate QR</button>
+  <div class="card">
+    <div class="card-title">Create QR Code</div>
+    <div class="small-text">
+      Choose QR type, enter information, then press Generate QR Code.
+    </div>
+
+    <label class="input-label">QR Name</label>
+    <input id="qrNameInput" class="input-field" type="text" placeholder="Example: My Website">
+
+    <label class="input-label">QR Type</label>
+    <select id="qrTypeSelect" class="select-field" onchange="updateQrInputFields()">
+      <option value="website">Website Link</option>
+      <option value="text">Plain Text</option>
+      <option value="phone">Phone Number</option>
+      <option value="email">Email Address</option>
+      <option value="wifi">Wi-Fi Login</option>
+    </select>
+
+    <div id="qrDynamicFields"></div>
+
+    <button class="btn btn-primary" onclick="generateQrCode()">Generate QR Code</button>
+
+    <div id="qrPreviewBox" class="qr-preview-box">
+      <div id="qrPreviewName" class="qr-name">QR Code</div>
+      <div id="qrOutput" class="qr-output"></div>
+      <div id="qrValueBox" class="qr-value-box"></div>
+
+      <div class="btn-grid">
+        <button class="btn btn-gray" onclick="copyGeneratedQrText()">Copy Text</button>
+        <button class="btn btn-purple" onclick="shareGeneratedQr()">Share</button>
+        <button class="btn btn-green" onclick="saveGeneratedQr()">Save In App</button>
+        <button class="btn btn-orange" onclick="printGeneratedQr()">Print</button>
+        <button class="btn btn-primary" onclick="downloadGeneratedQr()">Download PNG</button>
+        <button class="btn btn-gray" onclick="openBigGeneratedQr()">Show Big QR</button>
+      </div>
+    </div>
   </div>
 
   <!-- =========================
-       SCAN SECTION
+       SAVED QR CODES CARD
   ========================= -->
-  <section id="scanSection" class="tool-section active">
-
-    <div class="card">
-      <div class="card-title">Scan QR / Barcode</div>
-      <div class="small-text">
-        Use your phone camera to scan QR codes or barcodes. Camera permission is required.
-      </div>
-
-      <button id="startScannerBtn" class="btn btn-primary" onclick="startScanner()">Start Camera Scanner</button>
-      <button id="stopScannerBtn" class="btn btn-red" onclick="stopScanner()" style="display:none;">Stop Scanner</button>
-
-      <div id="scannerBox" class="scanner-box" style="display:none;">
-        <div id="scannerReader"></div>
-      </div>
-
-      <div id="scanResultBox" class="scan-result-box">
-        <div class="result-title">✅ Scanned Result</div>
-        <div id="scanResultText" class="result-text"></div>
-
-        <div class="btn-grid">
-          <button class="btn btn-gray" onclick="copyScanResult()">Copy</button>
-          <button class="btn btn-green" onclick="openScannedLink()">Open Link</button>
-          <button class="btn btn-purple" onclick="shareScanResult()">Share</button>
-          <button class="btn btn-orange" onclick="saveScanResult()">Save</button>
-        </div>
-      </div>
+  <div class="card">
+    <div class="card-title">Saved QR Codes</div>
+    <div class="small-text">
+      Saved QR codes stay in this app. Your main Export Backup should also include them because they are saved in localStorage.
     </div>
 
-    <div class="card">
-      <div class="card-title">Manual Barcode / QR Text</div>
-      <div class="small-text">
-        If camera does not work, you can type or paste the code here.
-      </div>
-
-      <label class="input-label">Manual Result</label>
-      <textarea id="manualScanInput" class="textarea-field" placeholder="Type barcode number or QR text here"></textarea>
-
-      <button class="btn btn-primary" onclick="useManualScanText()">Use This Result</button>
-    </div>
-
-    <div class="card">
-      <div class="card-title">Scan History</div>
-      <div id="scanHistoryList" class="saved-list"></div>
-      <button class="btn btn-red" onclick="clearScanHistory()">Clear Scan History</button>
-    </div>
-
-  </section>
-
-  <!-- =========================
-       GENERATE SECTION
-  ========================= -->
-  <section id="generateSection" class="tool-section">
-
-    <div class="card">
-      <div class="card-title">Create QR Code</div>
-      <div class="small-text">
-        Create QR for website, text, phone, email, or Wi-Fi. Then save it in the app so you can show it later.
-      </div>
-
-      <label class="input-label">QR Name</label>
-      <input id="qrNameInput" class="input-field" type="text" placeholder="Example: My Website">
-
-      <label class="input-label">QR Type</label>
-      <select id="qrTypeSelect" class="select-field" onchange="updateQrInputFields()">
-        <option value="website">Website Link</option>
-        <option value="text">Plain Text</option>
-        <option value="phone">Phone Number</option>
-        <option value="email">Email Address</option>
-        <option value="wifi">Wi-Fi Login</option>
-      </select>
-
-      <div id="qrDynamicFields"></div>
-
-      <button class="btn btn-primary" onclick="generateQrCode()">Generate QR Code</button>
-
-      <div id="qrPreviewBox" class="qr-preview-box">
-        <div id="qrPreviewName" class="qr-name">QR Code</div>
-        <div id="qrOutput" class="qr-output"></div>
-        <div id="qrValueBox" class="qr-value-box"></div>
-
-        <div class="btn-grid">
-          <button class="btn btn-gray" onclick="copyGeneratedQrText()">Copy Text</button>
-          <button class="btn btn-purple" onclick="shareGeneratedQr()">Share</button>
-          <button class="btn btn-green" onclick="saveGeneratedQr()">Save In App</button>
-          <button class="btn btn-orange" onclick="printGeneratedQr()">Print</button>
-          <button class="btn btn-primary" onclick="downloadGeneratedQr()">Download PNG</button>
-          <button class="btn btn-gray" onclick="openBigGeneratedQr()">Show Big QR</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-title">Saved QR Codes</div>
-      <div class="small-text">
-        Saved QR codes stay in this app. Your main Export Backup should also include them because they are saved in localStorage.
-      </div>
-
-      <div id="savedQrList" class="saved-list"></div>
-    </div>
-
-  </section>
+    <div id="savedQrList" class="saved-list"></div>
+  </div>
 
 </div>
 
@@ -799,10 +628,6 @@ body.dark-mode .result-text{
 /* =========================
    GLOBAL VARIABLES
 ========================= */
-let html5QrScanner = null;
-let scannerRunning = false;
-
-let lastScanResult = "";
 let currentQrName = "";
 let currentQrType = "";
 let currentQrValue = "";
@@ -833,333 +658,7 @@ applySavedTheme();
 ========================= */
 function goBackToMainApp(){
 
-  stopScanner();
   window.location.href = "../index.html";
-
-}
-
-/* =========================
-   SHOW SCAN TAB
-========================= */
-function showScanTab(){
-
-  document.getElementById("scanTabBtn").classList.add("active");
-  document.getElementById("generateTabBtn").classList.remove("active");
-
-  document.getElementById("scanSection").classList.add("active");
-  document.getElementById("generateSection").classList.remove("active");
-
-}
-
-/* =========================
-   SHOW GENERATE TAB
-========================= */
-function showGenerateTab(){
-
-  document.getElementById("generateTabBtn").classList.add("active");
-  document.getElementById("scanTabBtn").classList.remove("active");
-
-  document.getElementById("generateSection").classList.add("active");
-  document.getElementById("scanSection").classList.remove("active");
-
-}
-
-/* =========================
-   START SCANNER
-========================= */
-function startScanner(){
-
-  if(scannerRunning){
-    return;
-  }
-
-  if(typeof Html5QrcodeScanner === "undefined"){
-    alert("Scanner library did not load. Please check internet connection and try again.");
-    return;
-  }
-
-  document.getElementById("scannerBox").style.display = "block";
-  document.getElementById("startScannerBtn").style.display = "none";
-  document.getElementById("stopScannerBtn").style.display = "block";
-
-  html5QrScanner = new Html5QrcodeScanner(
-    "scannerReader",
-    {
-      fps:10,
-      qrbox:function(viewfinderWidth, viewfinderHeight){
-        let minEdge = Math.min(viewfinderWidth, viewfinderHeight);
-        let boxSize = Math.floor(minEdge * 0.72);
-        return {
-          width:boxSize,
-          height:boxSize
-        };
-      },
-      rememberLastUsedCamera:true
-    },
-    false
-  );
-
-  html5QrScanner.render(onScanSuccess, onScanFailure);
-  scannerRunning = true;
-
-}
-
-/* =========================
-   STOP SCANNER
-========================= */
-function stopScanner(){
-
-  if(html5QrScanner && scannerRunning){
-    html5QrScanner.clear().catch(function(error){
-      console.log("Scanner clear error:", error);
-    });
-  }
-
-  html5QrScanner = null;
-  scannerRunning = false;
-
-  let scannerBox = document.getElementById("scannerBox");
-  let startBtn = document.getElementById("startScannerBtn");
-  let stopBtn = document.getElementById("stopScannerBtn");
-
-  if(scannerBox) scannerBox.style.display = "none";
-  if(startBtn) startBtn.style.display = "block";
-  if(stopBtn) stopBtn.style.display = "none";
-
-}
-
-/* =========================
-   ON SCAN SUCCESS
-========================= */
-function onScanSuccess(decodedText, decodedResult){
-
-  lastScanResult = decodedText || "";
-
-  document.getElementById("scanResultText").innerText = lastScanResult;
-  document.getElementById("scanResultBox").style.display = "block";
-
-  saveScanResult();
-
-  stopScanner();
-
-}
-
-/* =========================
-   ON SCAN FAILURE
-========================= */
-function onScanFailure(error){
-
-  // Keep quiet while camera is scanning.
-
-}
-
-/* =========================
-   USE MANUAL SCAN TEXT
-========================= */
-function useManualScanText(){
-
-  let text = document.getElementById("manualScanInput").value.trim();
-
-  if(!text){
-    alert("Please type or paste something first.");
-    return;
-  }
-
-  lastScanResult = text;
-
-  document.getElementById("scanResultText").innerText = lastScanResult;
-  document.getElementById("scanResultBox").style.display = "block";
-
-  saveScanResult();
-
-}
-
-/* =========================
-   IS LINK
-========================= */
-function isLink(text){
-
-  return /^https?:\/\//i.test(text);
-
-}
-
-/* =========================
-   COPY SCAN RESULT
-========================= */
-function copyScanResult(){
-
-  if(!lastScanResult){
-    alert("No scan result to copy.");
-    return;
-  }
-
-  navigator.clipboard.writeText(lastScanResult).then(function(){
-    alert("Copied.");
-  });
-
-}
-
-/* =========================
-   OPEN SCANNED LINK
-========================= */
-function openScannedLink(){
-
-  if(!lastScanResult){
-    alert("No scan result.");
-    return;
-  }
-
-  if(isLink(lastScanResult)){
-    window.open(lastScanResult, "_blank");
-  }else{
-    alert("This result is not a website link.");
-  }
-
-}
-
-/* =========================
-   SHARE SCAN RESULT
-========================= */
-function shareScanResult(){
-
-  if(!lastScanResult){
-    alert("No scan result to share.");
-    return;
-  }
-
-  if(navigator.share){
-    navigator.share({
-      title:"Scanned Code",
-      text:lastScanResult
-    });
-  }else{
-    copyScanResult();
-  }
-
-}
-
-/* =========================
-   SAVE SCAN RESULT
-========================= */
-function saveScanResult(){
-
-  if(!lastScanResult){
-    return;
-  }
-
-  let history = getScanHistory();
-
-  let item = {
-    id:Date.now(),
-    value:lastScanResult,
-    date:new Date().toLocaleString()
-  };
-
-  history.unshift(item);
-
-  if(history.length > 50){
-    history = history.slice(0,50);
-  }
-
-  localStorage.setItem("smartToolsScanHistory", JSON.stringify(history));
-  renderScanHistory();
-
-}
-
-/* =========================
-   GET SCAN HISTORY
-========================= */
-function getScanHistory(){
-
-  try{
-    let saved = JSON.parse(localStorage.getItem("smartToolsScanHistory") || "[]");
-    return Array.isArray(saved) ? saved : [];
-  }catch(error){
-    return [];
-  }
-
-}
-
-/* =========================
-   RENDER SCAN HISTORY
-========================= */
-function renderScanHistory(){
-
-  let list = document.getElementById("scanHistoryList");
-  let history = getScanHistory();
-
-  list.innerHTML = "";
-
-  if(history.length === 0){
-    list.innerHTML = '<div class="empty-text">No scan history yet.</div>';
-    return;
-  }
-
-  history.forEach(function(item){
-
-    let card = document.createElement("div");
-    card.className = "saved-card";
-
-    card.innerHTML = `
-      <div class="saved-info">
-        <div class="saved-title">Scanned Code</div>
-        <div class="saved-sub">${item.date}</div>
-        <div class="saved-value">${escapeHtml(item.value)}</div>
-      </div>
-
-      <div class="saved-actions">
-        <button class="small-action-btn" onclick="useOldScan('${item.id}')">Use</button>
-        <button class="small-action-btn delete" onclick="deleteScanHistoryItem('${item.id}')">Delete</button>
-      </div>
-    `;
-
-    list.appendChild(card);
-
-  });
-
-}
-
-/* =========================
-   USE OLD SCAN
-========================= */
-function useOldScan(id){
-
-  let history = getScanHistory();
-  let item = history.find(function(x){ return String(x.id) === String(id); });
-
-  if(!item) return;
-
-  lastScanResult = item.value;
-  document.getElementById("scanResultText").innerText = lastScanResult;
-  document.getElementById("scanResultBox").style.display = "block";
-  window.scrollTo(0,0);
-
-}
-
-/* =========================
-   DELETE SCAN HISTORY ITEM
-========================= */
-function deleteScanHistoryItem(id){
-
-  let history = getScanHistory();
-  history = history.filter(function(item){ return String(item.id) !== String(id); });
-
-  localStorage.setItem("smartToolsScanHistory", JSON.stringify(history));
-  renderScanHistory();
-
-}
-
-/* =========================
-   CLEAR SCAN HISTORY
-========================= */
-function clearScanHistory(){
-
-  if(!confirm("Clear all scan history?")){
-    return;
-  }
-
-  localStorage.removeItem("smartToolsScanHistory");
-  renderScanHistory();
 
 }
 
@@ -1856,7 +1355,6 @@ document.addEventListener("DOMContentLoaded", function(){
 
   updateQrInputFields();
   renderSavedQrCodes();
-  renderScanHistory();
 
 });
 </script>
