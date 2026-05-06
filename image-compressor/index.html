@@ -141,16 +141,17 @@ body{
 }
 
 /* =========================
-   UPLOAD BOX
+   UPLOAD BOX - NO DOTTED BORDER
 ========================= */
 .upload-box{
   width:100%;
-  border:2px dashed #b8b8c6;
+  border:1px solid rgba(0,0,0,0.06);
   border-radius:24px;
-  padding:24px 16px;
+  padding:22px 16px;
   text-align:center;
   background:#f7f7fb;
   cursor:pointer;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.7);
 }
 
 .upload-box input{
@@ -246,11 +247,6 @@ body{
 .btn-gray{
   background:#f1f1f6;
   color:#111;
-}
-
-.btn-red{
-  background:#ff3b30;
-  color:white;
 }
 
 .btn:disabled{
@@ -417,10 +413,20 @@ body.dark-mode .btn-gray{
   color:white;
 }
 
+body.dark-mode .upload-box{
+  border:1px solid rgba(255,255,255,0.08);
+  box-shadow:none;
+}
+
 body.dark-mode .small-text,
 body.dark-mode .upload-sub,
-body.dark-mode .info-label{
+body.dark-mode .info-label,
+body.dark-mode .input-box label{
   color:#b8b8c0;
+}
+
+body.dark-mode .info-value{
+  color:white;
 }
 
 body.dark-mode .preview-img{
@@ -430,6 +436,10 @@ body.dark-mode .preview-img{
 
 body.dark-mode .result-box{
   background:#102416;
+}
+
+body.dark-mode .result-line{
+  color:white;
 }
 
 /* =========================
@@ -615,7 +625,7 @@ let newImageFileName = "compressed-image.jpg";
 ========================= */
 function applySavedTheme(){
 
-  let savedTheme = localStorage.getItem("smartToolsHomeTheme");
+  let savedTheme = localStorage.getItem("smartToolsHomeTheme") || "dark";
 
   if(savedTheme === "dark"){
     document.body.classList.add("dark-mode");
@@ -889,7 +899,6 @@ function processImage(){
   canvas.height = height;
 
   let ctx = canvas.getContext("2d");
-
   ctx.drawImage(originalImage, 0, 0, width, height);
 
   let quality = getQualityNumber();
