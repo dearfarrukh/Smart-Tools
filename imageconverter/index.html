@@ -469,7 +469,7 @@
     #pdfEditorCanvas { display: block; }
     .pdf-editor-overlay-layer { position: absolute; inset: 0; z-index: 3; }
     /* Text looks clean. No blue box on the PDF preview. */
-    .pdf-editor-item { position: absolute; min-width: 10px; min-height: 12px; padding: 0 1px; border: 1px dashed transparent; background: white; color: #111; font-weight: 400; cursor: move; user-select: none; touch-action: none; border-radius: 2px; font-family: Arial, Helvetica, sans-serif; line-height: 1.02; }
+    .pdf-editor-item { position: absolute; min-width: 10px; min-height: 12px; padding: 0 1px; border: 1px dashed transparent; background: white; color: #111; font-weight: 400; cursor: move; user-select: none; touch-action: none; border-radius: 2px; font-family: Arial, Helvetica, sans-serif; line-height: 1.02; white-space: nowrap; }
     .pdf-editor-item:active { border-color: rgba(37,99,235,0.28); background: white; }
     .pdf-editor-item.signature { font-family: "Brush Script MT", cursive; font-size: 28px; }
     .pdf-editor-item.check { font-size: 30px; color: #111; font-weight: 900; }
@@ -1874,7 +1874,9 @@
         startClientX: event.clientX,
         startClientY: event.clientY,
         startLeft: item.xRatio * pdfEditorRenderedWidth,
-        startTop: item.yRatio * pdfEditorRenderedHeight
+        startTop: item.yRatio * pdfEditorRenderedHeight,
+        itemWidth: Math.max(8, element.offsetWidth || 8),
+        itemHeight: Math.max(8, element.offsetHeight || 8)
       };
       document.addEventListener("pointermove", movePdfEditorDrag);
       document.addEventListener("pointerup", stopPdfEditorDrag);
@@ -1891,8 +1893,13 @@
       const dy = event.clientY - pdfEditorDragState.startClientY;
       let newLeft = pdfEditorDragState.startLeft + dx;
       let newTop = pdfEditorDragState.startTop + dy;
-      const itemWidth = item.type === "cover" ? item.widthRatio * pdfEditorRenderedWidth : 120;
-      const itemHeight = item.type === "cover" ? item.heightRatio * pdfEditorRenderedHeight : item.fontSize + 18;
+      const itemWidth = item.type === "cover"
+        ? item.widthRatio * pdfEditorRenderedWidth
+        : (pdfEditorDragState.itemWidth || 8);
+
+      const itemHeight = item.type === "cover"
+        ? item.heightRatio * pdfEditorRenderedHeight
+        : (pdfEditorDragState.itemHeight || (item.fontSize + 4));
       newLeft = Math.max(0, Math.min(pdfEditorRenderedWidth - itemWidth, newLeft));
       newTop = Math.max(0, Math.min(pdfEditorRenderedHeight - itemHeight, newTop));
       item.xRatio = newLeft / pdfEditorRenderedWidth;
