@@ -13,7 +13,7 @@
   <link rel="icon" type="image/png" href="../images/icon.png">
 
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <title>PDF / Image Tools</title>
 
@@ -228,7 +228,7 @@
     }
 
     /* =========================
-       LAYOUT
+       IMAGE / PDF TOOLS
     ========================= */
     .tools-layout {
       margin-top: 24px;
@@ -238,9 +238,7 @@
       align-items: start;
     }
 
-    /* =========================
-       UPLOAD BOX - NO DOTTED BORDER
-    ========================= */
+    /* NO DOTTED BORDER */
     .file-upload-box {
       border: 1px solid rgba(15,23,42,0.08);
       border-radius: 24px;
@@ -249,7 +247,6 @@
       background: linear-gradient(180deg, #faf5ff 0%, #eef2ff 100%);
       cursor: pointer;
       box-shadow: inset 0 1px 0 rgba(255,255,255,0.75), 0 10px 24px rgba(15,23,42,0.08);
-      display: block;
     }
 
     .file-upload-icon {
@@ -394,9 +391,6 @@
       word-break: break-word;
     }
 
-    /* =========================
-       SETTINGS
-    ========================= */
     .setting-row {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -432,134 +426,60 @@
       color: #64748b;
     }
 
+
     /* =========================
-       IMAGE RESIZE PANEL
+       PDF EDITOR LITE
     ========================= */
-    .image-resize-panel {
+    .pdf-editor-modal {
       display: none;
-      margin-top: 16px;
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: rgba(15,23,42,0.72);
       padding: 18px;
-      border-radius: 24px;
-      background: linear-gradient(180deg, #f8fafc 0%, #eef2ff 100%);
-      border: 1px solid rgba(15,23,42,0.07);
+      overflow: auto;
     }
 
-    .image-resize-panel.show {
-      display: block;
-    }
-
-    .image-resize-title {
-      font-size: 20px;
-      font-weight: 900;
-      margin-bottom: 8px;
-      color: #111827;
-    }
-
-    .image-resize-sub {
-      font-size: 14px;
-      line-height: 1.6;
-      color: #64748b;
-      margin-bottom: 14px;
-    }
-
-    .quick-resize-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 10px;
-      margin-bottom: 12px;
-    }
-
-    .quick-resize-btn {
-      border: none;
-      border-radius: 16px;
-      min-height: 48px;
-      background: #e5e7eb;
-      color: #111827;
-      font-size: 14px;
-      font-weight: 900;
-      cursor: pointer;
-    }
-
-    .quick-resize-btn.active {
-      background: #2563eb;
-      color: white;
-    }
-
-    .ratio-row {
-      margin-top: 12px;
+    .pdf-editor-card {
       width: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      background: rgba(255,255,255,0.72);
-      border-radius: 18px;
-      padding: 14px;
-      border: 1px solid rgba(15,23,42,0.06);
-    }
-
-    .ratio-text {
-      font-size: 15px;
-      font-weight: 900;
-      color: #111827;
-    }
-
-    .switch {
-      width: 56px;
-      height: 32px;
-      border-radius: 999px;
-      background: #c7c7cc;
-      padding: 3px;
-      cursor: pointer;
-      transition: 0.2s;
-      flex-shrink: 0;
-    }
-
-    .switch.on {
-      background: #34c759;
-    }
-
-    .switch-dot {
-      width: 26px;
-      height: 26px;
-      border-radius: 50%;
+      max-width: 920px;
+      margin: 0 auto;
       background: white;
-      transition: 0.2s;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-    }
-
-    .switch.on .switch-dot {
-      transform: translateX(24px);
-    }
-
-    .image-info-grid {
-      width: 100%;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-top: 12px;
-    }
-
-    .image-info-box {
-      background: rgba(255,255,255,0.75);
-      border-radius: 18px;
-      padding: 12px;
-      border: 1px solid rgba(15,23,42,0.06);
-    }
-
-    .image-info-label {
-      font-size: 12px;
-      color: #64748b;
-      font-weight: 800;
-      margin-bottom: 4px;
-    }
-
-    .image-info-value {
-      font-size: 15px;
-      font-weight: 900;
       color: #111827;
-      word-break: break-word;
+      border-radius: 30px;
+      padding: 20px;
+      box-shadow: 0 24px 70px rgba(0,0,0,0.28);
     }
+
+    .pdf-editor-top { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-bottom: 16px; }
+    .pdf-editor-title { font-size: 24px; font-weight: 900; letter-spacing: -0.5px; }
+    .pdf-editor-close { width: 46px; height: 46px; border: none; border-radius: 50%; background: #f1f5f9; color: #111827; font-size: 22px; font-weight: 900; cursor: pointer; }
+    .pdf-editor-layout { display: grid; grid-template-columns: 310px 1fr; gap: 16px; align-items: start; }
+    .pdf-editor-panel { background: #f8fafc; border: 1px solid #e5e7eb; border-radius: 24px; padding: 16px; }
+    .pdf-editor-label { display: block; font-size: 13px; font-weight: 900; color: #475569; margin: 12px 0 7px 0; }
+    .pdf-editor-input, .pdf-editor-select { width: 100%; height: 50px; border: 2px solid #e5e7eb; border-radius: 16px; padding: 0 13px; outline: none; background: white; color: #111827; font-size: 16px; font-weight: 800; }
+    .pdf-editor-btn-grid { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 14px; }
+    .pdf-editor-btn { border: none; min-height: 52px; border-radius: 17px; padding: 0 14px; color: white; font-size: 15px; font-weight: 900; cursor: pointer; }
+    .pdf-editor-btn:active { transform: scale(0.98); }
+    .pdf-editor-help { margin-top: 12px; font-size: 13px; line-height: 1.55; color: #64748b; }
+    .pdf-editor-preview-card { background: #f8fafc; border: 1px solid #e5e7eb; border-radius: 24px; padding: 14px; min-height: 420px; }
+    .pdf-editor-preview-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; color: #475569; font-size: 14px; font-weight: 900; }
+    .pdf-editor-scroll { width: 100%; overflow: auto; background: #e5e7eb; border-radius: 20px; padding: 12px; display: flex; justify-content: center; }
+    .pdf-editor-page-shell { position: relative; background: white; box-shadow: 0 10px 28px rgba(15,23,42,0.18); overflow: hidden; flex-shrink: 0; }
+    #pdfEditorCanvas { display: block; }
+    .pdf-editor-overlay-layer { position: absolute; inset: 0; z-index: 3; }
+    .pdf-editor-item { position: absolute; min-width: 40px; min-height: 28px; padding: 4px 7px; border: 2px solid #2563eb; background: rgba(255,255,255,0.78); color: #111; font-weight: 900; cursor: move; user-select: none; touch-action: none; border-radius: 7px; font-family: Arial, Helvetica, sans-serif; }
+    .pdf-editor-item.signature { font-family: "Brush Script MT", cursive; font-size: 28px; font-weight: 500; border-color: #7c3aed; }
+    .pdf-editor-item.check { font-size: 30px; color: #111; border-color: #22c55e; background: rgba(255,255,255,0.70); }
+    .pdf-editor-item.cover { background: white; border: 2px solid #ef4444; padding: 0; min-width: 120px; min-height: 45px; }
+    .pdf-editor-small-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    body.smart-tools-dark-theme .pdf-editor-card { background: #0f172a; color: #f8fafc; }
+    body.smart-tools-dark-theme .pdf-editor-title { color: #f8fafc; }
+    body.smart-tools-dark-theme .pdf-editor-close, body.smart-tools-dark-theme .pdf-editor-panel, body.smart-tools-dark-theme .pdf-editor-preview-card { background: rgba(30,41,59,0.92); border-color: rgba(148,163,184,0.22); color: #f8fafc; }
+    body.smart-tools-dark-theme .pdf-editor-label, body.smart-tools-dark-theme .pdf-editor-help, body.smart-tools-dark-theme .pdf-editor-preview-top { color: #cbd5e1; }
+    body.smart-tools-dark-theme .pdf-editor-input, body.smart-tools-dark-theme .pdf-editor-select { background: rgba(15,23,42,0.82); color: #f8fafc; border-color: rgba(148,163,184,0.28); }
+    body.smart-tools-dark-theme .pdf-editor-scroll { background: #020617; }
+    @media (max-width: 820px) { .pdf-editor-layout { grid-template-columns: 1fr; } .pdf-editor-card { border-radius: 24px; padding: 16px; } .pdf-editor-title { font-size: 21px; } }
 
     /* =========================
        DARK THEME
@@ -575,10 +495,7 @@
     body.smart-tools-dark-theme .top-bar-title,
     body.smart-tools-dark-theme .card-title,
     body.smart-tools-dark-theme .file-upload-title,
-    body.smart-tools-dark-theme .result-heading,
-    body.smart-tools-dark-theme .image-resize-title,
-    body.smart-tools-dark-theme .ratio-text,
-    body.smart-tools-dark-theme .image-info-value {
+    body.smart-tools-dark-theme .result-heading {
       color: #f8fafc;
     }
 
@@ -587,10 +504,7 @@
     body.smart-tools-dark-theme .result-box,
     body.smart-tools-dark-theme .file-upload-box,
     body.smart-tools-dark-theme .file-pill,
-    body.smart-tools-dark-theme .preview-item,
-    body.smart-tools-dark-theme .image-resize-panel,
-    body.smart-tools-dark-theme .image-info-box,
-    body.smart-tools-dark-theme .ratio-row {
+    body.smart-tools-dark-theme .preview-item {
       background: linear-gradient(180deg, rgba(30,41,59,0.88), rgba(15,23,42,0.84));
       border-color: rgba(148,163,184,0.20);
       color: #f8fafc;
@@ -608,9 +522,7 @@
     body.smart-tools-dark-theme .file-pill,
     body.smart-tools-dark-theme .preview-item-info,
     body.smart-tools-dark-theme .setting-label,
-    body.smart-tools-dark-theme .small-help,
-    body.smart-tools-dark-theme .image-resize-sub,
-    body.smart-tools-dark-theme .image-info-label {
+    body.smart-tools-dark-theme .small-help {
       color: #cbd5e1;
     }
 
@@ -622,16 +534,6 @@
 
     body.smart-tools-dark-theme .setting-input::placeholder {
       color: #94a3b8;
-    }
-
-    body.smart-tools-dark-theme .quick-resize-btn {
-      background: rgba(148,163,184,0.20);
-      color: #f8fafc;
-    }
-
-    body.smart-tools-dark-theme .quick-resize-btn.active {
-      background: #2563eb;
-      color: white;
     }
 
     /* =========================
@@ -712,12 +614,7 @@
 
       .smart-action-grid,
       .preview-grid,
-      .setting-row,
-      .image-info-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .quick-resize-row {
+      .setting-row {
         grid-template-columns: 1fr;
       }
 
@@ -751,7 +648,7 @@
       <h1>PDF / Image Tools</h1>
       <p>
         Merge PDFs, split PDFs, compress PDFs, turn PDF pages into images,
-        make PDF from images, resize images, and compress images.
+        and make one PDF from images. Upload your files in one place and choose the tool you need.
       </p>
     </div>
 
@@ -818,53 +715,6 @@
             </label>
           </div>
 
-          <!-- =========================
-               IMAGE RESIZE SETTINGS PANEL
-          ========================= -->
-          <div id="imageResizePanel" class="image-resize-panel">
-            <div class="image-resize-title">Image Resize</div>
-            <div class="image-resize-sub">
-              These settings work when you choose image files. Use quick size or enter custom width and height.
-            </div>
-
-            <div class="quick-resize-row">
-              <button id="resize25Btn" class="quick-resize-btn" onclick="setResizePercent(25)">25%</button>
-              <button id="resize50Btn" class="quick-resize-btn" onclick="setResizePercent(50)">50%</button>
-              <button id="resize75Btn" class="quick-resize-btn" onclick="setResizePercent(75)">75%</button>
-            </div>
-
-            <div class="setting-row">
-              <label>
-                <span class="setting-label">Resize Width</span>
-                <input id="resizeWidthInput" class="setting-input" type="number" placeholder="Width" oninput="handleWidthInput()">
-              </label>
-
-              <label>
-                <span class="setting-label">Resize Height</span>
-                <input id="resizeHeightInput" class="setting-input" type="number" placeholder="Height" oninput="handleHeightInput()">
-              </label>
-            </div>
-
-            <div class="ratio-row">
-              <div class="ratio-text">Keep Ratio</div>
-              <div id="ratioSwitch" class="switch on" onclick="toggleKeepRatio()">
-                <div class="switch-dot"></div>
-              </div>
-            </div>
-
-            <div class="image-info-grid">
-              <div class="image-info-box">
-                <div class="image-info-label">First Image Size</div>
-                <div id="firstImageSizeText" class="image-info-value">-</div>
-              </div>
-
-              <div class="image-info-box">
-                <div class="image-info-label">First Image Dimensions</div>
-                <div id="firstImageDimensionText" class="image-info-value">-</div>
-              </div>
-            </div>
-          </div>
-
           <div class="small-help">
             <strong>Split PDF</strong> makes one separate PDF for every page.
             <strong>Keep PDF Pages</strong> lets you choose pages like <strong>1,3,5-7</strong>.
@@ -923,6 +773,67 @@
     </div>
   </div>
 
+
+  <!-- =========================
+       PDF EDITOR LITE MODAL
+  ========================= -->
+  <div id="pdfEditorModal" class="pdf-editor-modal">
+    <div class="pdf-editor-card">
+      <div class="pdf-editor-top">
+        <div>
+          <div class="pdf-editor-title">PDF Editor Lite</div>
+          <div class="pdf-editor-help" style="margin-top:4px;">Add text, date, signature text, check mark, or white cover box on top of your PDF.</div>
+        </div>
+        <button class="pdf-editor-close" onclick="closePdfEditorLite()">×</button>
+      </div>
+      <div class="pdf-editor-layout">
+        <div class="pdf-editor-panel">
+          <label class="pdf-editor-label">PDF Page</label>
+          <select id="pdfEditorPageSelect" class="pdf-editor-select" onchange="changePdfEditorPage()"></select>
+          <label class="pdf-editor-label">Text / Signature</label>
+          <input id="pdfEditorTextInput" class="pdf-editor-input" type="text" placeholder="Type text here">
+          <div class="pdf-editor-small-row">
+            <label>
+              <span class="pdf-editor-label">Font Size</span>
+              <input id="pdfEditorFontSizeInput" class="pdf-editor-input" type="number" value="18" min="8" max="72">
+            </label>
+            <label>
+              <span class="pdf-editor-label">Cover Size</span>
+              <select id="pdfEditorCoverSizeSelect" class="pdf-editor-select">
+                <option value="small">Small</option>
+                <option value="medium" selected>Medium</option>
+                <option value="large">Large</option>
+              </select>
+            </label>
+          </div>
+          <div class="pdf-editor-btn-grid">
+            <button class="pdf-editor-btn blue-btn" onclick="addPdfEditorText()">Add Text</button>
+            <button class="pdf-editor-btn green-btn" onclick="addPdfEditorDate()">Add Date</button>
+            <button class="pdf-editor-btn purple-btn" onclick="addPdfEditorSignature()">Add Signature Text</button>
+            <button class="pdf-editor-btn orange-btn" onclick="addPdfEditorCheck()">Add Check Mark</button>
+            <button class="pdf-editor-btn gray-btn" onclick="addPdfEditorCoverBox()">Add White Cover Box</button>
+            <button class="pdf-editor-btn pink-btn" onclick="clearCurrentPdfEditorPage()">Clear This Page</button>
+            <button class="pdf-editor-btn orange-btn" onclick="clearAllPdfEditorItems()">Clear All</button>
+            <button class="pdf-editor-btn green-btn" onclick="downloadEditedPdf()">Download Edited PDF</button>
+          </div>
+          <div class="pdf-editor-help">Tip: After adding something, drag it on the PDF page. This editor adds items on top of the PDF. It does not change old text inside the original PDF.</div>
+        </div>
+        <div class="pdf-editor-preview-card">
+          <div class="pdf-editor-preview-top">
+            <div id="pdfEditorFileNameText">No PDF loaded</div>
+            <div id="pdfEditorPageCountText">Page 0 / 0</div>
+          </div>
+          <div class="pdf-editor-scroll">
+            <div id="pdfEditorPageShell" class="pdf-editor-page-shell">
+              <canvas id="pdfEditorCanvas"></canvas>
+              <div id="pdfEditorOverlayLayer" class="pdf-editor-overlay-layer"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script>
     // =========================
     // PDF JS WORKER
@@ -960,9 +871,6 @@
     // SMART FILE TOOLS STATE
     // =========================
     let smartSelectedFiles = [];
-    let firstImageOriginalWidth = 0;
-    let firstImageOriginalHeight = 0;
-    let keepRatio = true;
 
     // =========================
     // HANDLE SMART FILE SELECTION
@@ -970,13 +878,9 @@
     function handleSmartFileSelection(event) {
       smartSelectedFiles = Array.from(event.target.files || []);
 
-      firstImageOriginalWidth = 0;
-      firstImageOriginalHeight = 0;
-
       renderSmartFileList();
       renderSmartActions();
       renderSmartFilePreview();
-      setupImageResizePanel();
 
       if (!smartSelectedFiles.length) {
         setSmartStatus("ready", "Waiting for files.");
@@ -1072,6 +976,14 @@
             <div class="smart-tool-btn-sub">Try to reduce PDF size and download.</div>
           </button>
         `;
+
+        buttons += `
+          <button class="smart-tool-btn purple-btn" onclick="openPdfEditorLite()">
+            <div class="smart-tool-btn-icon">✍️</div>
+            <div class="smart-tool-btn-title">PDF Editor Lite</div>
+            <div class="smart-tool-btn-sub">Add text, date, signature, check mark, and white cover box.</div>
+          </button>
+        `;
       }
 
       if (pdfCount >= 2) {
@@ -1090,14 +1002,6 @@
             <div class="smart-tool-btn-icon">📕</div>
             <div class="smart-tool-btn-title">Images to PDF</div>
             <div class="smart-tool-btn-sub">Make one PDF from selected images.</div>
-          </button>
-        `;
-
-        buttons += `
-          <button class="smart-tool-btn orange-btn" onclick="smartResizeAndCompressImages()">
-            <div class="smart-tool-btn-icon">📷</div>
-            <div class="smart-tool-btn-title">Resize + Compress</div>
-            <div class="smart-tool-btn-sub">Resize images and reduce file size.</div>
           </button>
         `;
 
@@ -1129,7 +1033,7 @@
           <button class="smart-tool-btn orange-btn" onclick="smartCompressImages()">
             <div class="smart-tool-btn-icon">🗜️</div>
             <div class="smart-tool-btn-title">Compress Images</div>
-            <div class="smart-tool-btn-sub">Reduce image file size only.</div>
+            <div class="smart-tool-btn-sub">Reduce image file size.</div>
           </button>
         `;
 
@@ -1199,48 +1103,6 @@
           ${previews.join("")}
         </div>
       `;
-
-      applySmartToolsTheme();
-    }
-
-    // =========================
-    // SETUP IMAGE RESIZE PANEL
-    // =========================
-    async function setupImageResizePanel() {
-      const panel = document.getElementById("imageResizePanel");
-      const imageFiles = smartSelectedFiles.filter(file => isImageFile(file));
-
-      if (!panel) return;
-
-      if (!imageFiles.length) {
-        panel.classList.remove("show");
-        document.getElementById("firstImageSizeText").innerText = "-";
-        document.getElementById("firstImageDimensionText").innerText = "-";
-        document.getElementById("resizeWidthInput").value = "";
-        document.getElementById("resizeHeightInput").value = "";
-        return;
-      }
-
-      panel.classList.add("show");
-
-      try {
-        const firstFile = imageFiles[0];
-        const dataUrl = await fileToDataUrl(firstFile);
-        const info = await loadImageInfo(dataUrl);
-
-        firstImageOriginalWidth = info.width;
-        firstImageOriginalHeight = info.height;
-
-        document.getElementById("firstImageSizeText").innerText = formatFileSize(firstFile.size);
-        document.getElementById("firstImageDimensionText").innerText = info.width + " × " + info.height;
-
-        document.getElementById("resizeWidthInput").value = info.width;
-        document.getElementById("resizeHeightInput").value = info.height;
-
-        clearResizeButtons();
-      } catch (error) {
-        console.log(error);
-      }
 
       applySmartToolsTheme();
     }
@@ -1639,53 +1501,6 @@
     }
 
     // =========================
-    // RESIZE + COMPRESS IMAGES
-    // Uses resize width and height panel
-    // =========================
-    async function smartResizeAndCompressImages() {
-      const imageFiles = smartSelectedFiles.filter(file => isImageFile(file));
-
-      if (!imageFiles.length) {
-        setSmartStatus("error", "Please choose image files first.");
-        return;
-      }
-
-      if (!window.JSZip) {
-        setSmartStatus("error", "ZIP library did not load.");
-        return;
-      }
-
-      let width = parseInt(document.getElementById("resizeWidthInput").value, 10);
-      let height = parseInt(document.getElementById("resizeHeightInput").value, 10);
-
-      if (!width || !height || width <= 0 || height <= 0) {
-        setSmartStatus("error", "Please enter valid resize width and height.");
-        return;
-      }
-
-      try {
-        setSmartStatus("ready", "Resizing and compressing images...");
-
-        const quality = getImageQuality();
-        const zip = new JSZip();
-
-        for (const file of imageFiles) {
-          const canvas = await fileToResizedCanvas(file, width, height);
-          const blob = await canvasToBlob(canvas, "image/jpeg", quality);
-          zip.file(removeFileExtension(file.name) + "-resized-compressed.jpg", blob);
-        }
-
-        const zipBlob = await zip.generateAsync({ type: "blob" });
-        downloadBlob(zipBlob, "resized-compressed-images.zip");
-
-        setSmartStatus("success", "Done. Images resized, compressed, and downloaded.");
-      } catch (error) {
-        console.error(error);
-        setSmartStatus("error", "Resize + compress failed. Try another image.");
-      }
-    }
-
-    // =========================
     // CONVERT IMAGES
     // =========================
     async function smartConvertImages(outputType, extension) {
@@ -1724,7 +1539,7 @@
     }
 
     // =========================
-    // COMPRESS IMAGES ONLY
+    // COMPRESS IMAGES
     // =========================
     async function smartCompressImages() {
       const imageFiles = smartSelectedFiles.filter(file => isImageFile(file));
@@ -1825,120 +1640,291 @@
       return canvas;
     }
 
-    // =========================
-    // FILE TO RESIZED CANVAS
-    // =========================
-    async function fileToResizedCanvas(file, width, height) {
-      const dataUrl = await fileToDataUrl(file);
-      const image = await loadImageElement(dataUrl);
 
-      const canvas = document.createElement("canvas");
+    // =========================
+    // OPEN PDF EDITOR LITE
+    // =========================
+    async function openPdfEditorLite() {
+      const pdfFiles = smartSelectedFiles.filter(file => isPdfFile(file));
+      if (!pdfFiles.length) { setSmartStatus("error", "Please choose one PDF file first."); return; }
+      if (!window.pdfjsLib || !window.PDFLib) { setSmartStatus("error", "PDF editor libraries did not load. Please check internet and try again."); return; }
+      try {
+        pdfEditorFile = pdfFiles[0];
+        pdfEditorArrayBuffer = await pdfEditorFile.arrayBuffer();
+        pdfEditorPdfJsDoc = await pdfjsLib.getDocument({ data: pdfEditorArrayBuffer.slice(0) }).promise;
+        pdfEditorPdfLibDoc = await PDFLib.PDFDocument.load(pdfEditorArrayBuffer.slice(0));
+        pdfEditorCurrentPage = 1;
+        pdfEditorPageCount = pdfEditorPdfJsDoc.numPages;
+        pdfEditorItems = [];
+        document.getElementById("pdfEditorModal").style.display = "block";
+        document.getElementById("pdfEditorFileNameText").innerText = pdfEditorFile.name;
+        buildPdfEditorPageSelect();
+        await renderPdfEditorPage();
+        setSmartStatus("success", "PDF Editor Lite opened.");
+      } catch (error) { console.error(error); setSmartStatus("error", "Could not open PDF editor. Try another PDF."); }
+    }
+
+    // =========================
+    // CLOSE PDF EDITOR LITE
+    // =========================
+    function closePdfEditorLite() { document.getElementById("pdfEditorModal").style.display = "none"; }
+
+    // =========================
+    // BUILD PDF EDITOR PAGE SELECT
+    // =========================
+    function buildPdfEditorPageSelect() {
+      const select = document.getElementById("pdfEditorPageSelect");
+      if (!select) return;
+      select.innerHTML = "";
+      for (let i = 1; i <= pdfEditorPageCount; i++) {
+        const option = document.createElement("option");
+        option.value = i;
+        option.textContent = "Page " + i;
+        select.appendChild(option);
+      }
+      select.value = String(pdfEditorCurrentPage);
+    }
+
+    // =========================
+    // CHANGE PDF EDITOR PAGE
+    // =========================
+    async function changePdfEditorPage() {
+      const select = document.getElementById("pdfEditorPageSelect");
+      pdfEditorCurrentPage = parseInt(select.value, 10) || 1;
+      await renderPdfEditorPage();
+    }
+
+    // =========================
+    // RENDER PDF EDITOR PAGE
+    // =========================
+    async function renderPdfEditorPage() {
+      if (!pdfEditorPdfJsDoc) return;
+      const page = await pdfEditorPdfJsDoc.getPage(pdfEditorCurrentPage);
+      const viewportOriginal = page.getViewport({ scale: 1 });
+      const scrollBox = document.querySelector(".pdf-editor-scroll");
+      const availableWidth = Math.max(260, (scrollBox ? scrollBox.clientWidth : 620) - 28);
+      const scale = Math.min(1.35, availableWidth / viewportOriginal.width);
+      const viewport = page.getViewport({ scale: scale });
+      const canvas = document.getElementById("pdfEditorCanvas");
       const context = canvas.getContext("2d");
-
-      canvas.width = width;
-      canvas.height = height;
-
-      context.drawImage(image, 0, 0, width, height);
-
-      return canvas;
+      const shell = document.getElementById("pdfEditorPageShell");
+      canvas.width = Math.floor(viewport.width);
+      canvas.height = Math.floor(viewport.height);
+      pdfEditorRenderedWidth = canvas.width;
+      pdfEditorRenderedHeight = canvas.height;
+      shell.style.width = canvas.width + "px";
+      shell.style.height = canvas.height + "px";
+      await page.render({ canvasContext: context, viewport: viewport }).promise;
+      document.getElementById("pdfEditorPageCountText").innerText = "Page " + pdfEditorCurrentPage + " / " + pdfEditorPageCount;
+      renderPdfEditorItems();
     }
 
     // =========================
-    // IMAGE RESIZE BUTTONS
+    // ADD PDF EDITOR TEXT
     // =========================
-    function setResizePercent(percent) {
-      if (!firstImageOriginalWidth || !firstImageOriginalHeight) {
-        alert("Please choose an image first.");
-        return;
-      }
-
-      clearResizeButtons();
-
-      if (percent === 25) document.getElementById("resize25Btn").classList.add("active");
-      if (percent === 50) document.getElementById("resize50Btn").classList.add("active");
-      if (percent === 75) document.getElementById("resize75Btn").classList.add("active");
-
-      const newWidth = Math.round(firstImageOriginalWidth * (percent / 100));
-      const newHeight = Math.round(firstImageOriginalHeight * (percent / 100));
-
-      document.getElementById("resizeWidthInput").value = newWidth;
-      document.getElementById("resizeHeightInput").value = newHeight;
+    function addPdfEditorText() {
+      const text = document.getElementById("pdfEditorTextInput").value.trim();
+      if (!text) { alert("Type text first."); return; }
+      addPdfEditorItem({ type: "text", text: text, fontSize: getPdfEditorFontSize() });
     }
 
     // =========================
-    // CLEAR RESIZE BUTTONS
+    // ADD PDF EDITOR DATE
     // =========================
-    function clearResizeButtons() {
-      const btn25 = document.getElementById("resize25Btn");
-      const btn50 = document.getElementById("resize50Btn");
-      const btn75 = document.getElementById("resize75Btn");
+    function addPdfEditorDate() { addPdfEditorItem({ type: "date", text: new Date().toLocaleDateString(), fontSize: getPdfEditorFontSize() }); }
 
-      if (btn25) btn25.classList.remove("active");
-      if (btn50) btn50.classList.remove("active");
-      if (btn75) btn75.classList.remove("active");
+    // =========================
+    // ADD PDF EDITOR SIGNATURE TEXT
+    // =========================
+    function addPdfEditorSignature() {
+      const text = document.getElementById("pdfEditorTextInput").value.trim();
+      if (!text) { alert("Type signature name first."); return; }
+      addPdfEditorItem({ type: "signature", text: text, fontSize: Math.max(22, getPdfEditorFontSize()) });
     }
 
     // =========================
-    // TOGGLE KEEP RATIO
+    // ADD PDF EDITOR CHECK MARK
     // =========================
-    function toggleKeepRatio() {
-      keepRatio = !keepRatio;
+    function addPdfEditorCheck() { addPdfEditorItem({ type: "check", text: "✓", fontSize: 30 }); }
 
-      const switchBox = document.getElementById("ratioSwitch");
-
-      if (!switchBox) return;
-
-      if (keepRatio) {
-        switchBox.classList.add("on");
-      } else {
-        switchBox.classList.remove("on");
-      }
+    // =========================
+    // ADD PDF EDITOR WHITE COVER BOX
+    // =========================
+    function addPdfEditorCoverBox() {
+      const size = document.getElementById("pdfEditorCoverSizeSelect").value;
+      let widthRatio = 0.30;
+      let heightRatio = 0.055;
+      if (size === "small") { widthRatio = 0.20; heightRatio = 0.045; }
+      if (size === "large") { widthRatio = 0.48; heightRatio = 0.075; }
+      addPdfEditorItem({ type: "cover", text: "", fontSize: 1, widthRatio: widthRatio, heightRatio: heightRatio });
     }
 
     // =========================
-    // HANDLE WIDTH INPUT
+    // ADD PDF EDITOR ITEM
     // =========================
-    function handleWidthInput() {
-      clearResizeButtons();
-
-      if (!keepRatio || !firstImageOriginalWidth || !firstImageOriginalHeight) {
-        return;
-      }
-
-      const widthInput = document.getElementById("resizeWidthInput");
-      const heightInput = document.getElementById("resizeHeightInput");
-
-      const newWidth = parseInt(widthInput.value, 10);
-
-      if (!newWidth || newWidth <= 0) {
-        return;
-      }
-
-      const newHeight = Math.round(newWidth * firstImageOriginalHeight / firstImageOriginalWidth);
-      heightInput.value = newHeight;
+    function addPdfEditorItem(item) {
+      if (!pdfEditorPdfJsDoc) { alert("Open a PDF first."); return; }
+      const pageItems = pdfEditorItems.filter(x => x.page === pdfEditorCurrentPage);
+      const offset = Math.min(0.35, pageItems.length * 0.035);
+      const newItem = {
+        id: "editor_item_" + Date.now() + "_" + Math.floor(Math.random() * 99999),
+        page: pdfEditorCurrentPage,
+        type: item.type,
+        text: item.text || "",
+        fontSize: item.fontSize || 18,
+        xRatio: 0.12 + offset,
+        yRatio: 0.16 + offset,
+        widthRatio: item.widthRatio || 0.22,
+        heightRatio: item.heightRatio || 0.045
+      };
+      pdfEditorItems.push(newItem);
+      renderPdfEditorItems();
     }
 
     // =========================
-    // HANDLE HEIGHT INPUT
+    // RENDER PDF EDITOR ITEMS
     // =========================
-    function handleHeightInput() {
-      clearResizeButtons();
+    function renderPdfEditorItems() {
+      const layer = document.getElementById("pdfEditorOverlayLayer");
+      if (!layer) return;
+      layer.innerHTML = "";
+      const currentItems = pdfEditorItems.filter(item => item.page === pdfEditorCurrentPage);
+      currentItems.forEach(item => {
+        const div = document.createElement("div");
+        div.className = "pdf-editor-item " + item.type;
+        div.dataset.id = item.id;
+        div.style.left = (item.xRatio * pdfEditorRenderedWidth) + "px";
+        div.style.top = (item.yRatio * pdfEditorRenderedHeight) + "px";
+        div.style.fontSize = item.fontSize + "px";
+        if (item.type === "cover") {
+          div.style.width = (item.widthRatio * pdfEditorRenderedWidth) + "px";
+          div.style.height = (item.heightRatio * pdfEditorRenderedHeight) + "px";
+          div.innerHTML = "";
+        } else {
+          div.textContent = item.text;
+        }
+        div.addEventListener("pointerdown", startPdfEditorDrag);
+        layer.appendChild(div);
+      });
+    }
 
-      if (!keepRatio || !firstImageOriginalWidth || !firstImageOriginalHeight) {
-        return;
-      }
+    // =========================
+    // START PDF EDITOR DRAG
+    // =========================
+    function startPdfEditorDrag(event) {
+      event.preventDefault();
+      const element = event.currentTarget;
+      const id = element.dataset.id;
+      const item = pdfEditorItems.find(x => x.id === id);
+      if (!item) return;
+      pdfEditorDragState = {
+        id: id,
+        startClientX: event.clientX,
+        startClientY: event.clientY,
+        startLeft: item.xRatio * pdfEditorRenderedWidth,
+        startTop: item.yRatio * pdfEditorRenderedHeight
+      };
+      document.addEventListener("pointermove", movePdfEditorDrag);
+      document.addEventListener("pointerup", stopPdfEditorDrag);
+    }
 
-      const widthInput = document.getElementById("resizeWidthInput");
-      const heightInput = document.getElementById("resizeHeightInput");
+    // =========================
+    // MOVE PDF EDITOR DRAG
+    // =========================
+    function movePdfEditorDrag(event) {
+      if (!pdfEditorDragState) return;
+      const item = pdfEditorItems.find(x => x.id === pdfEditorDragState.id);
+      if (!item) return;
+      const dx = event.clientX - pdfEditorDragState.startClientX;
+      const dy = event.clientY - pdfEditorDragState.startClientY;
+      let newLeft = pdfEditorDragState.startLeft + dx;
+      let newTop = pdfEditorDragState.startTop + dy;
+      const itemWidth = item.type === "cover" ? item.widthRatio * pdfEditorRenderedWidth : 120;
+      const itemHeight = item.type === "cover" ? item.heightRatio * pdfEditorRenderedHeight : item.fontSize + 18;
+      newLeft = Math.max(0, Math.min(pdfEditorRenderedWidth - itemWidth, newLeft));
+      newTop = Math.max(0, Math.min(pdfEditorRenderedHeight - itemHeight, newTop));
+      item.xRatio = newLeft / pdfEditorRenderedWidth;
+      item.yRatio = newTop / pdfEditorRenderedHeight;
+      renderPdfEditorItems();
+    }
 
-      const newHeight = parseInt(heightInput.value, 10);
+    // =========================
+    // STOP PDF EDITOR DRAG
+    // =========================
+    function stopPdfEditorDrag() {
+      pdfEditorDragState = null;
+      document.removeEventListener("pointermove", movePdfEditorDrag);
+      document.removeEventListener("pointerup", stopPdfEditorDrag);
+    }
 
-      if (!newHeight || newHeight <= 0) {
-        return;
-      }
+    // =========================
+    // GET PDF EDITOR FONT SIZE
+    // =========================
+    function getPdfEditorFontSize() {
+      const input = document.getElementById("pdfEditorFontSizeInput");
+      const value = parseInt(input.value, 10);
+      if (!value || value < 8) return 18;
+      if (value > 72) return 72;
+      return value;
+    }
 
-      const newWidth = Math.round(newHeight * firstImageOriginalWidth / firstImageOriginalHeight);
-      widthInput.value = newWidth;
+    // =========================
+    // CLEAR CURRENT PDF EDITOR PAGE
+    // =========================
+    function clearCurrentPdfEditorPage() {
+      if (!confirm("Clear all added items from this page?")) return;
+      pdfEditorItems = pdfEditorItems.filter(item => item.page !== pdfEditorCurrentPage);
+      renderPdfEditorItems();
+    }
+
+    // =========================
+    // CLEAR ALL PDF EDITOR ITEMS
+    // =========================
+    function clearAllPdfEditorItems() {
+      if (!confirm("Clear all added items from all pages?")) return;
+      pdfEditorItems = [];
+      renderPdfEditorItems();
+    }
+
+    // =========================
+    // DOWNLOAD EDITED PDF
+    // =========================
+    async function downloadEditedPdf() {
+      if (!pdfEditorPdfLibDoc || !pdfEditorFile) { alert("Open a PDF first."); return; }
+      try {
+        setSmartStatus("ready", "Creating edited PDF...");
+        const pdfDoc = await PDFLib.PDFDocument.load(pdfEditorArrayBuffer.slice(0));
+        const pages = pdfDoc.getPages();
+        const helveticaFont = await pdfDoc.embedFont(PDFLib.StandardFonts.Helvetica);
+        const helveticaBoldFont = await pdfDoc.embedFont(PDFLib.StandardFonts.HelveticaBold);
+        const helveticaObliqueFont = await pdfDoc.embedFont(PDFLib.StandardFonts.HelveticaOblique);
+        pdfEditorItems.forEach(item => {
+          const pageIndex = item.page - 1;
+          const page = pages[pageIndex];
+          if (!page) return;
+          const pageSize = page.getSize();
+          const pageWidth = pageSize.width;
+          const pageHeight = pageSize.height;
+          const x = item.xRatio * pageWidth;
+          const topY = item.yRatio * pageHeight;
+          if (item.type === "cover") {
+            const boxWidth = item.widthRatio * pageWidth;
+            const boxHeight = item.heightRatio * pageHeight;
+            page.drawRectangle({ x: x, y: pageHeight - topY - boxHeight, width: boxWidth, height: boxHeight, color: PDFLib.rgb(1, 1, 1), borderColor: PDFLib.rgb(1, 1, 1), borderWidth: 0 });
+            return;
+          }
+          let font = helveticaFont;
+          let size = item.fontSize || 18;
+          let text = item.text || "";
+          if (item.type === "signature") { font = helveticaObliqueFont; size = Math.max(22, size); }
+          if (item.type === "check") { font = helveticaBoldFont; size = 30; text = "✓"; }
+          page.drawText(text, { x: x, y: pageHeight - topY - size, size: size, font: font, color: PDFLib.rgb(0, 0, 0) });
+        });
+        const editedBytes = await pdfDoc.save({ useObjectStreams: true });
+        const blob = new Blob([editedBytes], { type: "application/pdf" });
+        downloadBlob(blob, removeFileExtension(pdfEditorFile.name) + "-edited.pdf");
+        setSmartStatus("success", "Done. Edited PDF downloaded.");
+      } catch (error) { console.error(error); setSmartStatus("error", "Could not create edited PDF."); }
     }
 
     // =========================
@@ -2124,9 +2110,6 @@
     // =========================
     function resetSmartTools() {
       smartSelectedFiles = [];
-      firstImageOriginalWidth = 0;
-      firstImageOriginalHeight = 0;
-      keepRatio = true;
 
       const fileInput = document.getElementById("smartFileInput");
       if (fileInput) fileInput.value = "";
@@ -2137,22 +2120,6 @@
       const qualityInput = document.getElementById("imageQualityInput");
       if (qualityInput) qualityInput.value = "0.72";
 
-      const resizeWidthInput = document.getElementById("resizeWidthInput");
-      if (resizeWidthInput) resizeWidthInput.value = "";
-
-      const resizeHeightInput = document.getElementById("resizeHeightInput");
-      if (resizeHeightInput) resizeHeightInput.value = "";
-
-      const ratioSwitch = document.getElementById("ratioSwitch");
-      if (ratioSwitch) ratioSwitch.classList.add("on");
-
-      const resizePanel = document.getElementById("imageResizePanel");
-      if (resizePanel) resizePanel.classList.remove("show");
-
-      document.getElementById("firstImageSizeText").innerText = "-";
-      document.getElementById("firstImageDimensionText").innerText = "-";
-
-      clearResizeButtons();
       renderSmartFileList();
       renderSmartActions();
 
