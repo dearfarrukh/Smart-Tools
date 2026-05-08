@@ -1180,9 +1180,8 @@
             <label>
               <span class="setting-label">PDF Image Naming Style</span>
               <select id="pdfImageNamingStyleInput" class="setting-input">
-                <option value="no-rename" selected>Do not rename</option>
+                <option value="no-rename" selected>Do not rename - use uploaded file name</option>
                 <option value="custom-name">Custom name</option>
-                <option value="pdf-name">Same as PDF name</option>
                 <option value="simple-page">Simple page name</option>
               </select>
             </label>
@@ -1217,10 +1216,11 @@
           </div>
 
           <div class="small-help">
-            Leave naming style on <strong>Do not rename</strong> if you do not want to change names. PDF images will stay like
-            <strong>page-0001.png</strong>, <strong>page-0002.png</strong>. If you choose <strong>Custom name</strong>,
-            type a name like <strong>page</strong> and downloads become <strong>page-1.png</strong>, <strong>page-2.png</strong>.
-            For very large PDFs, use ranges like <strong>1-500</strong>, <strong>501-1000</strong>, <strong>1001-1500</strong>.
+            Leave naming style on <strong>Do not rename - use uploaded file name</strong> if you want the output to keep the same uploaded file name.
+            Example: <strong>SAEED.pdf</strong> becomes <strong>SAEED.png</strong> if only 1 page is exported, or <strong>SAEED-1.png</strong>,
+            <strong>SAEED-2.png</strong> if more than 1 page is exported. If you choose <strong>Custom name</strong>, type a name like
+            <strong>page</strong> and downloads become <strong>page-1.png</strong>, <strong>page-2.png</strong>. For very large PDFs, use ranges like
+            <strong>1-500</strong>, <strong>501-1000</strong>, <strong>1001-1500</strong>.
           </div>
         </div>
 
@@ -2066,7 +2066,7 @@
             }).promise;
 
             const blob = await canvasToBlob(canvas, outputType, quality);
-            const outputName = buildPdfImageOutputName(file, pageNumber, sequenceNumber, extension);
+            const outputName = buildPdfImageOutputName(file, pageNumber, sequenceNumber, extension, pagesToConvert.length);
             zip.file(outputName, blob);
 
             canvas.width = 1;
@@ -4550,21 +4550,20 @@
     // =========================
     // BUILD PDF IMAGE OUTPUT NAME
     // =========================
-    function buildPdfImageOutputName(file, pageNumber, sequenceNumber, extension) {
+    function buildPdfImageOutputName(file, pageNumber, sequenceNumber, extension, totalPagesForThisFile) {
       const namingStyle = getPdfImageNamingStyle();
       const customName = cleanFileName(getPdfImageCustomName() || "page");
-      const pdfBaseName = cleanFileName(removeFileExtension(file.name));
+      const pdfBaseName = removeFileExtension(file.name || "file").trim() || "file";
 
       if (namingStyle === "no-rename") {
-        return "page-" + String(pageNumber).padStart(4, "0") + "." + extension;
+        if ((totalPagesForThisFile || 0) <= 1) {
+          return pdfBaseName + "." + extension;
+        }
+        return pdfBaseName + "-" + sequenceNumber + "." + extension;
       }
 
       if (namingStyle === "custom-name") {
         return customName + "-" + sequenceNumber + "." + extension;
-      }
-
-      if (namingStyle === "pdf-name") {
-        return pdfBaseName + "-page-" + pageNumber + "." + extension;
       }
 
       return "page-" + sequenceNumber + "." + extension;
