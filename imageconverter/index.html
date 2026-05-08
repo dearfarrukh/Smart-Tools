@@ -1180,8 +1180,9 @@
             <label>
               <span class="setting-label">PDF Image Naming Style</span>
               <select id="pdfImageNamingStyleInput" class="setting-input">
-                <option value="pdf-name" selected>Same as PDF name</option>
+                <option value="no-rename" selected>Do not rename</option>
                 <option value="custom-name">Custom name</option>
+                <option value="pdf-name">Same as PDF name</option>
                 <option value="simple-page">Simple page name</option>
               </select>
             </label>
@@ -1216,10 +1217,10 @@
           </div>
 
           <div class="small-help">
-            For PDF to PNG/JPG, leave naming style on <strong>Same as PDF name</strong> if you want file names like
-            <strong>your-pdf-page-1.png</strong>. If you choose <strong>Custom name</strong>, type a name like <strong>page</strong>
-            and downloads become <strong>page-1.png</strong>, <strong>page-2.png</strong>. For very large PDFs,
-            use ranges like <strong>1-500</strong>, <strong>501-1000</strong>, <strong>1001-1500</strong>.
+            Leave naming style on <strong>Do not rename</strong> if you do not want to change names. PDF images will stay like
+            <strong>page-0001.png</strong>, <strong>page-0002.png</strong>. If you choose <strong>Custom name</strong>,
+            type a name like <strong>page</strong> and downloads become <strong>page-1.png</strong>, <strong>page-2.png</strong>.
+            For very large PDFs, use ranges like <strong>1-500</strong>, <strong>501-1000</strong>, <strong>1001-1500</strong>.
           </div>
         </div>
 
@@ -4524,7 +4525,7 @@
     // =========================
     function getPdfImageNamingStyle() {
       const input = document.getElementById("pdfImageNamingStyleInput");
-      return input ? input.value : "pdf-name";
+      return input ? input.value : "no-rename";
     }
 
     // =========================
@@ -4554,15 +4555,19 @@
       const customName = cleanFileName(getPdfImageCustomName() || "page");
       const pdfBaseName = cleanFileName(removeFileExtension(file.name));
 
+      if (namingStyle === "no-rename") {
+        return "page-" + String(pageNumber).padStart(4, "0") + "." + extension;
+      }
+
       if (namingStyle === "custom-name") {
         return customName + "-" + sequenceNumber + "." + extension;
       }
 
-      if (namingStyle === "simple-page") {
-        return "page-" + sequenceNumber + "." + extension;
+      if (namingStyle === "pdf-name") {
+        return pdfBaseName + "-page-" + pageNumber + "." + extension;
       }
 
-      return pdfBaseName + "-page-" + pageNumber + "." + extension;
+      return "page-" + sequenceNumber + "." + extension;
     }
 
     // =========================
@@ -4687,7 +4692,7 @@
       if (pdfRenderScaleInput) pdfRenderScaleInput.value = "1.45";
 
       const pdfImageNamingStyleInput = document.getElementById("pdfImageNamingStyleInput");
-      if (pdfImageNamingStyleInput) pdfImageNamingStyleInput.value = "pdf-name";
+      if (pdfImageNamingStyleInput) pdfImageNamingStyleInput.value = "no-rename";
 
       const pdfImageCustomNameInput = document.getElementById("pdfImageCustomNameInput");
       if (pdfImageCustomNameInput) pdfImageCustomNameInput.value = "";
