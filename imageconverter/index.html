@@ -1383,6 +1383,26 @@
             </label>
           </div>
 
+          <div class="setting-row-three">
+            <label>
+              <span class="setting-label">PDF Image Name</span>
+              <input id="pdfImageNameInput" class="setting-input" type="text" value="page" placeholder="Example: page">
+            </label>
+
+            <label>
+              <span class="setting-label">Start Number</span>
+              <input id="pdfImageStartNumberInput" class="setting-input" type="number" value="1" min="1" placeholder="1">
+            </label>
+
+            <label>
+              <span class="setting-label">Number Style</span>
+              <select id="pdfImageNumberStyleInput" class="setting-input">
+                <option value="plain" selected>1, 2, 3</option>
+                <option value="padded">001, 002, 003</option>
+              </select>
+            </label>
+          </div>
+
           <div class="setting-row">
             <label>
               <span class="setting-label">Download File Prefix</span>
@@ -1403,7 +1423,7 @@
 
           <div class="small-help">
             Prefix is optional. For big PDFs, use <strong>PDF to PNG/JPG Pages</strong> like <strong>1-500</strong> first.
-            For a 1900-page PDF, use ranges like <strong>1-500</strong>, <strong>501-1000</strong>, <strong>1001-1500</strong>, and <strong>1501-1900</strong>.
+            PDF images will save directly inside the ZIP with your custom name, like <strong>page-1.png</strong>, <strong>page-2.png</strong>. No extra folders inside the ZIP.
           </div>
         </div>
 
@@ -2223,13 +2243,12 @@
 
         const zip = new JSZip();
         let totalImages = 0;
+        let outputSequenceIndex = 0;
 
         for (const item of loadedPdfs) {
           const file = item.file;
           const pdf = item.pdf;
           const pagesToConvert = item.pagesToConvert;
-          const folderName = getDownloadBaseName(file, removeFileExtension(file.name));
-          const folder = zip.folder(folderName);
 
           for (let i = 0; i < pagesToConvert.length; i++) {
             const pageNumber = pagesToConvert[i];
@@ -2258,11 +2277,14 @@
             }).promise;
 
             const blob = await canvasToBlob(canvas, outputType, quality);
-            folder.file("page-" + String(pageNumber).padStart(4, "0") + "." + extension, blob);
+            const outputFileName = getPdfImageOutputFileName(file, pageNumber, outputSequenceIndex, extension);
+
+            zip.file(outputFileName, blob);
 
             canvas.width = 1;
             canvas.height = 1;
             totalImages++;
+            outputSequenceIndex++;
           }
         }
 
@@ -4596,6 +4618,34 @@
     }
 
     // =========================
+    // GET PDF IMAGE OUTPUT NAME
+    // For PDF to PNG/JPG ZIP. No extra folders. Example: page-1.png
+    // =========================
+    function getPdfImageOutputFileName(file, pageNumber, sequenceIndex, extension) {
+      const nameInput = document.getElementById("pdfImageNameInput");
+      const numberStyleInput = document.getElementById("pdfImageNumberStyleInput");
+      const baseName = cleanFileName((nameInput && nameInput.value.trim()) ? nameInput.value.trim() : "page");
+      const numberStyle = numberStyleInput ? numberStyleInput.value : "plain";
+      const number = getPdfImageStartNumber() + sequenceIndex;
+      const numberText = numberStyle === "padded" ? String(number).padStart(3, "0") : String(number);
+
+      return baseName + "-" + numberText + "." + extension;
+    }
+
+    // =========================
+    // GET PDF IMAGE START NUMBER
+    // Default is 1. Example output: page-1.png, page-2.png
+    // =========================
+    function getPdfImageStartNumber() {
+      const input = document.getElementById("pdfImageStartNumberInput");
+      const value = input ? parseInt(input.value, 10) : 1;
+
+      if (!value || value < 1) return 1;
+
+      return value;
+    }
+
+    // =========================
     // GET IMAGE QUALITY
     // =========================
     function getImageQuality() {
@@ -4831,6 +4881,15 @@
       const pdfRenderScaleInput = document.getElementById("pdfRenderScaleInput");
       if (pdfRenderScaleInput) pdfRenderScaleInput.value = "1.45";
 
+      const pdfImageNameInput = document.getElementById("pdfImageNameInput");
+      if (pdfImageNameInput) pdfImageNameInput.value = "page";
+
+      const pdfImageStartNumberInput = document.getElementById("pdfImageStartNumberInput");
+      if (pdfImageStartNumberInput) pdfImageStartNumberInput.value = "1";
+
+      const pdfImageNumberStyleInput = document.getElementById("pdfImageNumberStyleInput");
+      if (pdfImageNumberStyleInput) pdfImageNumberStyleInput.value = "plain";
+
       const qualityInput = document.getElementById("imageQualityInput");
       if (qualityInput) qualityInput.value = "0.72";
 
@@ -4937,6 +4996,9 @@
       const ids = [
         "pdfImagePagesInput",
         "pdfRenderScaleInput",
+        "pdfImageNameInput",
+        "pdfImageStartNumberInput",
+        "pdfImageNumberStyleInput",
         "resizePresetInput",
         "resizeWidthInput",
         "resizeHeightInput",
