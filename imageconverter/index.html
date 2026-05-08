@@ -272,19 +272,54 @@
     }
 
     .file-pill {
-      margin-top: 12px;
-      border-radius: 16px;
-      padding: 12px 14px;
+      margin-top: 8px;
+      border-radius: 14px;
+      padding: 10px 12px;
       background: #f8fafc;
       border: 1px solid #e5e7eb;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 12px;
-      font-size: 14px;
+      gap: 10px;
+      font-size: 13px;
       color: #334155;
       font-weight: 800;
       word-break: break-word;
+    }
+
+    #smartFileList {
+      margin-top: 14px;
+      max-height: 230px;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding: 10px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.62);
+      border: 1px solid rgba(15,23,42,0.08);
+      scrollbar-width: thin;
+    }
+
+    #smartFileList::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    #smartFileList::-webkit-scrollbar-thumb {
+      background: rgba(100,116,139,0.42);
+      border-radius: 999px;
+    }
+
+    .file-list-summary {
+      position: sticky;
+      top: -10px;
+      z-index: 2;
+      margin: -10px -10px 8px -10px;
+      padding: 10px 12px;
+      background: rgba(248,250,252,0.96);
+      border-bottom: 1px solid #e5e7eb;
+      color: #334155;
+      font-size: 13px;
+      line-height: 1.4;
+      font-weight: 900;
     }
 
     .smart-action-grid {
@@ -990,6 +1025,175 @@
     }
 
     /* =========================
+       COMPACT POWER UI
+       Keeps all options, but makes the page shorter and easier to manage.
+    ========================= */
+    .inner-page-hero {
+      padding: 22px 22px;
+      border-radius: 24px;
+    }
+
+    .inner-page-hero h1 {
+      font-size: 28px;
+      margin-bottom: 8px;
+    }
+
+    .inner-page-hero p {
+      font-size: 15px;
+      line-height: 1.45;
+    }
+
+    .card {
+      border-radius: 22px;
+      padding: 18px;
+    }
+
+    .card + .card {
+      margin-top: 16px;
+    }
+
+    .card-title {
+      font-size: 20px;
+      margin-bottom: 5px;
+    }
+
+    .card-subtitle {
+      font-size: 13px;
+      line-height: 1.45;
+      margin-bottom: 12px;
+    }
+
+    .file-upload-box {
+      border-radius: 20px;
+      padding: 18px;
+    }
+
+    .file-upload-icon {
+      font-size: 34px;
+      margin-bottom: 6px;
+    }
+
+    .file-upload-title {
+      font-size: 18px;
+    }
+
+    .file-upload-subtitle,
+    .small-help {
+      font-size: 12.5px;
+      line-height: 1.55;
+    }
+
+    .setting-row,
+    .setting-row-three {
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .setting-label {
+      font-size: 12px;
+      margin-bottom: 6px;
+    }
+
+    .setting-input {
+      height: 44px;
+      border-radius: 14px;
+      font-size: 14px;
+      padding: 0 12px;
+    }
+
+    .setting-textarea {
+      min-height: 68px;
+      border-radius: 14px;
+      font-size: 14px;
+      padding: 10px 12px;
+    }
+
+    .toggle-row {
+      margin-top: 10px;
+      font-size: 13px;
+    }
+
+    .smart-action-grid {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .smart-tool-btn {
+      min-height: 72px;
+      border-radius: 17px;
+      padding: 11px;
+    }
+
+    .smart-tool-btn-icon {
+      font-size: 21px;
+      margin-bottom: 5px;
+    }
+
+    .smart-tool-btn-title {
+      font-size: 14px;
+    }
+
+    .smart-tool-btn-sub {
+      font-size: 11px;
+      line-height: 1.25;
+    }
+
+    .result-box {
+      min-height: 110px;
+      border-radius: 18px;
+      padding: 14px;
+    }
+
+    .result-heading {
+      font-size: 18px;
+      margin-bottom: 7px;
+    }
+
+    .result-placeholder {
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    .selected-change-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .selected-change-option {
+      border-radius: 15px;
+      padding: 10px;
+      font-size: 13px;
+    }
+
+    .main-apply-btn {
+      min-height: 54px;
+      border-radius: 18px;
+      font-size: 16px;
+      margin-top: 12px;
+    }
+
+    .preview-item img {
+      height: 128px;
+    }
+
+    .preview-compare-card img {
+      height: 170px;
+    }
+
+    body.smart-tools-dark-theme #smartFileList {
+      background: rgba(15,23,42,0.58);
+      border-color: rgba(148,163,184,0.20);
+    }
+
+    body.smart-tools-dark-theme .file-list-summary {
+      background: rgba(15,23,42,0.96);
+      border-bottom-color: rgba(148,163,184,0.22);
+      color: #cbd5e1;
+    }
+
+    /* =========================
        RESPONSIVE
     ========================= */
     @media (max-width: 900px) {
@@ -1054,13 +1258,16 @@
         height: 48px;
       }
 
-      .smart-action-grid,
       .preview-grid,
       .preview-compare-grid,
-      .selected-change-grid,
       .setting-row,
       .setting-row-three {
         grid-template-columns: 1fr;
+      }
+
+      .smart-action-grid,
+      .selected-change-grid {
+        grid-template-columns: 1fr 1fr;
       }
 
       .button-row {
@@ -1092,7 +1299,7 @@
     <div class="inner-page-hero">
       <h1>PDF / Image Tools</h1>
       <p>
-        Merge PDFs, split PDFs, compress PDFs, convert PDF pages to images,
+        Merge PDFs, split PDFs, compress PDFs, convert PDF pages to images with safe page ranges,
         resize images, crop, add text, watermark, make ID photos, and create PDFs.
       </p>
     </div>
@@ -1151,11 +1358,27 @@
             </label>
 
             <label>
+              <span class="setting-label">PDF to PNG/JPG Pages</span>
+              <input id="pdfImagePagesInput" class="setting-input" type="text" placeholder="Safe: 1-500 or 501-1000">
+            </label>
+          </div>
+
+          <div class="setting-row">
+            <label>
               <span class="setting-label">Image Quality</span>
               <select id="imageQualityInput" class="setting-input">
                 <option value="0.92">High Quality</option>
                 <option value="0.72" selected>Medium Quality</option>
                 <option value="0.48">Small Size</option>
+              </select>
+            </label>
+
+            <label>
+              <span class="setting-label">PDF to Image Sharpness</span>
+              <select id="pdfRenderScaleInput" class="setting-input">
+                <option value="1.15">Small / Faster</option>
+                <option value="1.45" selected>Medium / Safer</option>
+                <option value="2">High / Larger ZIP</option>
               </select>
             </label>
           </div>
@@ -1179,8 +1402,8 @@
           </div>
 
           <div class="small-help">
-            Prefix is optional. Example: type <strong>customer</strong>, then downloads become
-            <strong>customer-1.jpg</strong>, <strong>customer-2.jpg</strong>, etc.
+            Prefix is optional. For big PDFs, use <strong>PDF to PNG/JPG Pages</strong> like <strong>1-500</strong> first.
+            For a 1900-page PDF, use ranges like <strong>1-500</strong>, <strong>501-1000</strong>, <strong>1001-1500</strong>, and <strong>1501-1900</strong>.
           </div>
         </div>
 
@@ -1583,7 +1806,7 @@
 
       if (!smartSelectedFiles.length) {
         fileList.innerHTML = `
-          <div class="result-placeholder" style="margin-top:16px;">
+          <div class="result-placeholder">
             No files selected yet.
           </div>
         `;
@@ -1591,12 +1814,22 @@
         return;
       }
 
-      fileList.innerHTML = smartSelectedFiles.map(file => `
-        <div class="file-pill">
-          <span>${escapeHtml(file.name)}</span>
-          <span>${formatFileSize(file.size)}</span>
+      const totalSize = smartSelectedFiles.reduce((sum, file) => sum + (file.size || 0), 0);
+      const pdfCount = smartSelectedFiles.filter(file => isPdfFile(file)).length;
+      const imageCount = smartSelectedFiles.filter(file => isImageFile(file)).length;
+
+      fileList.innerHTML = `
+        <div class="file-list-summary">
+          Selected: ${smartSelectedFiles.length} file(s) • PDFs: ${pdfCount} • Images: ${imageCount}<br>
+          Total size: ${formatFileSize(totalSize)} — scroll inside this box to see all files.
         </div>
-      `).join("");
+        ${smartSelectedFiles.map(file => `
+          <div class="file-pill">
+            <span>${escapeHtml(file.name)}</span>
+            <span>${formatFileSize(file.size)}</span>
+          </div>
+        `).join("")}
+      `;
 
       applySmartToolsTheme();
     }
@@ -1932,26 +2165,87 @@
       }
 
       try {
-        setSmartStatus("ready", "Converting PDF pages to " + extension.toUpperCase() + "...");
+        const pageRangeText = getPdfImagePageRangeText();
+        const renderScale = getPdfRenderScale();
+        const loadedPdfs = [];
+        let totalImagesToMake = 0;
 
-        const zip = new JSZip();
-        let totalImages = 0;
+        setSmartStatus("ready", "Reading PDF page count...");
 
         for (const file of pdfFiles) {
           const arrayBuffer = await file.arrayBuffer();
           const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+          const pagesToConvert = pageRangeText
+            ? parsePageSelection(pageRangeText, pdf.numPages)
+            : Array.from({ length: pdf.numPages }, (_, index) => index + 1);
+
+          if (!pagesToConvert.length) {
+            setSmartStatus("error", "No valid PDF pages found. Example: 1-500 or 1,3,5-7");
+            return;
+          }
+
+          loadedPdfs.push({
+            file: file,
+            pdf: pdf,
+            pagesToConvert: pagesToConvert
+          });
+
+          totalImagesToMake += pagesToConvert.length;
+        }
+
+        if (totalImagesToMake > 500) {
+          const continueBigPdf = confirm(
+            "This will create " + totalImagesToMake + " " + extension.toUpperCase() + " image files.\n\n" +
+            "For big PDFs, type a page range like 1-500 first.\n\n" +
+            "Continue anyway?"
+          );
+
+          if (!continueBigPdf) {
+            setSmartStatus("ready", "Cancelled. Type a PDF to PNG/JPG range like 1-500, then try again.");
+            return;
+          }
+        }
+
+        if (totalImagesToMake > 1000) {
+          const continueVeryBigPdf = confirm(
+            "Very large job: " + totalImagesToMake + " pages.\n\n" +
+            "Your browser may freeze or run out of memory. Best way is 500 pages at a time on computer, or smaller on phone.\n\n" +
+            "Are you sure you want to continue?"
+          );
+
+          if (!continueVeryBigPdf) {
+            setSmartStatus("ready", "Cancelled for safety. Use ranges like 1-500, 501-1000, 1001-1500.");
+            return;
+          }
+        }
+
+        setSmartStatus("ready", "Converting 0 of " + totalImagesToMake + " page(s)...");
+
+        const zip = new JSZip();
+        let totalImages = 0;
+
+        for (const item of loadedPdfs) {
+          const file = item.file;
+          const pdf = item.pdf;
+          const pagesToConvert = item.pagesToConvert;
           const folderName = getDownloadBaseName(file, removeFileExtension(file.name));
           const folder = zip.folder(folderName);
 
-          for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber++) {
+          for (let i = 0; i < pagesToConvert.length; i++) {
+            const pageNumber = pagesToConvert[i];
+            setSmartStatus(
+              "ready",
+              "Converting page " + pageNumber + " from " + escapeHtml(file.name) + " (" + (totalImages + 1) + " of " + totalImagesToMake + ")..."
+            );
+
             const page = await pdf.getPage(pageNumber);
-            const viewport = page.getViewport({ scale: 2 });
+            const viewport = page.getViewport({ scale: renderScale });
 
             const canvas = document.createElement("canvas");
             const context = canvas.getContext("2d");
 
-            canvas.width = viewport.width;
-            canvas.height = viewport.height;
+            canvas.width = Math.floor(viewport.width);
+            canvas.height = Math.floor(viewport.height);
 
             if (outputType === "image/jpeg") {
               context.fillStyle = "#ffffff";
@@ -1964,19 +2258,28 @@
             }).promise;
 
             const blob = await canvasToBlob(canvas, outputType, quality);
-            folder.file("page-" + String(pageNumber).padStart(3, "0") + "." + extension, blob);
+            folder.file("page-" + String(pageNumber).padStart(4, "0") + "." + extension, blob);
 
+            canvas.width = 1;
+            canvas.height = 1;
             totalImages++;
           }
         }
 
-        const zipBlob = await zip.generateAsync({ type: "blob" });
-        downloadBlob(zipBlob, "pdf-pages-" + extension + ".zip");
+        setSmartStatus("ready", "Making ZIP file for " + totalImages + " image(s)...");
 
-        setSmartStatus("success", "Done. " + totalImages + " " + extension.toUpperCase() + " image(s) created and downloaded.");
+        const zipBlob = await zip.generateAsync({
+          type: "blob",
+          compression: "DEFLATE",
+          compressionOptions: { level: 6 }
+        });
+
+        downloadBlob(zipBlob, getPrefixName("pdf-pages-" + extension) + ".zip");
+
+        setSmartStatus("success", "Done. " + totalImages + " " + extension.toUpperCase() + " image(s) created and downloaded as ZIP.");
       } catch (error) {
         console.error(error);
-        setSmartStatus("error", "PDF to images failed. Try another PDF file.");
+        setSmartStatus("error", "PDF to images failed. For large PDFs, try a smaller range like 1-500 or 1-250.");
       }
     }
 
@@ -4269,6 +4572,30 @@
     }
 
     // =========================
+    // GET PDF IMAGE PAGE RANGE TEXT
+    // For PDF to PNG / JPG. Example: 1-500 or 1,3,5-7
+    // =========================
+    function getPdfImagePageRangeText() {
+      const input = document.getElementById("pdfImagePagesInput");
+      return input ? input.value.trim() : "";
+    }
+
+    // =========================
+    // GET PDF RENDER SCALE
+    // Lower scale is safer for big PDFs.
+    // =========================
+    function getPdfRenderScale() {
+      const input = document.getElementById("pdfRenderScaleInput");
+      const value = input ? parseFloat(input.value) : 1.45;
+
+      if (isNaN(value)) return 1.45;
+      if (value < 0.75) return 0.75;
+      if (value > 2.5) return 2.5;
+
+      return value;
+    }
+
+    // =========================
     // GET IMAGE QUALITY
     // =========================
     function getImageQuality() {
@@ -4498,6 +4825,12 @@
       const pagesInput = document.getElementById("pdfPagesInput");
       if (pagesInput) pagesInput.value = "";
 
+      const pdfImagePagesInput = document.getElementById("pdfImagePagesInput");
+      if (pdfImagePagesInput) pdfImagePagesInput.value = "";
+
+      const pdfRenderScaleInput = document.getElementById("pdfRenderScaleInput");
+      if (pdfRenderScaleInput) pdfRenderScaleInput.value = "1.45";
+
       const qualityInput = document.getElementById("imageQualityInput");
       if (qualityInput) qualityInput.value = "0.72";
 
@@ -4602,6 +4935,8 @@
     // =========================
     function setupSelectedPreviewAutoUpdate() {
       const ids = [
+        "pdfImagePagesInput",
+        "pdfRenderScaleInput",
         "resizePresetInput",
         "resizeWidthInput",
         "resizeHeightInput",
