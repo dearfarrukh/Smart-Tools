@@ -271,6 +271,33 @@
       display: none;
     }
 
+/* =========================
+   FILE LIST SCROLL WINDOW
+========================= */
+#smartFileList {
+  margin-top: 16px;
+  max-height: 260px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 4px;
+}
+
+/* SCROLL BAR */
+#smartFileList::-webkit-scrollbar {
+  width: 8px;
+}
+
+#smartFileList::-webkit-scrollbar-thumb {
+  background: #94a3b8;
+  border-radius: 20px;
+}
+
+#smartFileList::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+
+    
     .file-pill {
       margin-top: 12px;
       border-radius: 16px;
