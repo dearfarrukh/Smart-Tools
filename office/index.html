@@ -305,7 +305,7 @@
     <div class="inner-page-hero">
       <h1>Office Tools</h1>
       <p>
-        Office-only tools for work forms, contracts, customer documents, and business shortcuts.
+        Office-only tools for work forms, contracts, customer documents, CSV files, and business shortcuts.
       </p>
     </div>
 
@@ -318,6 +318,16 @@
         <div class="office-icon">📄</div>
         <h3>Contract Generator</h3>
         <p>Generate WFC / NFC fuel price contracts from clean templates.</p>
+        <div class="office-arrow">›</div>
+      </button>
+
+      <!-- =========================
+           CSV CONVERTER CARD
+      ========================= -->
+      <button class="office-card" onclick="openCsvConverter()">
+        <div class="office-icon">📊</div>
+        <h3>PDF / Excel to CSV</h3>
+        <p>Extract bank data and make upload-ready CSV files.</p>
         <div class="office-arrow">›</div>
       </button>
 
@@ -348,6 +358,13 @@
     // =========================
     function openContractGenerator() {
       window.location.href = "../contract-generator/";
+    }
+
+    // =========================
+    // OPEN CSV CONVERTER
+    // =========================
+    function openCsvConverter() {
+      window.location.href = "../csvconverter/";
     }
 
     // =========================
@@ -384,4 +401,3 @@
 
 </body>
 </html>
-
