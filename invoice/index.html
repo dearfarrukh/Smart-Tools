@@ -223,6 +223,11 @@
       font-weight: 700;
     }
 
+    .field input[readonly] {
+      background: #e5e7eb;
+      color: #334155;
+    }
+
     .field textarea {
       resize: vertical;
       min-height: 82px;
@@ -586,6 +591,11 @@
       color: #f8fafc;
     }
 
+    body.smart-tools-dark-theme .field input[readonly] {
+      background: rgba(30,41,59,0.95);
+      color: #cbd5e1;
+    }
+
     body.smart-tools-dark-theme .item-row {
       background: rgba(15,23,42,0.50);
       border-color: rgba(148,163,184,0.16);
@@ -805,17 +815,29 @@
 
             <div class="field">
               <label>Invoice Date</label>
-              <input id="invoiceDate" type="date" oninput="updateInvoice()" />
+              <input id="invoiceDate" type="date" oninput="handleInvoiceDateChange()" />
+            </div>
+
+            <div class="field">
+              <label>Payment Terms</label>
+              <select id="paymentTermsSelect" onchange="handlePaymentTermsChange()">
+                <option value="0">Due Today</option>
+                <option value="10">Due in 10 Days</option>
+                <option value="15">Due in 15 Days</option>
+                <option value="20">Due in 20 Days</option>
+                <option value="30">Due in 30 Days</option>
+                <option value="custom">Custom Due Date</option>
+              </select>
             </div>
 
             <div class="field">
               <label>Due Date</label>
-              <input id="dueDate" type="date" oninput="updateInvoice()" />
+              <input id="dueDate" type="date" readonly onchange="handleManualDueDateChange()" />
             </div>
 
             <div class="field">
               <label>Currency</label>
-              <select id="currencySymbol" onchange="updateInvoice()">
+              <select id="currencySymbol" onchange="updateInvoiceAndItems()">
                 <option value="$">$ USD</option>
                 <option value="Rs ">Rs PKR</option>
                 <option value="£">£ GBP</option>
@@ -848,11 +870,6 @@
             <div class="field">
               <label>Paid Amount</label>
               <input id="paidAmount" type="number" min="0" step="0.01" placeholder="0" oninput="updateInvoice()" />
-            </div>
-
-            <div class="field">
-              <label>Payment Terms</label>
-              <input id="paymentTerms" type="text" placeholder="Due on receipt" oninput="updateInvoice()" />
             </div>
 
             <div class="field full">
@@ -906,7 +923,7 @@
 
               <div class="bill-card">
                 <h3>Payment Terms</h3>
-                <p id="previewPaymentTerms">Due on receipt</p>
+                <p id="previewPaymentTerms">Due Today</p>
               </div>
             </div>
 
@@ -1012,6 +1029,93 @@
     }
 
     // =========================
+    // MAKE DATE INPUT VALUE
+    // =========================
+    function makeDateInputValue(date) {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+
+      return year + "-" + month + "-" + day;
+    }
+
+    // =========================
+    // CALCULATE DUE DATE FROM TERMS
+    // =========================
+    function calculateDueDateFromTerms() {
+      const termsValue = getValue("paymentTermsSelect");
+      const dueDateInput = document.getElementById("dueDate");
+
+      if (!dueDateInput) return;
+
+      if (termsValue === "custom") {
+        dueDateInput.removeAttribute("readonly");
+
+        if (!dueDateInput.value) {
+          dueDateInput.value = getValue("invoiceDate") || makeDateInputValue(new Date());
+        }
+
+        updateInvoice();
+        return;
+      }
+
+      dueDateInput.setAttribute("readonly", "readonly");
+
+      const invoiceDateValue = getValue("invoiceDate") || makeDateInputValue(new Date());
+      const baseDate = new Date(invoiceDateValue + "T00:00:00");
+      const daysToAdd = Number(termsValue || 0);
+
+      baseDate.setDate(baseDate.getDate() + daysToAdd);
+
+      dueDateInput.value = makeDateInputValue(baseDate);
+
+      updateInvoice();
+    }
+
+    // =========================
+    // HANDLE INVOICE DATE CHANGE
+    // =========================
+    function handleInvoiceDateChange() {
+      calculateDueDateFromTerms();
+    }
+
+    // =========================
+    // HANDLE PAYMENT TERMS CHANGE
+    // =========================
+    function handlePaymentTermsChange() {
+      calculateDueDateFromTerms();
+    }
+
+    // =========================
+    // HANDLE MANUAL DUE DATE CHANGE
+    // =========================
+    function handleManualDueDateChange() {
+      const termsValue = getValue("paymentTermsSelect");
+
+      if (termsValue !== "custom") {
+        document.getElementById("paymentTermsSelect").value = "custom";
+        document.getElementById("dueDate").removeAttribute("readonly");
+      }
+
+      updateInvoice();
+    }
+
+    // =========================
+    // GET PAYMENT TERMS LABEL
+    // =========================
+    function getPaymentTermsLabel() {
+      const value = getValue("paymentTermsSelect");
+
+      if (value === "0") return "Due Today";
+      if (value === "10") return "Due in 10 Days";
+      if (value === "15") return "Due in 15 Days";
+      if (value === "20") return "Due in 20 Days";
+      if (value === "30") return "Due in 30 Days";
+
+      return "Custom Due Date";
+    }
+
+    // =========================
     // ADD ITEM
     // =========================
     function addItem(itemData) {
@@ -1033,8 +1137,11 @@
       invoiceItems.splice(index, 1);
 
       if (invoiceItems.length === 0) {
-        addItem();
-        return;
+        invoiceItems.push({
+          description: "",
+          qty: 1,
+          rate: 0
+        });
       }
 
       renderItems();
@@ -1043,6 +1150,8 @@
 
     // =========================
     // UPDATE ITEM FIELD
+    // Important: This does NOT rebuild the row while typing.
+    // This fixes description / price typing problem.
     // =========================
     function updateItemField(index, field, value) {
       if (!invoiceItems[index]) return;
@@ -1053,7 +1162,36 @@
         invoiceItems[index][field] = value;
       }
 
-      renderItems();
+      updateSingleLineTotal(index);
+      updateInvoice();
+    }
+
+    // =========================
+    // UPDATE SINGLE LINE TOTAL ONLY
+    // =========================
+    function updateSingleLineTotal(index) {
+      const item = invoiceItems[index];
+
+      if (!item) return;
+
+      const lineTotalEl = document.getElementById("lineTotal_" + index);
+
+      if (!lineTotalEl) return;
+
+      const lineTotal = Number(item.qty || 0) * Number(item.rate || 0);
+
+      lineTotalEl.innerText = formatMoney(lineTotal);
+    }
+
+    // =========================
+    // UPDATE INVOICE AND ITEM TOTALS
+    // Used when currency changes.
+    // =========================
+    function updateInvoiceAndItems() {
+      invoiceItems.forEach(function(item, index) {
+        updateSingleLineTotal(index);
+      });
+
       updateInvoice();
     }
 
@@ -1095,7 +1233,7 @@
           </div>
 
           <div>
-            <span class="item-small-label">Rate</span>
+            <span class="item-small-label">Price</span>
             <input
               type="number"
               min="0"
@@ -1107,7 +1245,7 @@
 
           <div>
             <span class="item-small-label">Total</span>
-            <div class="line-total">${formatMoney(lineTotal)}</div>
+            <div id="lineTotal_${index}" class="line-total">${formatMoney(lineTotal)}</div>
           </div>
 
           <button class="remove-item-btn" onclick="removeItem(${index})">×</button>
@@ -1158,7 +1296,7 @@
       const invoiceNumber = getValue("invoiceNumber") || "INV-1001";
       const invoiceDate = getValue("invoiceDate");
       const dueDate = getValue("dueDate");
-      const paymentTerms = getValue("paymentTerms") || "Due on receipt";
+      const paymentTerms = getPaymentTermsLabel();
       const notes = getValue("invoiceNotes") || "Thank you for your business.";
 
       document.getElementById("previewBusinessName").innerText = businessName;
@@ -1279,12 +1417,12 @@
         customerAddress: getValue("customerAddress"),
         invoiceNumber: getValue("invoiceNumber"),
         invoiceDate: getValue("invoiceDate"),
+        paymentTermsSelect: getValue("paymentTermsSelect"),
         dueDate: getValue("dueDate"),
         currencySymbol: getValue("currencySymbol"),
         taxPercent: getValue("taxPercent"),
         discountAmount: getValue("discountAmount"),
         paidAmount: getValue("paidAmount"),
-        paymentTerms: getValue("paymentTerms"),
         invoiceNotes: getValue("invoiceNotes"),
         items: invoiceItems
       };
@@ -1302,17 +1440,24 @@
       setValue("customerAddress", data.customerAddress);
       setValue("invoiceNumber", data.invoiceNumber);
       setValue("invoiceDate", data.invoiceDate);
+      setValue("paymentTermsSelect", data.paymentTermsSelect || "0");
       setValue("dueDate", data.dueDate);
       setValue("currencySymbol", data.currencySymbol || "$");
       setValue("taxPercent", data.taxPercent);
       setValue("discountAmount", data.discountAmount);
       setValue("paidAmount", data.paidAmount);
-      setValue("paymentTerms", data.paymentTerms);
       setValue("invoiceNotes", data.invoiceNotes);
 
       invoiceItems = Array.isArray(data.items) && data.items.length > 0
         ? data.items
         : [{ description: "", qty: 1, rate: 0 }];
+
+      if ((data.paymentTermsSelect || "0") === "custom") {
+        document.getElementById("dueDate").removeAttribute("readonly");
+      } else {
+        document.getElementById("dueDate").setAttribute("readonly", "readonly");
+        calculateDueDateFromTerms();
+      }
 
       renderItems();
       updateInvoice();
@@ -1342,18 +1487,8 @@
     // =========================
     function setupDefaultInvoice() {
       const today = new Date();
-      const due = new Date();
-      due.setDate(today.getDate() + 30);
-
-      const yyyy = today.getFullYear();
-      const mm = String(today.getMonth() + 1).padStart(2, "0");
-      const dd = String(today.getDate()).padStart(2, "0");
-
-      const dueY = due.getFullYear();
-      const dueM = String(due.getMonth() + 1).padStart(2, "0");
-      const dueD = String(due.getDate()).padStart(2, "0");
-
-      const invoiceNum = "INV-" + yyyy + mm + dd + "-" + Math.floor(Math.random() * 900 + 100);
+      const todayValue = makeDateInputValue(today);
+      const invoiceNum = "INV-" + todayValue.replaceAll("-", "") + "-" + Math.floor(Math.random() * 900 + 100);
 
       setValue("businessName", "");
       setValue("businessContact", "");
@@ -1362,13 +1497,12 @@
       setValue("customerContact", "");
       setValue("customerAddress", "");
       setValue("invoiceNumber", invoiceNum);
-      setValue("invoiceDate", yyyy + "-" + mm + "-" + dd);
-      setValue("dueDate", dueY + "-" + dueM + "-" + dueD);
+      setValue("invoiceDate", todayValue);
+      setValue("paymentTermsSelect", "0");
       setValue("currencySymbol", "$");
       setValue("taxPercent", "0");
       setValue("discountAmount", "0");
       setValue("paidAmount", "0");
-      setValue("paymentTerms", "Due on receipt");
       setValue("invoiceNotes", "Thank you for your business.");
 
       invoiceItems = [
@@ -1380,6 +1514,7 @@
       ];
 
       renderItems();
+      calculateDueDateFromTerms();
       updateInvoice();
     }
 
