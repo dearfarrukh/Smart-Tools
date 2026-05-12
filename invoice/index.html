@@ -254,7 +254,7 @@
       border-radius: 20px;
       padding: 12px;
       display: grid;
-      grid-template-columns: 1.7fr 0.55fr 0.75fr 0.8fr 42px;
+      grid-template-columns: 1.45fr 0.48fr 0.55fr 0.72fr 0.78fr 42px;
       gap: 8px;
       align-items: end;
     }
@@ -277,6 +277,28 @@
       outline: none;
       font-size: 14px;
       font-weight: 800;
+    }
+
+    .tax-check-wrap {
+      min-height: 42px;
+      border-radius: 13px;
+      background: #dcfce7;
+      color: #166534;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 900;
+      padding: 0 8px;
+      user-select: none;
+    }
+
+    .tax-check-wrap input {
+      width: 18px;
+      height: 18px;
+      accent-color: #16a34a;
+      cursor: pointer;
     }
 
     .line-total {
@@ -469,7 +491,8 @@
 
     .invoice-table th:nth-child(2),
     .invoice-table th:nth-child(3),
-    .invoice-table th:nth-child(4) {
+    .invoice-table th:nth-child(4),
+    .invoice-table th:nth-child(5) {
       text-align: right;
     }
 
@@ -484,9 +507,34 @@
 
     .invoice-table td:nth-child(2),
     .invoice-table td:nth-child(3),
-    .invoice-table td:nth-child(4) {
+    .invoice-table td:nth-child(4),
+    .invoice-table td:nth-child(5) {
       text-align: right;
       white-space: nowrap;
+    }
+
+    .taxed-label {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      padding: 4px 8px;
+      background: #dcfce7;
+      color: #166534;
+      font-size: 11px;
+      font-weight: 900;
+    }
+
+    .not-taxed-label {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      padding: 4px 8px;
+      background: #f1f5f9;
+      color: #64748b;
+      font-size: 11px;
+      font-weight: 900;
     }
 
     .totals-wrap {
@@ -496,7 +544,7 @@
     }
 
     .totals-box {
-      width: 330px;
+      width: 350px;
       border-radius: 18px;
       overflow: hidden;
       border: 1px solid #e5e7eb;
@@ -671,8 +719,13 @@
 
       .invoice-table th,
       .invoice-table td {
-        font-size: 12px;
-        padding: 10px 8px;
+        font-size: 11px;
+        padding: 9px 6px;
+      }
+
+      .invoice-table th:nth-child(2),
+      .invoice-table td:nth-child(2) {
+        display: none;
       }
     }
 
@@ -750,7 +803,7 @@
     <section class="hero">
       <h1>Professional Invoice Maker</h1>
       <p>
-        Create clean invoices for customers, add items, tax, discount, paid amount, notes, then print or save as PDF.
+        Create clean invoices for customers, add items, choose taxable or non-taxable items, then print or save as PDF.
       </p>
     </section>
 
@@ -931,8 +984,9 @@
               <thead>
                 <tr>
                   <th>Description</th>
+                  <th>Tax</th>
                   <th>Qty</th>
-                  <th>Rate</th>
+                  <th>Price</th>
                   <th>Total</th>
                 </tr>
               </thead>
@@ -944,6 +998,11 @@
                 <div class="total-line">
                   <span>Subtotal</span>
                   <span id="previewSubtotal">$0.00</span>
+                </div>
+
+                <div class="total-line">
+                  <span>Taxable Subtotal</span>
+                  <span id="previewTaxableSubtotal">$0.00</span>
                 </div>
 
                 <div class="total-line">
@@ -1117,13 +1176,19 @@
 
     // =========================
     // ADD ITEM
+    // Default: taxable is true
     // =========================
     function addItem(itemData) {
       const item = itemData || {
         description: "",
         qty: 1,
-        rate: 0
+        rate: 0,
+        taxable: true
       };
+
+      if (typeof item.taxable === "undefined") {
+        item.taxable = true;
+      }
 
       invoiceItems.push(item);
       renderItems();
@@ -1140,7 +1205,8 @@
         invoiceItems.push({
           description: "",
           qty: 1,
-          rate: 0
+          rate: 0,
+          taxable: true
         });
       }
 
@@ -1151,13 +1217,14 @@
     // =========================
     // UPDATE ITEM FIELD
     // Important: This does NOT rebuild the row while typing.
-    // This fixes description / price typing problem.
     // =========================
     function updateItemField(index, field, value) {
       if (!invoiceItems[index]) return;
 
       if (field === "qty" || field === "rate") {
         invoiceItems[index][field] = Number(value || 0);
+      } else if (field === "taxable") {
+        invoiceItems[index][field] = Boolean(value);
       } else {
         invoiceItems[index][field] = value;
       }
@@ -1205,7 +1272,12 @@
       box.innerHTML = "";
 
       invoiceItems.forEach(function(item, index) {
+        if (typeof item.taxable === "undefined") {
+          item.taxable = true;
+        }
+
         const lineTotal = Number(item.qty || 0) * Number(item.rate || 0);
+        const checkedText = item.taxable ? "checked" : "";
 
         const row = document.createElement("div");
         row.className = "item-row";
@@ -1219,6 +1291,18 @@
               placeholder="Service or product"
               oninput="updateItemField(${index}, 'description', this.value)"
             />
+          </div>
+
+          <div>
+            <span class="item-small-label">Tax</span>
+            <label class="tax-check-wrap">
+              <input
+                type="checkbox"
+                ${checkedText}
+                onchange="updateItemField(${index}, 'taxable', this.checked)"
+              />
+              Tax
+            </label>
           </div>
 
           <div>
@@ -1331,24 +1415,39 @@
 
     // =========================
     // UPDATE PREVIEW ITEMS AND TOTALS
+    // Tax is calculated only from checked taxable items.
     // =========================
     function updatePreviewItemsAndTotals() {
       const body = document.getElementById("previewItemsBody");
       body.innerHTML = "";
 
       let subtotal = 0;
+      let taxableSubtotal = 0;
 
       invoiceItems.forEach(function(item) {
+        if (typeof item.taxable === "undefined") {
+          item.taxable = true;
+        }
+
         const qty = Number(item.qty || 0);
         const rate = Number(item.rate || 0);
         const lineTotal = qty * rate;
 
         subtotal += lineTotal;
 
+        if (item.taxable) {
+          taxableSubtotal += lineTotal;
+        }
+
+        const taxLabel = item.taxable
+          ? '<span class="taxed-label">Tax</span>'
+          : '<span class="not-taxed-label">No</span>';
+
         const tr = document.createElement("tr");
 
         tr.innerHTML = `
           <td>${escapeHtml(item.description || "Item")}</td>
+          <td>${taxLabel}</td>
           <td>${qty}</td>
           <td>${formatMoney(rate)}</td>
           <td>${formatMoney(lineTotal)}</td>
@@ -1361,11 +1460,12 @@
       const discount = Number(getValue("discountAmount") || 0);
       const paid = Number(getValue("paidAmount") || 0);
 
-      const tax = subtotal * (taxPercent / 100);
+      const tax = taxableSubtotal * (taxPercent / 100);
       const grandTotal = Math.max(0, subtotal + tax - discount);
       const due = Math.max(0, grandTotal - paid);
 
       document.getElementById("previewSubtotal").innerText = formatMoney(subtotal);
+      document.getElementById("previewTaxableSubtotal").innerText = formatMoney(taxableSubtotal);
       document.getElementById("previewTax").innerText = formatMoney(tax);
       document.getElementById("previewDiscount").innerText = "- " + formatMoney(discount);
       document.getElementById("previewGrandTotal").innerText = formatMoney(grandTotal);
@@ -1449,8 +1549,15 @@
       setValue("invoiceNotes", data.invoiceNotes);
 
       invoiceItems = Array.isArray(data.items) && data.items.length > 0
-        ? data.items
-        : [{ description: "", qty: 1, rate: 0 }];
+        ? data.items.map(function(item) {
+            return {
+              description: item.description || "",
+              qty: Number(item.qty || 0),
+              rate: Number(item.rate || 0),
+              taxable: typeof item.taxable === "undefined" ? true : Boolean(item.taxable)
+            };
+          })
+        : [{ description: "", qty: 1, rate: 0, taxable: true }];
 
       if ((data.paymentTermsSelect || "0") === "custom") {
         document.getElementById("dueDate").removeAttribute("readonly");
@@ -1509,7 +1616,8 @@
         {
           description: "",
           qty: 1,
-          rate: 0
+          rate: 0,
+          taxable: true
         }
       ];
 
