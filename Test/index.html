@@ -1,1 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CSV Generator</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,sans-serif;background:#f4f4f4;color:#222;min-height:100vh}
+.wrap{padding:1.5rem 1rem;max-width:700px;margin:0 auto}
+h1{font-size:20px;font-weight:600;margin-bottom:4px}
+.sub{font-size:13px;color:#666;margin-bottom:1.5rem}
+.card{background:#fff;border:1px solid #ddd;border-radius:12px;padding:1rem 1.25rem;margin-bottom:1rem}
+.card-title{font-size:14px;font-weight:600;margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.acc-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.acc-row{display:flex;flex-direction:column;gap:3px}
+.acc-row label{font-size:12px;color:#666}
+.acc-row input{font-size:13px;padding:6px 8px;border:1px solid #ccc;border-radius:8px;background:#f9f9f9;color:#222;width:100%}
+.save-btn{margin-top:10px;font-size:12px;padding:5px 12px;border:1px solid #ccc;border-radius:8px;background:transparent;color:#222;cursor:pointer}
+.save-btn:hover{background:#f0f0f0}
+.saved-tag{font-size:11px;color:green;margin-left:8px;display:none}
+.drop-zone{border:2px dashed #bbb;border-radius:8px;padding:1.5rem;text-align:center;cursor:pointer;transition:background 0.15s;position:relative}
+.drop-zone:hover,.drop-zone.over{background:#f0f0f0}
+.drop-zone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.drop-zone i{font-size:28px;color:#aaa;display:block;margin-bottom:6px}
+.drop-zone p{font-size:13px;color:#666}
+.drop-zone small{font-size:11px;color:#999}
+.file-list{margin-top:10px;display:flex;flex-direction:column;gap:6px}
+.file-chip{display:flex;align-items:center;justify-content:space-between;padding:6px 10px;background:#f5f5f5;border-radius:8px;font-size:12px}
+.file-chip .rm{cursor:pointer;color:#aaa;font-size:18px;line-height:1;background:none;border:none;padding:0}
+.file-chip .rm:hover{color:#333}
+.detected{font-size:11px;color:green;margin-top:2px}
+.warn{font-size:11px;color:orange}
+.generate-btn{width:100%;padding:10px;font-size:14px;font-weight:600;border:1px solid #ccc;border-radius:8px;background:transparent;color:#222;cursor:pointer;margin-top:4px}
+.generate-btn:hover{background:#f0f0f0}
+.generate-btn:disabled{opacity:0.4;cursor:not-allowed}
+.preview-box{margin-top:10px;background:#f5f5f5;border-radius:8px;padding:10px;font-family:monospace;font-size:11px;color:#555;max-height:180px;overflow-y:auto;white-space:pre;line-height:1.6}
+.dl-btn{width:100%;padding:10px;font-size:14px;font-weight:600;border:1px solid #aaa;border-radius:8px;background:transparent;color:green;cursor:pointer;margin-top:8px;display:none}
+.dl-btn:hover{background:#f0fff0}
+.row-count{font-size:12px;color:#666;margin-top:6px;text-align:center}
+@media(max-width:480px){.acc-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1><i class="ti ti-file-spreadsheet" style="font-size:20px;vertical-align:-2px;margin-right:6px"></i>CSV Generator</h1>
+  <p class="sub">Upload checkbook PDFs and Excel transaction files → download bank upload CSV</p>
+
+  <div class="card">
+    <div class="card-title"><i class="ti ti-building-bank"></i> Bank account numbers</div>
+    <div class="acc-grid" id="accGrid"></div>
+    <div style="display:flex;align-items:center;margin-top:10px">
+      <button class="save-btn" onclick="saveAccounts()"><i class="ti ti-device-floppy"></i> Save accounts</button>
+      <span class="saved-tag" id="savedTag">Saved!</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><i class="ti ti-upload"></i> Upload files</div>
+    <div class="drop-zone" id="dropZone">
+      <input type="file" multiple accept=".pdf,.xlsx,.xls" id="fileInput" onchange="handleFiles(this.files)">
+      <i class="ti ti-files"></i>
+      <p>Drop PDFs &amp; Excel files here, or tap to browse</p>
+      <small>Accepts .pdf and .xlsx — up to 5 PDFs + 5 Excel files</small>
+    </div>
+    <div class="file-list" id="fileList"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><i class="ti ti-list-check"></i> Generate CSV</div>
+    <button class="generate-btn" id="genBtn" onclick="generateCSV()" disabled>Generate CSV</button>
+    <div class="preview-box" id="preview" style="display:none"></div>
+    <div class="row-count" id="rowCount"></div>
+    <button class="dl-btn" id="dlBtn" onclick="downloadCSV()"><i class="ti ti-download"></i> Download CSV</button>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+const COMPANY_MAP = [
+  {keywords:['nuzzi fuel','nuzz fuel'], label:'Nuzzi Fuel Co.'},
+  {keywords:['mineola fuel','mflpr'], label:'Mineola Fuel Ltd'},
+  {keywords:['windsor fuel operating','wfoper'], label:'Windsor Fuel Operating'},
+  {keywords:['mineola realty'], label:'Mineola Realty Associates'},
+];
+
+const ACC_KEYS = ['Nuzzi Fuel Co.','Mineola Fuel Ltd','Windsor Fuel Operating','Mineola Realty Associates'];
+
+let accounts = {};
+let fileData = [];
+let csvContent = '';
+
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+function loadAccounts(){
+  try{ accounts = JSON.parse(localStorage.getItem('csvgen_accounts')||'{}'); }catch(e){ accounts={}; }
+}
+function saveAccounts(){
+  ACC_KEYS.forEach(k=>{
+    const el=document.getElementById('acc_'+k.replace(/\W/g,'_'));
+    if(el) accounts[k]=el.value.trim();
+  });
+  localStorage.setItem('csvgen_accounts', JSON.stringify(accounts));
+  const tag=document.getElementById('savedTag');
+  tag.style.display='inline';
+  setTimeout(()=>tag.style.display='none',2000);
+}
+function buildAccGrid(){
+  loadAccounts();
+  const grid=document.getElementById('accGrid');
+  grid.innerHTML='';
+  ACC_KEYS.forEach(k=>{
+    const id='acc_'+k.replace(/\W/g,'_');
+    const row=document.createElement('div');
+    row.className='acc-row';
+    row.innerHTML=`<label for="${id}">${k}</label><input id="${id}" type="text" placeholder="Account number" value="${accounts[k]||''}">`;
+    grid.appendChild(row);
+  });
+}
+
+function detectCompany(text){
+  const low=text.toLowerCase();
+  for(const c of COMPANY_MAP){
+    if(c.keywords.some(kw=>low.includes(kw))) return c.label;
+  }
+  return null;
+}
+
+function cleanName(name){
+  return name.replace(/,/g,'').trim();
+}
+function cleanAmount(amt){
+  if(typeof amt==='number') return parseFloat(Math.abs(amt).toFixed(2));
+  const s=String(amt).replace(/[$,]/g,'').trim();
+  return parseFloat(Math.abs(parseFloat(s)).toFixed(2));
+}
+function fmtDate(d){
+  if(!d) return '';
+  if(typeof d==='number'){
+    const dt=XLSX.SSF.parse_date_code(d);
+    const mm=String(dt.m).padStart(2,'0');
+    const dd=String(dt.d).padStart(2,'0');
+    const yy=String(dt.y).slice(-2);
+    return mm+dd+yy;
+  }
+  const parts=String(d).replace(/-/g,'/').split('/');
+  if(parts.length===3){
+    const [a,b,c]=parts;
+    if(a.length===4) return b.padStart(2,'0')+c.padStart(2,'0')+a.slice(-2);
+    return a.padStart(2,'0')+b.padStart(2,'0')+c.slice(-2);
+  }
+  return d;
+}
+
+async function parsePDF(file){
+  const buf=await file.arrayBuffer();
+  const pdf=await pdfjsLib.getDocument({data:buf}).promise;
+  let fullText='';
+  for(let i=1;i<=pdf.numPages;i++){
+    const pg=await pdf.getPage(i);
+    const tc=await pg.getTextContent();
+    fullText+=tc.items.map(x=>x.str).join(' ')+'\n';
+  }
+  return fullText;
+}
+
+function extractPDFRows(text, company){
+  const accNum = accounts[company]||'';
+  const rows=[];
+  const chkRe=/(\d{5,6})\s+(\d{2}\/\d{2}\/\d{4})\s+CHK\s+(.+?)\s+(?:Yes|No)\s+\S+\s+\$([\d,]+\.\d{2})/g;
+  let match;
+  while((match=chkRe.exec(text))!==null){
+    const num=match[1];
+    const rawDate=match[2];
+    const name=cleanName(match[3]);
+    const amt=cleanAmount(match[4]);
+    const date=fmtDate(rawDate);
+    rows.push(`I,${accNum},${num},${date},${amt},${name}`);
+  }
+  return rows;
+}
+
+function parseExcel(file, company){
+  return new Promise((resolve)=>{
+    const reader=new FileReader();
+    reader.onload=(e)=>{
+      const wb=XLSX.read(e.target.result,{type:'array'});
+      const ws=wb.Sheets[wb.SheetNames[0]];
+      const data=XLSX.utils.sheet_to_json(ws,{header:1,defval:''});
+      const rows=[];
+      const accNum=accounts[company]||'';
+      let headerIdx=-1;
+      for(let i=0;i<data.length;i++){
+        const row=data[i].map(c=>String(c).toLowerCase());
+        if(row.includes('num')&&row.includes('name')&&row.includes('amount')){
+          headerIdx=i; break;
+        }
+      }
+      if(headerIdx===-1){resolve(rows);return;}
+      const header=data[headerIdx].map(c=>String(c).toLowerCase());
+      const di=header.findIndex(h=>h==='date');
+      const ni=header.findIndex(h=>h==='num');
+      const nmi=header.findIndex(h=>h==='name');
+      const ai=header.findIndex(h=>h==='amount');
+      for(let i=headerIdx+1;i<data.length;i++){
+        const row=data[i];
+        if(!row[ni]&&!row[nmi]) continue;
+        const num=String(row[ni]||'').replace(/\.0+$/,'').trim();
+        if(!num) continue;
+        const date=fmtDate(row[di]);
+        const name=cleanName(String(row[nmi]||''));
+        const rawAmt=row[ai];
+        const amt=cleanAmount(rawAmt);
+        if(!name||isNaN(amt)) continue;
+        rows.push(`I,${accNum},${num},${date},${amt},${name}`);
+      }
+      resolve(rows);
+    };
+    reader.readAsArrayBuffer(file);
+  });
+}
+
+async function handleFiles(files){
+  const arr=Array.from(files);
+  for(const f of arr){
+    if(fileData.find(x=>x.name===f.name)) continue;
+    const ext=f.name.split('.').pop().toLowerCase();
+    const isExcel=(ext==='xlsx'||ext==='xls');
+    fileData.push({name:f.name, file:f, company:null, status:'reading', isExcel});
+  }
+  renderFileList();
+  for(const fd of fileData){
+    if(fd.company!==null||fd.status==='ready') continue;
+    if(!fd.isExcel){
+      const text=await parsePDF(fd.file);
+      fd.text=text;
+      fd.company=detectCompany(text)||'unknown';
+    } else {
+      fd.company='excel';
+    }
+    fd.status='ready';
+    renderFileList();
+  }
+  document.getElementById('genBtn').disabled=fileData.length===0;
+}
+
+function renderFileList(){
+  const list=document.getElementById('fileList');
+  list.innerHTML='';
+  fileData.forEach((fd,i)=>{
+    const chip=document.createElement('div');
+    chip.className='file-chip';
+    const ext=fd.name.split('.').pop().toLowerCase();
+    const icon=(ext==='pdf')?'ti-file-type-pdf':'ti-file-type-xls';
+    let det='';
+    if(fd.status==='reading') det='<div class="warn">Reading...</div>';
+    else if(fd.isExcel) det=`<div class="detected">&#10003; Excel file — company detected on generate</div>`;
+    else if(fd.company&&fd.company!=='unknown') det=`<div class="detected">&#10003; ${fd.company}</div>`;
+    else det='<div class="warn">Company not detected in PDF</div>';
+    chip.innerHTML=`<div><div style="display:flex;align-items:center;gap:6px"><i class="ti ${icon}"></i><span>${fd.name}</span></div>${det}</div><button class="rm" onclick="removeFile(${i})" aria-label="Remove">&#215;</button>`;
+    list.appendChild(chip);
+  });
+}
+
+function removeFile(i){
+  fileData.splice(i,1);
+  renderFileList();
+  document.getElementById('genBtn').disabled=fileData.length===0;
+  document.getElementById('dlBtn').style.display='none';
+  document.getElementById('preview').style.display='none';
+  document.getElementById('rowCount').textContent='';
+  csvContent='';
+}
+
+async function generateCSV(){
+  const btn=document.getElementById('genBtn');
+  btn.disabled=true; btn.textContent='Generating...';
+  const allRows=[];
+  for(const fd of fileData){
+    if(fd.isExcel){
+      const csvText=await new Promise(r=>{
+        const fr=new FileReader();
+        fr.onload=e=>{
+          const wb=XLSX.read(e.target.result,{type:'array'});
+          const ws=wb.Sheets[wb.SheetNames[0]];
+          r(XLSX.utils.sheet_to_csv(ws));
+        };
+        fr.readAsArrayBuffer(fd.file);
+      });
+      fd.company=detectCompany(csvText)||'Mineola Realty Associates';
+      const rows=await parseExcel(fd.file, fd.company);
+      allRows.push(...rows);
+    } else {
+      const rows=extractPDFRows(fd.text||'', fd.company||'');
+      allRows.push(...rows);
+    }
+  }
+  csvContent=allRows.join('\n');
+  const pre=document.getElementById('preview');
+  pre.style.display='block';
+  pre.textContent=csvContent||'(no rows found — check that account numbers are saved)';
+  document.getElementById('rowCount').textContent=`${allRows.length} row${allRows.length!==1?'s':''} generated`;
+  document.getElementById('dlBtn').style.display='block';
+  btn.disabled=false; btn.textContent='Generate CSV';
+  renderFileList();
+}
+
+function downloadCSV(){
+  const blob=new Blob([csvContent],{type:'text/csv'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  const today=new Date();
+  const mm=String(today.getMonth()+1).padStart(2,'0');
+  const dd=String(today.getDate()).padStart(2,'0');
+  const yy=String(today.getFullYear()).slice(-2);
+  a.href=url; a.download=`${mm}${dd}${yy}_bank_upload.csv`;
+  a.click(); URL.revokeObjectURL(url);
+}
+
+buildAccGrid();
+</script>
+</body>
+</html>
 
