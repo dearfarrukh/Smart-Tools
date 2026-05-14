@@ -13,7 +13,7 @@
   <link rel="icon" type="image/png" href="../images/icon.png">
 
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 
   <title>Car Care</title>
 
@@ -25,6 +25,7 @@
       box-sizing: border-box;
       margin: 0;
       padding: 0;
+      -webkit-tap-highlight-color: transparent;
     }
 
     html,
@@ -32,6 +33,7 @@
       width: 100%;
       min-height: 100%;
       font-family: Arial, Helvetica, sans-serif;
+      touch-action: manipulation;
     }
 
     body {
@@ -42,6 +44,7 @@
         radial-gradient(circle at top left, rgba(96,165,250,0.24), transparent 30%),
         radial-gradient(circle at top right, rgba(244,114,182,0.22), transparent 32%),
         linear-gradient(180deg, #f4f7ff 0%, #eef2ff 48%, #f8fafc 100%);
+      overflow-x: hidden;
     }
 
     button,
@@ -49,6 +52,12 @@
     textarea,
     select {
       font: inherit;
+    }
+
+    button {
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: manipulation;
     }
 
     /* =========================
@@ -69,7 +78,8 @@
       gap: 14px;
     }
 
-    .back-btn {
+    .back-btn,
+    .round-icon-btn {
       border: none;
       width: 52px;
       height: 52px;
@@ -83,7 +93,12 @@
       flex-shrink: 0;
     }
 
-    .back-btn:active {
+    .round-icon-btn {
+      font-size: 22px;
+    }
+
+    .back-btn:active,
+    .round-icon-btn:active {
       transform: scale(0.96);
     }
 
@@ -94,6 +109,9 @@
       font-weight: 900;
       color: #111827;
       letter-spacing: -0.4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .top-bar-spacer {
@@ -119,21 +137,70 @@
       border-radius: 30px;
       padding: 32px 24px;
       box-shadow: 0 14px 32px rgba(37, 99, 235, 0.20);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .inner-page-hero:before {
+      content: "";
+      position: absolute;
+      width: 210px;
+      height: 210px;
+      border-radius: 50%;
+      right: -60px;
+      top: -70px;
+      background: rgba(255,255,255,0.16);
     }
 
     .inner-page-hero h1 {
+      position: relative;
       font-size: 34px;
       font-weight: 900;
       line-height: 1.1;
       margin-bottom: 12px;
       letter-spacing: -0.8px;
+      z-index: 1;
     }
 
     .inner-page-hero p {
+      position: relative;
       font-size: 17px;
       line-height: 1.6;
       color: rgba(255,255,255,0.95);
       max-width: 760px;
+      z-index: 1;
+    }
+
+    .hero-mini-grid {
+      position: relative;
+      z-index: 1;
+      margin-top: 20px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+
+    .hero-mini-box {
+      border-radius: 18px;
+      padding: 14px 10px;
+      background: rgba(255,255,255,0.17);
+      border: 1px solid rgba(255,255,255,0.18);
+      backdrop-filter: blur(10px);
+      text-align: center;
+    }
+
+    .hero-mini-number {
+      font-size: 20px;
+      font-weight: 900;
+      margin-bottom: 4px;
+    }
+
+    .hero-mini-label {
+      font-size: 11px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      color: rgba(255,255,255,0.86);
     }
 
     /* =========================
@@ -206,9 +273,28 @@
       background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
     }
 
+    .dark-btn {
+      background: linear-gradient(135deg, #0f172a 0%, #334155 100%);
+    }
+
+    .purple-btn {
+      background: linear-gradient(135deg, #7c3aed 0%, #db2777 100%);
+    }
+
+    .gray-btn {
+      background: linear-gradient(135deg, #64748b 0%, #334155 100%);
+    }
+
     /* =========================
        CAR CARE MAIN
     ========================= */
+    .main-actions {
+      margin-top: 22px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
     .car-grid {
       margin-top: 24px;
       display: grid;
@@ -220,11 +306,17 @@
       cursor: pointer;
       position: relative;
       overflow: hidden;
-      min-height: 230px;
+      min-height: 250px;
     }
 
     .car-card:active {
       transform: scale(0.98);
+    }
+
+    .car-card-top {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
     }
 
     .car-icon {
@@ -237,19 +329,21 @@
       font-size: 38px;
       margin-bottom: 18px;
       background: linear-gradient(135deg, #dbeafe 0%, #eef2ff 100%);
+      flex-shrink: 0;
     }
 
     .car-name {
-      font-size: 28px;
+      font-size: 27px;
       font-weight: 900;
       color: #111827;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
       letter-spacing: -0.7px;
+      line-height: 1.12;
     }
 
     .car-info {
       font-size: 15px;
-      line-height: 1.6;
+      line-height: 1.55;
       color: #64748b;
       margin-bottom: 18px;
     }
@@ -270,10 +364,11 @@
     }
 
     .car-stat-number {
-      font-size: 19px;
+      font-size: 18px;
       font-weight: 900;
       color: #2563eb;
       margin-bottom: 4px;
+      word-break: break-word;
     }
 
     .car-stat-label {
@@ -284,6 +379,42 @@
       letter-spacing: 0.4px;
     }
 
+    .due-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 30px;
+      border-radius: 999px;
+      padding: 5px 12px;
+      font-size: 12px;
+      font-weight: 900;
+      background: #dcfce7;
+      color: #166534;
+      margin-top: 6px;
+    }
+
+    .due-pill.due {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .due-pill.soon {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .empty-service-box {
+      border-radius: 22px;
+      padding: 22px;
+      background: linear-gradient(180deg, #f9fafb 0%, #f3f4f6 100%);
+      border: 1px dashed #cbd5e1;
+      color: #64748b;
+      font-size: 16px;
+      line-height: 1.7;
+      text-align: center;
+      font-weight: 800;
+    }
+
     /* =========================
        CAR DETAILS PAGE
     ========================= */
@@ -291,8 +422,52 @@
       display: none;
     }
 
-    .car-details-layout {
-      margin-top: 24px;
+    .details-action-row {
+      margin-top: 18px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .tab-row {
+      margin-top: 22px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      background: rgba(255,255,255,0.65);
+      border: 1px solid rgba(15,23,42,0.08);
+      padding: 8px;
+      border-radius: 22px;
+      box-shadow: 0 12px 28px rgba(15,23,42,0.08);
+    }
+
+    .tab-btn {
+      border: none;
+      min-height: 48px;
+      border-radius: 16px;
+      font-size: 14px;
+      font-weight: 900;
+      color: #475569;
+      background: transparent;
+      cursor: pointer;
+    }
+
+    .tab-btn.active {
+      background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+      color: white;
+      box-shadow: 0 10px 20px rgba(37,99,235,0.20);
+    }
+
+    .tab-panel {
+      display: none;
+      margin-top: 22px;
+    }
+
+    .tab-panel.active {
+      display: block;
+    }
+
+    .two-col-layout {
       display: grid;
       grid-template-columns: 0.92fr 1.08fr;
       gap: 22px;
@@ -336,111 +511,92 @@
       box-shadow: 0 0 0 4px rgba(37,99,235,0.10);
     }
 
-    .service-list {
+    .form-label {
+      font-size: 13px;
+      font-weight: 900;
+      color: #475569;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      margin: 0 0 8px 4px;
+    }
+
+    .mini-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .service-list,
+    .reminder-list {
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 12px;
     }
 
-    .service-card {
+    .service-row-card,
+    .reminder-row-card {
+      border: 1px solid rgba(15,23,42,0.08);
       background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
-      border: 1px solid rgba(15,23,42,0.07);
-      border-radius: 24px;
-      padding: 18px;
-      box-shadow: 0 10px 24px rgba(15,23,42,0.08);
+      border-radius: 22px;
+      padding: 16px;
+      cursor: pointer;
+      box-shadow: 0 10px 22px rgba(15,23,42,0.07);
     }
 
-    .service-top-row {
+    .service-row-card:active,
+    .reminder-row-card:active {
+      transform: scale(0.985);
+    }
+
+    .service-line-one,
+    .reminder-line-one {
       display: flex;
       justify-content: space-between;
-      align-items: flex-start;
       gap: 14px;
-      margin-bottom: 10px;
+      align-items: flex-start;
+      margin-bottom: 8px;
     }
 
-    .service-title {
-      font-size: 20px;
+    .service-row-title,
+    .reminder-row-title {
+      font-size: 17px;
       font-weight: 900;
       color: #111827;
       line-height: 1.25;
-      word-break: break-word;
     }
 
-    .service-cost {
-      font-size: 18px;
-      font-weight: 900;
-      color: #16a34a;
+    .service-row-date,
+    .reminder-row-date {
+      font-size: 14px;
+      font-weight: 800;
+      color: #64748b;
       white-space: nowrap;
     }
 
-    .service-meta {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-      margin: 14px 0;
-    }
-
-    .service-meta-box {
-      border-radius: 16px;
-      background: #f8fafc;
-      border: 1px solid #eef2f7;
-      padding: 12px 10px;
-      text-align: center;
-    }
-
-    .service-meta-label {
-      font-size: 11px;
-      font-weight: 900;
-      color: #64748b;
-      text-transform: uppercase;
-      letter-spacing: 0.4px;
-      margin-bottom: 4px;
-    }
-
-    .service-meta-value {
-      font-size: 14px;
-      font-weight: 900;
-      color: #111827;
-      word-break: break-word;
-    }
-
-    .service-note {
-      font-size: 15px;
-      line-height: 1.6;
-      color: #475569;
-      white-space: pre-wrap;
-      word-break: break-word;
-      margin-bottom: 16px;
-    }
-
-    .service-actions {
+    .service-row-bottom,
+    .reminder-row-bottom {
       display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .small-car-btn {
-      border: none;
-      min-height: 44px;
-      border-radius: 14px;
-      padding: 0 16px;
-      cursor: pointer;
-      color: white;
-      font-size: 14px;
-      font-weight: 900;
-      flex: 1;
-    }
-
-    .empty-service-box {
-      border-radius: 22px;
-      padding: 22px;
-      background: linear-gradient(180deg, #f9fafb 0%, #f3f4f6 100%);
-      border: 1px dashed #cbd5e1;
+      justify-content: space-between;
+      gap: 12px;
       color: #64748b;
-      font-size: 16px;
-      line-height: 1.7;
-      text-align: center;
+      font-size: 14px;
       font-weight: 800;
+      line-height: 1.45;
+    }
+
+    .receipt-preview {
+      display: none;
+      width: 100%;
+      max-height: 180px;
+      object-fit: contain;
+      border-radius: 18px;
+      background: #f8fafc;
+      border: 1px solid #e5e7eb;
+      margin: 0 0 14px 0;
+    }
+
+    .receipt-preview.show {
+      display: block;
     }
 
     .editing-pill {
@@ -459,6 +615,186 @@
       display: block;
     }
 
+    .profile-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+    }
+
+    .profile-box {
+      background: #f8fafc;
+      border: 1px solid #eef2f7;
+      border-radius: 20px;
+      padding: 16px;
+    }
+
+    .profile-label {
+      font-size: 11px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      color: #64748b;
+      margin-bottom: 6px;
+    }
+
+    .profile-value {
+      font-size: 16px;
+      font-weight: 900;
+      color: #111827;
+      word-break: break-word;
+      line-height: 1.35;
+    }
+
+    .report-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-bottom: 22px;
+    }
+
+    .report-box {
+      border-radius: 22px;
+      padding: 18px;
+      background: #f8fafc;
+      border: 1px solid #eef2f7;
+      text-align: center;
+    }
+
+    .report-number {
+      font-size: 25px;
+      font-weight: 900;
+      color: #2563eb;
+      margin-bottom: 6px;
+      word-break: break-word;
+    }
+
+    .report-label {
+      font-size: 12px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      color: #64748b;
+    }
+
+    /* =========================
+       MODALS / POPUPS
+    ========================= */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: rgba(15,23,42,0.52);
+      backdrop-filter: blur(10px);
+      padding: 18px;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-overlay.show {
+      display: flex;
+    }
+
+    .modal-card {
+      width: 100%;
+      max-width: 650px;
+      max-height: 92vh;
+      overflow-y: auto;
+      background: white;
+      color: #111827;
+      border-radius: 30px;
+      padding: 24px;
+      box-shadow: 0 26px 70px rgba(0,0,0,0.28);
+      position: relative;
+    }
+
+    .modal-title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .modal-title {
+      font-size: 26px;
+      font-weight: 900;
+      color: #111827;
+      letter-spacing: -0.6px;
+      line-height: 1.15;
+    }
+
+    .modal-close {
+      border: none;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: #f1f5f9;
+      color: #111827;
+      font-size: 24px;
+      font-weight: 900;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin: 16px 0;
+    }
+
+    .detail-box {
+      background: #f8fafc;
+      border: 1px solid #eef2f7;
+      border-radius: 18px;
+      padding: 14px;
+    }
+
+    .detail-label {
+      font-size: 11px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      color: #64748b;
+      margin-bottom: 5px;
+    }
+
+    .detail-value {
+      font-size: 16px;
+      font-weight: 900;
+      color: #111827;
+      word-break: break-word;
+    }
+
+    .detail-notes {
+      border-radius: 20px;
+      padding: 16px;
+      background: #f8fafc;
+      border: 1px solid #eef2f7;
+      color: #475569;
+      font-size: 16px;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      word-break: break-word;
+      margin-bottom: 16px;
+    }
+
+    .detail-receipt {
+      display: none;
+      width: 100%;
+      max-height: 320px;
+      object-fit: contain;
+      border-radius: 20px;
+      background: #f8fafc;
+      border: 1px solid #e5e7eb;
+      margin-bottom: 16px;
+    }
+
+    .detail-receipt.show {
+      display: block;
+    }
+
     /* =========================
        DARK THEME
     ========================= */
@@ -473,17 +809,26 @@
     body.smart-tools-dark-theme .top-bar-title,
     body.smart-tools-dark-theme .card-title,
     body.smart-tools-dark-theme .car-name,
-    body.smart-tools-dark-theme .service-title,
-    body.smart-tools-dark-theme .service-meta-value {
+    body.smart-tools-dark-theme .service-row-title,
+    body.smart-tools-dark-theme .reminder-row-title,
+    body.smart-tools-dark-theme .profile-value,
+    body.smart-tools-dark-theme .detail-value,
+    body.smart-tools-dark-theme .modal-title {
       color: #f8fafc;
     }
 
     body.smart-tools-dark-theme .back-btn,
+    body.smart-tools-dark-theme .round-icon-btn,
     body.smart-tools-dark-theme .card,
     body.smart-tools-dark-theme .car-stat-box,
-    body.smart-tools-dark-theme .service-card,
-    body.smart-tools-dark-theme .service-meta-box,
-    body.smart-tools-dark-theme .empty-service-box {
+    body.smart-tools-dark-theme .profile-box,
+    body.smart-tools-dark-theme .report-box,
+    body.smart-tools-dark-theme .service-row-card,
+    body.smart-tools-dark-theme .reminder-row-card,
+    body.smart-tools-dark-theme .empty-service-box,
+    body.smart-tools-dark-theme .modal-card,
+    body.smart-tools-dark-theme .detail-box,
+    body.smart-tools-dark-theme .detail-notes {
       background: linear-gradient(180deg, rgba(30,41,59,0.88), rgba(15,23,42,0.84));
       border-color: rgba(148,163,184,0.20);
       color: #f8fafc;
@@ -493,9 +838,16 @@
     body.smart-tools-dark-theme .card-subtitle,
     body.smart-tools-dark-theme .car-info,
     body.smart-tools-dark-theme .car-stat-label,
-    body.smart-tools-dark-theme .service-meta-label,
-    body.smart-tools-dark-theme .service-note,
-    body.smart-tools-dark-theme .empty-service-box {
+    body.smart-tools-dark-theme .service-row-date,
+    body.smart-tools-dark-theme .service-row-bottom,
+    body.smart-tools-dark-theme .reminder-row-date,
+    body.smart-tools-dark-theme .reminder-row-bottom,
+    body.smart-tools-dark-theme .profile-label,
+    body.smart-tools-dark-theme .report-label,
+    body.smart-tools-dark-theme .detail-label,
+    body.smart-tools-dark-theme .detail-notes,
+    body.smart-tools-dark-theme .empty-service-box,
+    body.smart-tools-dark-theme .form-label {
       color: #cbd5e1;
     }
 
@@ -516,50 +868,18 @@
       background: linear-gradient(135deg, rgba(37,99,235,0.30), rgba(124,58,237,0.25));
     }
 
-    body.smart-tools-dark-theme .service-cost {
-      color: #bbf7d0;
+    body.smart-tools-dark-theme .tab-row {
+      background: rgba(15,23,42,0.60);
+      border-color: rgba(148,163,184,0.20);
     }
 
-    /* =========================
-       COLOR THEME
-    ========================= */
-    body.smart-tools-color-theme {
-      background:
-        radial-gradient(circle at top left, rgba(96,165,250,0.24), transparent 30%),
-        radial-gradient(circle at top right, rgba(244,114,182,0.22), transparent 32%),
-        linear-gradient(180deg, #f4f7ff 0%, #eef2ff 48%, #f8fafc 100%);
-      color: #111827;
+    body.smart-tools-dark-theme .tab-btn {
+      color: #cbd5e1;
     }
 
-    body.smart-tools-color-theme .top-bar-title,
-    body.smart-tools-color-theme .card-title,
-    body.smart-tools-color-theme .car-name,
-    body.smart-tools-color-theme .service-title,
-    body.smart-tools-color-theme .service-meta-value {
-      color: #111827;
-    }
-
-    body.smart-tools-color-theme .back-btn,
-    body.smart-tools-color-theme .card,
-    body.smart-tools-color-theme .service-card {
-      background: white;
-      color: #111827;
-      border-color: rgba(15,23,42,0.07);
-      box-shadow: 0 14px 34px rgba(15,23,42,0.10);
-    }
-
-    body.smart-tools-color-theme .card-subtitle,
-    body.smart-tools-color-theme .car-info,
-    body.smart-tools-color-theme .service-note {
-      color: #64748b;
-    }
-
-    body.smart-tools-color-theme .car-input,
-    body.smart-tools-color-theme .car-select,
-    body.smart-tools-color-theme .car-textarea {
-      background: #fcfcff;
-      color: #111827;
-      border-color: #e5e7eb;
+    body.smart-tools-dark-theme .modal-close {
+      background: rgba(51,65,85,0.9);
+      color: #f8fafc;
     }
 
     /* =========================
@@ -567,8 +887,16 @@
     ========================= */
     @media (max-width: 900px) {
       .car-grid,
-      .car-details-layout {
+      .two-col-layout {
         grid-template-columns: 1fr;
+      }
+
+      .report-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .hero-mini-grid {
+        grid-template-columns: repeat(2, 1fr);
       }
     }
 
@@ -604,18 +932,28 @@
       }
 
       .top-bar-title {
-        font-size: 20px;
+        font-size: 19px;
       }
 
       .back-btn,
+      .round-icon-btn,
       .top-bar-spacer {
         width: 48px;
         height: 48px;
       }
 
       .car-stat-row,
-      .service-meta {
+      .profile-grid,
+      .detail-grid,
+      .report-grid,
+      .mini-grid-2,
+      .main-actions,
+      .details-action-row {
         grid-template-columns: 1fr;
+      }
+
+      .tab-row {
+        grid-template-columns: repeat(2, 1fr);
       }
 
       .button-row {
@@ -624,6 +962,64 @@
 
       .action-btn {
         width: 100%;
+      }
+
+      .service-line-one,
+      .reminder-line-one,
+      .service-row-bottom,
+      .reminder-row-bottom {
+        flex-direction: column;
+        gap: 5px;
+      }
+
+      .service-row-date,
+      .reminder-row-date {
+        white-space: normal;
+      }
+
+      .modal-overlay {
+        padding: 10px;
+        align-items: flex-end;
+      }
+
+      .modal-card {
+        max-height: 92vh;
+        border-radius: 28px 28px 22px 22px;
+        padding: 20px;
+      }
+    }
+
+    @media print {
+      body {
+        background: white !important;
+        color: #111827 !important;
+      }
+
+      .top-bar-wrap,
+      .main-actions,
+      .details-action-row,
+      .tab-row,
+      .button-row,
+      .modal-overlay {
+        display: none !important;
+      }
+
+      .card,
+      .service-row-card,
+      .reminder-row-card,
+      .profile-box,
+      .report-box {
+        box-shadow: none !important;
+        border: 1px solid #ddd !important;
+        break-inside: avoid;
+      }
+
+      #carMainPage {
+        display: none !important;
+      }
+
+      #carDetailsPage {
+        display: block !important;
       }
     }
   </style>
@@ -649,60 +1045,35 @@
       <div class="inner-page-hero">
         <h1>Car Care</h1>
         <p>
-          Track maintenance, repairs, oil changes, inspections, and expenses for both cars.
-          Choose a car below to add or view service records.
+          Track maintenance, repairs, oil changes, reminders, receipts, and expenses for all your cars.
         </p>
-      </div>
 
-      <div class="car-grid">
-
-        <div class="card car-card" onclick="openCarDetails('mazdaCx50')">
-          <div class="car-icon">🚙</div>
-          <div class="car-name">Mazda CX-50</div>
-          <div class="car-info">Tap to open service history, costs, notes, and maintenance records.</div>
-
-          <div class="car-stat-row">
-            <div class="car-stat-box">
-              <div id="mazdaCx50ServiceCount" class="car-stat-number">0</div>
-              <div class="car-stat-label">Services</div>
-            </div>
-
-            <div class="car-stat-box">
-              <div id="mazdaCx50TotalCost" class="car-stat-number">$0</div>
-              <div class="car-stat-label">Total Cost</div>
-            </div>
-
-            <div class="car-stat-box">
-              <div id="mazdaCx50LastMileage" class="car-stat-number">0</div>
-              <div class="car-stat-label">Last Miles</div>
-            </div>
+        <div class="hero-mini-grid">
+          <div class="hero-mini-box">
+            <div id="allCarsCount" class="hero-mini-number">0</div>
+            <div class="hero-mini-label">Cars</div>
+          </div>
+          <div class="hero-mini-box">
+            <div id="allServicesCount" class="hero-mini-number">0</div>
+            <div class="hero-mini-label">Services</div>
+          </div>
+          <div class="hero-mini-box">
+            <div id="allTotalCost" class="hero-mini-number">$0</div>
+            <div class="hero-mini-label">Total</div>
+          </div>
+          <div class="hero-mini-box">
+            <div id="allDueCount" class="hero-mini-number">0</div>
+            <div class="hero-mini-label">Due</div>
           </div>
         </div>
-
-        <div class="card car-card" onclick="openCarDetails('toyotaCamry')">
-          <div class="car-icon">🚗</div>
-          <div class="car-name">Toyota Camry</div>
-          <div class="car-info">Tap to open service history, costs, notes, and maintenance records.</div>
-
-          <div class="car-stat-row">
-            <div class="car-stat-box">
-              <div id="toyotaCamryServiceCount" class="car-stat-number">0</div>
-              <div class="car-stat-label">Services</div>
-            </div>
-
-            <div class="car-stat-box">
-              <div id="toyotaCamryTotalCost" class="car-stat-number">$0</div>
-              <div class="car-stat-label">Total Cost</div>
-            </div>
-
-            <div class="car-stat-box">
-              <div id="toyotaCamryLastMileage" class="car-stat-number">0</div>
-              <div class="car-stat-label">Last Miles</div>
-            </div>
-          </div>
-        </div>
-
       </div>
+
+      <div class="main-actions">
+        <button class="action-btn save-btn" onclick="openCarForm()">＋ Add Car</button>
+        <button class="action-btn purple-btn" onclick="openGlobalBackupModal()">Backup / Restore</button>
+      </div>
+
+      <div id="carGrid" class="car-grid"></div>
 
     </div>
   </div>
@@ -716,7 +1087,7 @@
       <div class="top-bar">
         <button class="back-btn" onclick="closeCarDetails()">←</button>
         <div id="carDetailsTitle" class="top-bar-title">Car Details</div>
-        <div class="top-bar-spacer"></div>
+        <button class="round-icon-btn" onclick="openCarForm(selectedCarId)">✎</button>
       </div>
     </div>
 
@@ -724,65 +1095,350 @@
 
       <div class="inner-page-hero">
         <h1 id="carDetailsHeroTitle">Car Details</h1>
-        <p>
-          Add service, repair, oil change, inspection, tire, or other car expense records.
-        </p>
-      </div>
+        <p id="carDetailsHeroText">View profile, service history, reminders, receipts, and reports.</p>
 
-      <div class="car-details-layout">
-
-        <!-- =========================
-             SERVICE FORM
-        ========================= -->
-        <div>
-          <div class="card">
-            <div class="card-title">Add Service</div>
-            <div class="card-subtitle">Save date, mileage, service type, cost, and notes.</div>
-
-            <div id="editingServicePill" class="editing-pill">
-              Editing service
-            </div>
-
-            <input id="serviceDateInput" class="car-input" type="date">
-
-            <input id="serviceMileageInput" class="car-input" type="number" inputmode="numeric" placeholder="Mileage">
-
-            <select id="serviceTypeInput" class="car-select">
-              <option value="Oil Change">Oil Change</option>
-              <option value="Inspection">Inspection</option>
-              <option value="Tires">Tires</option>
-              <option value="Brakes">Brakes</option>
-              <option value="Battery">Battery</option>
-              <option value="Repair">Repair</option>
-              <option value="Gas / Fuel">Gas / Fuel</option>
-              <option value="Insurance">Insurance</option>
-              <option value="Other">Other</option>
-            </select>
-
-            <input id="serviceCostInput" class="car-input" type="number" inputmode="decimal" placeholder="Cost">
-
-            <textarea id="serviceNotesInput" class="car-textarea" placeholder="Notes"></textarea>
-
-            <div class="button-row">
-              <button id="saveServiceBtn" class="action-btn save-btn" onclick="saveCarService()">Save Service</button>
-              <button class="action-btn reset-btn" onclick="resetCarForm()">Clear</button>
-            </div>
+        <div class="hero-mini-grid">
+          <div class="hero-mini-box">
+            <div id="detailTotalServices" class="hero-mini-number">0</div>
+            <div class="hero-mini-label">Services</div>
+          </div>
+          <div class="hero-mini-box">
+            <div id="detailTotalSpent" class="hero-mini-number">$0</div>
+            <div class="hero-mini-label">Total</div>
+          </div>
+          <div class="hero-mini-box">
+            <div id="detailLastMileage" class="hero-mini-number">0</div>
+            <div class="hero-mini-label">Miles</div>
+          </div>
+          <div class="hero-mini-box">
+            <div id="detailDueReminders" class="hero-mini-number">0</div>
+            <div class="hero-mini-label">Due</div>
           </div>
         </div>
+      </div>
 
-        <!-- =========================
-             SERVICE LIST
-        ========================= -->
-        <div>
-          <div class="card">
-            <div class="card-title">Service History</div>
-            <div class="card-subtitle">Saved services will show below.</div>
+      <div class="details-action-row">
+        <button class="action-btn save-btn" onclick="showCarTab('services'); focusServiceForm()">＋ Add Service</button>
+        <button class="action-btn purple-btn" onclick="showCarTab('reminders'); focusReminderForm()">＋ Add Reminder</button>
+      </div>
 
-            <div id="serviceList" class="service-list"></div>
+      <div class="tab-row">
+        <button id="servicesTabBtn" class="tab-btn active" onclick="showCarTab('services')">Services</button>
+        <button id="profileTabBtn" class="tab-btn" onclick="showCarTab('profile')">Profile</button>
+        <button id="remindersTabBtn" class="tab-btn" onclick="showCarTab('reminders')">Reminders</button>
+        <button id="reportsTabBtn" class="tab-btn" onclick="showCarTab('reports')">Reports</button>
+      </div>
+
+      <!-- =========================
+           SERVICES TAB
+      ========================= -->
+      <div id="servicesTabPanel" class="tab-panel active">
+        <div class="two-col-layout">
+
+          <div>
+            <div id="serviceFormCard" class="card">
+              <div class="card-title">Add Service</div>
+              <div class="card-subtitle">Save date, mileage, service type, cost, notes, and receipt photo.</div>
+
+              <div id="editingServicePill" class="editing-pill">Editing service</div>
+
+              <div class="mini-grid-2">
+                <div>
+                  <div class="form-label">Date</div>
+                  <input id="serviceDateInput" class="car-input" type="date">
+                </div>
+                <div>
+                  <div class="form-label">Mileage</div>
+                  <input id="serviceMileageInput" class="car-input" type="number" inputmode="numeric" placeholder="Mileage">
+                </div>
+              </div>
+
+              <div class="form-label">Service Type</div>
+              <select id="serviceTypeInput" class="car-select">
+                <option value="Oil Change">Oil Change</option>
+                <option value="Inspection">Inspection</option>
+                <option value="Tires">Tires</option>
+                <option value="Tire Rotation">Tire Rotation</option>
+                <option value="Brakes">Brakes</option>
+                <option value="Battery">Battery</option>
+                <option value="Repair">Repair</option>
+                <option value="Gas / Fuel">Gas / Fuel</option>
+                <option value="Insurance">Insurance</option>
+                <option value="Registration">Registration</option>
+                <option value="Wash / Detailing">Wash / Detailing</option>
+                <option value="Parking / Tolls">Parking / Tolls</option>
+                <option value="Other">Other</option>
+              </select>
+
+              <div class="form-label">Cost</div>
+              <input id="serviceCostInput" class="car-input" type="number" inputmode="decimal" placeholder="Cost">
+
+              <div class="form-label">Notes</div>
+              <textarea id="serviceNotesInput" class="car-textarea" placeholder="Notes"></textarea>
+
+              <div class="form-label">Receipt / Photo</div>
+              <input id="serviceReceiptInput" class="car-input" type="file" accept="image/*" onchange="handleReceiptUpload(event)">
+              <img id="receiptPreview" class="receipt-preview" alt="Receipt preview">
+
+              <div class="button-row">
+                <button id="saveServiceBtn" class="action-btn save-btn" onclick="saveCarService()">Save Service</button>
+                <button class="action-btn reset-btn" onclick="resetServiceForm()">Clear</button>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div class="card">
+              <div class="card-title">Service History</div>
+              <div class="card-subtitle">Tap any service card to open full details, edit, or delete.</div>
+              <div id="serviceList" class="service-list"></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- =========================
+           PROFILE TAB
+      ========================= -->
+      <div id="profileTabPanel" class="tab-panel">
+        <div class="card">
+          <div class="card-title">Car Profile</div>
+          <div class="card-subtitle">Saved profile details for this car.</div>
+          <div id="profileGrid" class="profile-grid"></div>
+
+          <div class="button-row" style="margin-top:22px;">
+            <button class="action-btn edit-btn" onclick="openCarForm(selectedCarId)">Edit Car Profile</button>
+            <button class="action-btn delete-btn" onclick="deleteSelectedCar()">Delete This Car</button>
           </div>
         </div>
-
       </div>
+
+      <!-- =========================
+           REMINDERS TAB
+      ========================= -->
+      <div id="remindersTabPanel" class="tab-panel">
+        <div class="two-col-layout">
+
+          <div>
+            <div id="reminderFormCard" class="card">
+              <div class="card-title">Add Reminder</div>
+              <div class="card-subtitle">Track oil change, inspection, registration, insurance, tires, or custom reminders.</div>
+
+              <div id="editingReminderPill" class="editing-pill">Editing reminder</div>
+
+              <div class="form-label">Reminder Type</div>
+              <select id="reminderTypeInput" class="car-select">
+                <option value="Oil Change">Oil Change</option>
+                <option value="Inspection">Inspection</option>
+                <option value="Registration">Registration</option>
+                <option value="Insurance">Insurance</option>
+                <option value="Tire Rotation">Tire Rotation</option>
+                <option value="Battery">Battery</option>
+                <option value="Custom Reminder">Custom Reminder</option>
+              </select>
+
+              <div class="mini-grid-2">
+                <div>
+                  <div class="form-label">Due Date</div>
+                  <input id="reminderDateInput" class="car-input" type="date">
+                </div>
+                <div>
+                  <div class="form-label">Due Mileage</div>
+                  <input id="reminderMileageInput" class="car-input" type="number" inputmode="numeric" placeholder="Optional">
+                </div>
+              </div>
+
+              <div class="form-label">Notes</div>
+              <textarea id="reminderNotesInput" class="car-textarea" placeholder="Reminder notes"></textarea>
+
+              <div class="button-row">
+                <button id="saveReminderBtn" class="action-btn save-btn" onclick="saveCarReminder()">Save Reminder</button>
+                <button class="action-btn reset-btn" onclick="resetReminderForm()">Clear</button>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div class="card">
+              <div class="card-title">Reminder List</div>
+              <div class="card-subtitle">Due and upcoming reminders show here.</div>
+              <div id="reminderList" class="reminder-list"></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- =========================
+           REPORTS TAB
+      ========================= -->
+      <div id="reportsTabPanel" class="tab-panel">
+        <div class="card">
+          <div class="card-title">Reports & Export</div>
+          <div class="card-subtitle">View summary, download backup, CSV, or print/save as PDF.</div>
+
+          <div id="reportGrid" class="report-grid"></div>
+
+          <div class="button-row">
+            <button class="action-btn save-btn" onclick="downloadSelectedCarCSV()">Download CSV</button>
+            <button class="action-btn purple-btn" onclick="exportAllData()">Export Backup</button>
+            <button class="action-btn edit-btn" onclick="document.getElementById('restoreFileInput').click()">Restore Backup</button>
+            <button class="action-btn dark-btn" onclick="window.print()">Print / Save PDF</button>
+          </div>
+
+          <input id="restoreFileInput" type="file" accept="application/json" style="display:none;" onchange="restoreBackupFile(event)">
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- =========================
+       ADD / EDIT CAR MODAL
+  ========================= -->
+  <div id="carFormModal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-title-row">
+        <div id="carFormTitle" class="modal-title">Add Car</div>
+        <button class="modal-close" onclick="closeCarForm()">×</button>
+      </div>
+
+      <div class="mini-grid-2">
+        <div>
+          <div class="form-label">Car Name</div>
+          <input id="carNameInput" class="car-input" type="text" placeholder="Mazda CX-50">
+        </div>
+        <div>
+          <div class="form-label">Icon</div>
+          <select id="carIconInput" class="car-select">
+            <option value="🚗">🚗 Car</option>
+            <option value="🚙">🚙 SUV</option>
+            <option value="🛻">🛻 Truck</option>
+            <option value="🚐">🚐 Van</option>
+            <option value="🏎️">🏎️ Sport</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="mini-grid-2">
+        <div>
+          <div class="form-label">Make / Model</div>
+          <input id="carMakeModelInput" class="car-input" type="text" placeholder="Make / Model">
+        </div>
+        <div>
+          <div class="form-label">Year</div>
+          <input id="carYearInput" class="car-input" type="number" inputmode="numeric" placeholder="2026">
+        </div>
+      </div>
+
+      <div class="mini-grid-2">
+        <div>
+          <div class="form-label">Plate Number</div>
+          <input id="carPlateInput" class="car-input" type="text" placeholder="Plate">
+        </div>
+        <div>
+          <div class="form-label">VIN</div>
+          <input id="carVinInput" class="car-input" type="text" placeholder="VIN">
+        </div>
+      </div>
+
+      <div class="mini-grid-2">
+        <div>
+          <div class="form-label">Insurance Company</div>
+          <input id="carInsuranceInput" class="car-input" type="text" placeholder="Insurance">
+        </div>
+        <div>
+          <div class="form-label">Current Mileage</div>
+          <input id="carCurrentMileageInput" class="car-input" type="number" inputmode="numeric" placeholder="Mileage">
+        </div>
+      </div>
+
+      <div class="mini-grid-2">
+        <div>
+          <div class="form-label">Registration Expiry</div>
+          <input id="carRegistrationExpiryInput" class="car-input" type="date">
+        </div>
+        <div>
+          <div class="form-label">Inspection Expiry</div>
+          <input id="carInspectionExpiryInput" class="car-input" type="date">
+        </div>
+      </div>
+
+      <div class="form-label">Car Notes</div>
+      <textarea id="carNotesInput" class="car-textarea" placeholder="Any notes about this car"></textarea>
+
+      <div class="button-row">
+        <button id="saveCarBtn" class="action-btn save-btn" onclick="saveCarProfile()">Save Car</button>
+        <button class="action-btn reset-btn" onclick="closeCarForm()">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================
+       SERVICE DETAIL MODAL
+  ========================= -->
+  <div id="serviceDetailModal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-title-row">
+        <div id="serviceDetailTitle" class="modal-title">Service Detail</div>
+        <button class="modal-close" onclick="closeServiceDetailModal()">×</button>
+      </div>
+
+      <div id="serviceDetailGrid" class="detail-grid"></div>
+      <img id="serviceDetailReceipt" class="detail-receipt" alt="Receipt">
+      <div id="serviceDetailNotes" class="detail-notes"></div>
+
+      <div class="button-row">
+        <button class="action-btn edit-btn" onclick="editServiceFromModal()">Edit</button>
+        <button class="action-btn delete-btn" onclick="deleteServiceFromModal()">Delete</button>
+        <button class="action-btn gray-btn" onclick="closeServiceDetailModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================
+       REMINDER DETAIL MODAL
+  ========================= -->
+  <div id="reminderDetailModal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-title-row">
+        <div id="reminderDetailTitle" class="modal-title">Reminder Detail</div>
+        <button class="modal-close" onclick="closeReminderDetailModal()">×</button>
+      </div>
+
+      <div id="reminderDetailGrid" class="detail-grid"></div>
+      <div id="reminderDetailNotes" class="detail-notes"></div>
+
+      <div class="button-row">
+        <button class="action-btn edit-btn" onclick="editReminderFromModal()">Edit</button>
+        <button class="action-btn delete-btn" onclick="deleteReminderFromModal()">Delete</button>
+        <button class="action-btn gray-btn" onclick="closeReminderDetailModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================
+       GLOBAL BACKUP MODAL
+  ========================= -->
+  <div id="globalBackupModal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-title-row">
+        <div class="modal-title">Backup / Restore</div>
+        <button class="modal-close" onclick="closeGlobalBackupModal()">×</button>
+      </div>
+
+      <div class="card-subtitle">
+        Export saves all cars, services, reminders, notes, and receipt photos stored in this browser.
+      </div>
+
+      <div class="button-row">
+        <button class="action-btn purple-btn" onclick="exportAllData()">Export Backup</button>
+        <button class="action-btn edit-btn" onclick="document.getElementById('restoreFileInputGlobal').click()">Restore Backup</button>
+        <button class="action-btn gray-btn" onclick="closeGlobalBackupModal()">Close</button>
+      </div>
+
+      <input id="restoreFileInputGlobal" type="file" accept="application/json" style="display:none;" onchange="restoreBackupFile(event)">
     </div>
   </div>
 
@@ -814,39 +1470,144 @@
     // =========================
     // CAR CARE STATE
     // =========================
-    let selectedCarKey = null;
-    let editingServiceId = null;
+    const CAR_DATA_KEY = "smartToolsCarCareDataV2";
+    const OLD_CAR_DATA_KEY = "pocketToolsCarData";
 
-    const carNames = {
-      mazdaCx50: "Mazda CX-50",
-      toyotaCamry: "Toyota Camry"
-    };
+    let selectedCarId = null;
+    let editingCarId = null;
+    let editingServiceId = null;
+    let editingReminderId = null;
+    let currentReceiptData = "";
+    let openedServiceId = null;
+    let openedReminderId = null;
+
+    // =========================
+    // DEFAULT DATA
+    // =========================
+    function getDefaultCarData() {
+      return {
+        cars: [
+          {
+            id: "car_" + Date.now() + "_1",
+            name: "Mazda CX-50",
+            icon: "🚙",
+            makeModel: "Mazda CX-50",
+            year: "",
+            plate: "",
+            vin: "",
+            insurance: "",
+            registrationExpiry: "",
+            inspectionExpiry: "",
+            currentMileage: "",
+            notes: "",
+            services: [],
+            reminders: []
+          },
+          {
+            id: "car_" + Date.now() + "_2",
+            name: "Toyota Camry",
+            icon: "🚗",
+            makeModel: "Toyota Camry",
+            year: "",
+            plate: "",
+            vin: "",
+            insurance: "",
+            registrationExpiry: "",
+            inspectionExpiry: "",
+            currentMileage: "",
+            notes: "",
+            services: [],
+            reminders: []
+          }
+        ]
+      };
+    }
+
+    // =========================
+    // MIGRATE OLD DATA IF FOUND
+    // =========================
+    function migrateOldDataIfNeeded() {
+      const newSaved = localStorage.getItem(CAR_DATA_KEY);
+      if (newSaved) return;
+
+      const oldSaved = localStorage.getItem(OLD_CAR_DATA_KEY);
+      if (!oldSaved) {
+        saveCarData(getDefaultCarData());
+        return;
+      }
+
+      try {
+        const oldData = JSON.parse(oldSaved);
+        const migrated = getDefaultCarData();
+
+        if (oldData && Array.isArray(oldData.mazdaCx50)) {
+          migrated.cars[0].services = oldData.mazdaCx50.map(oldServiceToNewService);
+        }
+
+        if (oldData && Array.isArray(oldData.toyotaCamry)) {
+          migrated.cars[1].services = oldData.toyotaCamry.map(oldServiceToNewService);
+        }
+
+        saveCarData(migrated);
+      } catch (error) {
+        saveCarData(getDefaultCarData());
+      }
+    }
+
+    // =========================
+    // OLD SERVICE TO NEW SERVICE
+    // =========================
+    function oldServiceToNewService(item) {
+      return {
+        id: item.id || ("service_" + Date.now() + "_" + Math.random().toString(16).slice(2)),
+        date: item.date || "",
+        mileage: item.mileage || "",
+        type: item.type || "Service",
+        cost: item.cost || "",
+        notes: item.notes || "",
+        receiptData: item.receiptData || "",
+        createdAt: item.createdAt || new Date().toISOString(),
+        updatedAt: item.updatedAt || new Date().toISOString()
+      };
+    }
 
     // =========================
     // GET CAR DATA
     // =========================
     function getCarData() {
-      const saved = localStorage.getItem("pocketToolsCarData");
+      const saved = localStorage.getItem(CAR_DATA_KEY);
 
       if (!saved) {
-        return {
-          mazdaCx50: [],
-          toyotaCamry: []
-        };
+        return getDefaultCarData();
       }
 
       try {
         const parsed = JSON.parse(saved);
 
-        return {
-          mazdaCx50: Array.isArray(parsed.mazdaCx50) ? parsed.mazdaCx50 : [],
-          toyotaCamry: Array.isArray(parsed.toyotaCamry) ? parsed.toyotaCamry : []
-        };
+        if (!parsed || !Array.isArray(parsed.cars)) {
+          return getDefaultCarData();
+        }
+
+        parsed.cars = parsed.cars.map(car => ({
+          id: car.id || ("car_" + Date.now() + "_" + Math.random().toString(16).slice(2)),
+          name: car.name || "My Car",
+          icon: car.icon || "🚗",
+          makeModel: car.makeModel || "",
+          year: car.year || "",
+          plate: car.plate || "",
+          vin: car.vin || "",
+          insurance: car.insurance || "",
+          registrationExpiry: car.registrationExpiry || "",
+          inspectionExpiry: car.inspectionExpiry || "",
+          currentMileage: car.currentMileage || "",
+          notes: car.notes || "",
+          services: Array.isArray(car.services) ? car.services : [],
+          reminders: Array.isArray(car.reminders) ? car.reminders : []
+        }));
+
+        return parsed;
       } catch (error) {
-        return {
-          mazdaCx50: [],
-          toyotaCamry: []
-        };
+        return getDefaultCarData();
       }
     }
 
@@ -854,29 +1615,126 @@
     // SAVE CAR DATA
     // =========================
     function saveCarData(data) {
-      localStorage.setItem("pocketToolsCarData", JSON.stringify(data));
+      localStorage.setItem(CAR_DATA_KEY, JSON.stringify(data));
+    }
+
+    // =========================
+    // FIND CAR
+    // =========================
+    function findCarById(carId) {
+      const data = getCarData();
+      return data.cars.find(car => car.id === carId) || null;
+    }
+
+    // =========================
+    // RENDER MAIN PAGE
+    // =========================
+    function renderCarMainPage() {
+      const carGrid = document.getElementById("carGrid");
+      const data = getCarData();
+
+      if (!carGrid) return;
+
+      if (data.cars.length === 0) {
+        carGrid.innerHTML = `
+          <div class="card empty-service-box" style="grid-column:1/-1;">
+            No cars added yet.<br>
+            Tap Add Car to start tracking your car maintenance.
+          </div>
+        `;
+      } else {
+        carGrid.innerHTML = data.cars.map(car => {
+          const stats = getCarStats(car);
+          const dueInfo = getNextReminderText(car);
+          const dueClass = dueInfo.status === "due" ? "due" : dueInfo.status === "soon" ? "soon" : "";
+
+          return `
+            <div class="card car-card" onclick="openCarDetails('${car.id}')">
+              <div class="car-card-top">
+                <div class="car-icon">${escapeHtml(car.icon || "🚗")}</div>
+                <div>
+                  <div class="car-name">${escapeHtml(car.name || "My Car")}</div>
+                  <div class="car-info">
+                    ${escapeHtml(buildCarSubtitle(car))}
+                    <br>
+                    <span class="due-pill ${dueClass}">${escapeHtml(dueInfo.text)}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="car-stat-row">
+                <div class="car-stat-box">
+                  <div class="car-stat-number">${stats.serviceCount}</div>
+                  <div class="car-stat-label">Services</div>
+                </div>
+
+                <div class="car-stat-box">
+                  <div class="car-stat-number">${formatMoneyShort(stats.totalCost)}</div>
+                  <div class="car-stat-label">Total Cost</div>
+                </div>
+
+                <div class="car-stat-box">
+                  <div class="car-stat-number">${stats.lastMileage ? formatNumber(stats.lastMileage) : "0"}</div>
+                  <div class="car-stat-label">Last Miles</div>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join("");
+      }
+
+      renderAllCarsHeroStats(data);
+      applySmartToolsTheme();
+    }
+
+    // =========================
+    // RENDER ALL CARS HERO STATS
+    // =========================
+    function renderAllCarsHeroStats(data) {
+      let serviceCount = 0;
+      let totalCost = 0;
+      let dueCount = 0;
+
+      data.cars.forEach(car => {
+        const stats = getCarStats(car);
+        serviceCount += stats.serviceCount;
+        totalCost += stats.totalCost;
+        dueCount += stats.dueReminders;
+      });
+
+      setText("allCarsCount", data.cars.length);
+      setText("allServicesCount", serviceCount);
+      setText("allTotalCost", formatMoneyShort(totalCost));
+      setText("allDueCount", dueCount);
     }
 
     // =========================
     // OPEN CAR DETAILS
     // =========================
-    function openCarDetails(carKey) {
-      selectedCarKey = carKey;
+    function openCarDetails(carId) {
+      selectedCarId = carId;
       editingServiceId = null;
+      editingReminderId = null;
+      openedServiceId = null;
+      openedReminderId = null;
+
+      const car = findCarById(carId);
+      if (!car) return;
 
       const carMainPage = document.getElementById("carMainPage");
       const carDetailsPage = document.getElementById("carDetailsPage");
-      const title = document.getElementById("carDetailsTitle");
-      const heroTitle = document.getElementById("carDetailsHeroTitle");
 
       if (carMainPage) carMainPage.style.display = "none";
       if (carDetailsPage) carDetailsPage.style.display = "block";
 
-      if (title) title.innerText = carNames[carKey] || "Car Details";
-      if (heroTitle) heroTitle.innerText = carNames[carKey] || "Car Details";
+      setText("carDetailsTitle", car.name || "Car Details");
+      setText("carDetailsHeroTitle", car.name || "Car Details");
+      setText("carDetailsHeroText", buildCarSubtitle(car) + ". View profile, service history, reminders, receipts, and reports.");
 
-      resetCarForm();
-      renderCarDetails();
+      resetServiceForm();
+      resetReminderForm();
+      showCarTab("services");
+      renderCarDetailsPage();
 
       window.scrollTo(0, 0);
     }
@@ -885,8 +1743,11 @@
     // CLOSE CAR DETAILS
     // =========================
     function closeCarDetails() {
-      selectedCarKey = null;
+      selectedCarId = null;
       editingServiceId = null;
+      editingReminderId = null;
+      openedServiceId = null;
+      openedReminderId = null;
 
       const carMainPage = document.getElementById("carMainPage");
       const carDetailsPage = document.getElementById("carDetailsPage");
@@ -894,29 +1755,98 @@
       if (carDetailsPage) carDetailsPage.style.display = "none";
       if (carMainPage) carMainPage.style.display = "block";
 
-      resetCarForm();
-      renderCarMainStats();
+      resetServiceForm();
+      resetReminderForm();
+      renderCarMainPage();
 
       window.scrollTo(0, 0);
+    }
+
+    // =========================
+    // SHOW CAR TAB
+    // =========================
+    function showCarTab(tabName) {
+      const tabs = ["services", "profile", "reminders", "reports"];
+
+      tabs.forEach(tab => {
+        const btn = document.getElementById(tab + "TabBtn");
+        const panel = document.getElementById(tab + "TabPanel");
+
+        if (btn) btn.classList.toggle("active", tab === tabName);
+        if (panel) panel.classList.toggle("active", tab === tabName);
+      });
+
+      renderCarDetailsPage();
+    }
+
+    // =========================
+    // RENDER CAR DETAILS PAGE
+    // =========================
+    function renderCarDetailsPage() {
+      if (!selectedCarId) return;
+
+      const car = findCarById(selectedCarId);
+      if (!car) return;
+
+      const stats = getCarStats(car);
+
+      setText("detailTotalServices", stats.serviceCount);
+      setText("detailTotalSpent", formatMoneyShort(stats.totalCost));
+      setText("detailLastMileage", stats.lastMileage ? formatNumber(stats.lastMileage) : "0");
+      setText("detailDueReminders", stats.dueReminders);
+
+      renderServiceList(car);
+      renderProfileGrid(car);
+      renderReminderList(car);
+      renderReportGrid(car);
+
+      applySmartToolsTheme();
+    }
+
+    // =========================
+    // RENDER SERVICE LIST
+    // =========================
+    function renderServiceList(car) {
+      const serviceList = document.getElementById("serviceList");
+      if (!serviceList) return;
+
+      const list = [...car.services].sort(sortByDateDesc);
+
+      if (list.length === 0) {
+        serviceList.innerHTML = `
+          <div class="empty-service-box">
+            No service records yet.<br>
+            Add the first service from the form.
+          </div>
+        `;
+        return;
+      }
+
+      serviceList.innerHTML = list.map(service => `
+        <div class="service-row-card" onclick="openServiceDetailModal('${service.id}')">
+          <div class="service-line-one">
+            <div class="service-row-title">${escapeHtml(service.type || "Service")}</div>
+            <div class="service-row-date">${escapeHtml(formatServiceDate(service.date))}</div>
+          </div>
+          <div class="service-row-bottom">
+            <div>Mileage: ${escapeHtml(service.mileage ? formatNumber(service.mileage) : "0")}</div>
+            <div>Cost: ${escapeHtml(formatMoney(service.cost))}</div>
+          </div>
+        </div>
+      `).join("");
     }
 
     // =========================
     // SAVE CAR SERVICE
     // =========================
     function saveCarService() {
-      if (!selectedCarKey) return;
+      if (!selectedCarId) return;
 
-      const dateInput = document.getElementById("serviceDateInput");
-      const mileageInput = document.getElementById("serviceMileageInput");
-      const typeInput = document.getElementById("serviceTypeInput");
-      const costInput = document.getElementById("serviceCostInput");
-      const notesInput = document.getElementById("serviceNotesInput");
-
-      const date = dateInput.value;
-      const mileage = mileageInput.value.trim();
-      const type = typeInput.value;
-      const cost = costInput.value.trim();
-      const notes = notesInput.value.trim();
+      const date = getValue("serviceDateInput");
+      const mileage = getValue("serviceMileageInput");
+      const type = getValue("serviceTypeInput");
+      const cost = getValue("serviceCostInput");
+      const notes = getValue("serviceNotesInput");
 
       if (date === "" && mileage === "" && cost === "" && notes === "") {
         alert("Please enter service details first.");
@@ -924,126 +1854,229 @@
       }
 
       const data = getCarData();
-      const list = data[selectedCarKey] || [];
+      const car = data.cars.find(item => item.id === selectedCarId);
+      if (!car) return;
+
       const now = new Date().toISOString();
 
       if (editingServiceId) {
-        const index = list.findIndex(item => item.id === editingServiceId);
+        const index = car.services.findIndex(item => item.id === editingServiceId);
 
         if (index !== -1) {
-          list[index].date = date;
-          list[index].mileage = mileage;
-          list[index].type = type;
-          list[index].cost = cost;
-          list[index].notes = notes;
-          list[index].updatedAt = now;
+          car.services[index] = {
+            ...car.services[index],
+            date,
+            mileage,
+            type,
+            cost,
+            notes,
+            receiptData: currentReceiptData,
+            updatedAt: now
+          };
         }
       } else {
-        list.unshift({
-          id: "service_" + Date.now(),
-          date: date,
-          mileage: mileage,
-          type: type,
-          cost: cost,
-          notes: notes,
+        car.services.unshift({
+          id: "service_" + Date.now() + "_" + Math.random().toString(16).slice(2),
+          date,
+          mileage,
+          type,
+          cost,
+          notes,
+          receiptData: currentReceiptData,
           createdAt: now,
           updatedAt: now
         });
       }
 
-      data[selectedCarKey] = list;
-      saveCarData(data);
+      if (mileage) {
+        const existingMileage = parseFloat(car.currentMileage || "0");
+        const serviceMileage = parseFloat(mileage || "0");
+        if (!isNaN(serviceMileage) && serviceMileage > existingMileage) {
+          car.currentMileage = String(serviceMileage);
+        }
+      }
 
-      resetCarForm();
-      renderCarDetails();
-      renderCarMainStats();
+      saveCarData(data);
+      resetServiceForm();
+      renderCarDetailsPage();
+      renderCarMainPage();
+      alert("Service saved.");
     }
 
     // =========================
-    // RENDER CAR DETAILS
+    // RESET SERVICE FORM
     // =========================
-    function renderCarDetails() {
-      const serviceList = document.getElementById("serviceList");
-      const data = getCarData();
+    function resetServiceForm() {
+      editingServiceId = null;
+      currentReceiptData = "";
 
-      if (!serviceList || !selectedCarKey) return;
+      setValue("serviceDateInput", getTodayDateString());
+      setValue("serviceMileageInput", "");
+      setValue("serviceTypeInput", "Oil Change");
+      setValue("serviceCostInput", "");
+      setValue("serviceNotesInput", "");
 
-      const list = data[selectedCarKey] || [];
+      const receiptInput = document.getElementById("serviceReceiptInput");
+      if (receiptInput) receiptInput.value = "";
 
-      if (list.length === 0) {
-        serviceList.innerHTML = `
-          <div class="empty-service-box">
-            No service records yet.<br>
-            Add the first service from the left side.
-          </div>
-        `;
-        applySmartToolsTheme();
+      const preview = document.getElementById("receiptPreview");
+      if (preview) {
+        preview.src = "";
+        preview.classList.remove("show");
+      }
+
+      const editingPill = document.getElementById("editingServicePill");
+      const saveBtn = document.getElementById("saveServiceBtn");
+
+      if (editingPill) editingPill.classList.remove("show");
+      if (saveBtn) saveBtn.innerText = "Save Service";
+    }
+
+    // =========================
+    // HANDLE RECEIPT UPLOAD
+    // =========================
+    function handleReceiptUpload(event) {
+      const file = event.target.files && event.target.files[0];
+      if (!file) return;
+
+      if (!file.type.startsWith("image/")) {
+        alert("Please select an image file.");
         return;
       }
 
-      serviceList.innerHTML = list.map(service => {
-        const safeType = escapeHtml(service.type || "Service");
-        const safeDate = escapeHtml(formatServiceDate(service.date));
-        const safeMileage = escapeHtml(service.mileage || "0");
-        const safeCost = escapeHtml(formatMoney(service.cost));
-        const safeNotes = escapeHtml(service.notes || "");
+      const reader = new FileReader();
 
-        return `
-          <div class="service-card">
-            <div class="service-top-row">
-              <div class="service-title">${safeType}</div>
-              <div class="service-cost">${safeCost}</div>
-            </div>
+      reader.onload = function(loadEvent) {
+        resizeImageData(loadEvent.target.result, 900, function(resizedData) {
+          currentReceiptData = resizedData;
 
-            <div class="service-meta">
-              <div class="service-meta-box">
-                <div class="service-meta-label">Date</div>
-                <div class="service-meta-value">${safeDate}</div>
-              </div>
+          const preview = document.getElementById("receiptPreview");
+          if (preview) {
+            preview.src = resizedData;
+            preview.classList.add("show");
+          }
+        });
+      };
 
-              <div class="service-meta-box">
-                <div class="service-meta-label">Mileage</div>
-                <div class="service-meta-value">${safeMileage}</div>
-              </div>
-
-              <div class="service-meta-box">
-                <div class="service-meta-label">Type</div>
-                <div class="service-meta-value">${safeType}</div>
-              </div>
-            </div>
-
-            <div class="service-note">${safeNotes || "No notes."}</div>
-
-            <div class="service-actions">
-              <button class="small-car-btn edit-btn" onclick="editCarService('${service.id}')">Edit</button>
-              <button class="small-car-btn delete-btn" onclick="deleteCarService('${service.id}')">Delete</button>
-            </div>
-          </div>
-        `;
-      }).join("");
-
-      applySmartToolsTheme();
+      reader.readAsDataURL(file);
     }
 
     // =========================
-    // EDIT CAR SERVICE
+    // RESIZE IMAGE DATA
     // =========================
-    function editCarService(serviceId) {
-      if (!selectedCarKey) return;
+    function resizeImageData(dataUrl, maxWidth, callback) {
+      const img = new Image();
 
-      const data = getCarData();
-      const list = data[selectedCarKey] || [];
-      const service = list.find(item => item.id === serviceId);
+      img.onload = function() {
+        const scale = Math.min(1, maxWidth / img.width);
+        const canvas = document.createElement("canvas");
+        canvas.width = Math.round(img.width * scale);
+        canvas.height = Math.round(img.height * scale);
 
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+        callback(canvas.toDataURL("image/jpeg", 0.72));
+      };
+
+      img.onerror = function() {
+        callback(dataUrl);
+      };
+
+      img.src = dataUrl;
+    }
+
+    // =========================
+    // OPEN SERVICE DETAIL MODAL
+    // =========================
+    function openServiceDetailModal(serviceId) {
+      const car = findCarById(selectedCarId);
+      if (!car) return;
+
+      const service = car.services.find(item => item.id === serviceId);
       if (!service) return;
 
-      editingServiceId = serviceId;
+      openedServiceId = serviceId;
 
-      document.getElementById("serviceDateInput").value = service.date || "";
-      document.getElementById("serviceMileageInput").value = service.mileage || "";
-      document.getElementById("serviceTypeInput").value = service.type || "Other";
-      document.getElementById("serviceCostInput").value = service.cost || "";
-      document.getElementById("serviceNotesInput").value = service.notes || "";
+      setText("serviceDetailTitle", service.type || "Service Detail");
+
+      const grid = document.getElementById("serviceDetailGrid");
+      if (grid) {
+        grid.innerHTML = `
+          <div class="detail-box">
+            <div class="detail-label">Date</div>
+            <div class="detail-value">${escapeHtml(formatServiceDate(service.date))}</div>
+          </div>
+          <div class="detail-box">
+            <div class="detail-label">Mileage</div>
+            <div class="detail-value">${escapeHtml(service.mileage ? formatNumber(service.mileage) : "0")}</div>
+          </div>
+          <div class="detail-box">
+            <div class="detail-label">Cost</div>
+            <div class="detail-value">${escapeHtml(formatMoney(service.cost))}</div>
+          </div>
+          <div class="detail-box">
+            <div class="detail-label">Type</div>
+            <div class="detail-value">${escapeHtml(service.type || "Service")}</div>
+          </div>
+        `;
+      }
+
+      setText("serviceDetailNotes", service.notes || "No notes.");
+
+      const receipt = document.getElementById("serviceDetailReceipt");
+      if (receipt) {
+        if (service.receiptData) {
+          receipt.src = service.receiptData;
+          receipt.classList.add("show");
+        } else {
+          receipt.src = "";
+          receipt.classList.remove("show");
+        }
+      }
+
+      openModal("serviceDetailModal");
+    }
+
+    // =========================
+    // CLOSE SERVICE DETAIL MODAL
+    // =========================
+    function closeServiceDetailModal() {
+      openedServiceId = null;
+      closeModal("serviceDetailModal");
+    }
+
+    // =========================
+    // EDIT SERVICE FROM MODAL
+    // =========================
+    function editServiceFromModal() {
+      if (!openedServiceId) return;
+
+      const car = findCarById(selectedCarId);
+      if (!car) return;
+
+      const service = car.services.find(item => item.id === openedServiceId);
+      if (!service) return;
+
+      editingServiceId = openedServiceId;
+      currentReceiptData = service.receiptData || "";
+
+      setValue("serviceDateInput", service.date || "");
+      setValue("serviceMileageInput", service.mileage || "");
+      setValue("serviceTypeInput", service.type || "Other");
+      setValue("serviceCostInput", service.cost || "");
+      setValue("serviceNotesInput", service.notes || "");
+
+      const preview = document.getElementById("receiptPreview");
+      if (preview) {
+        if (currentReceiptData) {
+          preview.src = currentReceiptData;
+          preview.classList.add("show");
+        } else {
+          preview.src = "";
+          preview.classList.remove("show");
+        }
+      }
 
       const editingPill = document.getElementById("editingServicePill");
       const saveBtn = document.getElementById("saveServiceBtn");
@@ -1051,98 +2084,722 @@
       if (editingPill) editingPill.classList.add("show");
       if (saveBtn) saveBtn.innerText = "Update Service";
 
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-      });
+      closeServiceDetailModal();
+      showCarTab("services");
+      focusServiceForm();
     }
 
     // =========================
-    // DELETE CAR SERVICE
+    // DELETE SERVICE FROM MODAL
     // =========================
-    function deleteCarService(serviceId) {
-      if (!selectedCarKey) return;
+    function deleteServiceFromModal() {
+      if (!openedServiceId || !selectedCarId) return;
 
       const confirmDelete = confirm("Delete this service record?");
-
       if (!confirmDelete) return;
 
       const data = getCarData();
-      let list = data[selectedCarKey] || [];
+      const car = data.cars.find(item => item.id === selectedCarId);
+      if (!car) return;
 
-      list = list.filter(item => item.id !== serviceId);
-      data[selectedCarKey] = list;
+      car.services = car.services.filter(item => item.id !== openedServiceId);
 
       saveCarData(data);
 
-      if (editingServiceId === serviceId) {
-        resetCarForm();
+      if (editingServiceId === openedServiceId) {
+        resetServiceForm();
       }
 
-      renderCarDetails();
-      renderCarMainStats();
+      closeServiceDetailModal();
+      renderCarDetailsPage();
+      renderCarMainPage();
     }
 
     // =========================
-    // RESET CAR FORM
+    // RENDER PROFILE GRID
     // =========================
-    function resetCarForm() {
-      editingServiceId = null;
+    function renderProfileGrid(car) {
+      const profileGrid = document.getElementById("profileGrid");
+      if (!profileGrid) return;
 
-      const dateInput = document.getElementById("serviceDateInput");
-      const mileageInput = document.getElementById("serviceMileageInput");
-      const typeInput = document.getElementById("serviceTypeInput");
-      const costInput = document.getElementById("serviceCostInput");
-      const notesInput = document.getElementById("serviceNotesInput");
-      const editingPill = document.getElementById("editingServicePill");
-      const saveBtn = document.getElementById("saveServiceBtn");
+      const items = [
+        ["Car Name", car.name],
+        ["Make / Model", car.makeModel],
+        ["Year", car.year],
+        ["Plate", car.plate],
+        ["VIN", car.vin],
+        ["Insurance", car.insurance],
+        ["Registration Expiry", formatServiceDate(car.registrationExpiry)],
+        ["Inspection Expiry", formatServiceDate(car.inspectionExpiry)],
+        ["Current Mileage", car.currentMileage ? formatNumber(car.currentMileage) : "0"],
+        ["Notes", car.notes]
+      ];
 
-      if (dateInput) dateInput.value = "";
-      if (mileageInput) mileageInput.value = "";
-      if (typeInput) typeInput.value = "Oil Change";
-      if (costInput) costInput.value = "";
-      if (notesInput) notesInput.value = "";
-      if (editingPill) editingPill.classList.remove("show");
-      if (saveBtn) saveBtn.innerText = "Save Service";
+      profileGrid.innerHTML = items.map(item => `
+        <div class="profile-box">
+          <div class="profile-label">${escapeHtml(item[0])}</div>
+          <div class="profile-value">${escapeHtml(item[1] || "Not saved")}</div>
+        </div>
+      `).join("");
     }
 
     // =========================
-    // RENDER CAR MAIN STATS
+    // OPEN CAR FORM
     // =========================
-    function renderCarMainStats() {
+    function openCarForm(carId) {
+      editingCarId = carId || null;
+
+      const title = document.getElementById("carFormTitle");
+      const saveBtn = document.getElementById("saveCarBtn");
+
+      if (editingCarId) {
+        const car = findCarById(editingCarId);
+        if (!car) return;
+
+        if (title) title.innerText = "Edit Car";
+        if (saveBtn) saveBtn.innerText = "Update Car";
+
+        setValue("carNameInput", car.name || "");
+        setValue("carIconInput", car.icon || "🚗");
+        setValue("carMakeModelInput", car.makeModel || "");
+        setValue("carYearInput", car.year || "");
+        setValue("carPlateInput", car.plate || "");
+        setValue("carVinInput", car.vin || "");
+        setValue("carInsuranceInput", car.insurance || "");
+        setValue("carCurrentMileageInput", car.currentMileage || "");
+        setValue("carRegistrationExpiryInput", car.registrationExpiry || "");
+        setValue("carInspectionExpiryInput", car.inspectionExpiry || "");
+        setValue("carNotesInput", car.notes || "");
+      } else {
+        if (title) title.innerText = "Add Car";
+        if (saveBtn) saveBtn.innerText = "Save Car";
+
+        setValue("carNameInput", "");
+        setValue("carIconInput", "🚗");
+        setValue("carMakeModelInput", "");
+        setValue("carYearInput", "");
+        setValue("carPlateInput", "");
+        setValue("carVinInput", "");
+        setValue("carInsuranceInput", "");
+        setValue("carCurrentMileageInput", "");
+        setValue("carRegistrationExpiryInput", "");
+        setValue("carInspectionExpiryInput", "");
+        setValue("carNotesInput", "");
+      }
+
+      openModal("carFormModal");
+    }
+
+    // =========================
+    // CLOSE CAR FORM
+    // =========================
+    function closeCarForm() {
+      editingCarId = null;
+      closeModal("carFormModal");
+    }
+
+    // =========================
+    // SAVE CAR PROFILE
+    // =========================
+    function saveCarProfile() {
+      const name = getValue("carNameInput");
+
+      if (!name) {
+        alert("Please enter car name.");
+        return;
+      }
+
       const data = getCarData();
+      const carInfo = {
+        name,
+        icon: getValue("carIconInput") || "🚗",
+        makeModel: getValue("carMakeModelInput"),
+        year: getValue("carYearInput"),
+        plate: getValue("carPlateInput"),
+        vin: getValue("carVinInput"),
+        insurance: getValue("carInsuranceInput"),
+        currentMileage: getValue("carCurrentMileageInput"),
+        registrationExpiry: getValue("carRegistrationExpiryInput"),
+        inspectionExpiry: getValue("carInspectionExpiryInput"),
+        notes: getValue("carNotesInput")
+      };
 
-      updateCarStats("mazdaCx50", data.mazdaCx50 || []);
-      updateCarStats("toyotaCamry", data.toyotaCamry || []);
+      if (editingCarId) {
+        const index = data.cars.findIndex(car => car.id === editingCarId);
 
-      applySmartToolsTheme();
+        if (index !== -1) {
+          data.cars[index] = {
+            ...data.cars[index],
+            ...carInfo
+          };
+        }
+      } else {
+        data.cars.unshift({
+          id: "car_" + Date.now() + "_" + Math.random().toString(16).slice(2),
+          ...carInfo,
+          services: [],
+          reminders: []
+        });
+      }
+
+      saveCarData(data);
+      closeCarForm();
+      renderCarMainPage();
+
+      if (selectedCarId) {
+        const selectedCar = findCarById(selectedCarId);
+        if (selectedCar) {
+          setText("carDetailsTitle", selectedCar.name || "Car Details");
+          setText("carDetailsHeroTitle", selectedCar.name || "Car Details");
+          setText("carDetailsHeroText", buildCarSubtitle(selectedCar) + ". View profile, service history, reminders, receipts, and reports.");
+          renderCarDetailsPage();
+        }
+      }
     }
 
     // =========================
-    // UPDATE CAR STATS
+    // DELETE SELECTED CAR
     // =========================
-    function updateCarStats(carKey, list) {
-      const countEl = document.getElementById(carKey + "ServiceCount");
-      const totalCostEl = document.getElementById(carKey + "TotalCost");
-      const lastMileageEl = document.getElementById(carKey + "LastMileage");
+    function deleteSelectedCar() {
+      if (!selectedCarId) return;
 
-      const totalCost = list.reduce((sum, item) => {
-        const value = parseFloat(item.cost || "0");
-        return sum + (isNaN(value) ? 0 : value);
-      }, 0);
+      const car = findCarById(selectedCarId);
+      if (!car) return;
 
-      let lastMileage = 0;
+      const confirmDelete = confirm("Delete " + car.name + " and all its services/reminders?");
+      if (!confirmDelete) return;
 
-      list.forEach(item => {
-        const miles = parseFloat(item.mileage || "0");
-        if (!isNaN(miles) && miles > lastMileage) {
-          lastMileage = miles;
+      const data = getCarData();
+      data.cars = data.cars.filter(item => item.id !== selectedCarId);
+      saveCarData(data);
+
+      closeCarDetails();
+    }
+
+    // =========================
+    // SAVE CAR REMINDER
+    // =========================
+    function saveCarReminder() {
+      if (!selectedCarId) return;
+
+      const type = getValue("reminderTypeInput");
+      const dueDate = getValue("reminderDateInput");
+      const dueMileage = getValue("reminderMileageInput");
+      const notes = getValue("reminderNotesInput");
+
+      if (dueDate === "" && dueMileage === "" && notes === "") {
+        alert("Please enter reminder details first.");
+        return;
+      }
+
+      const data = getCarData();
+      const car = data.cars.find(item => item.id === selectedCarId);
+      if (!car) return;
+
+      const now = new Date().toISOString();
+
+      if (editingReminderId) {
+        const index = car.reminders.findIndex(item => item.id === editingReminderId);
+
+        if (index !== -1) {
+          car.reminders[index] = {
+            ...car.reminders[index],
+            type,
+            dueDate,
+            dueMileage,
+            notes,
+            updatedAt: now
+          };
+        }
+      } else {
+        car.reminders.unshift({
+          id: "reminder_" + Date.now() + "_" + Math.random().toString(16).slice(2),
+          type,
+          dueDate,
+          dueMileage,
+          notes,
+          createdAt: now,
+          updatedAt: now
+        });
+      }
+
+      saveCarData(data);
+      resetReminderForm();
+      renderCarDetailsPage();
+      renderCarMainPage();
+      alert("Reminder saved.");
+    }
+
+    // =========================
+    // RESET REMINDER FORM
+    // =========================
+    function resetReminderForm() {
+      editingReminderId = null;
+
+      setValue("reminderTypeInput", "Oil Change");
+      setValue("reminderDateInput", "");
+      setValue("reminderMileageInput", "");
+      setValue("reminderNotesInput", "");
+
+      const editingPill = document.getElementById("editingReminderPill");
+      const saveBtn = document.getElementById("saveReminderBtn");
+
+      if (editingPill) editingPill.classList.remove("show");
+      if (saveBtn) saveBtn.innerText = "Save Reminder";
+    }
+
+    // =========================
+    // RENDER REMINDER LIST
+    // =========================
+    function renderReminderList(car) {
+      const reminderList = document.getElementById("reminderList");
+      if (!reminderList) return;
+
+      const list = [...car.reminders].sort(sortReminders);
+
+      if (list.length === 0) {
+        reminderList.innerHTML = `
+          <div class="empty-service-box">
+            No reminders yet.<br>
+            Add inspection, registration, oil change, or custom reminders.
+          </div>
+        `;
+        return;
+      }
+
+      reminderList.innerHTML = list.map(reminder => {
+        const status = getReminderStatus(reminder, car);
+        const dueClass = status.status === "due" ? "due" : status.status === "soon" ? "soon" : "";
+
+        return `
+          <div class="reminder-row-card" onclick="openReminderDetailModal('${reminder.id}')">
+            <div class="reminder-line-one">
+              <div class="reminder-row-title">${escapeHtml(reminder.type || "Reminder")}</div>
+              <div class="reminder-row-date">${escapeHtml(reminder.dueDate ? formatServiceDate(reminder.dueDate) : "No date")}</div>
+            </div>
+            <div class="reminder-row-bottom">
+              <div>${escapeHtml(reminder.dueMileage ? "Due Miles: " + formatNumber(reminder.dueMileage) : "No mileage")}</div>
+              <div><span class="due-pill ${dueClass}">${escapeHtml(status.text)}</span></div>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    // =========================
+    // OPEN REMINDER DETAIL MODAL
+    // =========================
+    function openReminderDetailModal(reminderId) {
+      const car = findCarById(selectedCarId);
+      if (!car) return;
+
+      const reminder = car.reminders.find(item => item.id === reminderId);
+      if (!reminder) return;
+
+      openedReminderId = reminderId;
+
+      const status = getReminderStatus(reminder, car);
+
+      setText("reminderDetailTitle", reminder.type || "Reminder Detail");
+
+      const grid = document.getElementById("reminderDetailGrid");
+      if (grid) {
+        grid.innerHTML = `
+          <div class="detail-box">
+            <div class="detail-label">Due Date</div>
+            <div class="detail-value">${escapeHtml(reminder.dueDate ? formatServiceDate(reminder.dueDate) : "No date")}</div>
+          </div>
+          <div class="detail-box">
+            <div class="detail-label">Due Mileage</div>
+            <div class="detail-value">${escapeHtml(reminder.dueMileage ? formatNumber(reminder.dueMileage) : "No mileage")}</div>
+          </div>
+          <div class="detail-box">
+            <div class="detail-label">Status</div>
+            <div class="detail-value">${escapeHtml(status.text)}</div>
+          </div>
+          <div class="detail-box">
+            <div class="detail-label">Type</div>
+            <div class="detail-value">${escapeHtml(reminder.type || "Reminder")}</div>
+          </div>
+        `;
+      }
+
+      setText("reminderDetailNotes", reminder.notes || "No notes.");
+      openModal("reminderDetailModal");
+    }
+
+    // =========================
+    // CLOSE REMINDER DETAIL MODAL
+    // =========================
+    function closeReminderDetailModal() {
+      openedReminderId = null;
+      closeModal("reminderDetailModal");
+    }
+
+    // =========================
+    // EDIT REMINDER FROM MODAL
+    // =========================
+    function editReminderFromModal() {
+      if (!openedReminderId) return;
+
+      const car = findCarById(selectedCarId);
+      if (!car) return;
+
+      const reminder = car.reminders.find(item => item.id === openedReminderId);
+      if (!reminder) return;
+
+      editingReminderId = openedReminderId;
+
+      setValue("reminderTypeInput", reminder.type || "Custom Reminder");
+      setValue("reminderDateInput", reminder.dueDate || "");
+      setValue("reminderMileageInput", reminder.dueMileage || "");
+      setValue("reminderNotesInput", reminder.notes || "");
+
+      const editingPill = document.getElementById("editingReminderPill");
+      const saveBtn = document.getElementById("saveReminderBtn");
+
+      if (editingPill) editingPill.classList.add("show");
+      if (saveBtn) saveBtn.innerText = "Update Reminder";
+
+      closeReminderDetailModal();
+      showCarTab("reminders");
+      focusReminderForm();
+    }
+
+    // =========================
+    // DELETE REMINDER FROM MODAL
+    // =========================
+    function deleteReminderFromModal() {
+      if (!openedReminderId || !selectedCarId) return;
+
+      const confirmDelete = confirm("Delete this reminder?");
+      if (!confirmDelete) return;
+
+      const data = getCarData();
+      const car = data.cars.find(item => item.id === selectedCarId);
+      if (!car) return;
+
+      car.reminders = car.reminders.filter(item => item.id !== openedReminderId);
+
+      saveCarData(data);
+
+      if (editingReminderId === openedReminderId) {
+        resetReminderForm();
+      }
+
+      closeReminderDetailModal();
+      renderCarDetailsPage();
+      renderCarMainPage();
+    }
+
+    // =========================
+    // RENDER REPORT GRID
+    // =========================
+    function renderReportGrid(car) {
+      const reportGrid = document.getElementById("reportGrid");
+      if (!reportGrid) return;
+
+      const stats = getCarStats(car);
+
+      reportGrid.innerHTML = `
+        <div class="report-box">
+          <div class="report-number">${stats.serviceCount}</div>
+          <div class="report-label">Total Services</div>
+        </div>
+        <div class="report-box">
+          <div class="report-number">${formatMoneyShort(stats.totalCost)}</div>
+          <div class="report-label">Total Spent</div>
+        </div>
+        <div class="report-box">
+          <div class="report-number">${formatMoneyShort(stats.monthCost)}</div>
+          <div class="report-label">This Month</div>
+        </div>
+        <div class="report-box">
+          <div class="report-number">${formatMoneyShort(stats.yearCost)}</div>
+          <div class="report-label">This Year</div>
+        </div>
+        <div class="report-box">
+          <div class="report-number">${escapeHtml(stats.lastOilChange)}</div>
+          <div class="report-label">Last Oil Change</div>
+        </div>
+        <div class="report-box">
+          <div class="report-number">${stats.dueReminders}</div>
+          <div class="report-label">Due Reminders</div>
+        </div>
+      `;
+    }
+
+    // =========================
+    // GET CAR STATS
+    // =========================
+    function getCarStats(car) {
+      const services = Array.isArray(car.services) ? car.services : [];
+      const reminders = Array.isArray(car.reminders) ? car.reminders : [];
+      const now = new Date();
+      const currentMonth = now.getMonth();
+      const currentYear = now.getFullYear();
+
+      let totalCost = 0;
+      let monthCost = 0;
+      let yearCost = 0;
+      let lastMileage = parseFloat(car.currentMileage || "0");
+
+      services.forEach(service => {
+        const cost = parseFloat(service.cost || "0");
+        const mileage = parseFloat(service.mileage || "0");
+
+        if (!isNaN(cost)) {
+          totalCost += cost;
+
+          const date = service.date ? new Date(service.date + "T00:00:00") : null;
+          if (date && !isNaN(date.getTime())) {
+            if (date.getFullYear() === currentYear) {
+              yearCost += cost;
+
+              if (date.getMonth() === currentMonth) {
+                monthCost += cost;
+              }
+            }
+          }
+        }
+
+        if (!isNaN(mileage) && mileage > lastMileage) {
+          lastMileage = mileage;
         }
       });
 
-      if (countEl) countEl.innerText = list.length;
-      if (totalCostEl) totalCostEl.innerText = "$" + totalCost.toFixed(0);
-      if (lastMileageEl) lastMileageEl.innerText = lastMileage ? Math.round(lastMileage).toLocaleString() : "0";
+      const oilServices = services
+        .filter(service => String(service.type || "").toLowerCase().includes("oil"))
+        .sort(sortByDateDesc);
+
+      const dueReminders = reminders.filter(reminder => getReminderStatus(reminder, car).status === "due").length;
+
+      return {
+        serviceCount: services.length,
+        totalCost,
+        monthCost,
+        yearCost,
+        lastMileage,
+        lastOilChange: oilServices.length ? formatServiceDate(oilServices[0].date) : "None",
+        dueReminders
+      };
+    }
+
+    // =========================
+    // GET NEXT REMINDER TEXT
+    // =========================
+    function getNextReminderText(car) {
+      const reminders = Array.isArray(car.reminders) ? car.reminders : [];
+
+      if (reminders.length === 0) {
+        return {
+          text: "No reminders",
+          status: "ok"
+        };
+      }
+
+      const statuses = reminders.map(reminder => getReminderStatus(reminder, car));
+
+      const due = statuses.find(item => item.status === "due");
+      if (due) return due;
+
+      const soon = statuses.find(item => item.status === "soon");
+      if (soon) return soon;
+
+      return {
+        text: "Reminders saved",
+        status: "ok"
+      };
+    }
+
+    // =========================
+    // GET REMINDER STATUS
+    // =========================
+    function getReminderStatus(reminder, car) {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      const currentMileage = parseFloat(car.currentMileage || "0");
+      const dueMileage = parseFloat(reminder.dueMileage || "0");
+
+      if (dueMileage && !isNaN(dueMileage) && currentMileage >= dueMileage) {
+        return {
+          text: "Due by mileage",
+          status: "due"
+        };
+      }
+
+      if (reminder.dueDate) {
+        const dueDate = new Date(reminder.dueDate + "T00:00:00");
+
+        if (!isNaN(dueDate.getTime())) {
+          const diffDays = Math.ceil((dueDate - today) / 86400000);
+
+          if (diffDays < 0) {
+            return {
+              text: "Past due",
+              status: "due"
+            };
+          }
+
+          if (diffDays === 0) {
+            return {
+              text: "Due today",
+              status: "due"
+            };
+          }
+
+          if (diffDays <= 14) {
+            return {
+              text: "Due in " + diffDays + " days",
+              status: "soon"
+            };
+          }
+
+          return {
+            text: "Due in " + diffDays + " days",
+            status: "ok"
+          };
+        }
+      }
+
+      return {
+        text: "Saved",
+        status: "ok"
+      };
+    }
+
+    // =========================
+    // DOWNLOAD SELECTED CAR CSV
+    // =========================
+    function downloadSelectedCarCSV() {
+      const car = findCarById(selectedCarId);
+      if (!car) return;
+
+      const rows = [
+        ["Car", "Type", "Date", "Mileage", "Cost", "Notes"]
+      ];
+
+      car.services.forEach(service => {
+        rows.push([
+          car.name || "",
+          service.type || "",
+          service.date || "",
+          service.mileage || "",
+          service.cost || "",
+          service.notes || ""
+        ]);
+      });
+
+      const csv = rows.map(row => row.map(csvEscape).join(",")).join("\n");
+      const fileName = safeFileName(car.name || "car") + "-service-history.csv";
+
+      downloadTextFile(csv, fileName, "text/csv");
+    }
+
+    // =========================
+    // EXPORT ALL DATA
+    // =========================
+    function exportAllData() {
+      const data = getCarData();
+      const backup = {
+        app: "Smart Tools Car Care",
+        version: 2,
+        exportedAt: new Date().toISOString(),
+        data
+      };
+
+      const text = JSON.stringify(backup, null, 2);
+      downloadTextFile(text, "car-care-backup.json", "application/json");
+    }
+
+    // =========================
+    // RESTORE BACKUP FILE
+    // =========================
+    function restoreBackupFile(event) {
+      const file = event.target.files && event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+
+      reader.onload = function(loadEvent) {
+        try {
+          const parsed = JSON.parse(loadEvent.target.result);
+          const restoredData = parsed.data || parsed;
+
+          if (!restoredData || !Array.isArray(restoredData.cars)) {
+            alert("This backup file is not valid.");
+            return;
+          }
+
+          const confirmRestore = confirm("Restore backup? This will replace current car care data.");
+          if (!confirmRestore) return;
+
+          saveCarData(restoredData);
+          closeGlobalBackupModal();
+          closeCarForm();
+          closeServiceDetailModal();
+          closeReminderDetailModal();
+
+          if (selectedCarId && !findCarById(selectedCarId)) {
+            closeCarDetails();
+          }
+
+          renderCarMainPage();
+          renderCarDetailsPage();
+          alert("Backup restored.");
+        } catch (error) {
+          alert("Could not restore this file.");
+        }
+      };
+
+      reader.readAsText(file);
+      event.target.value = "";
+    }
+
+    // =========================
+    // GLOBAL BACKUP MODAL
+    // =========================
+    function openGlobalBackupModal() {
+      openModal("globalBackupModal");
+    }
+
+    function closeGlobalBackupModal() {
+      closeModal("globalBackupModal");
+    }
+
+    // =========================
+    // FOCUS SERVICE FORM
+    // =========================
+    function focusServiceForm() {
+      setTimeout(function() {
+        const card = document.getElementById("serviceFormCard");
+        if (card) card.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 80);
+    }
+
+    // =========================
+    // FOCUS REMINDER FORM
+    // =========================
+    function focusReminderForm() {
+      setTimeout(function() {
+        const card = document.getElementById("reminderFormCard");
+        if (card) card.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 80);
+    }
+
+    // =========================
+    // MODAL HELPERS
+    // =========================
+    function openModal(id) {
+      const modal = document.getElementById(id);
+      if (modal) modal.classList.add("show");
+      applySmartToolsTheme();
+    }
+
+    function closeModal(id) {
+      const modal = document.getElementById(id);
+      if (modal) modal.classList.remove("show");
     }
 
     // =========================
@@ -1159,10 +2816,31 @@
     }
 
     // =========================
+    // FORMAT MONEY SHORT
+    // =========================
+    function formatMoneyShort(value) {
+      const numberValue = parseFloat(value || "0");
+
+      if (isNaN(numberValue)) {
+        return "$0";
+      }
+
+      if (numberValue >= 1000000) {
+        return "$" + (numberValue / 1000000).toFixed(1) + "M";
+      }
+
+      if (numberValue >= 10000) {
+        return "$" + Math.round(numberValue).toLocaleString();
+      }
+
+      return "$" + Math.round(numberValue).toLocaleString();
+    }
+
+    // =========================
     // FORMAT SERVICE DATE
     // =========================
     function formatServiceDate(value) {
-      if (!value) return "No date";
+      if (!value) return "Not saved";
 
       const date = new Date(value + "T00:00:00");
 
@@ -1178,6 +2856,120 @@
     }
 
     // =========================
+    // FORMAT NUMBER
+    // =========================
+    function formatNumber(value) {
+      const numberValue = parseFloat(value || "0");
+      if (isNaN(numberValue)) return "0";
+      return Math.round(numberValue).toLocaleString();
+    }
+
+    // =========================
+    // SORT BY DATE DESC
+    // =========================
+    function sortByDateDesc(a, b) {
+      const dateA = a.date ? new Date(a.date + "T00:00:00").getTime() : 0;
+      const dateB = b.date ? new Date(b.date + "T00:00:00").getTime() : 0;
+      return dateB - dateA;
+    }
+
+    // =========================
+    // SORT REMINDERS
+    // =========================
+    function sortReminders(a, b) {
+      const dateA = a.dueDate ? new Date(a.dueDate + "T00:00:00").getTime() : 9999999999999;
+      const dateB = b.dueDate ? new Date(b.dueDate + "T00:00:00").getTime() : 9999999999999;
+      return dateA - dateB;
+    }
+
+    // =========================
+    // BUILD CAR SUBTITLE
+    // =========================
+    function buildCarSubtitle(car) {
+      const parts = [];
+
+      if (car.year) parts.push(car.year);
+      if (car.makeModel) parts.push(car.makeModel);
+      if (car.plate) parts.push("Plate: " + car.plate);
+
+      return parts.length ? parts.join(" • ") : "Tap to open service history and reminders";
+    }
+
+    // =========================
+    // CSV ESCAPE
+    // =========================
+    function csvEscape(value) {
+      const text = String(value || "");
+      return '"' + text.replace(/"/g, '""') + '"';
+    }
+
+    // =========================
+    // DOWNLOAD TEXT FILE
+    // =========================
+    function downloadTextFile(text, filename, type) {
+      const blob = new Blob([text], { type: type || "text/plain" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+
+      setTimeout(function() {
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }, 0);
+    }
+
+    // =========================
+    // SAFE FILE NAME
+    // =========================
+    function safeFileName(value) {
+      return String(value || "file")
+        .trim()
+        .replace(/[^a-z0-9-_]+/gi, "-")
+        .replace(/-+/g, "-")
+        .replace(/^-|-$/g, "")
+        .toLowerCase();
+    }
+
+    // =========================
+    // GET TODAY DATE STRING
+    // =========================
+    function getTodayDateString() {
+      const today = new Date();
+      const yyyy = today.getFullYear();
+      const mm = String(today.getMonth() + 1).padStart(2, "0");
+      const dd = String(today.getDate()).padStart(2, "0");
+      return yyyy + "-" + mm + "-" + dd;
+    }
+
+    // =========================
+    // GET VALUE
+    // =========================
+    function getValue(id) {
+      const el = document.getElementById(id);
+      return el ? String(el.value || "").trim() : "";
+    }
+
+    // =========================
+    // SET VALUE
+    // =========================
+    function setValue(id, value) {
+      const el = document.getElementById(id);
+      if (el) el.value = value || "";
+    }
+
+    // =========================
+    // SET TEXT
+    // =========================
+    function setText(id, value) {
+      const el = document.getElementById(id);
+      if (el) el.innerText = value;
+    }
+
+    // =========================
     // ESCAPE HTML
     // =========================
     function escapeHtml(value) {
@@ -1190,11 +2982,22 @@
     }
 
     // =========================
+    // CLOSE MODAL WHEN CLICKING BACKDROP
+    // =========================
+    document.addEventListener("click", function(event) {
+      if (event.target.classList && event.target.classList.contains("modal-overlay")) {
+        event.target.classList.remove("show");
+      }
+    });
+
+    // =========================
     // PAGE LOAD
     // =========================
     document.addEventListener("DOMContentLoaded", function() {
+      migrateOldDataIfNeeded();
       applySmartToolsTheme();
-      renderCarMainStats();
+      resetServiceForm();
+      renderCarMainPage();
     });
   </script>
 
