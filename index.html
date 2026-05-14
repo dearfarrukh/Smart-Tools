@@ -9,10 +9,13 @@
   <meta name="apple-mobile-web-app-title" content="Smart Tools">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
 
-  <link rel="apple-touch-icon" href="images/icon.png">
-  <link rel="icon" type="image/png" href="images/icon.png">
+  <link rel="apple-touch-icon" href="images/icon.png?v=20260514-refresh2">
+  <link rel="icon" type="image/png" href="images/icon.png?v=20260514-refresh2">
 
   <meta charset="UTF-8" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <title>Smart Tools</title>
@@ -630,7 +633,7 @@
     <div class="dashboard-topbar">
       <div class="dashboard-brand">
         <div class="dashboard-logo">
-          <img src="images/icon.png" alt="Smart Tools" onerror="this.style.display='none'; this.parentElement.innerHTML='🛠️';">
+          <img src="images/icon.png?v=20260514-refresh2" alt="Smart Tools" onerror="this.style.display='none'; this.parentElement.innerHTML='🛠️';">
         </div>
 
         <div class="dashboard-title">Smart <span>Tools</span></div>
@@ -884,29 +887,126 @@
     });
 
     // =========================
-    // HARD REFRESH APP - KEEP SAVED DATA SAFE
+    // POWERFUL REFRESH APP - KEEP SAVED DATA SAFE
     // =========================
     async function hardRefreshAppKeepData() {
       closeHomeToolsMenu();
 
+      const confirmed = confirm(
+        "Refresh app now?\n\nThis will clear old app cache and load newest GitHub files.\n\nYour saved notes, cars, passwords, qameti, and app data will NOT be deleted."
+      );
+
+      if (!confirmed) return;
+
       try {
-        // This does NOT clear localStorage, notes, car data, qameti data, or saved app data.
-        // It only removes browser cache and old service worker cache so GitHub shows the newest files.
+        localStorage.setItem("smartToolsLastRefresh", new Date().toISOString());
+        localStorage.setItem("smartToolsForceReloadVersion", String(Date.now()));
+
+        // Tell service worker to skip waiting if it supports messages.
         if ("serviceWorker" in navigator) {
           const registrations = await navigator.serviceWorker.getRegistrations();
-          await Promise.all(registrations.map(registration => registration.unregister()));
+
+          await Promise.all(registrations.map(async function(registration) {
+            try {
+              if (registration.waiting) {
+                registration.waiting.postMessage({ type: "SKIP_WAITING" });
+              }
+
+              if (registration.active) {
+                registration.active.postMessage({ type: "CLEAR_CACHE" });
+              }
+
+              await registration.update();
+              await registration.unregister();
+            } catch (error) {
+              console.log("Service worker refresh step skipped:", error);
+            }
+          }));
         }
 
+        // Delete every Cache Storage cache.
         if ("caches" in window) {
           const cacheNames = await caches.keys();
-          await Promise.all(cacheNames.map(cacheName => caches.delete(cacheName)));
+
+          await Promise.all(cacheNames.map(function(cacheName) {
+            return caches.delete(cacheName);
+          }));
         }
+
+        // Refresh all icon/logo images on this page with a new cache-buster.
+        const refreshVersion = Date.now();
+
+        document.querySelectorAll("img").forEach(function(img) {
+          try {
+            const oldSrc = img.getAttribute("src");
+            if (!oldSrc) return;
+
+            const cleanSrc = oldSrc.split("?")[0];
+            img.setAttribute("src", cleanSrc + "?v=" + refreshVersion);
+          } catch (error) {
+            console.log("Image refresh skipped:", error);
+          }
+        });
+
+        document.querySelectorAll('link[rel="icon"], link[rel="apple-touch-icon"]').forEach(function(link) {
+          try {
+            const oldHref = link.getAttribute("href");
+            if (!oldHref) return;
+
+            const cleanHref = oldHref.split("?")[0];
+            link.setAttribute("href", cleanHref + "?v=" + refreshVersion);
+          } catch (error) {
+            console.log("Icon refresh skipped:", error);
+          }
+        });
+
       } catch (error) {
-        console.log("Hard refresh cache cleanup skipped:", error);
+        console.log("Power refresh cleanup skipped:", error);
       }
 
+      // Replace current page with a fresh URL.
+      // This keeps localStorage safe but forces browser/GitHub Pages to fetch fresh files.
       const cleanUrl = window.location.origin + window.location.pathname;
-      window.location.replace(cleanUrl + "?refresh=" + Date.now());
+      const freshUrl = cleanUrl + "?forceRefresh=" + Date.now();
+
+      setTimeout(function() {
+        window.location.replace(freshUrl);
+      }, 250);
+    }
+
+    // =========================
+    // AUTO CLEAN REFRESH URL
+    // Removes ?forceRefresh=... after the new file loads.
+    // =========================
+    function cleanSmartToolsRefreshUrl() {
+      if (window.location.search.indexOf("forceRefresh=") !== -1) {
+        const cleanUrl = window.location.origin + window.location.pathname;
+        window.history.replaceState({}, document.title, cleanUrl);
+      }
+    }
+
+    // =========================
+    // FORCE ICON CACHE BUSTER ON LOAD
+    // Helps home-screen icon/logo update without deleting saved app data.
+    // =========================
+    function forceSmartToolsIconCacheBuster() {
+      const version = localStorage.getItem("smartToolsForceReloadVersion") || "20260514-refresh2";
+
+      document.querySelectorAll('link[rel="icon"], link[rel="apple-touch-icon"]').forEach(function(link) {
+        const oldHref = link.getAttribute("href");
+        if (!oldHref) return;
+
+        const cleanHref = oldHref.split("?")[0];
+        link.setAttribute("href", cleanHref + "?v=" + version);
+      });
+
+      document.querySelectorAll(".dashboard-logo img").forEach(function(img) {
+        const oldSrc = img.getAttribute("src");
+        if (!oldSrc) return;
+
+        const cleanSrc = oldSrc.split("?")[0];
+        img.setAttribute("src", cleanSrc + "?v=" + version);
+      });
     }
 
     // =========================
@@ -1077,6 +1177,8 @@
     // PAGE LOAD
     // =========================
     document.addEventListener("DOMContentLoaded", function() {
+      cleanSmartToolsRefreshUrl();
+      forceSmartToolsIconCacheBuster();
       applySmartToolsHomeTheme();
       updateSmartToolsDashboard();
     });
