@@ -305,7 +305,7 @@
     <div class="inner-page-hero">
       <h1>Office Tools</h1>
       <p>
-        Office-only tools for work forms, contracts, invoices, customer documents, CSV files, and business shortcuts.
+        Office-only tools for work forms, contracts, invoices, customer documents, CSV files, number matching, and business shortcuts.
       </p>
     </div>
 
@@ -338,6 +338,16 @@
         <div class="office-icon">📊</div>
         <h3>PDF / Excel to CSV</h3>
         <p>Extract bank data and make upload-ready CSV files.</p>
+        <div class="office-arrow">›</div>
+      </button>
+
+      <!-- =========================
+           NUMBER MATCH CARD
+      ========================= -->
+      <button class="office-card" onclick="openNumberMatch()">
+        <div class="office-icon">#</div>
+        <h3>Number Match</h3>
+        <p>Find numbers that match your target total for office calculations.</p>
         <div class="office-arrow">›</div>
       </button>
 
@@ -382,6 +392,13 @@
     // =========================
     function openCsvConverter() {
       window.location.href = "../csvconverter/";
+    }
+
+    // =========================
+    // OPEN NUMBER MATCH
+    // =========================
+    function openNumberMatch() {
+      window.location.href = "../numbermatch/";
     }
 
     // =========================
