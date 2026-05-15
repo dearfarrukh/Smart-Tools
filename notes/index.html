@@ -13,7 +13,7 @@
   <link rel="icon" type="image/png" href="../images/icon.png">
 
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 
   <title>Notes</title>
 
@@ -25,23 +25,23 @@
       box-sizing: border-box;
       margin: 0;
       padding: 0;
+      -webkit-tap-highlight-color: transparent;
     }
 
     html,
     body {
       width: 100%;
       min-height: 100%;
-      font-family: Arial, Helvetica, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Arial, sans-serif;
+      overscroll-behavior: none;
     }
 
     body {
       min-height: 100vh;
-      padding-bottom: 34px;
-      color: #111827;
-      background:
-        radial-gradient(circle at top left, rgba(96,165,250,0.24), transparent 30%),
-        radial-gradient(circle at top right, rgba(244,114,182,0.22), transparent 32%),
-        linear-gradient(180deg, #f4f7ff 0%, #eef2ff 48%, #f8fafc 100%);
+      background: #f2f2f7;
+      color: #111111;
+      overflow-x: hidden;
+      touch-action: manipulation;
     }
 
     button,
@@ -50,434 +50,554 @@
       font: inherit;
     }
 
-    /* =========================
-       PAGE TOP BAR
-    ========================= */
-    .top-bar-wrap {
-      width: 100%;
-      padding: 20px 4% 0 4%;
+    button {
+      border: none;
+      background: none;
+      cursor: pointer;
     }
 
-    .top-bar {
+    /* =========================
+       APP SHELL
+    ========================= */
+    .app-shell {
       width: 100%;
-      max-width: 1200px;
-      margin: 0 auto;
+      min-height: 100vh;
+      background: #f2f2f7;
+    }
+
+    /* =========================
+       NOTES LIST PAGE
+    ========================= */
+    #notesListPage {
+      width: 100%;
+      min-height: 100vh;
+      display: block;
+      background: #f2f2f7;
+      padding-bottom: 40px;
+    }
+
+    .notes-top-bar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      width: 100%;
+      padding: 14px 16px 8px;
+      background: rgba(242, 242, 247, 0.92);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 14px;
+      gap: 12px;
     }
 
-    .back-btn {
-      border: none;
-      width: 52px;
-      height: 52px;
+    .back-main-btn {
+      width: 38px;
+      height: 38px;
       border-radius: 50%;
-      background: white;
-      color: #111827;
-      font-size: 24px;
-      font-weight: 900;
-      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.10);
-      cursor: pointer;
+      color: #007aff;
+      font-size: 27px;
+      font-weight: 400;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       flex-shrink: 0;
     }
 
-    .back-btn:active {
-      transform: scale(0.96);
-    }
-
-    .top-bar-title {
+    .top-title-small {
       flex: 1;
       text-align: center;
-      font-size: 22px;
-      font-weight: 900;
-      color: #111827;
-      letter-spacing: -0.4px;
+      font-size: 17px;
+      font-weight: 600;
+      color: #111111;
+      opacity: 0;
+      pointer-events: none;
     }
 
-    .top-bar-spacer {
-      width: 52px;
-      height: 52px;
+    .add-note-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      color: #007aff;
+      font-size: 32px;
+      font-weight: 300;
+      line-height: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       flex-shrink: 0;
     }
 
-    /* =========================
-       PAGE LAYOUT
-    ========================= */
-    .page-inner {
+    .notes-page-inner {
       width: 100%;
-      max-width: 1200px;
+      max-width: 820px;
       margin: 0 auto;
-      padding: 0 4% 40px 4%;
-    }
-
-    .inner-page-hero {
-      margin-top: 18px;
-      background: linear-gradient(135deg, #f59e0b 0%, #ec4899 48%, #8b5cf6 100%);
-      color: white;
-      border-radius: 30px;
-      padding: 32px 24px;
-      box-shadow: 0 14px 32px rgba(236, 72, 153, 0.20);
-    }
-
-    .inner-page-hero h1 {
-      font-size: 34px;
-      font-weight: 900;
-      line-height: 1.1;
-      margin-bottom: 12px;
-      letter-spacing: -0.8px;
-    }
-
-    .inner-page-hero p {
-      font-size: 17px;
-      line-height: 1.6;
-      color: rgba(255,255,255,0.95);
-      max-width: 760px;
-    }
-
-    /* =========================
-       CARDS
-    ========================= */
-    .card {
-      background: white;
-      border: 1px solid rgba(15,23,42,0.07);
-      color: #111827;
-      border-radius: 28px;
-      padding: 24px;
-      box-shadow: 0 14px 34px rgba(15,23,42,0.10);
-    }
-
-    .card + .card {
-      margin-top: 22px;
-    }
-
-    .card-title {
-      font-size: 24px;
-      font-weight: 900;
-      color: #111827;
-      margin-bottom: 8px;
-      letter-spacing: -0.5px;
-    }
-
-    .card-subtitle {
-      font-size: 15px;
-      line-height: 1.6;
-      color: #64748b;
-      margin-bottom: 18px;
-    }
-
-    .button-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 14px;
-    }
-
-    .action-btn {
-      border: none;
-      min-height: 58px;
-      border-radius: 18px;
-      padding: 0 24px;
-      cursor: pointer;
-      font-size: 17px;
-      font-weight: 900;
-      flex: 1;
-      transition: transform 0.16s ease, opacity 0.16s ease;
-      color: white;
-    }
-
-    .action-btn:active {
-      transform: scale(0.97);
-    }
-
-    .save-btn {
-      background: linear-gradient(135deg, #22c55e 0%, #14b8a6 100%);
-    }
-
-    .reset-btn {
-      background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);
-    }
-
-    .edit-btn {
-      background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
-    }
-
-    .delete-btn {
-      background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
-    }
-
-    /* =========================
-       NOTES PAGE
-    ========================= */
-    .notes-layout {
-      margin-top: 24px;
-      display: grid;
-      grid-template-columns: 0.95fr 1.05fr;
-      gap: 22px;
-      align-items: start;
-    }
-
-    .notes-input {
-      width: 100%;
-      height: 58px;
-      border: 2px solid #e5e7eb;
-      border-radius: 18px;
-      outline: none;
-      background: #fcfcff;
-      color: #111827;
       padding: 0 16px;
-      font-size: 17px;
+    }
+
+    .big-title-row {
+      margin-top: 6px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .big-title {
+      font-size: 38px;
+      line-height: 1;
       font-weight: 800;
+      letter-spacing: -1.2px;
+      color: #111111;
     }
 
-    .notes-textarea {
-      width: 100%;
-      min-height: 230px;
-      resize: vertical;
-      border: 2px solid #e5e7eb;
-      border-radius: 18px;
-      outline: none;
-      background: #fcfcff;
-      color: #111827;
-      padding: 16px;
-      font-size: 17px;
-      line-height: 1.6;
-      margin-top: 14px;
-    }
-
-    .notes-input:focus,
-    .notes-textarea:focus {
-      border-color: #ec4899;
-      box-shadow: 0 0 0 4px rgba(236,72,153,0.10);
-    }
-
-    .note-list {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-
-    .note-card {
-      background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
-      border: 1px solid rgba(15,23,42,0.07);
-      border-radius: 24px;
-      padding: 18px;
-      box-shadow: 0 10px 24px rgba(15,23,42,0.08);
-    }
-
-    .note-card-title {
-      font-size: 20px;
-      font-weight: 900;
-      color: #111827;
-      line-height: 1.25;
-      margin-bottom: 8px;
-      word-break: break-word;
-    }
-
-    .note-card-date {
-      font-size: 13px;
-      font-weight: 900;
-      color: #94a3b8;
-      margin-bottom: 12px;
-    }
-
-    .note-card-body {
-      font-size: 16px;
-      line-height: 1.65;
-      color: #334155;
-      white-space: pre-wrap;
-      word-break: break-word;
-      margin-bottom: 16px;
-    }
-
-    .note-actions {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .small-note-btn {
-      border: none;
-      min-height: 44px;
-      border-radius: 14px;
-      padding: 0 16px;
-      cursor: pointer;
-      color: white;
+    .notes-count {
       font-size: 14px;
-      font-weight: 900;
-      flex: 1;
+      font-weight: 500;
+      color: #8e8e93;
+      padding-bottom: 4px;
+      white-space: nowrap;
+    }
+
+    .search-wrap {
+      width: 100%;
+      height: 38px;
+      border-radius: 12px;
+      background: #e5e5ea;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 0 12px;
+      margin-bottom: 14px;
+    }
+
+    .search-icon {
+      color: #8e8e93;
+      font-size: 15px;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+    #notesSearchInput {
+      width: 100%;
+      height: 38px;
+      border: none;
+      outline: none;
+      background: transparent;
+      color: #111111;
+      font-size: 17px;
+      font-weight: 400;
+    }
+
+    #notesSearchInput::placeholder {
+      color: #8e8e93;
+    }
+
+    .notes-list-card {
+      width: 100%;
+      background: #ffffff;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 1px 0 rgba(0,0,0,0.04);
+    }
+
+    #notesList {
+      width: 100%;
+    }
+
+    .note-row-wrap {
+      position: relative;
+      width: 100%;
+      overflow: hidden;
+      background: #ffffff;
+      touch-action: pan-y;
+    }
+
+    .note-delete-bg {
+      position: absolute;
+      inset: 0;
+      background: #ff3b30;
+      display: flex;
+      justify-content: flex-end;
+      align-items: stretch;
+      z-index: 1;
+    }
+
+    .note-delete-btn {
+      width: 92px;
+      height: 100%;
+      background: #ff3b30;
+      color: #ffffff;
+      font-size: 16px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .note-row {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      background: #ffffff;
+      padding: 13px 16px 12px;
+      transition: transform 0.18s ease;
+      cursor: pointer;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    .note-row::after {
+      content: "";
+      position: absolute;
+      left: 16px;
+      right: 0;
+      bottom: 0;
+      height: 1px;
+      background: #e5e5ea;
+    }
+
+    .note-row-wrap:last-child .note-row::after {
+      display: none;
+    }
+
+    .note-row-title {
+      width: 100%;
+      font-size: 17px;
+      line-height: 1.28;
+      font-weight: 700;
+      color: #111111;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      letter-spacing: -0.25px;
+      margin-bottom: 3px;
+    }
+
+    .note-row-date {
+      font-size: 14px;
+      line-height: 1.25;
+      font-weight: 400;
+      color: #8e8e93;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-bottom: 2px;
+    }
+
+    .note-row-preview {
+      font-size: 14px;
+      line-height: 1.25;
+      font-weight: 400;
+      color: #8e8e93;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .empty-notes-box {
-      border-radius: 22px;
-      padding: 22px;
-      background: linear-gradient(180deg, #f9fafb 0%, #f3f4f6 100%);
-      border: 1px dashed #cbd5e1;
-      color: #64748b;
+      width: 100%;
+      padding: 45px 22px;
+      text-align: center;
+      color: #8e8e93;
       font-size: 16px;
-      line-height: 1.7;
-      text-align: center;
-      font-weight: 800;
+      line-height: 1.45;
+      font-weight: 500;
     }
 
-    .editing-pill {
-      display: none;
-      margin-bottom: 14px;
-      border-radius: 999px;
-      padding: 10px 14px;
-      background: #fef3c7;
-      color: #92400e;
-      font-size: 14px;
-      font-weight: 900;
-      text-align: center;
-    }
-
-    .editing-pill.show {
-      display: block;
+    .empty-notes-icon {
+      font-size: 42px;
+      margin-bottom: 10px;
     }
 
     /* =========================
-       DARK THEME
+       NOTE EDITOR PAGE
+    ========================= */
+    #noteEditorPage {
+      width: 100%;
+      min-height: 100vh;
+      display: none;
+      background: #ffffff;
+      color: #111111;
+    }
+
+    .editor-top-bar {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      width: 100%;
+      min-height: 56px;
+      padding: 8px 12px;
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+    }
+
+    .editor-back-btn {
+      min-width: 64px;
+      height: 40px;
+      border-radius: 12px;
+      color: #007aff;
+      font-size: 17px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 2px;
+      padding: 0 4px;
+    }
+
+    .editor-back-arrow {
+      font-size: 28px;
+      line-height: 1;
+      font-weight: 300;
+      margin-top: -1px;
+    }
+
+    .editor-title-small {
+      flex: 1;
+      text-align: center;
+      font-size: 17px;
+      font-weight: 600;
+      color: #111111;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .editor-actions {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 6px;
+      min-width: 105px;
+    }
+
+    .editor-icon-btn {
+      height: 38px;
+      min-width: 38px;
+      border-radius: 50%;
+      color: #007aff;
+      font-size: 17px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 8px;
+    }
+
+    .editor-delete-btn {
+      color: #ff3b30;
+      font-size: 19px;
+    }
+
+    .editor-done-btn {
+      color: #007aff;
+      font-size: 17px;
+      font-weight: 600;
+      border-radius: 12px;
+      padding: 0 6px;
+    }
+
+    .editor-inner {
+      width: 100%;
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 16px 18px 40px;
+    }
+
+    .editor-date-line {
+      text-align: center;
+      color: #8e8e93;
+      font-size: 13px;
+      font-weight: 500;
+      margin-bottom: 12px;
+    }
+
+    #noteBodyEditor {
+      width: 100%;
+      min-height: calc(100vh - 145px);
+      border: none;
+      outline: none;
+      resize: none;
+      background: transparent;
+      color: #111111;
+      font-size: 21px;
+      line-height: 1.45;
+      font-weight: 400;
+      letter-spacing: -0.25px;
+      overflow: hidden;
+    }
+
+    #noteBodyEditor::placeholder {
+      color: #c7c7cc;
+    }
+
+    /* =========================
+       DELETE CONFIRM POPUP
+    ========================= */
+    .confirm-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      background: rgba(0,0,0,0.28);
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+      padding: 12px;
+    }
+
+    .confirm-overlay.show {
+      display: flex;
+    }
+
+    .confirm-sheet {
+      width: 100%;
+      max-width: 520px;
+      border-radius: 18px;
+      overflow: hidden;
+      margin-bottom: 4px;
+    }
+
+    .confirm-main {
+      background: rgba(255,255,255,0.96);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      border-radius: 18px;
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+
+    .confirm-text {
+      padding: 18px 18px 14px;
+      text-align: center;
+      color: #8e8e93;
+      font-size: 13px;
+      line-height: 1.35;
+      font-weight: 500;
+      border-bottom: 1px solid rgba(0,0,0,0.10);
+    }
+
+    .confirm-delete {
+      width: 100%;
+      min-height: 57px;
+      color: #ff3b30;
+      background: transparent;
+      font-size: 20px;
+      font-weight: 400;
+    }
+
+    .confirm-cancel {
+      width: 100%;
+      min-height: 57px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.96);
+      color: #007aff;
+      font-size: 20px;
+      font-weight: 600;
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+    }
+
+    /* =========================
+       DARK THEME FOLLOW MAIN APP
     ========================= */
     body.smart-tools-dark-theme {
-      background:
-        radial-gradient(circle at top left, rgba(34,197,94,0.12), transparent 30%),
-        radial-gradient(circle at top right, rgba(14,165,233,0.10), transparent 32%),
-        linear-gradient(180deg, #07111f 0%, #0b1626 52%, #07111f 100%);
-      color: #f8fafc;
+      background: #000000;
+      color: #f5f5f7;
     }
 
-    body.smart-tools-dark-theme .top-bar-title,
-    body.smart-tools-dark-theme .card-title,
-    body.smart-tools-dark-theme .note-card-title {
-      color: #f8fafc;
+    body.smart-tools-dark-theme .app-shell,
+    body.smart-tools-dark-theme #notesListPage {
+      background: #000000;
+      color: #f5f5f7;
     }
 
-    body.smart-tools-dark-theme .back-btn,
-    body.smart-tools-dark-theme .card,
-    body.smart-tools-dark-theme .note-card,
-    body.smart-tools-dark-theme .empty-notes-box {
-      background: linear-gradient(180deg, rgba(30,41,59,0.88), rgba(15,23,42,0.84));
-      border-color: rgba(148,163,184,0.20);
-      color: #f8fafc;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 14px 34px rgba(0,0,0,0.22);
+    body.smart-tools-dark-theme .notes-top-bar {
+      background: rgba(0,0,0,0.88);
     }
 
-    body.smart-tools-dark-theme .card-subtitle,
-    body.smart-tools-dark-theme .note-card-body,
-    body.smart-tools-dark-theme .empty-notes-box {
-      color: #cbd5e1;
+    body.smart-tools-dark-theme .big-title,
+    body.smart-tools-dark-theme .top-title-small,
+    body.smart-tools-dark-theme .editor-title-small {
+      color: #f5f5f7;
     }
 
-    body.smart-tools-dark-theme .note-card-date {
-      color: #94a3b8;
+    body.smart-tools-dark-theme .search-wrap {
+      background: #1c1c1e;
     }
 
-    body.smart-tools-dark-theme .notes-input,
-    body.smart-tools-dark-theme .notes-textarea {
-      background: rgba(15,23,42,0.82);
-      color: #f8fafc;
-      border-color: rgba(148,163,184,0.30);
+    body.smart-tools-dark-theme #notesSearchInput {
+      color: #f5f5f7;
     }
 
-    body.smart-tools-dark-theme .notes-input::placeholder,
-    body.smart-tools-dark-theme .notes-textarea::placeholder {
-      color: #94a3b8;
+    body.smart-tools-dark-theme .notes-list-card,
+    body.smart-tools-dark-theme .note-row-wrap,
+    body.smart-tools-dark-theme .note-row {
+      background: #1c1c1e;
     }
 
-    /* =========================
-       COLOR THEME
-    ========================= */
-    body.smart-tools-color-theme {
-      background:
-        radial-gradient(circle at top left, rgba(96,165,250,0.24), transparent 30%),
-        radial-gradient(circle at top right, rgba(244,114,182,0.22), transparent 32%),
-        linear-gradient(180deg, #f4f7ff 0%, #eef2ff 48%, #f8fafc 100%);
-      color: #111827;
+    body.smart-tools-dark-theme .note-row-title {
+      color: #f5f5f7;
     }
 
-    body.smart-tools-color-theme .top-bar-title,
-    body.smart-tools-color-theme .card-title,
-    body.smart-tools-color-theme .note-card-title {
-      color: #111827;
+    body.smart-tools-dark-theme .note-row::after {
+      background: #2c2c2e;
     }
 
-    body.smart-tools-color-theme .back-btn,
-    body.smart-tools-color-theme .card,
-    body.smart-tools-color-theme .note-card {
-      background: white;
-      color: #111827;
-      border-color: rgba(15,23,42,0.07);
-      box-shadow: 0 14px 34px rgba(15,23,42,0.10);
+    body.smart-tools-dark-theme #noteEditorPage {
+      background: #000000;
+      color: #f5f5f7;
     }
 
-    body.smart-tools-color-theme .card-subtitle,
-    body.smart-tools-color-theme .note-card-body {
-      color: #64748b;
+    body.smart-tools-dark-theme .editor-top-bar {
+      background: rgba(0,0,0,0.88);
+      border-bottom-color: rgba(255,255,255,0.08);
     }
 
-    body.smart-tools-color-theme .notes-input,
-    body.smart-tools-color-theme .notes-textarea {
-      background: #fcfcff;
-      color: #111827;
-      border-color: #e5e7eb;
+    body.smart-tools-dark-theme #noteBodyEditor {
+      color: #f5f5f7;
+    }
+
+    body.smart-tools-dark-theme .confirm-main,
+    body.smart-tools-dark-theme .confirm-cancel {
+      background: rgba(28,28,30,0.96);
+    }
+
+    body.smart-tools-dark-theme .confirm-text {
+      border-bottom-color: rgba(255,255,255,0.10);
     }
 
     /* =========================
        RESPONSIVE
     ========================= */
-    @media (max-width: 900px) {
-      .notes-layout {
-        grid-template-columns: 1fr;
-      }
-    }
-
     @media (max-width: 640px) {
-      .top-bar-wrap {
-        padding: 16px 4% 0 4%;
+      .notes-page-inner {
+        padding: 0 14px;
       }
 
-      .page-inner {
-        padding: 0 5% 30px 5%;
+      .big-title {
+        font-size: 36px;
       }
 
-      .inner-page-hero {
-        padding: 26px 18px;
-        border-radius: 24px;
+      .notes-top-bar {
+        padding-left: 10px;
+        padding-right: 10px;
       }
 
-      .inner-page-hero h1 {
-        font-size: 28px;
+      .editor-inner {
+        padding-left: 18px;
+        padding-right: 18px;
       }
 
-      .inner-page-hero p {
-        font-size: 16px;
-      }
-
-      .card {
-        border-radius: 24px;
-        padding: 20px;
-      }
-
-      .card-title {
-        font-size: 21px;
-      }
-
-      .top-bar-title {
+      #noteBodyEditor {
         font-size: 20px;
-      }
-
-      .back-btn,
-      .top-bar-spacer {
-        width: 48px;
-        height: 48px;
-      }
-
-      .button-row {
-        flex-direction: column;
-      }
-
-      .action-btn {
-        width: 100%;
       }
     }
   </style>
@@ -485,73 +605,89 @@
 
 <body class="smart-tools-color-theme">
 
-  <!-- =========================
-       NOTES PAGE
-  ========================= -->
-  <div class="top-bar-wrap">
-    <div class="top-bar">
-      <button class="back-btn" onclick="goBackToMainPage()">←</button>
-      <div class="top-bar-title">Notes</div>
-      <div class="top-bar-spacer"></div>
+  <div class="app-shell">
+
+    <!-- =========================
+         NOTES LIST PAGE
+    ========================= -->
+    <div id="notesListPage">
+
+      <div class="notes-top-bar">
+        <button class="back-main-btn" onclick="goBackToMainPage()" aria-label="Back">‹</button>
+        <div class="top-title-small">Notes</div>
+        <button class="add-note-btn" onclick="openNewNote()" aria-label="New Note">+</button>
+      </div>
+
+      <div class="notes-page-inner">
+
+        <div class="big-title-row">
+          <h1 class="big-title">Notes</h1>
+          <div id="notesCount" class="notes-count">0 notes</div>
+        </div>
+
+        <div class="search-wrap">
+          <div class="search-icon">⌕</div>
+          <input
+            id="notesSearchInput"
+            type="text"
+            placeholder="Search"
+            oninput="renderNotes()"
+          />
+        </div>
+
+        <div class="notes-list-card">
+          <div id="notesList"></div>
+        </div>
+
+      </div>
     </div>
+
+    <!-- =========================
+         NOTE EDITOR PAGE
+    ========================= -->
+    <div id="noteEditorPage">
+
+      <div class="editor-top-bar">
+        <button class="editor-back-btn" onclick="closeNoteEditor()">
+          <span class="editor-back-arrow">‹</span>
+          <span>Notes</span>
+        </button>
+
+        <div id="editorTopTitle" class="editor-title-small">New Note</div>
+
+        <div class="editor-actions">
+          <button class="editor-icon-btn editor-delete-btn" onclick="askDeleteCurrentNote()" aria-label="Delete">🗑</button>
+          <button class="editor-icon-btn editor-done-btn" onclick="closeNoteEditor()">Done</button>
+        </div>
+      </div>
+
+      <div class="editor-inner">
+        <div id="editorDateLine" class="editor-date-line"></div>
+
+        <textarea
+          id="noteBodyEditor"
+          placeholder="New Note"
+          oninput="autoResizeEditor(); markNoteChanged();"
+        ></textarea>
+      </div>
+
+    </div>
+
   </div>
 
-  <div class="page-inner">
-
-    <div class="inner-page-hero">
-      <h1>Notes</h1>
-      <p>
-        Save quick notes, reminders, customer details, or anything you need.
-        Your notes stay saved on this phone or browser.
-      </p>
-    </div>
-
-    <div class="notes-layout">
-
-      <!-- =========================
-           NOTE FORM
-      ========================= -->
-      <div>
-        <div class="card">
-          <div class="card-title">Add Note</div>
-          <div class="card-subtitle">Write your note and press Save Note.</div>
-
-          <div id="editingNotePill" class="editing-pill">
-            Editing note
-          </div>
-
-          <input
-            id="noteTitleInput"
-            class="notes-input"
-            type="text"
-            placeholder="Note title"
-          />
-
-          <textarea
-            id="noteBodyInput"
-            class="notes-textarea"
-            placeholder="Write your note here..."
-          ></textarea>
-
-          <div class="button-row" style="margin-top:16px;">
-            <button id="saveNoteBtn" class="action-btn save-btn" onclick="saveNote()">Save Note</button>
-            <button class="action-btn reset-btn" onclick="resetNoteForm()">Clear</button>
-          </div>
+  <!-- =========================
+       DELETE CONFIRM POPUP
+  ========================= -->
+  <div id="deleteConfirmOverlay" class="confirm-overlay">
+    <div class="confirm-sheet">
+      <div class="confirm-main">
+        <div class="confirm-text">
+          This note will be deleted from this phone or browser.
         </div>
+        <button class="confirm-delete" onclick="confirmDeleteNote()">Delete Note</button>
       </div>
 
-      <!-- =========================
-           SAVED NOTES
-      ========================= -->
-      <div>
-        <div class="card">
-          <div class="card-title">Saved Notes</div>
-          <div class="card-subtitle">Your saved notes will show below.</div>
-
-          <div id="notesList" class="note-list"></div>
-        </div>
-      </div>
-
+      <button class="confirm-cancel" onclick="cancelDeleteNote()">Cancel</button>
     </div>
   </div>
 
@@ -583,7 +719,14 @@
     // =========================
     // NOTES STATE
     // =========================
-    let editingNoteId = null;
+    let currentNoteId = null;
+    let noteHasChanged = false;
+    let pendingDeleteNoteId = null;
+    let activeSwipeRow = null;
+    let swipeStartX = 0;
+    let swipeStartY = 0;
+    let swipeCurrentX = 0;
+    let swipeIsMoving = false;
 
     // =========================
     // GET NOTES DATA
@@ -616,81 +759,125 @@
     }
 
     // =========================
-    // SAVE NOTE
+    // CLEAN NOTE BODY
     // =========================
-    function saveNote() {
-      const titleInput = document.getElementById("noteTitleInput");
-      const bodyInput = document.getElementById("noteBodyInput");
-
-      const title = titleInput.value.trim();
-      const body = bodyInput.value.trim();
-
-      if (title === "" && body === "") {
-        alert("Please write a title or note first.");
-        return;
-      }
-
-      const notes = getNotesData();
-      const now = new Date();
-
-      const noteTitle = title === "" ? "Untitled Note" : title;
-
-      if (editingNoteId) {
-        const index = notes.findIndex(note => note.id === editingNoteId);
-
-        if (index !== -1) {
-          notes[index].title = noteTitle;
-          notes[index].body = body;
-          notes[index].updatedAt = now.toISOString();
-        }
-      } else {
-        notes.unshift({
-          id: "note_" + Date.now(),
-          title: noteTitle,
-          body: body,
-          createdAt: now.toISOString(),
-          updatedAt: now.toISOString()
-        });
-      }
-
-      saveNotesData(notes);
-      resetNoteForm();
-      renderNotes();
+    function cleanNoteBody(value) {
+      return String(value || "").replace(/\r\n/g, "\n").trim();
     }
 
     // =========================
-    // RENDER NOTES
+    // GET NOTE HEADING
+    // If no title, first line becomes heading
+    // =========================
+    function getNoteHeading(note) {
+      const title = String(note.title || "").trim();
+      const body = String(note.body || "").trim();
+
+      if (title !== "" && title !== "Untitled Note") {
+        return title;
+      }
+
+      if (body !== "") {
+        const lines = body.split("\n").map(line => line.trim()).filter(line => line !== "");
+
+        if (lines.length > 0) {
+          return lines[0];
+        }
+      }
+
+      return "New Note";
+    }
+
+    // =========================
+    // GET NOTE PREVIEW
+    // =========================
+    function getNotePreview(note) {
+      const body = String(note.body || "").trim();
+
+      if (body === "") {
+        return "No additional text";
+      }
+
+      const lines = body.split("\n").map(line => line.trim()).filter(line => line !== "");
+
+      if (lines.length <= 1) {
+        return "No additional text";
+      }
+
+      return lines.slice(1).join(" ");
+    }
+
+    // =========================
+    // RENDER NOTES LIST
     // =========================
     function renderNotes() {
       const notesList = document.getElementById("notesList");
-      const notes = getNotesData();
+      const notesCount = document.getElementById("notesCount");
+      const searchInput = document.getElementById("notesSearchInput");
 
       if (!notesList) return;
 
-      if (notes.length === 0) {
-        notesList.innerHTML = `
-          <div class="empty-notes-box">
-            No notes yet.<br>
-            Add your first note from the left side.
-          </div>
-        `;
+      const allNotes = getNotesData();
+      const searchText = searchInput ? searchInput.value.trim().toLowerCase() : "";
+
+      const filteredNotes = allNotes.filter(note => {
+        const heading = getNoteHeading(note).toLowerCase();
+        const body = String(note.body || "").toLowerCase();
+
+        if (searchText === "") {
+          return true;
+        }
+
+        return heading.includes(searchText) || body.includes(searchText);
+      });
+
+      if (notesCount) {
+        const total = allNotes.length;
+        notesCount.innerText = total === 1 ? "1 note" : total + " notes";
+      }
+
+      if (filteredNotes.length === 0) {
+        if (allNotes.length === 0) {
+          notesList.innerHTML = `
+            <div class="empty-notes-box">
+              <div class="empty-notes-icon">📝</div>
+              No Notes<br>
+              Tap + to create your first note.
+            </div>
+          `;
+        } else {
+          notesList.innerHTML = `
+            <div class="empty-notes-box">
+              No matching notes.
+            </div>
+          `;
+        }
+
         return;
       }
 
-      notesList.innerHTML = notes.map(note => {
-        const safeTitle = escapeHtml(note.title || "Untitled Note");
-        const safeBody = escapeHtml(note.body || "");
-        const dateText = formatNoteDate(note.updatedAt || note.createdAt);
+      notesList.innerHTML = filteredNotes.map(note => {
+        const heading = escapeHtml(getNoteHeading(note));
+        const preview = escapeHtml(getNotePreview(note));
+        const dateText = escapeHtml(formatAppleNoteDate(note.updatedAt || note.createdAt));
 
         return `
-          <div class="note-card">
-            <div class="note-card-title">${safeTitle}</div>
-            <div class="note-card-date">Last updated: ${dateText}</div>
-            <div class="note-card-body">${safeBody}</div>
+          <div class="note-row-wrap" data-note-id="${note.id}">
+            <div class="note-delete-bg">
+              <button class="note-delete-btn" onclick="askDeleteNoteFromList('${note.id}', event)">Delete</button>
+            </div>
 
-            <div class="note-actions">
-              <button class="small-note-btn edit-btn" onclick="editNote('${note.id}')">Edit</button>
-              <button class="small-note-btn delete-btn" onclick="deleteNote('${note.id}')">Delete</button>
+            <div
+              class="note-row"
+              onclick="openExistingNote('${note.id}')"
+              ontouchstart="startSwipe(event, this)"
+              ontouchmove="moveSwipe(event, this)"
+              ontouchend="endSwipe(event, this)"
+              onmousedown="startMouseSwipe(event, this)"
+            >
+              <div class="note-row-title">${heading}</div>
+              <div class="note-row-date">${dateText}</div>
+              <div class="note-row-preview">${preview}</div>
             </div>
           </div>
         `;
@@ -700,72 +887,447 @@
     }
 
     // =========================
-    // EDIT NOTE
+    // OPEN NEW NOTE
     // =========================
-    function editNote(noteId) {
+    function openNewNote() {
+      closeAnyOpenSwipe();
+
+      currentNoteId = null;
+      noteHasChanged = false;
+
+      const notesListPage = document.getElementById("notesListPage");
+      const noteEditorPage = document.getElementById("noteEditorPage");
+      const editor = document.getElementById("noteBodyEditor");
+      const editorDateLine = document.getElementById("editorDateLine");
+      const editorTopTitle = document.getElementById("editorTopTitle");
+
+      if (notesListPage) notesListPage.style.display = "none";
+      if (noteEditorPage) noteEditorPage.style.display = "block";
+      if (editor) editor.value = "";
+      if (editorDateLine) editorDateLine.innerText = formatEditorDate(new Date().toISOString());
+      if (editorTopTitle) editorTopTitle.innerText = "New Note";
+
+      setTimeout(function() {
+        autoResizeEditor();
+        if (editor) editor.focus();
+      }, 80);
+    }
+
+    // =========================
+    // OPEN EXISTING NOTE
+    // =========================
+    function openExistingNote(noteId) {
+      if (swipeIsMoving) return;
+
+      closeAnyOpenSwipe();
+
       const notes = getNotesData();
       const note = notes.find(item => item.id === noteId);
 
       if (!note) return;
 
-      editingNoteId = noteId;
+      currentNoteId = noteId;
+      noteHasChanged = false;
 
-      document.getElementById("noteTitleInput").value = note.title || "";
-      document.getElementById("noteBodyInput").value = note.body || "";
+      const notesListPage = document.getElementById("notesListPage");
+      const noteEditorPage = document.getElementById("noteEditorPage");
+      const editor = document.getElementById("noteBodyEditor");
+      const editorDateLine = document.getElementById("editorDateLine");
+      const editorTopTitle = document.getElementById("editorTopTitle");
 
-      const editingPill = document.getElementById("editingNotePill");
-      const saveBtn = document.getElementById("saveNoteBtn");
+      if (notesListPage) notesListPage.style.display = "none";
+      if (noteEditorPage) noteEditorPage.style.display = "block";
+      if (editor) editor.value = note.body || note.title || "";
+      if (editorDateLine) editorDateLine.innerText = formatEditorDate(note.updatedAt || note.createdAt);
+      if (editorTopTitle) editorTopTitle.innerText = getNoteHeading(note);
 
-      if (editingPill) editingPill.classList.add("show");
-      if (saveBtn) saveBtn.innerText = "Update Note";
-
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-      });
+      setTimeout(function() {
+        autoResizeEditor();
+        if (editor) editor.focus();
+      }, 80);
     }
 
     // =========================
-    // DELETE NOTE
+    // CLOSE NOTE EDITOR
+    // Saves note before closing
     // =========================
-    function deleteNote(noteId) {
-      const confirmDelete = confirm("Delete this note?");
+    function closeNoteEditor() {
+      saveCurrentNoteIfNeeded();
 
-      if (!confirmDelete) return;
+      const notesListPage = document.getElementById("notesListPage");
+      const noteEditorPage = document.getElementById("noteEditorPage");
 
-      let notes = getNotesData();
-      notes = notes.filter(note => note.id !== noteId);
+      if (noteEditorPage) noteEditorPage.style.display = "none";
+      if (notesListPage) notesListPage.style.display = "block";
 
-      saveNotesData(notes);
-
-      if (editingNoteId === noteId) {
-        resetNoteForm();
-      }
+      currentNoteId = null;
+      noteHasChanged = false;
 
       renderNotes();
     }
 
     // =========================
-    // RESET NOTE FORM
+    // MARK NOTE CHANGED
     // =========================
-    function resetNoteForm() {
-      editingNoteId = null;
+    function markNoteChanged() {
+      noteHasChanged = true;
 
-      const titleInput = document.getElementById("noteTitleInput");
-      const bodyInput = document.getElementById("noteBodyInput");
-      const editingPill = document.getElementById("editingNotePill");
-      const saveBtn = document.getElementById("saveNoteBtn");
+      const editor = document.getElementById("noteBodyEditor");
+      const editorTopTitle = document.getElementById("editorTopTitle");
 
-      if (titleInput) titleInput.value = "";
-      if (bodyInput) bodyInput.value = "";
-      if (editingPill) editingPill.classList.remove("show");
-      if (saveBtn) saveBtn.innerText = "Save Note";
+      if (editorTopTitle && editor) {
+        const tempNote = {
+          title: "",
+          body: editor.value
+        };
+
+        editorTopTitle.innerText = getNoteHeading(tempNote);
+      }
     }
 
     // =========================
-    // FORMAT NOTE DATE
+    // SAVE CURRENT NOTE IF NEEDED
     // =========================
-    function formatNoteDate(value) {
+    function saveCurrentNoteIfNeeded() {
+      const editor = document.getElementById("noteBodyEditor");
+      if (!editor) return;
+
+      const body = cleanNoteBody(editor.value);
+      const notes = getNotesData();
+      const now = new Date().toISOString();
+
+      if (currentNoteId === null && body === "") {
+        return;
+      }
+
+      if (currentNoteId === null) {
+        notes.unshift({
+          id: "note_" + Date.now(),
+          title: "",
+          body: body,
+          createdAt: now,
+          updatedAt: now
+        });
+
+        saveNotesData(notes);
+        return;
+      }
+
+      const index = notes.findIndex(note => note.id === currentNoteId);
+
+      if (index === -1) {
+        return;
+      }
+
+      if (body === "") {
+        notes.splice(index, 1);
+        saveNotesData(notes);
+        return;
+      }
+
+      notes[index].title = "";
+      notes[index].body = body;
+      notes[index].updatedAt = now;
+
+      saveNotesData(notes);
+    }
+
+    // =========================
+    // ASK DELETE CURRENT NOTE
+    // =========================
+    function askDeleteCurrentNote() {
+      if (currentNoteId === null) {
+        const editor = document.getElementById("noteBodyEditor");
+
+        if (editor && editor.value.trim() !== "") {
+          pendingDeleteNoteId = "__new_note__";
+          showDeleteConfirm();
+        }
+
+        return;
+      }
+
+      pendingDeleteNoteId = currentNoteId;
+      showDeleteConfirm();
+    }
+
+    // =========================
+    // ASK DELETE NOTE FROM LIST
+    // =========================
+    function askDeleteNoteFromList(noteId, event) {
+      if (event) {
+        event.stopPropagation();
+      }
+
+      pendingDeleteNoteId = noteId;
+      showDeleteConfirm();
+    }
+
+    // =========================
+    // SHOW DELETE CONFIRM
+    // =========================
+    function showDeleteConfirm() {
+      const overlay = document.getElementById("deleteConfirmOverlay");
+      if (overlay) overlay.classList.add("show");
+    }
+
+    // =========================
+    // CANCEL DELETE NOTE
+    // =========================
+    function cancelDeleteNote() {
+      const overlay = document.getElementById("deleteConfirmOverlay");
+      if (overlay) overlay.classList.remove("show");
+
+      pendingDeleteNoteId = null;
+      closeAnyOpenSwipe();
+    }
+
+    // =========================
+    // CONFIRM DELETE NOTE
+    // =========================
+    function confirmDeleteNote() {
+      const overlay = document.getElementById("deleteConfirmOverlay");
+      if (overlay) overlay.classList.remove("show");
+
+      if (!pendingDeleteNoteId) return;
+
+      if (pendingDeleteNoteId === "__new_note__") {
+        const editor = document.getElementById("noteBodyEditor");
+        if (editor) editor.value = "";
+
+        pendingDeleteNoteId = null;
+        closeNoteEditor();
+        return;
+      }
+
+      let notes = getNotesData();
+      notes = notes.filter(note => note.id !== pendingDeleteNoteId);
+      saveNotesData(notes);
+
+      if (currentNoteId === pendingDeleteNoteId) {
+        currentNoteId = null;
+        pendingDeleteNoteId = null;
+
+        const notesListPage = document.getElementById("notesListPage");
+        const noteEditorPage = document.getElementById("noteEditorPage");
+
+        if (noteEditorPage) noteEditorPage.style.display = "none";
+        if (notesListPage) notesListPage.style.display = "block";
+
+        renderNotes();
+        return;
+      }
+
+      pendingDeleteNoteId = null;
+      closeAnyOpenSwipe();
+      renderNotes();
+    }
+
+    // =========================
+    // AUTO RESIZE EDITOR
+    // =========================
+    function autoResizeEditor() {
+      const editor = document.getElementById("noteBodyEditor");
+      if (!editor) return;
+
+      editor.style.height = "auto";
+      editor.style.height = Math.max(editor.scrollHeight, window.innerHeight - 145) + "px";
+    }
+
+    // =========================
+    // SWIPE START TOUCH
+    // =========================
+    function startSwipe(event, row) {
+      if (!event.touches || event.touches.length !== 1) return;
+
+      swipeStartX = event.touches[0].clientX;
+      swipeStartY = event.touches[0].clientY;
+      swipeCurrentX = swipeStartX;
+      swipeIsMoving = false;
+
+      if (activeSwipeRow && activeSwipeRow !== row) {
+        activeSwipeRow.style.transform = "translateX(0px)";
+        activeSwipeRow = null;
+      }
+    }
+
+    // =========================
+    // SWIPE MOVE TOUCH
+    // =========================
+    function moveSwipe(event, row) {
+      if (!event.touches || event.touches.length !== 1) return;
+
+      const currentX = event.touches[0].clientX;
+      const currentY = event.touches[0].clientY;
+
+      const diffX = currentX - swipeStartX;
+      const diffY = currentY - swipeStartY;
+
+      if (Math.abs(diffY) > Math.abs(diffX)) {
+        return;
+      }
+
+      if (diffX < -8) {
+        swipeIsMoving = true;
+        event.preventDefault();
+
+        const moveAmount = Math.max(diffX, -92);
+        row.style.transform = "translateX(" + moveAmount + "px)";
+        activeSwipeRow = row;
+      }
+
+      if (diffX > 8 && activeSwipeRow === row) {
+        swipeIsMoving = true;
+        event.preventDefault();
+
+        const moveAmount = Math.min(-92 + diffX, 0);
+        row.style.transform = "translateX(" + moveAmount + "px)";
+      }
+
+      swipeCurrentX = currentX;
+    }
+
+    // =========================
+    // SWIPE END TOUCH
+    // =========================
+    function endSwipe(event, row) {
+      const diffX = swipeCurrentX - swipeStartX;
+
+      if (diffX < -46) {
+        row.style.transform = "translateX(-92px)";
+        activeSwipeRow = row;
+      } else {
+        row.style.transform = "translateX(0px)";
+
+        if (activeSwipeRow === row) {
+          activeSwipeRow = null;
+        }
+      }
+
+      setTimeout(function() {
+        swipeIsMoving = false;
+      }, 180);
+    }
+
+    // =========================
+    // MOUSE SWIPE FOR DESKTOP TESTING
+    // =========================
+    function startMouseSwipe(event, row) {
+      swipeStartX = event.clientX;
+      swipeStartY = event.clientY;
+      swipeCurrentX = swipeStartX;
+      swipeIsMoving = false;
+
+      if (activeSwipeRow && activeSwipeRow !== row) {
+        activeSwipeRow.style.transform = "translateX(0px)";
+        activeSwipeRow = null;
+      }
+
+      function onMouseMove(moveEvent) {
+        const diffX = moveEvent.clientX - swipeStartX;
+        const diffY = moveEvent.clientY - swipeStartY;
+
+        if (Math.abs(diffY) > Math.abs(diffX)) {
+          return;
+        }
+
+        if (diffX < -8) {
+          swipeIsMoving = true;
+          const moveAmount = Math.max(diffX, -92);
+          row.style.transform = "translateX(" + moveAmount + "px)";
+          activeSwipeRow = row;
+        }
+
+        if (diffX > 8 && activeSwipeRow === row) {
+          swipeIsMoving = true;
+          const moveAmount = Math.min(-92 + diffX, 0);
+          row.style.transform = "translateX(" + moveAmount + "px)";
+        }
+
+        swipeCurrentX = moveEvent.clientX;
+      }
+
+      function onMouseUp() {
+        const diffX = swipeCurrentX - swipeStartX;
+
+        if (diffX < -46) {
+          row.style.transform = "translateX(-92px)";
+          activeSwipeRow = row;
+        } else {
+          row.style.transform = "translateX(0px)";
+
+          if (activeSwipeRow === row) {
+            activeSwipeRow = null;
+          }
+        }
+
+        setTimeout(function() {
+          swipeIsMoving = false;
+        }, 180);
+
+        document.removeEventListener("mousemove", onMouseMove);
+        document.removeEventListener("mouseup", onMouseUp);
+      }
+
+      document.addEventListener("mousemove", onMouseMove);
+      document.addEventListener("mouseup", onMouseUp);
+    }
+
+    // =========================
+    // CLOSE OPEN SWIPE ROW
+    // =========================
+    function closeAnyOpenSwipe() {
+      if (activeSwipeRow) {
+        activeSwipeRow.style.transform = "translateX(0px)";
+        activeSwipeRow = null;
+      }
+    }
+
+    // =========================
+    // FORMAT APPLE NOTE DATE
+    // =========================
+    function formatAppleNoteDate(value) {
+      if (!value) return "";
+
+      const date = new Date(value);
+
+      if (isNaN(date.getTime())) {
+        return "";
+      }
+
+      const now = new Date();
+      const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      const noteDay = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+      const diffDays = Math.round((today - noteDay) / 86400000);
+
+      if (diffDays === 0) {
+        return date.toLocaleTimeString([], {
+          hour: "numeric",
+          minute: "2-digit"
+        });
+      }
+
+      if (diffDays === 1) {
+        return "Yesterday";
+      }
+
+      if (diffDays > 1 && diffDays < 7) {
+        return date.toLocaleDateString([], {
+          weekday: "long"
+        });
+      }
+
+      return date.toLocaleDateString([], {
+        month: "numeric",
+        day: "numeric",
+        year: "2-digit"
+      });
+    }
+
+    // =========================
+    // FORMAT EDITOR DATE
+    // =========================
+    function formatEditorDate(value) {
       if (!value) return "";
 
       const date = new Date(value);
@@ -775,7 +1337,7 @@
       }
 
       return date.toLocaleString([], {
-        month: "short",
+        month: "long",
         day: "numeric",
         year: "numeric",
         hour: "numeric",
@@ -794,6 +1356,29 @@
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&#039;");
     }
+
+    // =========================
+    // CLOSE SWIPE WHEN CLICKING OUTSIDE
+    // =========================
+    document.addEventListener("click", function(event) {
+      const rowWrap = event.target.closest(".note-row-wrap");
+      const deleteOverlay = event.target.closest("#deleteConfirmOverlay");
+
+      if (!rowWrap && !deleteOverlay) {
+        closeAnyOpenSwipe();
+      }
+    });
+
+    // =========================
+    // SAVE WHEN LEAVING PAGE
+    // =========================
+    window.addEventListener("beforeunload", function() {
+      const noteEditorPage = document.getElementById("noteEditorPage");
+
+      if (noteEditorPage && noteEditorPage.style.display === "block") {
+        saveCurrentNoteIfNeeded();
+      }
+    });
 
     // =========================
     // PAGE LOAD
