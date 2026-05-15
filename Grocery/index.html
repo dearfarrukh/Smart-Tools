@@ -1,1 +1,1774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>Grocery List</title>
 
+<style>
+/* =========================
+   BASIC RESET
+========================= */
+*{
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
+}
+
+html, body{
+  margin:0;
+  padding:0;
+  width:100%;
+  min-height:100%;
+  font-family:-apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Arial, sans-serif;
+  background:#f3f4f8;
+  color:#111827;
+  overflow-x:hidden;
+}
+
+body{
+  touch-action:manipulation;
+  -webkit-user-select:none;
+  user-select:none;
+}
+
+/* =========================
+   APP WRAPPER
+========================= */
+.app{
+  width:100%;
+  min-height:100vh;
+  background:
+    radial-gradient(circle at top left, rgba(34,197,94,0.20), transparent 32%),
+    radial-gradient(circle at top right, rgba(59,130,246,0.18), transparent 30%),
+    linear-gradient(180deg,#f7f8fb 0%,#edf0f6 100%);
+  padding:14px 14px 110px;
+}
+
+/* =========================
+   TOP BAR
+========================= */
+.topBar{
+  width:100%;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:4px 0 14px;
+  position:sticky;
+  top:0;
+  z-index:50;
+  background:linear-gradient(180deg,rgba(247,248,251,0.96),rgba(247,248,251,0.80));
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
+}
+
+.backBtn{
+  width:44px;
+  height:44px;
+  border:none;
+  border-radius:50%;
+  background:rgba(255,255,255,0.88);
+  box-shadow:0 8px 22px rgba(15,23,42,0.10);
+  font-size:23px;
+  font-weight:800;
+  color:#111827;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.topTitleWrap{
+  flex:1;
+  min-width:0;
+}
+
+.topTitle{
+  font-size:25px;
+  font-weight:900;
+  letter-spacing:-0.6px;
+  line-height:1.05;
+}
+
+.topSub{
+  font-size:13px;
+  color:#6b7280;
+  font-weight:600;
+  margin-top:3px;
+}
+
+.topIcon{
+  width:44px;
+  height:44px;
+  border-radius:50%;
+  background:linear-gradient(135deg,#22c55e,#14b8a6);
+  color:white;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:22px;
+  box-shadow:0 12px 26px rgba(34,197,94,0.25);
+}
+
+/* =========================
+   HERO CARD
+========================= */
+.heroCard{
+  width:100%;
+  border-radius:28px;
+  padding:18px;
+  background:
+    linear-gradient(135deg,rgba(255,255,255,0.92),rgba(255,255,255,0.70)),
+    linear-gradient(135deg,#dcfce7,#dbeafe);
+  box-shadow:0 18px 44px rgba(15,23,42,0.12);
+  border:1px solid rgba(255,255,255,0.75);
+  overflow:hidden;
+  position:relative;
+}
+
+.heroCard:before{
+  content:"";
+  position:absolute;
+  width:150px;
+  height:150px;
+  border-radius:50%;
+  right:-50px;
+  top:-55px;
+  background:rgba(34,197,94,0.18);
+}
+
+.heroHeader{
+  position:relative;
+  z-index:2;
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:12px;
+}
+
+.heroText h1{
+  margin:0;
+  font-size:23px;
+  line-height:1.1;
+  letter-spacing:-0.4px;
+}
+
+.heroText p{
+  margin:6px 0 0;
+  color:#4b5563;
+  font-size:14px;
+  font-weight:600;
+}
+
+.heroEmoji{
+  width:54px;
+  height:54px;
+  border-radius:18px;
+  background:rgba(255,255,255,0.8);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:29px;
+  box-shadow:0 10px 24px rgba(15,23,42,0.08);
+}
+
+.statsGrid{
+  position:relative;
+  z-index:2;
+  margin-top:16px;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+}
+
+.statBox{
+  background:rgba(255,255,255,0.78);
+  border:1px solid rgba(255,255,255,0.85);
+  border-radius:18px;
+  padding:12px 8px;
+  text-align:center;
+}
+
+.statNum{
+  font-size:20px;
+  font-weight:900;
+}
+
+.statLabel{
+  font-size:11px;
+  color:#6b7280;
+  font-weight:800;
+  margin-top:3px;
+}
+
+/* =========================
+   ADD CARD
+========================= */
+.addCard{
+  margin-top:16px;
+  background:rgba(255,255,255,0.86);
+  border:1px solid rgba(255,255,255,0.85);
+  box-shadow:0 18px 38px rgba(15,23,42,0.10);
+  border-radius:28px;
+  padding:14px;
+  position:relative;
+  z-index:20;
+}
+
+.inputLabel{
+  font-size:13px;
+  color:#6b7280;
+  font-weight:800;
+  margin:0 0 8px 4px;
+}
+
+.itemInputWrap{
+  width:100%;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  background:#f3f4f8;
+  border-radius:22px;
+  padding:5px 5px 5px 14px;
+  border:1px solid #e5e7eb;
+}
+
+.itemInputWrap span{
+  font-size:19px;
+}
+
+#itemInput{
+  flex:1;
+  min-width:0;
+  height:45px;
+  border:none;
+  outline:none;
+  background:transparent;
+  font-size:17px;
+  font-weight:750;
+  color:#111827;
+}
+
+#itemInput::placeholder{
+  color:#9ca3af;
+  font-weight:650;
+}
+
+#addItemBtn{
+  width:78px;
+  height:45px;
+  border:none;
+  border-radius:19px;
+  background:linear-gradient(135deg,#16a34a,#10b981);
+  color:white;
+  font-size:15px;
+  font-weight:900;
+  box-shadow:0 10px 20px rgba(16,185,129,0.22);
+}
+
+.qtySection{
+  margin-top:13px;
+}
+
+.qtyRow{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+#qtyInput{
+  flex:1;
+  min-width:0;
+  height:46px;
+  border:none;
+  outline:none;
+  border-radius:20px;
+  background:#f3f4f8;
+  border:1px solid #e5e7eb;
+  padding:0 14px;
+  font-size:16px;
+  font-weight:750;
+}
+
+#qtyInput::placeholder{
+  color:#9ca3af;
+}
+
+.quickQty{
+  margin-top:10px;
+  display:flex;
+  gap:8px;
+  overflow-x:auto;
+  padding-bottom:2px;
+  scrollbar-width:none;
+}
+
+.quickQty::-webkit-scrollbar{
+  display:none;
+}
+
+.qtyChip{
+  flex:0 0 auto;
+  border:none;
+  padding:10px 13px;
+  border-radius:999px;
+  background:#eef2ff;
+  color:#3730a3;
+  font-size:13px;
+  font-weight:900;
+}
+
+.qtyChip.active{
+  background:#111827;
+  color:white;
+}
+
+/* =========================
+   SUGGESTIONS
+========================= */
+.suggestionsBox{
+  display:none;
+  margin-top:12px;
+  max-height:255px;
+  overflow-y:auto;
+  background:white;
+  border-radius:22px;
+  border:1px solid #e5e7eb;
+  box-shadow:0 18px 35px rgba(15,23,42,0.12);
+}
+
+.suggestionItem{
+  width:100%;
+  border:none;
+  background:white;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:13px 14px;
+  border-bottom:1px solid #f1f5f9;
+  text-align:left;
+}
+
+.suggestionItem:last-child{
+  border-bottom:none;
+}
+
+.suggestionLeft{
+  min-width:0;
+}
+
+.suggestionName{
+  font-size:16px;
+  font-weight:850;
+  color:#111827;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.suggestionCat{
+  font-size:12px;
+  color:#6b7280;
+  margin-top:2px;
+  font-weight:700;
+}
+
+.suggestionPlus{
+  flex:0 0 auto;
+  width:30px;
+  height:30px;
+  border-radius:50%;
+  background:#dcfce7;
+  color:#16a34a;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:21px;
+  font-weight:900;
+}
+
+/* =========================
+   TOOL BUTTONS
+========================= */
+.toolRow{
+  margin-top:14px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+
+.toolBtn{
+  height:46px;
+  border:none;
+  border-radius:20px;
+  background:rgba(255,255,255,0.86);
+  color:#111827;
+  font-size:14px;
+  font-weight:900;
+  box-shadow:0 10px 24px rgba(15,23,42,0.07);
+}
+
+.toolBtn.danger{
+  color:#dc2626;
+}
+
+/* =========================
+   CATEGORY FILTERS
+========================= */
+.categoryScroll{
+  margin-top:16px;
+  display:flex;
+  gap:9px;
+  overflow-x:auto;
+  padding-bottom:2px;
+  scrollbar-width:none;
+}
+
+.categoryScroll::-webkit-scrollbar{
+  display:none;
+}
+
+.catBtn{
+  flex:0 0 auto;
+  border:none;
+  border-radius:999px;
+  padding:11px 14px;
+  background:rgba(255,255,255,0.82);
+  color:#374151;
+  font-size:13px;
+  font-weight:900;
+  box-shadow:0 9px 20px rgba(15,23,42,0.06);
+}
+
+.catBtn.active{
+  background:#111827;
+  color:white;
+}
+
+/* =========================
+   LIST
+========================= */
+.listHeader{
+  margin:18px 2px 10px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+}
+
+.listTitle{
+  font-size:18px;
+  font-weight:950;
+  letter-spacing:-0.3px;
+}
+
+.listHint{
+  font-size:12px;
+  color:#6b7280;
+  font-weight:800;
+}
+
+.groceryList{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+.groceryItem{
+  width:100%;
+  border-radius:24px;
+  background:rgba(255,255,255,0.88);
+  border:1px solid rgba(255,255,255,0.86);
+  box-shadow:0 14px 30px rgba(15,23,42,0.08);
+  padding:13px;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  transition:0.22s ease;
+}
+
+.groceryItem.bought{
+  opacity:0.58;
+  transform:scale(0.985);
+}
+
+.checkBtn{
+  flex:0 0 auto;
+  width:36px;
+  height:36px;
+  border-radius:50%;
+  border:2px solid #d1d5db;
+  background:#ffffff;
+  color:white;
+  font-size:19px;
+  font-weight:900;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.groceryItem.bought .checkBtn{
+  border-color:#16a34a;
+  background:#16a34a;
+}
+
+.itemInfo{
+  flex:1;
+  min-width:0;
+}
+
+.itemName{
+  font-size:16px;
+  font-weight:950;
+  color:#111827;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.groceryItem.bought .itemName{
+  text-decoration:line-through;
+  color:#6b7280;
+}
+
+.itemMeta{
+  margin-top:5px;
+  display:flex;
+  align-items:center;
+  gap:6px;
+  flex-wrap:wrap;
+}
+
+.qtyBadge{
+  background:#f3f4f8;
+  color:#374151;
+  border-radius:999px;
+  padding:5px 9px;
+  font-size:12px;
+  font-weight:900;
+}
+
+.catBadge{
+  border-radius:999px;
+  padding:5px 9px;
+  font-size:12px;
+  font-weight:900;
+  background:#ecfeff;
+  color:#0f766e;
+}
+
+.itemActions{
+  flex:0 0 auto;
+  display:flex;
+  align-items:center;
+  gap:7px;
+}
+
+.iconBtn{
+  width:35px;
+  height:35px;
+  border:none;
+  border-radius:50%;
+  background:#f3f4f8;
+  color:#111827;
+  font-size:16px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.iconBtn.delete{
+  color:#dc2626;
+  background:#fee2e2;
+}
+
+/* =========================
+   EMPTY STATE
+========================= */
+.emptyState{
+  display:none;
+  margin-top:18px;
+  border-radius:28px;
+  background:rgba(255,255,255,0.78);
+  border:1px dashed #cbd5e1;
+  padding:28px 18px;
+  text-align:center;
+}
+
+.emptyIcon{
+  font-size:44px;
+}
+
+.emptyTitle{
+  margin-top:10px;
+  font-size:18px;
+  font-weight:950;
+}
+
+.emptyText{
+  margin-top:6px;
+  color:#6b7280;
+  font-size:14px;
+  font-weight:650;
+}
+
+/* =========================
+   MODAL
+========================= */
+.modalOverlay{
+  display:none;
+  position:fixed;
+  inset:0;
+  z-index:200;
+  background:rgba(15,23,42,0.36);
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+  align-items:flex-end;
+  justify-content:center;
+  padding:14px;
+}
+
+.modalCard{
+  width:100%;
+  max-width:520px;
+  border-radius:30px;
+  background:#ffffff;
+  padding:18px;
+  box-shadow:0 25px 70px rgba(0,0,0,0.22);
+  animation:modalUp 0.22s ease;
+}
+
+@keyframes modalUp{
+  from{ transform:translateY(30px); opacity:0; }
+  to{ transform:translateY(0); opacity:1; }
+}
+
+.modalTitle{
+  font-size:21px;
+  font-weight:950;
+  letter-spacing:-0.4px;
+}
+
+.modalText{
+  color:#6b7280;
+  margin-top:6px;
+  font-size:14px;
+  font-weight:650;
+}
+
+.modalInput{
+  margin-top:13px;
+  width:100%;
+  height:48px;
+  border:none;
+  outline:none;
+  border-radius:18px;
+  background:#f3f4f8;
+  border:1px solid #e5e7eb;
+  padding:0 14px;
+  font-size:16px;
+  font-weight:750;
+}
+
+.modalActions{
+  margin-top:14px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+
+.modalBtn{
+  height:48px;
+  border:none;
+  border-radius:18px;
+  font-size:15px;
+  font-weight:950;
+}
+
+.modalBtn.cancel{
+  background:#f3f4f8;
+  color:#111827;
+}
+
+.modalBtn.save{
+  background:#111827;
+  color:white;
+}
+
+.modalBtn.red{
+  background:#dc2626;
+  color:white;
+}
+
+/* =========================
+   TOAST
+========================= */
+.toast{
+  position:fixed;
+  left:50%;
+  bottom:24px;
+  transform:translateX(-50%) translateY(20px);
+  z-index:300;
+  background:#111827;
+  color:white;
+  padding:12px 16px;
+  border-radius:999px;
+  font-size:14px;
+  font-weight:850;
+  opacity:0;
+  pointer-events:none;
+  transition:0.22s ease;
+  box-shadow:0 12px 28px rgba(0,0,0,0.22);
+}
+
+.toast.show{
+  opacity:1;
+  transform:translateX(-50%) translateY(0);
+}
+
+/* =========================
+   MOBILE SAFE AREA
+========================= */
+@media (min-width:700px){
+  .app{
+    max-width:560px;
+    margin:0 auto;
+    border-left:1px solid rgba(15,23,42,0.08);
+    border-right:1px solid rgba(15,23,42,0.08);
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+  <!-- =========================
+       TOP BAR
+  ========================= -->
+  <div class="topBar">
+    <button class="backBtn" onclick="goBackToMainPage()">‹</button>
+
+    <div class="topTitleWrap">
+      <div class="topTitle">Grocery List</div>
+      <div class="topSub">Smart, simple, premium shopping</div>
+    </div>
+
+    <div class="topIcon">🛒</div>
+  </div>
+
+  <!-- =========================
+       HERO CARD
+  ========================= -->
+  <section class="heroCard">
+    <div class="heroHeader">
+      <div class="heroText">
+        <h1>Plan your shopping faster</h1>
+        <p>Type one word and choose from smart grocery suggestions.</p>
+      </div>
+      <div class="heroEmoji">🥬</div>
+    </div>
+
+    <div class="statsGrid">
+      <div class="statBox">
+        <div class="statNum" id="totalCount">0</div>
+        <div class="statLabel">TOTAL</div>
+      </div>
+      <div class="statBox">
+        <div class="statNum" id="remainingCount">0</div>
+        <div class="statLabel">LEFT</div>
+      </div>
+      <div class="statBox">
+        <div class="statNum" id="boughtCount">0</div>
+        <div class="statLabel">BOUGHT</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================
+       ADD GROCERY CARD
+  ========================= -->
+  <section class="addCard">
+    <div class="inputLabel">Add item</div>
+
+    <div class="itemInputWrap">
+      <span>🔎</span>
+      <input id="itemInput" type="text" placeholder="Type potato, milk, pasta..." autocomplete="off" />
+      <button id="addItemBtn" onclick="addItemFromInput()">Add</button>
+    </div>
+
+    <div id="suggestionsBox" class="suggestionsBox"></div>
+
+    <div class="qtySection">
+      <div class="inputLabel">Quantity</div>
+
+      <div class="qtyRow">
+        <input id="qtyInput" type="text" placeholder="Example: 2 lb, 1 gallon, 3 pack" />
+      </div>
+
+      <div class="quickQty" id="quickQty">
+        <button class="qtyChip" onclick="setQuickQty('1')">1</button>
+        <button class="qtyChip" onclick="setQuickQty('2')">2</button>
+        <button class="qtyChip" onclick="setQuickQty('3')">3</button>
+        <button class="qtyChip" onclick="setQuickQty('1 lb')">1 lb</button>
+        <button class="qtyChip" onclick="setQuickQty('2 lb')">2 lb</button>
+        <button class="qtyChip" onclick="setQuickQty('1 pack')">1 pack</button>
+        <button class="qtyChip" onclick="setQuickQty('2 pack')">2 pack</button>
+        <button class="qtyChip" onclick="setQuickQty('1 bottle')">1 bottle</button>
+        <button class="qtyChip" onclick="setQuickQty('1 gallon')">1 gallon</button>
+        <button class="qtyChip" onclick="setQuickQty('1 dozen')">1 dozen</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================
+       TOOL BUTTONS
+  ========================= -->
+  <div class="toolRow">
+    <button class="toolBtn" onclick="clearAllBought()">Clear Bought</button>
+    <button class="toolBtn danger" onclick="confirmClearAll()">Clear All</button>
+  </div>
+
+  <!-- =========================
+       CATEGORY FILTERS
+  ========================= -->
+  <div class="categoryScroll" id="categoryScroll">
+    <button class="catBtn active" onclick="setCategoryFilter('All', this)">All</button>
+    <button class="catBtn" onclick="setCategoryFilter('Vegetables', this)">Vegetables</button>
+    <button class="catBtn" onclick="setCategoryFilter('Fruits', this)">Fruits</button>
+    <button class="catBtn" onclick="setCategoryFilter('Dairy', this)">Dairy</button>
+    <button class="catBtn" onclick="setCategoryFilter('Drinks', this)">Drinks</button>
+    <button class="catBtn" onclick="setCategoryFilter('Pantry', this)">Pantry</button>
+    <button class="catBtn" onclick="setCategoryFilter('Frozen', this)">Frozen</button>
+    <button class="catBtn" onclick="setCategoryFilter('Snacks', this)">Snacks</button>
+    <button class="catBtn" onclick="setCategoryFilter('Household', this)">Household</button>
+  </div>
+
+  <!-- =========================
+       LIST HEADER
+  ========================= -->
+  <div class="listHeader">
+    <div>
+      <div class="listTitle">Your List</div>
+      <div class="listHint">Unchecked items stay on top automatically.</div>
+    </div>
+  </div>
+
+  <!-- =========================
+       GROCERY LIST
+  ========================= -->
+  <div id="groceryList" class="groceryList"></div>
+
+  <!-- =========================
+       EMPTY STATE
+  ========================= -->
+  <div id="emptyState" class="emptyState">
+    <div class="emptyIcon">🛒</div>
+    <div class="emptyTitle">Your grocery list is empty</div>
+    <div class="emptyText">Start typing above and choose from the smart list.</div>
+  </div>
+
+</div>
+
+<!-- =========================
+     EDIT MODAL
+========================= -->
+<div id="editModal" class="modalOverlay">
+  <div class="modalCard">
+    <div class="modalTitle">Edit Item</div>
+    <div class="modalText">Change item name or quantity.</div>
+
+    <input id="editNameInput" class="modalInput" type="text" placeholder="Item name" />
+    <input id="editQtyInput" class="modalInput" type="text" placeholder="Quantity" />
+
+    <div class="modalActions">
+      <button class="modalBtn cancel" onclick="closeEditModal()">Cancel</button>
+      <button class="modalBtn save" onclick="saveEditItem()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- =========================
+     CONFIRM MODAL
+========================= -->
+<div id="confirmModal" class="modalOverlay">
+  <div class="modalCard">
+    <div class="modalTitle" id="confirmTitle">Are you sure?</div>
+    <div class="modalText" id="confirmText">This action cannot be undone.</div>
+
+    <div class="modalActions">
+      <button class="modalBtn cancel" onclick="closeConfirmModal()">Cancel</button>
+      <button class="modalBtn red" id="confirmYesBtn">Delete</button>
+    </div>
+  </div>
+</div>
+
+<!-- =========================
+     TOAST
+========================= -->
+<div id="toast" class="toast">Saved</div>
+
+<script>
+/* =========================
+   BACK TO MAIN PAGE
+========================= */
+function goBackToMainPage(){
+  window.location.href = "../";
+}
+
+/* =========================
+   LOCAL STORAGE KEY
+========================= */
+const GROCERY_STORAGE_KEY = "smartToolsPremiumGroceryListV1";
+
+/* =========================
+   APP STATE
+========================= */
+let groceryItems = [];
+let currentCategoryFilter = "All";
+let editingItemId = null;
+let pendingConfirmAction = null;
+
+/* =========================
+   BUILT-IN GROCERY ITEMS
+   300+ SUGGESTIONS
+========================= */
+const grocerySuggestions = [
+  {name:"Potato", category:"Vegetables"},
+  {name:"Tomato", category:"Vegetables"},
+  {name:"Onion", category:"Vegetables"},
+  {name:"Red Onion", category:"Vegetables"},
+  {name:"Green Onion", category:"Vegetables"},
+  {name:"Garlic", category:"Vegetables"},
+  {name:"Ginger", category:"Vegetables"},
+  {name:"Carrot", category:"Vegetables"},
+  {name:"Cucumber", category:"Vegetables"},
+  {name:"Lettuce", category:"Vegetables"},
+  {name:"Romaine Lettuce", category:"Vegetables"},
+  {name:"Iceberg Lettuce", category:"Vegetables"},
+  {name:"Spinach", category:"Vegetables"},
+  {name:"Baby Spinach", category:"Vegetables"},
+  {name:"Cabbage", category:"Vegetables"},
+  {name:"Red Cabbage", category:"Vegetables"},
+  {name:"Cauliflower", category:"Vegetables"},
+  {name:"Broccoli", category:"Vegetables"},
+  {name:"Zucchini", category:"Vegetables"},
+  {name:"Eggplant", category:"Vegetables"},
+  {name:"Bell Pepper", category:"Vegetables"},
+  {name:"Green Pepper", category:"Vegetables"},
+  {name:"Red Pepper", category:"Vegetables"},
+  {name:"Yellow Pepper", category:"Vegetables"},
+  {name:"Jalapeno", category:"Vegetables"},
+  {name:"Green Chili", category:"Vegetables"},
+  {name:"Cilantro", category:"Vegetables"},
+  {name:"Parsley", category:"Vegetables"},
+  {name:"Mint", category:"Vegetables"},
+  {name:"Basil", category:"Vegetables"},
+  {name:"Celery", category:"Vegetables"},
+  {name:"Mushroom", category:"Vegetables"},
+  {name:"Corn", category:"Vegetables"},
+  {name:"Sweet Corn", category:"Vegetables"},
+  {name:"Peas", category:"Vegetables"},
+  {name:"Green Beans", category:"Vegetables"},
+  {name:"Okra", category:"Vegetables"},
+  {name:"Radish", category:"Vegetables"},
+  {name:"Beetroot", category:"Vegetables"},
+  {name:"Sweet Potato", category:"Vegetables"},
+  {name:"Butternut Squash", category:"Vegetables"},
+  {name:"Pumpkin", category:"Vegetables"},
+  {name:"Avocado", category:"Vegetables"},
+  {name:"Lemon", category:"Fruits"},
+  {name:"Lime", category:"Fruits"},
+  {name:"Apple", category:"Fruits"},
+  {name:"Red Apple", category:"Fruits"},
+  {name:"Green Apple", category:"Fruits"},
+  {name:"Banana", category:"Fruits"},
+  {name:"Orange", category:"Fruits"},
+  {name:"Mandarin", category:"Fruits"},
+  {name:"Grapes", category:"Fruits"},
+  {name:"Green Grapes", category:"Fruits"},
+  {name:"Red Grapes", category:"Fruits"},
+  {name:"Strawberry", category:"Fruits"},
+  {name:"Blueberry", category:"Fruits"},
+  {name:"Raspberry", category:"Fruits"},
+  {name:"Blackberry", category:"Fruits"},
+  {name:"Mango", category:"Fruits"},
+  {name:"Peach", category:"Fruits"},
+  {name:"Pear", category:"Fruits"},
+  {name:"Plum", category:"Fruits"},
+  {name:"Pineapple", category:"Fruits"},
+  {name:"Watermelon", category:"Fruits"},
+  {name:"Cantaloupe", category:"Fruits"},
+  {name:"Honeydew", category:"Fruits"},
+  {name:"Kiwi", category:"Fruits"},
+  {name:"Dates", category:"Fruits"},
+  {name:"Figs", category:"Fruits"},
+  {name:"Pomegranate", category:"Fruits"},
+  {name:"Coconut", category:"Fruits"},
+  {name:"Milk", category:"Dairy"},
+  {name:"Whole Milk", category:"Dairy"},
+  {name:"Low Fat Milk", category:"Dairy"},
+  {name:"Lactose Free Milk", category:"Dairy"},
+  {name:"Almond Milk", category:"Dairy"},
+  {name:"Oat Milk", category:"Dairy"},
+  {name:"Soy Milk", category:"Dairy"},
+  {name:"Yogurt", category:"Dairy"},
+  {name:"Greek Yogurt", category:"Dairy"},
+  {name:"Plain Yogurt", category:"Dairy"},
+  {name:"Flavored Yogurt", category:"Dairy"},
+  {name:"Butter", category:"Dairy"},
+  {name:"Cheese", category:"Dairy"},
+  {name:"Mozzarella Cheese", category:"Dairy"},
+  {name:"Cheddar Cheese", category:"Dairy"},
+  {name:"Cream Cheese", category:"Dairy"},
+  {name:"Cottage Cheese", category:"Dairy"},
+  {name:"Sour Cream", category:"Dairy"},
+  {name:"Heavy Cream", category:"Dairy"},
+  {name:"Half and Half", category:"Dairy"},
+  {name:"Eggs", category:"Dairy"},
+  {name:"Brown Eggs", category:"Dairy"},
+  {name:"Rice", category:"Pantry"},
+  {name:"Basmati Rice", category:"Pantry"},
+  {name:"Jasmine Rice", category:"Pantry"},
+  {name:"Brown Rice", category:"Pantry"},
+  {name:"Pasta", category:"Pantry"},
+  {name:"Spaghetti", category:"Pantry"},
+  {name:"Macaroni", category:"Pantry"},
+  {name:"Penne Pasta", category:"Pantry"},
+  {name:"Lasagna Sheets", category:"Pantry"},
+  {name:"Noodles", category:"Pantry"},
+  {name:"Ramen Noodles", category:"Pantry"},
+  {name:"Flour", category:"Pantry"},
+  {name:"All Purpose Flour", category:"Pantry"},
+  {name:"Whole Wheat Flour", category:"Pantry"},
+  {name:"Bread Flour", category:"Pantry"},
+  {name:"Sugar", category:"Pantry"},
+  {name:"Brown Sugar", category:"Pantry"},
+  {name:"Powdered Sugar", category:"Pantry"},
+  {name:"Salt", category:"Pantry"},
+  {name:"Black Pepper", category:"Pantry"},
+  {name:"Red Chili Powder", category:"Pantry"},
+  {name:"Turmeric Powder", category:"Pantry"},
+  {name:"Cumin Powder", category:"Pantry"},
+  {name:"Coriander Powder", category:"Pantry"},
+  {name:"Garam Masala", category:"Pantry"},
+  {name:"Cinnamon", category:"Pantry"},
+  {name:"Cardamom", category:"Pantry"},
+  {name:"Cloves", category:"Pantry"},
+  {name:"Bay Leaves", category:"Pantry"},
+  {name:"Oregano", category:"Pantry"},
+  {name:"Paprika", category:"Pantry"},
+  {name:"Italian Seasoning", category:"Pantry"},
+  {name:"Cooking Oil", category:"Pantry"},
+  {name:"Olive Oil", category:"Pantry"},
+  {name:"Canola Oil", category:"Pantry"},
+  {name:"Vegetable Oil", category:"Pantry"},
+  {name:"Ghee", category:"Pantry"},
+  {name:"Vinegar", category:"Pantry"},
+  {name:"Apple Cider Vinegar", category:"Pantry"},
+  {name:"Soy Sauce", category:"Pantry"},
+  {name:"Hot Sauce", category:"Pantry"},
+  {name:"Ketchup", category:"Pantry"},
+  {name:"Mayonnaise", category:"Pantry"},
+  {name:"Mustard", category:"Pantry"},
+  {name:"BBQ Sauce", category:"Pantry"},
+  {name:"Tomato Sauce", category:"Pantry"},
+  {name:"Tomato Paste", category:"Pantry"},
+  {name:"Pasta Sauce", category:"Pantry"},
+  {name:"Peanut Butter", category:"Pantry"},
+  {name:"Jam", category:"Pantry"},
+  {name:"Honey", category:"Pantry"},
+  {name:"Maple Syrup", category:"Pantry"},
+  {name:"Cereal", category:"Pantry"},
+  {name:"Oatmeal", category:"Pantry"},
+  {name:"Granola", category:"Pantry"},
+  {name:"Bread", category:"Bakery"},
+  {name:"White Bread", category:"Bakery"},
+  {name:"Wheat Bread", category:"Bakery"},
+  {name:"Bagels", category:"Bakery"},
+  {name:"Burger Buns", category:"Bakery"},
+  {name:"Hot Dog Buns", category:"Bakery"},
+  {name:"Tortilla", category:"Bakery"},
+  {name:"Pita Bread", category:"Bakery"},
+  {name:"Naan", category:"Bakery"},
+  {name:"Croissant", category:"Bakery"},
+  {name:"Muffins", category:"Bakery"},
+  {name:"Cake", category:"Bakery"},
+  {name:"Cookies", category:"Snacks"},
+  {name:"Chips", category:"Snacks"},
+  {name:"Potato Chips", category:"Snacks"},
+  {name:"Tortilla Chips", category:"Snacks"},
+  {name:"Popcorn", category:"Snacks"},
+  {name:"Crackers", category:"Snacks"},
+  {name:"Pretzels", category:"Snacks"},
+  {name:"Trail Mix", category:"Snacks"},
+  {name:"Nuts", category:"Snacks"},
+  {name:"Almonds", category:"Snacks"},
+  {name:"Cashews", category:"Snacks"},
+  {name:"Pistachios", category:"Snacks"},
+  {name:"Walnuts", category:"Snacks"},
+  {name:"Peanuts", category:"Snacks"},
+  {name:"Chocolate", category:"Snacks"},
+  {name:"Candy", category:"Snacks"},
+  {name:"Granola Bars", category:"Snacks"},
+  {name:"Protein Bars", category:"Snacks"},
+  {name:"Ice Cream", category:"Frozen"},
+  {name:"Frozen Pizza", category:"Frozen"},
+  {name:"Frozen Fries", category:"Frozen"},
+  {name:"Frozen Vegetables", category:"Frozen"},
+  {name:"Frozen Peas", category:"Frozen"},
+  {name:"Frozen Corn", category:"Frozen"},
+  {name:"Frozen Spinach", category:"Frozen"},
+  {name:"Frozen Berries", category:"Frozen"},
+  {name:"Frozen Waffles", category:"Frozen"},
+  {name:"Frozen Paratha", category:"Frozen"},
+  {name:"Frozen Samosa", category:"Frozen"},
+  {name:"Frozen Nuggets", category:"Frozen"},
+  {name:"Chicken", category:"Meat"},
+  {name:"Chicken Breast", category:"Meat"},
+  {name:"Chicken Thighs", category:"Meat"},
+  {name:"Chicken Wings", category:"Meat"},
+  {name:"Ground Chicken", category:"Meat"},
+  {name:"Beef", category:"Meat"},
+  {name:"Ground Beef", category:"Meat"},
+  {name:"Beef Steak", category:"Meat"},
+  {name:"Beef Cubes", category:"Meat"},
+  {name:"Lamb", category:"Meat"},
+  {name:"Ground Lamb", category:"Meat"},
+  {name:"Fish", category:"Seafood"},
+  {name:"Salmon", category:"Seafood"},
+  {name:"Tilapia", category:"Seafood"},
+  {name:"Shrimp", category:"Seafood"},
+  {name:"Tuna", category:"Seafood"},
+  {name:"Sardines", category:"Seafood"},
+  {name:"Soda", category:"Drinks"},
+  {name:"Cola", category:"Drinks"},
+  {name:"Diet Soda", category:"Drinks"},
+  {name:"Sparkling Water", category:"Drinks"},
+  {name:"Water Bottles", category:"Drinks"},
+  {name:"Mineral Water", category:"Drinks"},
+  {name:"Juice", category:"Drinks"},
+  {name:"Orange Juice", category:"Drinks"},
+  {name:"Apple Juice", category:"Drinks"},
+  {name:"Mango Juice", category:"Drinks"},
+  {name:"Cranberry Juice", category:"Drinks"},
+  {name:"Tea", category:"Drinks"},
+  {name:"Green Tea", category:"Drinks"},
+  {name:"Black Tea", category:"Drinks"},
+  {name:"Coffee", category:"Drinks"},
+  {name:"Instant Coffee", category:"Drinks"},
+  {name:"Coffee Creamer", category:"Drinks"},
+  {name:"Hot Chocolate", category:"Drinks"},
+  {name:"Energy Drink", category:"Drinks"},
+  {name:"Sports Drink", category:"Drinks"},
+  {name:"Paper Towels", category:"Household"},
+  {name:"Toilet Paper", category:"Household"},
+  {name:"Tissues", category:"Household"},
+  {name:"Napkins", category:"Household"},
+  {name:"Aluminum Foil", category:"Household"},
+  {name:"Plastic Wrap", category:"Household"},
+  {name:"Zip Bags", category:"Household"},
+  {name:"Trash Bags", category:"Household"},
+  {name:"Dish Soap", category:"Household"},
+  {name:"Dishwasher Pods", category:"Household"},
+  {name:"Laundry Detergent", category:"Household"},
+  {name:"Fabric Softener", category:"Household"},
+  {name:"Bleach", category:"Household"},
+  {name:"All Purpose Cleaner", category:"Household"},
+  {name:"Glass Cleaner", category:"Household"},
+  {name:"Floor Cleaner", category:"Household"},
+  {name:"Bathroom Cleaner", category:"Household"},
+  {name:"Sponges", category:"Household"},
+  {name:"Dish Scrub", category:"Household"},
+  {name:"Hand Soap", category:"Household"},
+  {name:"Body Wash", category:"Personal"},
+  {name:"Shampoo", category:"Personal"},
+  {name:"Conditioner", category:"Personal"},
+  {name:"Toothpaste", category:"Personal"},
+  {name:"Toothbrush", category:"Personal"},
+  {name:"Mouthwash", category:"Personal"},
+  {name:"Deodorant", category:"Personal"},
+  {name:"Razors", category:"Personal"},
+  {name:"Shaving Cream", category:"Personal"},
+  {name:"Lotion", category:"Personal"},
+  {name:"Face Wash", category:"Personal"},
+  {name:"Baby Diapers", category:"Baby"},
+  {name:"Baby Wipes", category:"Baby"},
+  {name:"Baby Formula", category:"Baby"},
+  {name:"Baby Food", category:"Baby"},
+  {name:"Baby Lotion", category:"Baby"},
+  {name:"Baby Shampoo", category:"Baby"},
+  {name:"Cat Food", category:"Pets"},
+  {name:"Dog Food", category:"Pets"},
+  {name:"Pet Treats", category:"Pets"},
+  {name:"Cat Litter", category:"Pets"},
+  {name:"Lentils", category:"Pantry"},
+  {name:"Red Lentils", category:"Pantry"},
+  {name:"Green Lentils", category:"Pantry"},
+  {name:"Chickpeas", category:"Pantry"},
+  {name:"Black Beans", category:"Pantry"},
+  {name:"Kidney Beans", category:"Pantry"},
+  {name:"White Beans", category:"Pantry"},
+  {name:"Canned Corn", category:"Pantry"},
+  {name:"Canned Tomatoes", category:"Pantry"},
+  {name:"Canned Tuna", category:"Pantry"},
+  {name:"Soup", category:"Pantry"},
+  {name:"Chicken Broth", category:"Pantry"},
+  {name:"Vegetable Broth", category:"Pantry"},
+  {name:"Coconut Milk", category:"Pantry"},
+  {name:"Pickles", category:"Pantry"},
+  {name:"Olives", category:"Pantry"},
+  {name:"Raisins", category:"Pantry"},
+  {name:"Dried Cranberries", category:"Pantry"},
+  {name:"Baking Powder", category:"Pantry"},
+  {name:"Baking Soda", category:"Pantry"},
+  {name:"Yeast", category:"Pantry"},
+  {name:"Vanilla Extract", category:"Pantry"},
+  {name:"Cornstarch", category:"Pantry"},
+  {name:"Breadcrumbs", category:"Pantry"},
+  {name:"Tea Bags", category:"Drinks"},
+  {name:"Lemonade", category:"Drinks"},
+  {name:"Iced Tea", category:"Drinks"},
+  {name:"Coconut Water", category:"Drinks"},
+  {name:"Yogurt Drink", category:"Drinks"},
+  {name:"Smoothie", category:"Drinks"},
+  {name:"Hummus", category:"Deli"},
+  {name:"Salsa", category:"Deli"},
+  {name:"Guacamole", category:"Deli"},
+  {name:"Salad Mix", category:"Deli"},
+  {name:"Coleslaw", category:"Deli"},
+  {name:"Rotisserie Chicken", category:"Deli"},
+  {name:"Halal Chicken", category:"Meat"},
+  {name:"Halal Beef", category:"Meat"},
+  {name:"Halal Ground Beef", category:"Meat"},
+  {name:"Halal Lamb", category:"Meat"},
+  {name:"Halal Nuggets", category:"Frozen"},
+  {name:"Paneer", category:"Dairy"},
+  {name:"Desi Yogurt", category:"Dairy"},
+  {name:"Lassi", category:"Drinks"},
+  {name:"Rooh Afza", category:"Drinks"},
+  {name:"Atta Flour", category:"Pantry"},
+  {name:"Sooji", category:"Pantry"},
+  {name:"Besan", category:"Pantry"},
+  {name:"Poha", category:"Pantry"},
+  {name:"Vermicelli", category:"Pantry"},
+  {name:"Chai Masala", category:"Pantry"},
+  {name:"Biryani Masala", category:"Pantry"},
+  {name:"Tandoori Masala", category:"Pantry"},
+  {name:"Curry Powder", category:"Pantry"},
+  {name:"Daal", category:"Pantry"},
+  {name:"Toor Daal", category:"Pantry"},
+  {name:"Moong Daal", category:"Pantry"},
+  {name:"Masoor Daal", category:"Pantry"},
+  {name:"Chana Daal", category:"Pantry"}
+];
+
+/* =========================
+   LOAD ITEMS
+========================= */
+function loadGroceryItems(){
+  try{
+    const saved = localStorage.getItem(GROCERY_STORAGE_KEY);
+    groceryItems = saved ? JSON.parse(saved) : [];
+  }catch(error){
+    groceryItems = [];
+  }
+}
+
+/* =========================
+   SAVE ITEMS
+========================= */
+function saveGroceryItems(){
+  localStorage.setItem(GROCERY_STORAGE_KEY, JSON.stringify(groceryItems));
+}
+
+/* =========================
+   SORT ITEMS
+   UNMARKED TOP / MARKED BOTTOM
+========================= */
+function getSortedItems(){
+  return [...groceryItems].sort(function(a,b){
+    if(a.bought !== b.bought){
+      return a.bought ? 1 : -1;
+    }
+    return b.createdAt - a.createdAt;
+  });
+}
+
+/* =========================
+   NORMALIZE TEXT
+========================= */
+function normalizeText(text){
+  return String(text || "").trim().toLowerCase();
+}
+
+/* =========================
+   GUESS CATEGORY
+========================= */
+function guessCategory(itemName){
+  const found = grocerySuggestions.find(function(item){
+    return normalizeText(item.name) === normalizeText(itemName);
+  });
+
+  return found ? found.category : "Other";
+}
+
+/* =========================
+   SET QUICK QUANTITY
+========================= */
+function setQuickQty(value){
+  document.getElementById("qtyInput").value = value;
+
+  document.querySelectorAll(".qtyChip").forEach(function(btn){
+    btn.classList.remove("active");
+    if(btn.textContent.trim() === value){
+      btn.classList.add("active");
+    }
+  });
+}
+
+/* =========================
+   ADD ITEM FROM INPUT
+========================= */
+function addItemFromInput(){
+  const itemInput = document.getElementById("itemInput");
+  const qtyInput = document.getElementById("qtyInput");
+
+  const name = itemInput.value.trim();
+  const qty = qtyInput.value.trim() || "1";
+
+  if(!name){
+    showToast("Please type an item name");
+    itemInput.focus();
+    return;
+  }
+
+  const newItem = {
+    id: Date.now().toString(),
+    name: name,
+    quantity: qty,
+    category: guessCategory(name),
+    bought: false,
+    createdAt: Date.now()
+  };
+
+  groceryItems.push(newItem);
+  saveGroceryItems();
+
+  itemInput.value = "";
+  qtyInput.value = "";
+  document.querySelectorAll(".qtyChip").forEach(function(btn){
+    btn.classList.remove("active");
+  });
+
+  hideSuggestions();
+  renderGroceryList();
+  showToast("Added to grocery list");
+}
+
+/* =========================
+   ADD ITEM DIRECTLY FROM SUGGESTION
+========================= */
+function addSuggestionItem(name, category){
+  const qtyValue = document.getElementById("qtyInput").value.trim() || "1";
+
+  const newItem = {
+    id: Date.now().toString(),
+    name: name,
+    quantity: qtyValue,
+    category: category,
+    bought: false,
+    createdAt: Date.now()
+  };
+
+  groceryItems.push(newItem);
+  saveGroceryItems();
+
+  document.getElementById("itemInput").value = "";
+  document.getElementById("qtyInput").value = "";
+  document.querySelectorAll(".qtyChip").forEach(function(btn){
+    btn.classList.remove("active");
+  });
+
+  hideSuggestions();
+  renderGroceryList();
+  showToast(name + " added");
+}
+
+/* =========================
+   TOGGLE BOUGHT
+========================= */
+function toggleBought(id){
+  groceryItems = groceryItems.map(function(item){
+    if(item.id === id){
+      return {
+        ...item,
+        bought: !item.bought
+      };
+    }
+    return item;
+  });
+
+  saveGroceryItems();
+  renderGroceryList();
+}
+
+/* =========================
+   DELETE ITEM
+========================= */
+function deleteItem(id){
+  pendingConfirmAction = function(){
+    groceryItems = groceryItems.filter(function(item){
+      return item.id !== id;
+    });
+
+    saveGroceryItems();
+    renderGroceryList();
+    closeConfirmModal();
+    showToast("Item deleted");
+  };
+
+  openConfirmModal("Delete item?", "This item will be removed from your grocery list.", "Delete");
+}
+
+/* =========================
+   OPEN EDIT MODAL
+========================= */
+function openEditModal(id){
+  const item = groceryItems.find(function(i){
+    return i.id === id;
+  });
+
+  if(!item){ return; }
+
+  editingItemId = id;
+  document.getElementById("editNameInput").value = item.name;
+  document.getElementById("editQtyInput").value = item.quantity;
+  document.getElementById("editModal").style.display = "flex";
+}
+
+/* =========================
+   CLOSE EDIT MODAL
+========================= */
+function closeEditModal(){
+  editingItemId = null;
+  document.getElementById("editModal").style.display = "none";
+}
+
+/* =========================
+   SAVE EDIT ITEM
+========================= */
+function saveEditItem(){
+  const newName = document.getElementById("editNameInput").value.trim();
+  const newQty = document.getElementById("editQtyInput").value.trim() || "1";
+
+  if(!newName){
+    showToast("Item name is required");
+    return;
+  }
+
+  groceryItems = groceryItems.map(function(item){
+    if(item.id === editingItemId){
+      return {
+        ...item,
+        name:newName,
+        quantity:newQty,
+        category:guessCategory(newName)
+      };
+    }
+    return item;
+  });
+
+  saveGroceryItems();
+  closeEditModal();
+  renderGroceryList();
+  showToast("Item updated");
+}
+
+/* =========================
+   CLEAR BOUGHT ITEMS
+========================= */
+function clearAllBought(){
+  const boughtItems = groceryItems.filter(function(item){
+    return item.bought;
+  });
+
+  if(boughtItems.length === 0){
+    showToast("No bought items to clear");
+    return;
+  }
+
+  pendingConfirmAction = function(){
+    groceryItems = groceryItems.filter(function(item){
+      return !item.bought;
+    });
+
+    saveGroceryItems();
+    renderGroceryList();
+    closeConfirmModal();
+    showToast("Bought items cleared");
+  };
+
+  openConfirmModal("Clear bought items?", "Only checked items will be removed.", "Clear");
+}
+
+/* =========================
+   CONFIRM CLEAR ALL
+========================= */
+function confirmClearAll(){
+  if(groceryItems.length === 0){
+    showToast("List is already empty");
+    return;
+  }
+
+  pendingConfirmAction = function(){
+    groceryItems = [];
+    saveGroceryItems();
+    renderGroceryList();
+    closeConfirmModal();
+    showToast("All items cleared");
+  };
+
+  openConfirmModal("Clear full list?", "This will remove every grocery item.", "Clear All");
+}
+
+/* =========================
+   OPEN CONFIRM MODAL
+========================= */
+function openConfirmModal(title, text, yesText){
+  document.getElementById("confirmTitle").textContent = title;
+  document.getElementById("confirmText").textContent = text;
+  document.getElementById("confirmYesBtn").textContent = yesText;
+
+  document.getElementById("confirmYesBtn").onclick = function(){
+    if(typeof pendingConfirmAction === "function"){
+      pendingConfirmAction();
+    }
+  };
+
+  document.getElementById("confirmModal").style.display = "flex";
+}
+
+/* =========================
+   CLOSE CONFIRM MODAL
+========================= */
+function closeConfirmModal(){
+  pendingConfirmAction = null;
+  document.getElementById("confirmModal").style.display = "none";
+}
+
+/* =========================
+   SET CATEGORY FILTER
+========================= */
+function setCategoryFilter(category, btn){
+  currentCategoryFilter = category;
+
+  document.querySelectorAll(".catBtn").forEach(function(button){
+    button.classList.remove("active");
+  });
+
+  btn.classList.add("active");
+  renderGroceryList();
+}
+
+/* =========================
+   RENDER GROCERY LIST
+========================= */
+function renderGroceryList(){
+  const listEl = document.getElementById("groceryList");
+  const emptyState = document.getElementById("emptyState");
+
+  listEl.innerHTML = "";
+
+  let displayItems = getSortedItems();
+
+  if(currentCategoryFilter !== "All"){
+    displayItems = displayItems.filter(function(item){
+      return item.category === currentCategoryFilter;
+    });
+  }
+
+  if(displayItems.length === 0){
+    emptyState.style.display = "block";
+  }else{
+    emptyState.style.display = "none";
+  }
+
+  displayItems.forEach(function(item){
+    const card = document.createElement("div");
+    card.className = "groceryItem" + (item.bought ? " bought" : "");
+
+    card.innerHTML = `
+      <button class="checkBtn" onclick="toggleBought('${item.id}')">${item.bought ? "✓" : ""}</button>
+
+      <div class="itemInfo">
+        <div class="itemName">${escapeHtml(item.name)}</div>
+        <div class="itemMeta">
+          <span class="qtyBadge">${escapeHtml(item.quantity)}</span>
+          <span class="catBadge">${escapeHtml(item.category)}</span>
+        </div>
+      </div>
+
+      <div class="itemActions">
+        <button class="iconBtn" onclick="openEditModal('${item.id}')">✎</button>
+        <button class="iconBtn delete" onclick="deleteItem('${item.id}')">🗑</button>
+      </div>
+    `;
+
+    listEl.appendChild(card);
+  });
+
+  updateStats();
+}
+
+/* =========================
+   UPDATE STATS
+========================= */
+function updateStats(){
+  const total = groceryItems.length;
+  const bought = groceryItems.filter(function(item){
+    return item.bought;
+  }).length;
+  const remaining = total - bought;
+
+  document.getElementById("totalCount").textContent = total;
+  document.getElementById("remainingCount").textContent = remaining;
+  document.getElementById("boughtCount").textContent = bought;
+}
+
+/* =========================
+   SHOW SUGGESTIONS
+========================= */
+function showSuggestions(searchText){
+  const box = document.getElementById("suggestionsBox");
+  const query = normalizeText(searchText);
+
+  if(!query){
+    hideSuggestions();
+    return;
+  }
+
+  const matches = grocerySuggestions
+    .filter(function(item){
+      return normalizeText(item.name).includes(query);
+    })
+    .slice(0, 35);
+
+  if(matches.length === 0){
+    box.style.display = "block";
+    box.innerHTML = `
+      <button class="suggestionItem" onclick="useTypedAsCustom()">
+        <div class="suggestionLeft">
+          <div class="suggestionName">Add "${escapeHtml(searchText)}"</div>
+          <div class="suggestionCat">Custom item</div>
+        </div>
+        <div class="suggestionPlus">+</div>
+      </button>
+    `;
+    return;
+  }
+
+  box.style.display = "block";
+  box.innerHTML = matches.map(function(item){
+    return `
+      <button class="suggestionItem" onclick="addSuggestionItem('${escapeJs(item.name)}','${escapeJs(item.category)}')">
+        <div class="suggestionLeft">
+          <div class="suggestionName">${escapeHtml(item.name)}</div>
+          <div class="suggestionCat">${escapeHtml(item.category)}</div>
+        </div>
+        <div class="suggestionPlus">+</div>
+      </button>
+    `;
+  }).join("");
+}
+
+/* =========================
+   HIDE SUGGESTIONS
+========================= */
+function hideSuggestions(){
+  const box = document.getElementById("suggestionsBox");
+  box.style.display = "none";
+  box.innerHTML = "";
+}
+
+/* =========================
+   USE TYPED CUSTOM ITEM
+========================= */
+function useTypedAsCustom(){
+  addItemFromInput();
+}
+
+/* =========================
+   ESCAPE HTML
+========================= */
+function escapeHtml(value){
+  return String(value || "")
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
+
+/* =========================
+   ESCAPE JS STRING
+========================= */
+function escapeJs(value){
+  return String(value || "")
+    .replaceAll("\\","\\\\")
+    .replaceAll("'","\\'")
+    .replaceAll('"','\\"');
+}
+
+/* =========================
+   SHOW TOAST
+========================= */
+let toastTimer = null;
+
+function showToast(message){
+  const toast = document.getElementById("toast");
+  toast.textContent = message;
+  toast.classList.add("show");
+
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function(){
+    toast.classList.remove("show");
+  }, 1800);
+}
+
+/* =========================
+   INPUT EVENTS
+========================= */
+document.getElementById("itemInput").addEventListener("input", function(){
+  showSuggestions(this.value);
+});
+
+document.getElementById("itemInput").addEventListener("keydown", function(event){
+  if(event.key === "Enter"){
+    addItemFromInput();
+  }
+});
+
+document.getElementById("qtyInput").addEventListener("keydown", function(event){
+  if(event.key === "Enter"){
+    addItemFromInput();
+  }
+});
+
+document.addEventListener("click", function(event){
+  const addCard = document.querySelector(".addCard");
+  if(!addCard.contains(event.target)){
+    hideSuggestions();
+  }
+});
+
+/* =========================
+   INIT APP
+========================= */
+loadGroceryItems();
+renderGroceryList();
+</script>
+
+</body>
+</html>
