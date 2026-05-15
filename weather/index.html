@@ -335,6 +335,7 @@ input{
   color:rgba(255,255,255,0.68);
 }
 
+#backBtn,
 #currentBtn,
 #unitToggle{
   width:52px;
@@ -347,6 +348,10 @@ input{
   border:1px solid rgba(255,255,255,0.08);
   font-size:17px;
   font-weight:700;
+}
+
+#backBtn{
+  font-size:24px;
 }
 
 #currentBtn{
@@ -785,9 +790,11 @@ input{
     <!-- =========================
          TOP SEARCH BAR
     ========================= -->
-    <div id="topBar">
+ <div id="topBar">
 
-      <div id="searchWrap">
+  <button id="backBtn" title="Back">‹</button>
+
+  <div id="searchWrap">
         <div id="searchIcon">🔎</div>
         <input
           type="text"
@@ -1001,6 +1008,7 @@ const savedLocations = document.getElementById("savedLocations");
 const searchBox = document.getElementById("searchBox");
 const unitToggle = document.getElementById("unitToggle");
 const currentBtn = document.getElementById("currentBtn");
+const backBtn = document.getElementById("backBtn");
 
 /* =========================
    STARTUP
@@ -1769,6 +1777,18 @@ currentBtn.addEventListener("click", function(){
 
 });
 
+
+/* =========================
+   BACK BUTTON
+========================= */
+backBtn.addEventListener("click", function(){
+
+  window.location.href = "../";
+
+});
+
+
+  
 /* =========================
    BOTTOM NAV SCROLL
 ========================= */
