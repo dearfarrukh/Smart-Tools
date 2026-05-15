@@ -1,1 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
 
+  <!-- =========================
+       IPHONE HOME SCREEN ICON
+  ========================= -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Security Tools">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+
+  <link rel="apple-touch-icon" href="../images/icon.png">
+  <link rel="icon" type="image/png" href="../images/icon.png">
+
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+  <title>Security Tools</title>
+
+  <style>
+    /* =========================
+       RESET
+    ========================= */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html,
+    body {
+      width: 100%;
+      min-height: 100%;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      padding-bottom: 34px;
+      color: #111827;
+      background:
+        radial-gradient(circle at top left, rgba(96,165,250,0.24), transparent 30%),
+        radial-gradient(circle at top right, rgba(244,114,182,0.22), transparent 32%),
+        linear-gradient(180deg, #f4f7ff 0%, #eef2ff 48%, #f8fafc 100%);
+    }
+
+    button {
+      font: inherit;
+    }
+
+    /* =========================
+       PAGE TOP BAR
+    ========================= */
+    .top-bar-wrap {
+      width: 100%;
+      padding: 20px 4% 0 4%;
+    }
+
+    .top-bar {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .back-btn {
+      border: none;
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: white;
+      color: #111827;
+      font-size: 24px;
+      font-weight: 900;
+      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.10);
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .back-btn:active {
+      transform: scale(0.96);
+    }
+
+    .top-bar-title {
+      flex: 1;
+      text-align: center;
+      font-size: 22px;
+      font-weight: 900;
+      color: #111827;
+      letter-spacing: -0.4px;
+    }
+
+    .top-bar-spacer {
+      width: 52px;
+      height: 52px;
+      flex-shrink: 0;
+    }
+
+    /* =========================
+       PAGE LAYOUT
+    ========================= */
+    .page-inner {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 4% 40px 4%;
+    }
+
+    .inner-page-hero {
+      margin-top: 18px;
+      background: linear-gradient(135deg, #2563eb 0%, #7c3aed 50%, #db2777 100%);
+      color: white;
+      border-radius: 30px;
+      padding: 32px 24px;
+      box-shadow: 0 14px 32px rgba(124, 58, 237, 0.20);
+    }
+
+    .inner-page-hero h1 {
+      font-size: 34px;
+      font-weight: 900;
+      line-height: 1.1;
+      margin-bottom: 12px;
+      letter-spacing: -0.8px;
+    }
+
+    .inner-page-hero p {
+      font-size: 17px;
+      line-height: 1.6;
+      color: rgba(255,255,255,0.95);
+      max-width: 760px;
+    }
+
+    /* =========================
+       SECURITY TOOL GRID
+    ========================= */
+    .security-grid {
+      margin-top: 24px;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .security-card {
+      min-height: 190px;
+      border: none;
+      border-radius: 28px;
+      padding: 24px;
+      cursor: pointer;
+      color: #111827;
+      text-align: left;
+      background: rgba(255,255,255,0.88);
+      border: 1px solid rgba(15,23,42,0.07);
+      box-shadow: 0 14px 34px rgba(15,23,42,0.10);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .security-card:active {
+      transform: scale(0.98);
+    }
+
+    .security-icon {
+      width: 58px;
+      height: 58px;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 30px;
+      margin-bottom: 28px;
+      background: linear-gradient(135deg, #dbeafe, #f3e8ff);
+    }
+
+    .security-card h3 {
+      font-size: 22px;
+      font-weight: 900;
+      margin-bottom: 10px;
+      letter-spacing: -0.4px;
+    }
+
+    .security-card p {
+      color: #64748b;
+      font-size: 15px;
+      line-height: 1.55;
+      max-width: 92%;
+      font-weight: 700;
+    }
+
+    .security-arrow {
+      position: absolute;
+      right: 20px;
+      bottom: 18px;
+      font-size: 30px;
+      color: #94a3b8;
+    }
+
+    /* =========================
+       DARK THEME
+    ========================= */
+    body.smart-tools-dark-theme {
+      background:
+        radial-gradient(circle at top left, rgba(34,197,94,0.12), transparent 30%),
+        radial-gradient(circle at top right, rgba(14,165,233,0.10), transparent 32%),
+        linear-gradient(180deg, #07111f 0%, #0b1626 52%, #07111f 100%);
+      color: #f8fafc;
+    }
+
+    body.smart-tools-dark-theme .top-bar-title {
+      color: #f8fafc;
+    }
+
+    body.smart-tools-dark-theme .back-btn,
+    body.smart-tools-dark-theme .security-card {
+      background: linear-gradient(180deg, rgba(30,41,59,0.88), rgba(15,23,42,0.84));
+      border-color: rgba(148,163,184,0.20);
+      color: #f8fafc;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 14px 34px rgba(0,0,0,0.22);
+    }
+
+    body.smart-tools-dark-theme .security-card p {
+      color: #cbd5e1;
+    }
+
+    body.smart-tools-dark-theme .security-arrow {
+      color: #94a3b8;
+    }
+
+    /* =========================
+       RESPONSIVE
+    ========================= */
+    @media (max-width: 900px) {
+      .security-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 640px) {
+      .top-bar-wrap {
+        padding: 16px 4% 0 4%;
+      }
+
+      .page-inner {
+        padding: 0 5% 30px 5%;
+      }
+
+      .inner-page-hero {
+        padding: 26px 18px;
+        border-radius: 24px;
+      }
+
+      .inner-page-hero h1 {
+        font-size: 28px;
+      }
+
+      .inner-page-hero p {
+        font-size: 16px;
+      }
+
+      .top-bar-title {
+        font-size: 20px;
+      }
+
+      .back-btn,
+      .top-bar-spacer {
+        width: 48px;
+        height: 48px;
+      }
+
+      .security-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .security-card {
+        min-height: 170px;
+        border-radius: 24px;
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+
+<body class="smart-tools-color-theme">
+
+  <!-- =========================
+       SECURITY TOOLS PAGE
+  ========================= -->
+  <div class="top-bar-wrap">
+    <div class="top-bar">
+      <button class="back-btn" onclick="goBackToMainPage()">←</button>
+      <div class="top-bar-title">Security</div>
+      <div class="top-bar-spacer"></div>
+    </div>
+  </div>
+
+  <div class="page-inner">
+
+    <div class="inner-page-hero">
+      <h1>Security Tools</h1>
+      <p>
+        QR Generator, Password Generator, and Password Vault are grouped here to keep your main Smart Tools page clean.
+      </p>
+    </div>
+
+    <div class="security-grid">
+
+      <!-- =========================
+           QR GENERATOR CARD
+      ========================= -->
+      <button class="security-card" onclick="openQrGenerator()">
+        <div class="security-icon">▣</div>
+        <h3>QR Generator</h3>
+        <p>Create QR codes for website, text, phone, email, and Wi-Fi.</p>
+        <div class="security-arrow">›</div>
+      </button>
+
+      <!-- =========================
+           PASSWORD GENERATOR CARD
+      ========================= -->
+      <button class="security-card" onclick="openPasswordGenerator()">
+        <div class="security-icon">🛡️</div>
+        <h3>Password Generator</h3>
+        <p>Generate strong passwords with length, numbers, symbols, and custom options.</p>
+        <div class="security-arrow">›</div>
+      </button>
+
+      <!-- =========================
+           PASSWORD VAULT CARD
+      ========================= -->
+      <button class="security-card" onclick="openPasswordVault()">
+        <div class="security-icon">🔐</div>
+        <h3>Password Vault</h3>
+        <p>Save usernames and passwords with passcode lock inside your browser.</p>
+        <div class="security-arrow">›</div>
+      </button>
+
+    </div>
+
+  </div>
+
+  <script>
+    // =========================
+    // BACK TO MAIN PAGE
+    // =========================
+    function goBackToMainPage() {
+      window.location.href = "../";
+    }
+
+    // =========================
+    // OPEN QR GENERATOR
+    // =========================
+    function openQrGenerator() {
+      window.location.href = "../qr-barcode/";
+    }
+
+    // =========================
+    // OPEN PASSWORD GENERATOR
+    // =========================
+    function openPasswordGenerator() {
+      window.location.href = "../password/";
+    }
+
+    // =========================
+    // OPEN PASSWORD VAULT
+    // =========================
+    function openPasswordVault() {
+      window.location.href = "../password-vault/";
+    }
+
+    // =========================
+    // SECURITY PAGE THEME
+    // Follows main page key: smartToolsHomeTheme
+    // =========================
+    function applySecurityTheme() {
+      const savedTheme = localStorage.getItem("smartToolsHomeTheme") || "dark";
+
+      document.body.classList.remove("smart-tools-color-theme");
+      document.body.classList.remove("smart-tools-dark-theme");
+
+      if (savedTheme === "color") {
+        document.body.classList.add("smart-tools-color-theme");
+      } else {
+        document.body.classList.add("smart-tools-dark-theme");
+      }
+    }
+
+    // =========================
+    // PAGE LOAD
+    // =========================
+    document.addEventListener("DOMContentLoaded", function() {
+      applySecurityTheme();
+    });
+  </script>
+
+</body>
+</html>
