@@ -9,8 +9,8 @@
   <meta name="apple-mobile-web-app-title" content="Smart Tools">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
 
-  <link rel="apple-touch-icon" href="images/icon.png?v=20260514-refresh2">
-  <link rel="icon" type="image/png" href="images/icon.png?v=20260514-refresh2">
+  <link rel="apple-touch-icon" href="images/icon.png?v=20260515-main-tools1">
+  <link rel="icon" type="image/png" href="images/icon.png?v=20260515-main-tools1">
 
   <meta charset="UTF-8" />
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
@@ -472,23 +472,19 @@
     }
 
     body.smart-tools-color-theme .dashboard-tool-card:nth-child(7) {
-      background: linear-gradient(135deg, #f0fdf4, #ffffff);
+      background: linear-gradient(135deg, #f3e8ff, #ffffff);
     }
 
     body.smart-tools-color-theme .dashboard-tool-card:nth-child(8) {
-      background: linear-gradient(135deg, #eef2ff, #ffffff);
+      background: linear-gradient(135deg, #ffedd5, #ffffff);
     }
 
     body.smart-tools-color-theme .dashboard-tool-card:nth-child(9) {
-      background: linear-gradient(135deg, #ecfeff, #ffffff);
+      background: linear-gradient(135deg, #dcfce7, #ffffff);
     }
 
     body.smart-tools-color-theme .dashboard-tool-card:nth-child(10) {
-      background: linear-gradient(135deg, #fef3c7, #ffffff);
-    }
-
-    body.smart-tools-color-theme .dashboard-tool-card:nth-child(11) {
-      background: linear-gradient(135deg, #dcfce7, #ffffff);
+      background: linear-gradient(135deg, #eff6ff, #ffffff);
     }
 
     body.smart-tools-color-theme .dashboard-tool-card:hover {
@@ -633,7 +629,7 @@
     <div class="dashboard-topbar">
       <div class="dashboard-brand">
         <div class="dashboard-logo">
-          <img src="images/icon.png?v=20260514-refresh2" alt="Smart Tools" onerror="this.style.display='none'; this.parentElement.innerHTML='🛠️';">
+          <img src="images/icon.png?v=20260515-main-tools1" alt="Smart Tools" onerror="this.style.display='none'; this.parentElement.innerHTML='🛠️';">
         </div>
 
         <div class="dashboard-title">Smart <span>Tools</span></div>
@@ -694,11 +690,11 @@
       </div>
 
       <div class="dashboard-stat-card">
-        <div class="dashboard-stat-icon orange">👥</div>
+        <div class="dashboard-stat-icon orange">🏢</div>
         <div>
-          <div class="dashboard-stat-label">Qameti</div>
-          <div class="dashboard-stat-value" id="dashboardQametiCount">0</div>
-          <div class="dashboard-stat-sub">Saved Plans</div>
+          <div class="dashboard-stat-label">Office</div>
+          <div class="dashboard-stat-value">Tools</div>
+          <div class="dashboard-stat-sub">CSV + Number Match</div>
         </div>
       </div>
 
@@ -726,7 +722,7 @@
       <button class="dashboard-tool-card" onclick="openFolderPage('carcare/')">
         <div class="dashboard-tool-icon red">🚘</div>
         <h3>Car Care</h3>
-        <p>Track service and expenses for both cars.</p>
+        <p>Track service, reminders, reports, and expenses for your cars.</p>
         <div class="dashboard-card-arrow">›</div>
       </button>
 
@@ -758,17 +754,10 @@
         <div class="dashboard-card-arrow">›</div>
       </button>
 
-      <button class="dashboard-tool-card" onclick="openFolderPage('numbermatch/')">
-        <div class="dashboard-tool-icon green">#</div>
-        <h3>Number Match</h3>
-        <p>Find numbers that match your target total.</p>
-        <div class="dashboard-card-arrow">›</div>
-      </button>
-
       <button class="dashboard-tool-card" onclick="openFolderPage('office/')">
         <div class="dashboard-tool-icon orange">🏢</div>
         <h3>Office</h3>
-        <p>Office tools like WFC / NFC contract generator, CSV converter, and more.</p>
+        <p>Office tools like contracts, invoices, CSV converter, and Number Match.</p>
         <div class="dashboard-card-arrow">›</div>
       </button>
 
@@ -902,7 +891,6 @@
         localStorage.setItem("smartToolsLastRefresh", new Date().toISOString());
         localStorage.setItem("smartToolsForceReloadVersion", String(Date.now()));
 
-        // Tell service worker to skip waiting if it supports messages.
         if ("serviceWorker" in navigator) {
           const registrations = await navigator.serviceWorker.getRegistrations();
 
@@ -924,7 +912,6 @@
           }));
         }
 
-        // Delete every Cache Storage cache.
         if ("caches" in window) {
           const cacheNames = await caches.keys();
 
@@ -933,7 +920,6 @@
           }));
         }
 
-        // Refresh all icon/logo images on this page with a new cache-buster.
         const refreshVersion = Date.now();
 
         document.querySelectorAll("img").forEach(function(img) {
@@ -964,8 +950,6 @@
         console.log("Power refresh cleanup skipped:", error);
       }
 
-      // Replace current page with a fresh URL.
-      // This keeps localStorage safe but forces browser/GitHub Pages to fetch fresh files.
       const cleanUrl = window.location.origin + window.location.pathname;
       const freshUrl = cleanUrl + "?forceRefresh=" + Date.now();
 
@@ -976,7 +960,6 @@
 
     // =========================
     // AUTO CLEAN REFRESH URL
-    // Removes ?forceRefresh=... after the new file loads.
     // =========================
     function cleanSmartToolsRefreshUrl() {
       if (window.location.search.indexOf("forceRefresh=") !== -1) {
@@ -987,10 +970,9 @@
 
     // =========================
     // FORCE ICON CACHE BUSTER ON LOAD
-    // Helps home-screen icon/logo update without deleting saved app data.
     // =========================
     function forceSmartToolsIconCacheBuster() {
-      const version = localStorage.getItem("smartToolsForceReloadVersion") || "20260514-refresh2";
+      const version = localStorage.getItem("smartToolsForceReloadVersion") || "20260515-main-tools1";
 
       document.querySelectorAll('link[rel="icon"], link[rel="apple-touch-icon"]').forEach(function(link) {
         const oldHref = link.getAttribute("href");
@@ -1027,7 +1009,6 @@
 
     // =========================
     // DOWNLOAD SMART TOOLS BACKUP
-    // Exports all localStorage data for this Smart Tools app.
     // =========================
     function downloadSmartToolsBackup() {
       closeHomeToolsMenu();
@@ -1069,7 +1050,6 @@
 
     // =========================
     // RESTORE SMART TOOLS BACKUP
-    // Imports saved localStorage data back into this browser.
     // =========================
     function restoreSmartToolsBackup(event) {
       const file = event.target.files && event.target.files[0];
@@ -1115,7 +1095,6 @@
     function updateSmartToolsDashboard() {
       updateDashboardDate();
       updateDashboardNotesCount();
-      updateDashboardQametiCount();
     }
 
     // =========================
@@ -1154,22 +1133,6 @@
         notesCountEl.innerText = Array.isArray(notes) ? notes.length : "0";
       } catch (error) {
         notesCountEl.innerText = "0";
-      }
-    }
-
-    // =========================
-    // UPDATE DASHBOARD QAMETI COUNT
-    // =========================
-    function updateDashboardQametiCount() {
-      const qametiCountEl = document.getElementById("dashboardQametiCount");
-
-      if (!qametiCountEl) return;
-
-      try {
-        const qameti = JSON.parse(localStorage.getItem("pocketToolsQametiData") || "[]");
-        qametiCountEl.innerText = Array.isArray(qameti) ? qameti.length : "0";
-      } catch (error) {
-        qametiCountEl.innerText = "0";
       }
     }
 
