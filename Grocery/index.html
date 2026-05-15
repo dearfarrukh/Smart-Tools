@@ -31,6 +31,12 @@ body{
   user-select:none;
 }
 
+button,
+input,
+textarea{
+  font:inherit;
+}
+
 /* =========================
    APP WRAPPER
 ========================= */
@@ -41,7 +47,7 @@ body{
     radial-gradient(circle at top left, rgba(34,197,94,0.20), transparent 32%),
     radial-gradient(circle at top right, rgba(59,130,246,0.18), transparent 30%),
     linear-gradient(180deg,#f7f8fb 0%,#edf0f6 100%);
-  padding:14px 14px 110px;
+  padding:14px 14px 120px;
 }
 
 /* =========================
@@ -70,7 +76,7 @@ body{
   background:rgba(255,255,255,0.88);
   box-shadow:0 8px 22px rgba(15,23,42,0.10);
   font-size:23px;
-  font-weight:800;
+  font-weight:900;
   color:#111827;
   display:flex;
   align-items:center;
@@ -84,7 +90,7 @@ body{
 
 .topTitle{
   font-size:25px;
-  font-weight:900;
+  font-weight:950;
   letter-spacing:-0.6px;
   line-height:1.05;
 }
@@ -92,8 +98,11 @@ body{
 .topSub{
   font-size:13px;
   color:#6b7280;
-  font-weight:600;
+  font-weight:700;
   margin-top:3px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
 }
 
 .topIcon{
@@ -156,7 +165,7 @@ body{
   margin:6px 0 0;
   color:#4b5563;
   font-size:14px;
-  font-weight:600;
+  font-weight:650;
 }
 
 .heroEmoji{
@@ -171,10 +180,55 @@ body{
   box-shadow:0 10px 24px rgba(15,23,42,0.08);
 }
 
+.activeListPill{
+  position:relative;
+  z-index:2;
+  margin-top:14px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  background:rgba(255,255,255,0.78);
+  border:1px solid rgba(255,255,255,0.86);
+  border-radius:18px;
+  padding:11px 12px;
+}
+
+.activeListLeft{
+  min-width:0;
+}
+
+.activeListLabel{
+  font-size:11px;
+  color:#6b7280;
+  font-weight:900;
+  letter-spacing:0.3px;
+}
+
+.activeListName{
+  margin-top:2px;
+  font-size:15px;
+  font-weight:950;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.activeListBtn{
+  flex:0 0 auto;
+  border:none;
+  border-radius:14px;
+  background:#111827;
+  color:white;
+  padding:10px 12px;
+  font-size:12px;
+  font-weight:950;
+}
+
 .statsGrid{
   position:relative;
   z-index:2;
-  margin-top:16px;
+  margin-top:12px;
   display:grid;
   grid-template-columns:repeat(3,1fr);
   gap:10px;
@@ -190,13 +244,13 @@ body{
 
 .statNum{
   font-size:20px;
-  font-weight:900;
+  font-weight:950;
 }
 
 .statLabel{
   font-size:11px;
   color:#6b7280;
-  font-weight:800;
+  font-weight:900;
   margin-top:3px;
 }
 
@@ -205,7 +259,7 @@ body{
 ========================= */
 .addCard{
   margin-top:16px;
-  background:rgba(255,255,255,0.86);
+  background:rgba(255,255,255,0.88);
   border:1px solid rgba(255,255,255,0.85);
   box-shadow:0 18px 38px rgba(15,23,42,0.10);
   border-radius:28px;
@@ -217,7 +271,7 @@ body{
 .inputLabel{
   font-size:13px;
   color:#6b7280;
-  font-weight:800;
+  font-weight:900;
   margin:0 0 8px 4px;
 }
 
@@ -244,13 +298,13 @@ body{
   outline:none;
   background:transparent;
   font-size:17px;
-  font-weight:750;
+  font-weight:800;
   color:#111827;
 }
 
 #itemInput::placeholder{
   color:#9ca3af;
-  font-weight:650;
+  font-weight:700;
 }
 
 #addItemBtn{
@@ -261,7 +315,7 @@ body{
   background:linear-gradient(135deg,#16a34a,#10b981);
   color:white;
   font-size:15px;
-  font-weight:900;
+  font-weight:950;
   box-shadow:0 10px 20px rgba(16,185,129,0.22);
 }
 
@@ -286,7 +340,7 @@ body{
   border:1px solid #e5e7eb;
   padding:0 14px;
   font-size:16px;
-  font-weight:750;
+  font-weight:800;
 }
 
 #qtyInput::placeholder{
@@ -314,7 +368,7 @@ body{
   background:#eef2ff;
   color:#3730a3;
   font-size:13px;
-  font-weight:900;
+  font-weight:950;
 }
 
 .qtyChip.active{
@@ -359,7 +413,7 @@ body{
 
 .suggestionName{
   font-size:16px;
-  font-weight:850;
+  font-weight:900;
   color:#111827;
   white-space:nowrap;
   overflow:hidden;
@@ -370,7 +424,7 @@ body{
   font-size:12px;
   color:#6b7280;
   margin-top:2px;
-  font-weight:700;
+  font-weight:750;
 }
 
 .suggestionPlus{
@@ -384,7 +438,7 @@ body{
   align-items:center;
   justify-content:center;
   font-size:21px;
-  font-weight:900;
+  font-weight:950;
 }
 
 /* =========================
@@ -398,14 +452,24 @@ body{
 }
 
 .toolBtn{
-  height:46px;
+  min-height:48px;
   border:none;
   border-radius:20px;
-  background:rgba(255,255,255,0.86);
+  background:rgba(255,255,255,0.88);
   color:#111827;
   font-size:14px;
-  font-weight:900;
+  font-weight:950;
   box-shadow:0 10px 24px rgba(15,23,42,0.07);
+}
+
+.toolBtn.primary{
+  background:#111827;
+  color:white;
+}
+
+.toolBtn.green{
+  background:linear-gradient(135deg,#16a34a,#10b981);
+  color:white;
 }
 
 .toolBtn.danger{
@@ -433,10 +497,10 @@ body{
   border:none;
   border-radius:999px;
   padding:11px 14px;
-  background:rgba(255,255,255,0.82);
+  background:rgba(255,255,255,0.84);
   color:#374151;
   font-size:13px;
-  font-weight:900;
+  font-weight:950;
   box-shadow:0 9px 20px rgba(15,23,42,0.06);
 }
 
@@ -465,7 +529,7 @@ body{
 .listHint{
   font-size:12px;
   color:#6b7280;
-  font-weight:800;
+  font-weight:850;
 }
 
 .groceryList{
@@ -477,7 +541,7 @@ body{
 .groceryItem{
   width:100%;
   border-radius:24px;
-  background:rgba(255,255,255,0.88);
+  background:rgba(255,255,255,0.90);
   border:1px solid rgba(255,255,255,0.86);
   box-shadow:0 14px 30px rgba(15,23,42,0.08);
   padding:13px;
@@ -501,7 +565,7 @@ body{
   background:#ffffff;
   color:white;
   font-size:19px;
-  font-weight:900;
+  font-weight:950;
   display:flex;
   align-items:center;
   justify-content:center;
@@ -545,14 +609,14 @@ body{
   border-radius:999px;
   padding:5px 9px;
   font-size:12px;
-  font-weight:900;
+  font-weight:950;
 }
 
 .catBadge{
   border-radius:999px;
   padding:5px 9px;
   font-size:12px;
-  font-weight:900;
+  font-weight:950;
   background:#ecfeff;
   color:#0f766e;
 }
@@ -583,13 +647,82 @@ body{
 }
 
 /* =========================
+   SAVED LISTS MODAL LIST
+========================= */
+.savedListsWrap{
+  margin-top:14px;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  max-height:320px;
+  overflow-y:auto;
+}
+
+.savedListCard{
+  width:100%;
+  border:none;
+  border-radius:20px;
+  background:#f8fafc;
+  border:1px solid #e5e7eb;
+  padding:12px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  text-align:left;
+}
+
+.savedListInfo{
+  min-width:0;
+  flex:1;
+}
+
+.savedListName{
+  font-size:16px;
+  font-weight:950;
+  color:#111827;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.savedListMeta{
+  margin-top:4px;
+  font-size:12px;
+  color:#6b7280;
+  font-weight:800;
+}
+
+.savedListActions{
+  display:flex;
+  gap:7px;
+  flex:0 0 auto;
+}
+
+.savedActionBtn{
+  border:none;
+  border-radius:14px;
+  min-width:52px;
+  height:38px;
+  font-size:12px;
+  font-weight:950;
+  background:#111827;
+  color:white;
+}
+
+.savedActionBtn.red{
+  background:#fee2e2;
+  color:#dc2626;
+}
+
+/* =========================
    EMPTY STATE
 ========================= */
 .emptyState{
   display:none;
   margin-top:18px;
   border-radius:28px;
-  background:rgba(255,255,255,0.78);
+  background:rgba(255,255,255,0.80);
   border:1px dashed #cbd5e1;
   padding:28px 18px;
   text-align:center;
@@ -609,7 +742,7 @@ body{
   margin-top:6px;
   color:#6b7280;
   font-size:14px;
-  font-weight:650;
+  font-weight:700;
 }
 
 /* =========================
@@ -630,12 +763,14 @@ body{
 
 .modalCard{
   width:100%;
-  max-width:520px;
+  max-width:540px;
   border-radius:30px;
   background:#ffffff;
   padding:18px;
   box-shadow:0 25px 70px rgba(0,0,0,0.22);
   animation:modalUp 0.22s ease;
+  max-height:88vh;
+  overflow:auto;
 }
 
 @keyframes modalUp{
@@ -653,13 +788,14 @@ body{
   color:#6b7280;
   margin-top:6px;
   font-size:14px;
-  font-weight:650;
+  font-weight:700;
+  line-height:1.35;
 }
 
 .modalInput{
   margin-top:13px;
   width:100%;
-  height:48px;
+  min-height:48px;
   border:none;
   outline:none;
   border-radius:18px;
@@ -667,7 +803,15 @@ body{
   border:1px solid #e5e7eb;
   padding:0 14px;
   font-size:16px;
-  font-weight:750;
+  font-weight:800;
+  color:#111827;
+}
+
+.modalTextArea{
+  height:150px;
+  padding-top:13px;
+  resize:none;
+  line-height:1.4;
 }
 
 .modalActions{
@@ -677,8 +821,12 @@ body{
   gap:10px;
 }
 
+.modalActions.three{
+  grid-template-columns:1fr 1fr 1fr;
+}
+
 .modalBtn{
-  height:48px;
+  min-height:48px;
   border:none;
   border-radius:18px;
   font-size:15px;
@@ -692,6 +840,11 @@ body{
 
 .modalBtn.save{
   background:#111827;
+  color:white;
+}
+
+.modalBtn.green{
+  background:#16a34a;
   color:white;
 }
 
@@ -714,11 +867,13 @@ body{
   padding:12px 16px;
   border-radius:999px;
   font-size:14px;
-  font-weight:850;
+  font-weight:900;
   opacity:0;
   pointer-events:none;
   transition:0.22s ease;
   box-shadow:0 12px 28px rgba(0,0,0,0.22);
+  max-width:88%;
+  text-align:center;
 }
 
 .toast.show{
@@ -735,6 +890,20 @@ body{
     margin:0 auto;
     border-left:1px solid rgba(15,23,42,0.08);
     border-right:1px solid rgba(15,23,42,0.08);
+  }
+}
+
+@media (max-width:380px){
+  .toolRow{
+    grid-template-columns:1fr;
+  }
+
+  .modalActions.three{
+    grid-template-columns:1fr;
+  }
+
+  .topTitle{
+    font-size:22px;
   }
 }
 </style>
@@ -768,6 +937,14 @@ body{
         <p>Type one word and choose from smart grocery suggestions.</p>
       </div>
       <div class="heroEmoji">🥬</div>
+    </div>
+
+    <div class="activeListPill">
+      <div class="activeListLeft">
+        <div class="activeListLabel">CURRENT LIST</div>
+        <div class="activeListName" id="currentListNameEl">Quick Grocery List</div>
+      </div>
+      <button class="activeListBtn" onclick="openSavedListsModal()">Saved Lists</button>
     </div>
 
     <div class="statsGrid">
@@ -826,6 +1003,10 @@ body{
        TOOL BUTTONS
   ========================= -->
   <div class="toolRow">
+    <button class="toolBtn green" onclick="openSaveListModal()">Save List</button>
+    <button class="toolBtn primary" onclick="openSavedListsModal()">Open Lists</button>
+    <button class="toolBtn" onclick="sendGroceryList()">Send List</button>
+    <button class="toolBtn" onclick="openImportModal()">Import List</button>
     <button class="toolBtn" onclick="clearAllBought()">Clear Bought</button>
     <button class="toolBtn danger" onclick="confirmClearAll()">Clear All</button>
   </div>
@@ -890,6 +1071,63 @@ body{
 </div>
 
 <!-- =========================
+     SAVE LIST MODAL
+========================= -->
+<div id="saveListModal" class="modalOverlay">
+  <div class="modalCard">
+    <div class="modalTitle">Save Grocery List</div>
+    <div class="modalText">Give this list a name so you can open it again later.</div>
+
+    <input id="saveListNameInput" class="modalInput" type="text" placeholder="Example: Walmart, Costco, Weekly Groceries" />
+
+    <div class="modalActions">
+      <button class="modalBtn cancel" onclick="closeSaveListModal()">Cancel</button>
+      <button class="modalBtn green" onclick="saveCurrentListAsNamedList()">Save List</button>
+    </div>
+  </div>
+</div>
+
+<!-- =========================
+     SAVED LISTS MODAL
+========================= -->
+<div id="savedListsModal" class="modalOverlay">
+  <div class="modalCard">
+    <div class="modalTitle">Saved Grocery Lists</div>
+    <div class="modalText">Open a saved list, or delete old saved lists.</div>
+
+    <div id="savedListsWrap" class="savedListsWrap"></div>
+
+    <div class="modalActions">
+      <button class="modalBtn cancel" onclick="closeSavedListsModal()">Close</button>
+      <button class="modalBtn save" onclick="openSaveListModalFromSaved()">Save Current</button>
+    </div>
+  </div>
+</div>
+
+<!-- =========================
+     IMPORT GROCERY LIST MODAL
+========================= -->
+<div id="importModal" class="modalOverlay">
+  <div class="modalCard">
+    <div class="modalTitle">Import Grocery List</div>
+    <div class="modalText">
+      Paste the shared grocery text here. It will add the items into this phone.
+    </div>
+
+    <textarea
+      id="importTextInput"
+      class="modalInput modalTextArea"
+      placeholder="Paste grocery list here..."
+    ></textarea>
+
+    <div class="modalActions">
+      <button class="modalBtn cancel" onclick="closeImportModal()">Cancel</button>
+      <button class="modalBtn save" onclick="importGroceryListFromText()">Import</button>
+    </div>
+  </div>
+</div>
+
+<!-- =========================
      CONFIRM MODAL
 ========================= -->
 <div id="confirmModal" class="modalOverlay">
@@ -918,21 +1156,24 @@ function goBackToMainPage(){
 }
 
 /* =========================
-   LOCAL STORAGE KEY
+   LOCAL STORAGE KEYS
 ========================= */
-const GROCERY_STORAGE_KEY = "smartToolsPremiumGroceryListV1";
+const GROCERY_STORAGE_KEY = "smartToolsPremiumGroceryListV2";
+const GROCERY_CURRENT_NAME_KEY = "smartToolsPremiumGroceryCurrentListNameV1";
+const GROCERY_SAVED_LISTS_KEY = "smartToolsPremiumGrocerySavedListsV1";
 
 /* =========================
    APP STATE
 ========================= */
 let groceryItems = [];
+let savedGroceryLists = [];
+let currentListName = "Quick Grocery List";
 let currentCategoryFilter = "All";
 let editingItemId = null;
 let pendingConfirmAction = null;
 
 /* =========================
    BUILT-IN GROCERY ITEMS
-   300+ SUGGESTIONS
 ========================= */
 const grocerySuggestions = [
   {name:"Potato", category:"Vegetables"},
@@ -978,6 +1219,7 @@ const grocerySuggestions = [
   {name:"Butternut Squash", category:"Vegetables"},
   {name:"Pumpkin", category:"Vegetables"},
   {name:"Avocado", category:"Vegetables"},
+
   {name:"Lemon", category:"Fruits"},
   {name:"Lime", category:"Fruits"},
   {name:"Apple", category:"Fruits"},
@@ -1006,6 +1248,7 @@ const grocerySuggestions = [
   {name:"Figs", category:"Fruits"},
   {name:"Pomegranate", category:"Fruits"},
   {name:"Coconut", category:"Fruits"},
+
   {name:"Milk", category:"Dairy"},
   {name:"Whole Milk", category:"Dairy"},
   {name:"Low Fat Milk", category:"Dairy"},
@@ -1028,6 +1271,9 @@ const grocerySuggestions = [
   {name:"Half and Half", category:"Dairy"},
   {name:"Eggs", category:"Dairy"},
   {name:"Brown Eggs", category:"Dairy"},
+  {name:"Paneer", category:"Dairy"},
+  {name:"Desi Yogurt", category:"Dairy"},
+
   {name:"Rice", category:"Pantry"},
   {name:"Basmati Rice", category:"Pantry"},
   {name:"Jasmine Rice", category:"Pantry"},
@@ -1043,6 +1289,7 @@ const grocerySuggestions = [
   {name:"All Purpose Flour", category:"Pantry"},
   {name:"Whole Wheat Flour", category:"Pantry"},
   {name:"Bread Flour", category:"Pantry"},
+  {name:"Atta Flour", category:"Pantry"},
   {name:"Sugar", category:"Pantry"},
   {name:"Brown Sugar", category:"Pantry"},
   {name:"Powdered Sugar", category:"Pantry"},
@@ -1083,6 +1330,43 @@ const grocerySuggestions = [
   {name:"Cereal", category:"Pantry"},
   {name:"Oatmeal", category:"Pantry"},
   {name:"Granola", category:"Pantry"},
+  {name:"Lentils", category:"Pantry"},
+  {name:"Red Lentils", category:"Pantry"},
+  {name:"Green Lentils", category:"Pantry"},
+  {name:"Chickpeas", category:"Pantry"},
+  {name:"Black Beans", category:"Pantry"},
+  {name:"Kidney Beans", category:"Pantry"},
+  {name:"White Beans", category:"Pantry"},
+  {name:"Canned Corn", category:"Pantry"},
+  {name:"Canned Tomatoes", category:"Pantry"},
+  {name:"Canned Tuna", category:"Pantry"},
+  {name:"Soup", category:"Pantry"},
+  {name:"Chicken Broth", category:"Pantry"},
+  {name:"Vegetable Broth", category:"Pantry"},
+  {name:"Coconut Milk", category:"Pantry"},
+  {name:"Pickles", category:"Pantry"},
+  {name:"Olives", category:"Pantry"},
+  {name:"Raisins", category:"Pantry"},
+  {name:"Baking Powder", category:"Pantry"},
+  {name:"Baking Soda", category:"Pantry"},
+  {name:"Yeast", category:"Pantry"},
+  {name:"Vanilla Extract", category:"Pantry"},
+  {name:"Cornstarch", category:"Pantry"},
+  {name:"Breadcrumbs", category:"Pantry"},
+  {name:"Sooji", category:"Pantry"},
+  {name:"Besan", category:"Pantry"},
+  {name:"Poha", category:"Pantry"},
+  {name:"Vermicelli", category:"Pantry"},
+  {name:"Chai Masala", category:"Pantry"},
+  {name:"Biryani Masala", category:"Pantry"},
+  {name:"Tandoori Masala", category:"Pantry"},
+  {name:"Curry Powder", category:"Pantry"},
+  {name:"Daal", category:"Pantry"},
+  {name:"Toor Daal", category:"Pantry"},
+  {name:"Moong Daal", category:"Pantry"},
+  {name:"Masoor Daal", category:"Pantry"},
+  {name:"Chana Daal", category:"Pantry"},
+
   {name:"Bread", category:"Bakery"},
   {name:"White Bread", category:"Bakery"},
   {name:"Wheat Bread", category:"Bakery"},
@@ -1095,6 +1379,7 @@ const grocerySuggestions = [
   {name:"Croissant", category:"Bakery"},
   {name:"Muffins", category:"Bakery"},
   {name:"Cake", category:"Bakery"},
+
   {name:"Cookies", category:"Snacks"},
   {name:"Chips", category:"Snacks"},
   {name:"Potato Chips", category:"Snacks"},
@@ -1113,6 +1398,7 @@ const grocerySuggestions = [
   {name:"Candy", category:"Snacks"},
   {name:"Granola Bars", category:"Snacks"},
   {name:"Protein Bars", category:"Snacks"},
+
   {name:"Ice Cream", category:"Frozen"},
   {name:"Frozen Pizza", category:"Frozen"},
   {name:"Frozen Fries", category:"Frozen"},
@@ -1125,6 +1411,8 @@ const grocerySuggestions = [
   {name:"Frozen Paratha", category:"Frozen"},
   {name:"Frozen Samosa", category:"Frozen"},
   {name:"Frozen Nuggets", category:"Frozen"},
+  {name:"Halal Nuggets", category:"Frozen"},
+
   {name:"Chicken", category:"Meat"},
   {name:"Chicken Breast", category:"Meat"},
   {name:"Chicken Thighs", category:"Meat"},
@@ -1136,12 +1424,18 @@ const grocerySuggestions = [
   {name:"Beef Cubes", category:"Meat"},
   {name:"Lamb", category:"Meat"},
   {name:"Ground Lamb", category:"Meat"},
+  {name:"Halal Chicken", category:"Meat"},
+  {name:"Halal Beef", category:"Meat"},
+  {name:"Halal Ground Beef", category:"Meat"},
+  {name:"Halal Lamb", category:"Meat"},
+
   {name:"Fish", category:"Seafood"},
   {name:"Salmon", category:"Seafood"},
   {name:"Tilapia", category:"Seafood"},
   {name:"Shrimp", category:"Seafood"},
   {name:"Tuna", category:"Seafood"},
   {name:"Sardines", category:"Seafood"},
+
   {name:"Soda", category:"Drinks"},
   {name:"Cola", category:"Drinks"},
   {name:"Diet Soda", category:"Drinks"},
@@ -1154,6 +1448,7 @@ const grocerySuggestions = [
   {name:"Mango Juice", category:"Drinks"},
   {name:"Cranberry Juice", category:"Drinks"},
   {name:"Tea", category:"Drinks"},
+  {name:"Tea Bags", category:"Drinks"},
   {name:"Green Tea", category:"Drinks"},
   {name:"Black Tea", category:"Drinks"},
   {name:"Coffee", category:"Drinks"},
@@ -1162,6 +1457,14 @@ const grocerySuggestions = [
   {name:"Hot Chocolate", category:"Drinks"},
   {name:"Energy Drink", category:"Drinks"},
   {name:"Sports Drink", category:"Drinks"},
+  {name:"Lemonade", category:"Drinks"},
+  {name:"Iced Tea", category:"Drinks"},
+  {name:"Coconut Water", category:"Drinks"},
+  {name:"Yogurt Drink", category:"Drinks"},
+  {name:"Smoothie", category:"Drinks"},
+  {name:"Lassi", category:"Drinks"},
+  {name:"Rooh Afza", category:"Drinks"},
+
   {name:"Paper Towels", category:"Household"},
   {name:"Toilet Paper", category:"Household"},
   {name:"Tissues", category:"Household"},
@@ -1182,6 +1485,7 @@ const grocerySuggestions = [
   {name:"Sponges", category:"Household"},
   {name:"Dish Scrub", category:"Household"},
   {name:"Hand Soap", category:"Household"},
+
   {name:"Body Wash", category:"Personal"},
   {name:"Shampoo", category:"Personal"},
   {name:"Conditioner", category:"Personal"},
@@ -1193,75 +1497,25 @@ const grocerySuggestions = [
   {name:"Shaving Cream", category:"Personal"},
   {name:"Lotion", category:"Personal"},
   {name:"Face Wash", category:"Personal"},
+
   {name:"Baby Diapers", category:"Baby"},
   {name:"Baby Wipes", category:"Baby"},
   {name:"Baby Formula", category:"Baby"},
   {name:"Baby Food", category:"Baby"},
   {name:"Baby Lotion", category:"Baby"},
   {name:"Baby Shampoo", category:"Baby"},
+
   {name:"Cat Food", category:"Pets"},
   {name:"Dog Food", category:"Pets"},
   {name:"Pet Treats", category:"Pets"},
   {name:"Cat Litter", category:"Pets"},
-  {name:"Lentils", category:"Pantry"},
-  {name:"Red Lentils", category:"Pantry"},
-  {name:"Green Lentils", category:"Pantry"},
-  {name:"Chickpeas", category:"Pantry"},
-  {name:"Black Beans", category:"Pantry"},
-  {name:"Kidney Beans", category:"Pantry"},
-  {name:"White Beans", category:"Pantry"},
-  {name:"Canned Corn", category:"Pantry"},
-  {name:"Canned Tomatoes", category:"Pantry"},
-  {name:"Canned Tuna", category:"Pantry"},
-  {name:"Soup", category:"Pantry"},
-  {name:"Chicken Broth", category:"Pantry"},
-  {name:"Vegetable Broth", category:"Pantry"},
-  {name:"Coconut Milk", category:"Pantry"},
-  {name:"Pickles", category:"Pantry"},
-  {name:"Olives", category:"Pantry"},
-  {name:"Raisins", category:"Pantry"},
-  {name:"Dried Cranberries", category:"Pantry"},
-  {name:"Baking Powder", category:"Pantry"},
-  {name:"Baking Soda", category:"Pantry"},
-  {name:"Yeast", category:"Pantry"},
-  {name:"Vanilla Extract", category:"Pantry"},
-  {name:"Cornstarch", category:"Pantry"},
-  {name:"Breadcrumbs", category:"Pantry"},
-  {name:"Tea Bags", category:"Drinks"},
-  {name:"Lemonade", category:"Drinks"},
-  {name:"Iced Tea", category:"Drinks"},
-  {name:"Coconut Water", category:"Drinks"},
-  {name:"Yogurt Drink", category:"Drinks"},
-  {name:"Smoothie", category:"Drinks"},
+
   {name:"Hummus", category:"Deli"},
   {name:"Salsa", category:"Deli"},
   {name:"Guacamole", category:"Deli"},
   {name:"Salad Mix", category:"Deli"},
   {name:"Coleslaw", category:"Deli"},
-  {name:"Rotisserie Chicken", category:"Deli"},
-  {name:"Halal Chicken", category:"Meat"},
-  {name:"Halal Beef", category:"Meat"},
-  {name:"Halal Ground Beef", category:"Meat"},
-  {name:"Halal Lamb", category:"Meat"},
-  {name:"Halal Nuggets", category:"Frozen"},
-  {name:"Paneer", category:"Dairy"},
-  {name:"Desi Yogurt", category:"Dairy"},
-  {name:"Lassi", category:"Drinks"},
-  {name:"Rooh Afza", category:"Drinks"},
-  {name:"Atta Flour", category:"Pantry"},
-  {name:"Sooji", category:"Pantry"},
-  {name:"Besan", category:"Pantry"},
-  {name:"Poha", category:"Pantry"},
-  {name:"Vermicelli", category:"Pantry"},
-  {name:"Chai Masala", category:"Pantry"},
-  {name:"Biryani Masala", category:"Pantry"},
-  {name:"Tandoori Masala", category:"Pantry"},
-  {name:"Curry Powder", category:"Pantry"},
-  {name:"Daal", category:"Pantry"},
-  {name:"Toor Daal", category:"Pantry"},
-  {name:"Moong Daal", category:"Pantry"},
-  {name:"Masoor Daal", category:"Pantry"},
-  {name:"Chana Daal", category:"Pantry"}
+  {name:"Rotisserie Chicken", category:"Deli"}
 ];
 
 /* =========================
@@ -1274,13 +1528,48 @@ function loadGroceryItems(){
   }catch(error){
     groceryItems = [];
   }
+
+  currentListName = localStorage.getItem(GROCERY_CURRENT_NAME_KEY) || "Quick Grocery List";
 }
 
 /* =========================
-   SAVE ITEMS
+   SAVE CURRENT ITEMS
 ========================= */
 function saveGroceryItems(){
   localStorage.setItem(GROCERY_STORAGE_KEY, JSON.stringify(groceryItems));
+  localStorage.setItem(GROCERY_CURRENT_NAME_KEY, currentListName);
+}
+
+/* =========================
+   LOAD SAVED LISTS
+========================= */
+function loadSavedGroceryLists(){
+  try{
+    const saved = localStorage.getItem(GROCERY_SAVED_LISTS_KEY);
+    savedGroceryLists = saved ? JSON.parse(saved) : [];
+    if(!Array.isArray(savedGroceryLists)){
+      savedGroceryLists = [];
+    }
+  }catch(error){
+    savedGroceryLists = [];
+  }
+}
+
+/* =========================
+   SAVE SAVED LISTS
+========================= */
+function saveSavedGroceryLists(){
+  localStorage.setItem(GROCERY_SAVED_LISTS_KEY, JSON.stringify(savedGroceryLists));
+}
+
+/* =========================
+   UPDATE CURRENT LIST NAME UI
+========================= */
+function updateCurrentListNameUI(){
+  const el = document.getElementById("currentListNameEl");
+  if(el){
+    el.textContent = currentListName || "Quick Grocery List";
+  }
 }
 
 /* =========================
@@ -1345,7 +1634,7 @@ function addItemFromInput(){
   }
 
   const newItem = {
-    id: Date.now().toString(),
+    id: Date.now().toString() + Math.random().toString(16).slice(2),
     name: name,
     quantity: qty,
     category: guessCategory(name),
@@ -1374,7 +1663,7 @@ function addSuggestionItem(name, category){
   const qtyValue = document.getElementById("qtyInput").value.trim() || "1";
 
   const newItem = {
-    id: Date.now().toString(),
+    id: Date.now().toString() + Math.random().toString(16).slice(2),
     name: name,
     quantity: qtyValue,
     category: category,
@@ -1487,6 +1776,528 @@ function saveEditItem(){
 }
 
 /* =========================
+   OPEN SAVE LIST MODAL
+========================= */
+function openSaveListModal(){
+  const input = document.getElementById("saveListNameInput");
+  input.value = currentListName || "";
+  document.getElementById("saveListModal").style.display = "flex";
+
+  setTimeout(function(){
+    input.focus();
+    input.select();
+  }, 150);
+}
+
+/* =========================
+   OPEN SAVE LIST FROM SAVED MODAL
+========================= */
+function openSaveListModalFromSaved(){
+  closeSavedListsModal();
+  openSaveListModal();
+}
+
+/* =========================
+   CLOSE SAVE LIST MODAL
+========================= */
+function closeSaveListModal(){
+  document.getElementById("saveListModal").style.display = "none";
+}
+
+/* =========================
+   SAVE CURRENT LIST AS NAMED LIST
+========================= */
+function saveCurrentListAsNamedList(){
+  const nameInput = document.getElementById("saveListNameInput");
+  const listName = nameInput.value.trim();
+
+  if(!listName){
+    showToast("Please enter list name");
+    return;
+  }
+
+  if(groceryItems.length === 0){
+    showToast("List is empty");
+    return;
+  }
+
+  loadSavedGroceryLists();
+
+  const cleanItems = groceryItems.map(function(item){
+    return {
+      id:item.id,
+      name:item.name,
+      quantity:item.quantity,
+      category:item.category,
+      bought:item.bought,
+      createdAt:item.createdAt || Date.now()
+    };
+  });
+
+  const existingIndex = savedGroceryLists.findIndex(function(list){
+    return normalizeText(list.name) === normalizeText(listName);
+  });
+
+  const savedList = {
+    id: existingIndex >= 0 ? savedGroceryLists[existingIndex].id : Date.now().toString(),
+    name: listName,
+    items: cleanItems,
+    updatedAt: new Date().toISOString(),
+    createdAt: existingIndex >= 0 ? savedGroceryLists[existingIndex].createdAt : new Date().toISOString()
+  };
+
+  if(existingIndex >= 0){
+    savedGroceryLists[existingIndex] = savedList;
+  }else{
+    savedGroceryLists.unshift(savedList);
+  }
+
+  currentListName = listName;
+
+  saveSavedGroceryLists();
+  saveGroceryItems();
+  updateCurrentListNameUI();
+  closeSaveListModal();
+  showToast("List saved");
+}
+
+/* =========================
+   OPEN SAVED LISTS MODAL
+========================= */
+function openSavedListsModal(){
+  loadSavedGroceryLists();
+  renderSavedLists();
+  document.getElementById("savedListsModal").style.display = "flex";
+}
+
+/* =========================
+   CLOSE SAVED LISTS MODAL
+========================= */
+function closeSavedListsModal(){
+  document.getElementById("savedListsModal").style.display = "none";
+}
+
+/* =========================
+   RENDER SAVED LISTS
+========================= */
+function renderSavedLists(){
+  const wrap = document.getElementById("savedListsWrap");
+  wrap.innerHTML = "";
+
+  if(savedGroceryLists.length === 0){
+    wrap.innerHTML = `
+      <div class="emptyState" style="display:block; margin-top:0;">
+        <div class="emptyIcon">📋</div>
+        <div class="emptyTitle">No saved lists yet</div>
+        <div class="emptyText">Tap Save List to keep your current grocery list for later.</div>
+      </div>
+    `;
+    return;
+  }
+
+  savedGroceryLists.forEach(function(list){
+    const total = Array.isArray(list.items) ? list.items.length : 0;
+    const bought = Array.isArray(list.items) ? list.items.filter(function(item){ return item.bought; }).length : 0;
+    const dateText = list.updatedAt ? new Date(list.updatedAt).toLocaleDateString() : "";
+
+    const card = document.createElement("div");
+    card.className = "savedListCard";
+
+    card.innerHTML = `
+      <div class="savedListInfo">
+        <div class="savedListName">${escapeHtml(list.name)}</div>
+        <div class="savedListMeta">${total} items • ${bought} bought • ${escapeHtml(dateText)}</div>
+      </div>
+
+      <div class="savedListActions">
+        <button class="savedActionBtn" onclick="openSavedGroceryList('${escapeJs(list.id)}')">Open</button>
+        <button class="savedActionBtn red" onclick="deleteSavedGroceryList('${escapeJs(list.id)}')">Delete</button>
+      </div>
+    `;
+
+    wrap.appendChild(card);
+  });
+}
+
+/* =========================
+   OPEN SAVED GROCERY LIST
+========================= */
+function openSavedGroceryList(listId){
+  const list = savedGroceryLists.find(function(item){
+    return item.id === listId;
+  });
+
+  if(!list){
+    showToast("Saved list not found");
+    return;
+  }
+
+  pendingConfirmAction = function(){
+    groceryItems = (list.items || []).map(function(item){
+      return {
+        id: Date.now().toString() + Math.random().toString(16).slice(2),
+        name: item.name,
+        quantity: item.quantity || "1",
+        category: item.category || guessCategory(item.name),
+        bought: Boolean(item.bought),
+        createdAt: item.createdAt || Date.now()
+      };
+    });
+
+    currentListName = list.name || "Saved Grocery List";
+
+    saveGroceryItems();
+    updateCurrentListNameUI();
+    renderGroceryList();
+    closeConfirmModal();
+    closeSavedListsModal();
+    showToast("Saved list opened");
+  };
+
+  openConfirmModal("Open saved list?", "This will replace the current list on screen. Save current list first if needed.", "Open");
+}
+
+/* =========================
+   DELETE SAVED GROCERY LIST
+========================= */
+function deleteSavedGroceryList(listId){
+  const list = savedGroceryLists.find(function(item){
+    return item.id === listId;
+  });
+
+  if(!list){
+    showToast("Saved list not found");
+    return;
+  }
+
+  pendingConfirmAction = function(){
+    savedGroceryLists = savedGroceryLists.filter(function(item){
+      return item.id !== listId;
+    });
+
+    saveSavedGroceryLists();
+    renderSavedLists();
+    closeConfirmModal();
+    showToast("Saved list deleted");
+  };
+
+  openConfirmModal("Delete saved list?", "This will delete “" + list.name + "” from saved lists only.", "Delete");
+}
+
+/* =========================
+   BUILD GROCERY SHARE TEXT
+========================= */
+function buildGroceryShareText(){
+  const sortedItems = getSortedItems();
+
+  if(sortedItems.length === 0){
+    return "";
+  }
+
+  const notBought = sortedItems.filter(function(item){
+    return !item.bought;
+  });
+
+  const bought = sortedItems.filter(function(item){
+    return item.bought;
+  });
+
+  let text = currentListName + "\n";
+  text += "Grocery List\n\n";
+
+  if(notBought.length > 0){
+    text += "Need to Buy:\n";
+    notBought.forEach(function(item){
+      text += "☐ " + item.name + " — " + item.quantity + "\n";
+    });
+    text += "\n";
+  }
+
+  if(bought.length > 0){
+    text += "Already Bought:\n";
+    bought.forEach(function(item){
+      text += "✓ " + item.name + " — " + item.quantity + "\n";
+    });
+    text += "\n";
+  }
+
+  text += buildGroceryImportCode();
+
+  return text;
+}
+
+/* =========================
+   BUILD GROCERY IMPORT CODE
+========================= */
+function buildGroceryImportCode(){
+  const cleanItems = groceryItems.map(function(item){
+    return {
+      name:item.name,
+      quantity:item.quantity,
+      category:item.category,
+      bought:item.bought
+    };
+  });
+
+  const payload = {
+    listName: currentListName,
+    items: cleanItems
+  };
+
+  const jsonText = JSON.stringify(payload);
+  const encodedText = btoa(unescape(encodeURIComponent(jsonText)));
+  const appLink = window.location.origin + window.location.pathname + "#groceryImport=" + encodedText;
+
+  return "\nOpen in Smart Tools Grocery App:\n" + appLink + "\n\nOr paste this import code inside Grocery app:\nSMART_TOOLS_GROCERY_LIST:" + encodedText;
+}
+
+/* =========================
+   SEND GROCERY LIST
+========================= */
+async function sendGroceryList(){
+  if(groceryItems.length === 0){
+    showToast("Your grocery list is empty");
+    return;
+  }
+
+  const shareText = buildGroceryShareText();
+
+  if(navigator.share){
+    try{
+      await navigator.share({
+        title: currentListName || "Grocery List",
+        text: shareText
+      });
+      showToast("Share menu opened");
+      return;
+    }catch(error){
+      console.log("Share cancelled or failed:", error);
+    }
+  }
+
+  try{
+    await navigator.clipboard.writeText(shareText);
+    showToast("Grocery list copied");
+  }catch(error){
+    alert(shareText);
+  }
+}
+
+/* =========================
+   OPEN IMPORT MODAL
+========================= */
+function openImportModal(){
+  document.getElementById("importTextInput").value = "";
+  document.getElementById("importModal").style.display = "flex";
+}
+
+/* =========================
+   CLOSE IMPORT MODAL
+========================= */
+function closeImportModal(){
+  document.getElementById("importModal").style.display = "none";
+}
+
+/* =========================
+   IMPORT GROCERY LIST FROM TEXT
+========================= */
+function importGroceryListFromText(){
+  const text = document.getElementById("importTextInput").value.trim();
+
+  if(!text){
+    showToast("Paste grocery list first");
+    return;
+  }
+
+  const imported = parseGroceryImportText(text);
+
+  if(imported.items.length === 0){
+    alert("No grocery items found. Please paste a valid shared grocery list.");
+    return;
+  }
+
+  addImportedGroceryItems(imported.items, imported.listName);
+  closeImportModal();
+  showToast("Grocery list imported");
+}
+
+/* =========================
+   PARSE GROCERY IMPORT TEXT
+========================= */
+function parseGroceryImportText(text){
+  try{
+    let code = "";
+
+    if(text.includes("SMART_TOOLS_GROCERY_LIST:")){
+      code = text.split("SMART_TOOLS_GROCERY_LIST:")[1].trim().split(/\s+/)[0];
+    }
+
+    if(text.includes("#groceryImport=")){
+      code = text.split("#groceryImport=")[1].trim().split(/\s+/)[0];
+    }
+
+    if(code){
+      const jsonText = decodeURIComponent(escape(atob(code)));
+      const parsed = JSON.parse(jsonText);
+
+      if(Array.isArray(parsed)){
+        return {
+          listName:"Imported Grocery List",
+          items:cleanImportedItems(parsed)
+        };
+      }
+
+      if(parsed && Array.isArray(parsed.items)){
+        return {
+          listName: parsed.listName || "Imported Grocery List",
+          items: cleanImportedItems(parsed.items)
+        };
+      }
+    }
+  }catch(error){
+    console.log("Import code failed:", error);
+  }
+
+  return {
+    listName:"Imported Grocery List",
+    items:parsePlainGroceryText(text)
+  };
+}
+
+/* =========================
+   CLEAN IMPORTED ITEMS
+========================= */
+function cleanImportedItems(items){
+  return items.map(function(item){
+    return {
+      name:String(item.name || "").trim(),
+      quantity:String(item.quantity || "1").trim(),
+      category:String(item.category || guessCategory(item.name || "Other")).trim(),
+      bought:Boolean(item.bought)
+    };
+  }).filter(function(item){
+    return item.name;
+  });
+}
+
+/* =========================
+   PARSE NORMAL TEXT LIST
+========================= */
+function parsePlainGroceryText(text){
+  const lines = text.split(/\n+/);
+  const items = [];
+
+  lines.forEach(function(line){
+    let cleanLine = line.trim();
+
+    if(!cleanLine){ return; }
+
+    const lowerLine = cleanLine.toLowerCase();
+
+    if(lowerLine.includes("grocery list")){ return; }
+    if(lowerLine.includes("need to buy")){ return; }
+    if(lowerLine.includes("already bought")){ return; }
+    if(lowerLine.includes("open in smart tools")){ return; }
+    if(lowerLine.includes("smart_tools_grocery_list")){ return; }
+    if(cleanLine.includes("#groceryImport=")){ return; }
+
+    let bought = false;
+
+    if(cleanLine.startsWith("✓")){
+      bought = true;
+    }
+
+    cleanLine = cleanLine
+      .replace(/^☐/,"")
+      .replace(/^✓/,"")
+      .replace(/^-/,"")
+      .replace(/^•/,"")
+      .trim();
+
+    let name = cleanLine;
+    let quantity = "1";
+
+    if(cleanLine.includes("—")){
+      const parts = cleanLine.split("—");
+      name = parts[0].trim();
+      quantity = parts.slice(1).join("—").trim() || "1";
+    }else if(cleanLine.includes("-")){
+      const parts = cleanLine.split("-");
+      name = parts[0].trim();
+      quantity = parts.slice(1).join("-").trim() || "1";
+    }
+
+    if(name){
+      items.push({
+        name:name,
+        quantity:quantity,
+        category:guessCategory(name),
+        bought:bought
+      });
+    }
+  });
+
+  return items;
+}
+
+/* =========================
+   ADD IMPORTED GROCERY ITEMS
+========================= */
+function addImportedGroceryItems(importedItems, importedListName){
+  importedItems.forEach(function(item){
+    groceryItems.push({
+      id:Date.now().toString() + Math.random().toString(16).slice(2),
+      name:item.name,
+      quantity:item.quantity || "1",
+      category:item.category || guessCategory(item.name),
+      bought:Boolean(item.bought),
+      createdAt:Date.now()
+    });
+  });
+
+  if(importedListName){
+    currentListName = importedListName;
+  }
+
+  saveGroceryItems();
+  updateCurrentListNameUI();
+  renderGroceryList();
+}
+
+/* =========================
+   CHECK URL FOR SHARED GROCERY LIST
+========================= */
+function checkSharedGroceryListFromUrl(){
+  if(!window.location.hash.includes("groceryImport=")){
+    return;
+  }
+
+  const code = window.location.hash.split("groceryImport=")[1];
+
+  if(!code){
+    return;
+  }
+
+  const confirmed = confirm("Import shared grocery list into this phone?");
+
+  if(!confirmed){
+    window.history.replaceState({}, document.title, window.location.pathname);
+    return;
+  }
+
+  const imported = parseGroceryImportText("#groceryImport=" + code);
+
+  if(imported.items.length > 0){
+    addImportedGroceryItems(imported.items, imported.listName);
+    showToast("Shared list imported");
+  }else{
+    alert("Could not import this grocery list.");
+  }
+
+  window.history.replaceState({}, document.title, window.location.pathname);
+}
+
+/* =========================
    CLEAR BOUGHT ITEMS
 ========================= */
 function clearAllBought(){
@@ -1524,13 +2335,15 @@ function confirmClearAll(){
 
   pendingConfirmAction = function(){
     groceryItems = [];
+    currentListName = "Quick Grocery List";
     saveGroceryItems();
+    updateCurrentListNameUI();
     renderGroceryList();
     closeConfirmModal();
     showToast("All items cleared");
   };
 
-  openConfirmModal("Clear full list?", "This will remove every grocery item.", "Clear All");
+  openConfirmModal("Clear full list?", "This will remove every grocery item from the current screen.", "Clear All");
 }
 
 /* =========================
@@ -1600,7 +2413,7 @@ function renderGroceryList(){
     card.className = "groceryItem" + (item.bought ? " bought" : "");
 
     card.innerHTML = `
-      <button class="checkBtn" onclick="toggleBought('${item.id}')">${item.bought ? "✓" : ""}</button>
+      <button class="checkBtn" onclick="toggleBought('${escapeJs(item.id)}')">${item.bought ? "✓" : ""}</button>
 
       <div class="itemInfo">
         <div class="itemName">${escapeHtml(item.name)}</div>
@@ -1611,8 +2424,8 @@ function renderGroceryList(){
       </div>
 
       <div class="itemActions">
-        <button class="iconBtn" onclick="openEditModal('${item.id}')">✎</button>
-        <button class="iconBtn delete" onclick="deleteItem('${item.id}')">🗑</button>
+        <button class="iconBtn" onclick="openEditModal('${escapeJs(item.id)}')">✎</button>
+        <button class="iconBtn delete" onclick="deleteItem('${escapeJs(item.id)}')">🗑</button>
       </div>
     `;
 
@@ -1620,6 +2433,7 @@ function renderGroceryList(){
   });
 
   updateStats();
+  updateCurrentListNameUI();
 }
 
 /* =========================
@@ -1649,11 +2463,15 @@ function showSuggestions(searchText){
     return;
   }
 
-  const matches = grocerySuggestions
-    .filter(function(item){
-      return normalizeText(item.name).includes(query);
-    })
-    .slice(0, 35);
+  const startsWithMatches = grocerySuggestions.filter(function(item){
+    return normalizeText(item.name).startsWith(query);
+  });
+
+  const includesMatches = grocerySuggestions.filter(function(item){
+    return !normalizeText(item.name).startsWith(query) && normalizeText(item.name).includes(query);
+  });
+
+  const matches = startsWithMatches.concat(includesMatches).slice(0, 35);
 
   if(matches.length === 0){
     box.style.display = "block";
@@ -1756,9 +2574,15 @@ document.getElementById("qtyInput").addEventListener("keydown", function(event){
   }
 });
 
+document.getElementById("saveListNameInput").addEventListener("keydown", function(event){
+  if(event.key === "Enter"){
+    saveCurrentListAsNamedList();
+  }
+});
+
 document.addEventListener("click", function(event){
   const addCard = document.querySelector(".addCard");
-  if(!addCard.contains(event.target)){
+  if(addCard && !addCard.contains(event.target)){
     hideSuggestions();
   }
 });
@@ -1767,7 +2591,9 @@ document.addEventListener("click", function(event){
    INIT APP
 ========================= */
 loadGroceryItems();
+loadSavedGroceryLists();
 renderGroceryList();
+checkSharedGroceryListFromUrl();
 </script>
 
 </body>
