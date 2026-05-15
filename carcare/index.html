@@ -710,6 +710,31 @@
       color: #64748b;
     }
 
+
+
+    /* =========================
+       MILEAGE TRACKER
+    ========================= */
+    .mileage-full-btn { grid-column: 1 / -1; }
+    .mileage-type-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:18px; }
+    .mileage-type-btn { border:2px solid #e5e7eb; min-height:58px; border-radius:18px; background:#f8fafc; color:#334155; font-size:16px; font-weight:900; cursor:pointer; }
+    .mileage-type-btn.active { border-color:#2563eb; background:linear-gradient(135deg,#2563eb 0%,#7c3aed 100%); color:white; box-shadow:0 10px 22px rgba(37,99,235,0.20); }
+    .mileage-section { display:none; }
+    .mileage-section.show { display:block; }
+    .mileage-result-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-top:18px; }
+    .mileage-result-box { border-radius:20px; padding:16px; background:#f8fafc; border:1px solid #eef2f7; text-align:center; }
+    .mileage-result-number { font-size:20px; font-weight:900; color:#2563eb; margin-bottom:6px; word-break:break-word; line-height:1.2; }
+    .mileage-result-label { font-size:11px; font-weight:900; text-transform:uppercase; letter-spacing:0.4px; color:#64748b; line-height:1.35; }
+    .mileage-status-card { margin-top:18px; border-radius:22px; padding:18px; background:linear-gradient(135deg,#dcfce7 0%,#f0fdf4 100%); border:1px solid #bbf7d0; color:#166534; font-size:18px; font-weight:900; text-align:center; line-height:1.45; }
+    .mileage-status-card.over { background:linear-gradient(135deg,#fee2e2 0%,#fff7ed 100%); border-color:#fecaca; color:#991b1b; }
+    .mileage-status-card.soon { background:linear-gradient(135deg,#fef3c7 0%,#fff7ed 100%); border-color:#fde68a; color:#92400e; }
+    .mileage-history-list { display:flex; flex-direction:column; gap:12px; margin-top:14px; }
+    .mileage-history-card { border:1px solid rgba(15,23,42,0.08); background:linear-gradient(180deg,#ffffff 0%,#f8fafc 100%); border-radius:20px; padding:15px; display:flex; justify-content:space-between; gap:14px; align-items:center; box-shadow:0 10px 22px rgba(15,23,42,0.07); }
+    .mileage-history-main { min-width:0; }
+    .mileage-history-title { font-size:17px; font-weight:900; color:#111827; margin-bottom:5px; }
+    .mileage-history-sub { font-size:14px; font-weight:800; color:#64748b; line-height:1.35; }
+    .small-delete-btn { border:none; width:42px; height:42px; border-radius:50%; background:#fee2e2; color:#991b1b; font-size:18px; font-weight:900; cursor:pointer; flex-shrink:0; }
+
     /* =========================
        MODALS / POPUPS
     ========================= */
@@ -928,6 +953,21 @@
       color: #f8fafc;
     }
 
+
+
+    body.smart-tools-dark-theme .mileage-result-box,
+    body.smart-tools-dark-theme .mileage-history-card {
+      background: linear-gradient(180deg, rgba(30,41,59,0.88), rgba(15,23,42,0.84));
+      border-color: rgba(148,163,184,0.20);
+      color: #f8fafc;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 14px 34px rgba(0,0,0,0.22);
+    }
+    body.smart-tools-dark-theme .mileage-history-title { color:#f8fafc; }
+    body.smart-tools-dark-theme .mileage-result-label,
+    body.smart-tools-dark-theme .mileage-history-sub { color:#cbd5e1; }
+    body.smart-tools-dark-theme .mileage-type-btn { background:rgba(15,23,42,0.82); color:#cbd5e1; border-color:rgba(148,163,184,0.30); }
+    body.smart-tools-dark-theme .mileage-type-btn.active { background:linear-gradient(135deg,#2563eb 0%,#7c3aed 100%); color:white; }
+
     /* =========================
        RESPONSIVE
     ========================= */
@@ -937,7 +977,8 @@
         grid-template-columns: 1fr;
       }
 
-      .report-grid {
+      .report-grid,
+      .mileage-result-grid {
         grid-template-columns: repeat(2, 1fr);
       }
 
@@ -992,6 +1033,8 @@
       .profile-grid,
       .detail-grid,
       .report-grid,
+      .mileage-result-grid,
+      .mileage-type-row,
       .mini-grid-2,
       .main-actions,
       .details-action-row {
@@ -1172,13 +1215,14 @@
         <button id="profileTabBtn" class="detail-option-btn" onclick="showCarTab('profile')">Profile</button>
         <button id="remindersTabBtn" class="detail-option-btn" onclick="showCarTab('reminders')">Reminders</button>
         <button id="reportsTabBtn" class="detail-option-btn" onclick="showCarTab('reports')">Report</button>
+        <button id="mileageTabBtn" class="detail-option-btn mileage-full-btn" onclick="showCarTab('mileage')">Mileage Tracker</button>
       </div>
 
       <div id="emptyDetailPrompt" class="empty-detail-prompt">
         <div class="card">
           <div class="card-title">Choose Option</div>
           <div class="card-subtitle" style="margin-bottom:0;">
-            Tap View Serv., Profile, Reminders, or Report above to show details here.
+            Tap View Serv., Profile, Reminders, Report, or Mileage Tracker above to show details here.
           </div>
         </div>
       </div>
@@ -1337,6 +1381,62 @@
           <div class="button-row">
             <button class="action-btn save-btn" onclick="downloadSelectedCarCSV()">Download CSV</button>
             <button class="action-btn dark-btn" onclick="window.print()">Print / Save PDF</button>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- =========================
+           MILEAGE TRACKER TAB
+      ========================= -->
+      <div id="mileageTabPanel" class="tab-panel">
+        <div class="two-col-layout">
+          <div>
+            <div class="card">
+              <div class="card-title">Mileage Tracker</div>
+              <div class="card-subtitle">Choose Lease for over-mile tracking, or Paid Off / No Limit for normal ODO history.</div>
+
+              <div class="form-label">Mileage Tracker Type</div>
+              <div class="mileage-type-row">
+                <button id="mileageTypeLeaseBtn" class="mileage-type-btn" onclick="setMileageTrackerTypeUI('lease')">Lease</button>
+                <button id="mileageTypePaidBtn" class="mileage-type-btn" onclick="setMileageTrackerTypeUI('paid')">Paid Off / No Limit</button>
+              </div>
+
+              <div class="form-label">Actual ODO Mileage</div>
+              <input id="mileageActualOdoInput" class="car-input" type="number" inputmode="decimal" placeholder="14650">
+
+              <div class="form-label">Mileage Update Date</div>
+              <input id="mileageUpdateDateInput" class="car-input" type="date">
+
+              <div id="leaseMileageSection" class="mileage-section">
+                <div class="mini-grid-2">
+                  <div><div class="form-label">Lease Start Date</div><input id="leaseStartDateInput" class="car-input" type="date"></div>
+                  <div><div class="form-label">Lease Months</div><input id="leaseMonthsInput" class="car-input" type="number" inputmode="numeric" placeholder="36"></div>
+                </div>
+                <div class="mini-grid-2">
+                  <div><div class="form-label">Allowed Miles Total</div><input id="leaseAllowedMilesInput" class="car-input" type="number" inputmode="numeric" placeholder="30000"></div>
+                  <div><div class="form-label">Over-Mile Charge</div><input id="leaseOverMileRateInput" class="car-input" type="number" inputmode="decimal" step="0.01" placeholder="0.15"></div>
+                </div>
+              </div>
+
+              <div class="button-row">
+                <button class="action-btn save-btn" onclick="saveMileageTracker()">Save Mileage</button>
+                <button class="action-btn purple-btn" onclick="addMileageHistoryEntry()">＋ Add to History</button>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div class="card">
+              <div class="card-title">Mileage Results</div>
+              <div class="card-subtitle">Live calculation based on the saved mileage settings for this car.</div>
+              <div id="mileageStatusCard" class="mileage-status-card">Save mileage details to see results.</div>
+              <div id="mileageResultGrid" class="mileage-result-grid"></div>
+            </div>
+            <div class="card">
+              <div class="card-title">Mileage History</div>
+              <div class="card-subtitle">Saved ODO updates for this car.</div>
+              <div id="mileageHistoryList" class="mileage-history-list"></div>
+            </div>
           </div>
         </div>
       </div>
@@ -1507,6 +1607,7 @@
     let openedServiceId = null;
     let openedReminderId = null;
     let currentCarTab = "";
+    let currentMileageType = "paid";
 
     // =========================
     // DEFAULT DATA
@@ -1527,6 +1628,7 @@
             inspectionExpiry: "",
             currentMileage: "",
             notes: "",
+            mileageTracker: getDefaultMileageTracker("lease"),
             services: [],
             reminders: []
           },
@@ -1543,6 +1645,7 @@
             inspectionExpiry: "",
             currentMileage: "",
             notes: "",
+            mileageTracker: getDefaultMileageTracker("paid"),
             services: [],
             reminders: []
           }
@@ -1628,6 +1731,7 @@
           inspectionExpiry: car.inspectionExpiry || "",
           currentMileage: car.currentMileage || "",
           notes: car.notes || "",
+          mileageTracker: normalizeMileageTracker(car.mileageTracker),
           services: Array.isArray(car.services) ? car.services : [],
           reminders: Array.isArray(car.reminders) ? car.reminders : []
         }));
@@ -1775,7 +1879,7 @@
     // HIDE ALL CAR TABS
     // =========================
     function hideAllCarTabs() {
-      const tabs = ["services", "profile", "reminders", "reports"];
+      const tabs = ["services", "profile", "reminders", "reports", "mileage"];
 
       tabs.forEach(tab => {
         const btn = document.getElementById(tab + "TabBtn");
@@ -1795,7 +1899,7 @@
     function showCarTab(tabName) {
       currentCarTab = tabName;
 
-      const tabs = ["services", "profile", "reminders", "reports"];
+      const tabs = ["services", "profile", "reminders", "reports", "mileage"];
 
       tabs.forEach(tab => {
         const btn = document.getElementById(tab + "TabBtn");
@@ -1831,6 +1935,7 @@
       renderProfileGrid(car);
       renderReminderList(car);
       renderReportGrid(car);
+      renderMileageTracker(car);
 
       applySmartToolsTheme();
     }
@@ -2269,6 +2374,7 @@
         data.cars.unshift({
           id: "car_" + Date.now() + "_" + Math.random().toString(16).slice(2),
           ...carInfo,
+          mileageTracker: getDefaultMileageTracker("paid"),
           services: [],
           reminders: []
         });
@@ -2701,6 +2807,187 @@
       };
     }
 
+
+    // =========================
+    // DEFAULT MILEAGE TRACKER
+    // =========================
+    function getDefaultMileageTracker(type) {
+      return { type: type || "paid", leaseStartDate: type === "lease" ? "2024-12-10" : "", leaseMonths: "36", allowedMiles: "30000", actualOdo: type === "lease" ? "14650" : "", overMileRate: "0.15", updateDate: getTodayDateString(), history: [] };
+    }
+
+    // =========================
+    // NORMALIZE MILEAGE TRACKER
+    // =========================
+    function normalizeMileageTracker(tracker) {
+      const base = getDefaultMileageTracker("paid");
+      if (!tracker || typeof tracker !== "object") return base;
+      return { type: tracker.type === "lease" ? "lease" : "paid", leaseStartDate: tracker.leaseStartDate || "", leaseMonths: tracker.leaseMonths || "36", allowedMiles: tracker.allowedMiles || "30000", actualOdo: tracker.actualOdo || "", overMileRate: tracker.overMileRate || "0.15", updateDate: tracker.updateDate || getTodayDateString(), history: Array.isArray(tracker.history) ? tracker.history : [] };
+    }
+
+    // =========================
+    // SET MILEAGE TRACKER TYPE UI
+    // =========================
+    function setMileageTrackerTypeUI(type) {
+      currentMileageType = type === "lease" ? "lease" : "paid";
+      const leaseBtn = document.getElementById("mileageTypeLeaseBtn");
+      const paidBtn = document.getElementById("mileageTypePaidBtn");
+      const leaseSection = document.getElementById("leaseMileageSection");
+      if (leaseBtn) leaseBtn.classList.toggle("active", currentMileageType === "lease");
+      if (paidBtn) paidBtn.classList.toggle("active", currentMileageType === "paid");
+      if (leaseSection) leaseSection.classList.toggle("show", currentMileageType === "lease");
+      renderMileageLivePreview();
+    }
+
+    // =========================
+    // RENDER MILEAGE TRACKER
+    // =========================
+    function renderMileageTracker(car) {
+      if (!car) return;
+      const tracker = normalizeMileageTracker(car.mileageTracker);
+      currentMileageType = tracker.type;
+      setValue("mileageActualOdoInput", tracker.actualOdo || "");
+      setValue("mileageUpdateDateInput", tracker.updateDate || getTodayDateString());
+      setValue("leaseStartDateInput", tracker.leaseStartDate || "");
+      setValue("leaseMonthsInput", tracker.leaseMonths || "36");
+      setValue("leaseAllowedMilesInput", tracker.allowedMiles || "30000");
+      setValue("leaseOverMileRateInput", tracker.overMileRate || "0.15");
+      setMileageTrackerTypeUI(tracker.type);
+      renderMileageHistory(tracker);
+      renderMileageLivePreview();
+    }
+
+    // =========================
+    // SAVE MILEAGE TRACKER
+    // =========================
+    function saveMileageTracker() {
+      if (!selectedCarId) return;
+      const data = getCarData();
+      const car = data.cars.find(item => item.id === selectedCarId);
+      if (!car) return;
+      const oldTracker = normalizeMileageTracker(car.mileageTracker);
+      car.mileageTracker = { ...oldTracker, type: currentMileageType, actualOdo: getValue("mileageActualOdoInput"), updateDate: getValue("mileageUpdateDateInput") || getTodayDateString(), leaseStartDate: getValue("leaseStartDateInput"), leaseMonths: getValue("leaseMonthsInput") || "36", allowedMiles: getValue("leaseAllowedMilesInput") || "30000", overMileRate: getValue("leaseOverMileRateInput") || "0.15" };
+      const odoNumber = parseFloat(car.mileageTracker.actualOdo || "0");
+      const carMileageNumber = parseFloat(car.currentMileage || "0");
+      if (!isNaN(odoNumber) && odoNumber > carMileageNumber) car.currentMileage = String(odoNumber);
+      saveCarData(data);
+      renderCarDetailsPage();
+      renderCarMainPage();
+      alert("Mileage saved.");
+    }
+
+    // =========================
+    // ADD MILEAGE HISTORY ENTRY
+    // =========================
+    function addMileageHistoryEntry() {
+      if (!selectedCarId) return;
+      const actualOdo = getValue("mileageActualOdoInput");
+      const updateDate = getValue("mileageUpdateDateInput") || getTodayDateString();
+      if (!actualOdo) { alert("Please enter actual ODO mileage first."); return; }
+      const data = getCarData();
+      const car = data.cars.find(item => item.id === selectedCarId);
+      if (!car) return;
+      const tracker = normalizeMileageTracker(car.mileageTracker);
+      tracker.type = currentMileageType;
+      tracker.actualOdo = actualOdo;
+      tracker.updateDate = updateDate;
+      tracker.leaseStartDate = getValue("leaseStartDateInput");
+      tracker.leaseMonths = getValue("leaseMonthsInput") || "36";
+      tracker.allowedMiles = getValue("leaseAllowedMilesInput") || "30000";
+      tracker.overMileRate = getValue("leaseOverMileRateInput") || "0.15";
+      tracker.history.unshift({ id: "mileage_" + Date.now() + "_" + Math.random().toString(16).slice(2), date: updateDate, odo: actualOdo, type: currentMileageType, createdAt: new Date().toISOString() });
+      const odoNumber = parseFloat(actualOdo || "0");
+      const carMileageNumber = parseFloat(car.currentMileage || "0");
+      if (!isNaN(odoNumber) && odoNumber > carMileageNumber) car.currentMileage = String(odoNumber);
+      car.mileageTracker = tracker;
+      saveCarData(data);
+      renderCarDetailsPage();
+      renderCarMainPage();
+      alert("Mileage history added.");
+    }
+
+    // =========================
+    // DELETE MILEAGE HISTORY ENTRY
+    // =========================
+    function deleteMileageHistoryEntry(historyId) {
+      if (!selectedCarId) return;
+      const confirmDelete = confirm("Delete this mileage history entry?");
+      if (!confirmDelete) return;
+      const data = getCarData();
+      const car = data.cars.find(item => item.id === selectedCarId);
+      if (!car) return;
+      const tracker = normalizeMileageTracker(car.mileageTracker);
+      tracker.history = tracker.history.filter(item => item.id !== historyId);
+      car.mileageTracker = tracker;
+      saveCarData(data);
+      renderCarDetailsPage();
+    }
+
+    // =========================
+    // RENDER MILEAGE HISTORY
+    // =========================
+    function renderMileageHistory(tracker) {
+      const list = document.getElementById("mileageHistoryList");
+      if (!list) return;
+      const history = Array.isArray(tracker.history) ? tracker.history : [];
+      if (history.length === 0) { list.innerHTML = `<div class="empty-service-box">No mileage history yet.<br>Enter ODO mileage and tap Add to History.</div>`; return; }
+      list.innerHTML = history.map(item => `<div class="mileage-history-card"><div class="mileage-history-main"><div class="mileage-history-title">${escapeHtml(formatNumber(item.odo))} miles</div><div class="mileage-history-sub">${escapeHtml(formatServiceDate(item.date))} • ${escapeHtml(item.type === "lease" ? "Lease" : "Paid Off / No Limit")}</div></div><button class="small-delete-btn" onclick="deleteMileageHistoryEntry('${item.id}')">×</button></div>`).join("");
+    }
+
+    // =========================
+    // RENDER MILEAGE LIVE PREVIEW
+    // =========================
+    function renderMileageLivePreview() {
+      const resultGrid = document.getElementById("mileageResultGrid");
+      const statusCard = document.getElementById("mileageStatusCard");
+      if (!resultGrid || !statusCard) return;
+      const tracker = { type: currentMileageType, actualOdo: getValue("mileageActualOdoInput"), updateDate: getValue("mileageUpdateDateInput") || getTodayDateString(), leaseStartDate: getValue("leaseStartDateInput"), leaseMonths: getValue("leaseMonthsInput") || "36", allowedMiles: getValue("leaseAllowedMilesInput") || "30000", overMileRate: getValue("leaseOverMileRateInput") || "0.15" };
+      if (tracker.type === "lease") renderLeaseMileageResults(tracker, resultGrid, statusCard);
+      else renderPaidMileageResults(tracker, resultGrid, statusCard);
+    }
+
+    // =========================
+    // RENDER LEASE MILEAGE RESULTS
+    // =========================
+    function renderLeaseMileageResults(tracker, resultGrid, statusCard) {
+      const actualOdo = parseFloat(tracker.actualOdo || "0");
+      const allowedMiles = parseFloat(tracker.allowedMiles || "30000");
+      const leaseMonths = parseInt(tracker.leaseMonths || "36", 10);
+      const overRate = parseFloat(tracker.overMileRate || "0.15");
+      const startDate = parseLocalDate(tracker.leaseStartDate);
+      const today = new Date(); today.setHours(0,0,0,0);
+      if (!startDate || !actualOdo || !allowedMiles || !leaseMonths || isNaN(overRate)) { statusCard.className = "mileage-status-card soon"; statusCard.innerText = "Enter lease start date, actual ODO, allowed miles, lease months, and over-mile charge."; resultGrid.innerHTML = ""; return; }
+      const endDate = new Date(startDate.getTime()); endDate.setMonth(endDate.getMonth() + leaseMonths);
+      const totalLeaseDays = Math.max(1, Math.round((endDate - startDate) / 86400000));
+      const daysUsed = Math.max(0, Math.round((today - startDate) / 86400000));
+      const dailyAllowed = allowedMiles / totalLeaseDays;
+      const milesShouldBe = dailyAllowed * daysUsed;
+      const overUnder = actualOdo - milesShouldBe;
+      const overNow = Math.max(0, overUnder);
+      const moneyNow = overNow * overRate;
+      const actualDaily = daysUsed > 0 ? actualOdo / daysUsed : 0;
+      const trendEndMiles = actualDaily * totalLeaseDays;
+      const projectedOver = Math.max(0, trendEndMiles - allowedMiles);
+      const moneyAtEnd = projectedOver * overRate;
+      if (overUnder > 0) { statusCard.className = "mileage-status-card over"; statusCard.innerText = formatNumber(overUnder) + " miles over right now • Estimated charge now " + formatMoney(moneyNow); }
+      else { statusCard.className = "mileage-status-card"; statusCard.innerText = formatNumber(Math.abs(overUnder)) + " miles under right now • No over-mile charge now"; }
+      resultGrid.innerHTML = `<div class="mileage-result-box"><div class="mileage-result-number">${escapeHtml(formatServiceDate(tracker.leaseStartDate))}</div><div class="mileage-result-label">Lease Start Date</div></div><div class="mileage-result-box"><div class="mileage-result-number">${escapeHtml(formatServiceDate(dateToInputValue(endDate)))}</div><div class="mileage-result-label">Lease End Date</div></div><div class="mileage-result-box"><div class="mileage-result-number">${formatNumber(daysUsed)}</div><div class="mileage-result-label">Number of Days Till Today</div></div><div class="mileage-result-box"><div class="mileage-result-number">${formatNumber(milesShouldBe)}</div><div class="mileage-result-label">Miles Should Be</div></div><div class="mileage-result-box"><div class="mileage-result-number">${formatNumber(actualOdo)}</div><div class="mileage-result-label">Change ODO Actual</div></div><div class="mileage-result-box"><div class="mileage-result-number">${formatNumber(Math.abs(overUnder))} ${overUnder > 0 ? "Over" : "Under"}</div><div class="mileage-result-label">Over or Under</div></div><div class="mileage-result-box"><div class="mileage-result-number">${formatMoney(moneyNow)}</div><div class="mileage-result-label">Money to Pay Now</div></div><div class="mileage-result-box"><div class="mileage-result-number">${formatNumber(trendEndMiles)}</div><div class="mileage-result-label">If This Trend End Miles Will Be</div></div><div class="mileage-result-box"><div class="mileage-result-number">${formatMoney(moneyAtEnd)}</div><div class="mileage-result-label">Money to Pay at End of Lease</div></div>`;
+    }
+
+    // =========================
+    // RENDER PAID MILEAGE RESULTS
+    // =========================
+    function renderPaidMileageResults(tracker, resultGrid, statusCard) {
+      const actualOdo = parseFloat(tracker.actualOdo || "0");
+      const updateDate = parseLocalDate(tracker.updateDate);
+      const today = new Date(); today.setHours(0,0,0,0);
+      if (!actualOdo) { statusCard.className = "mileage-status-card soon"; statusCard.innerText = "Enter current ODO mileage for this paid off / no limit car."; resultGrid.innerHTML = ""; return; }
+      let daysSinceUpdate = 0;
+      if (updateDate) daysSinceUpdate = Math.max(0, Math.round((today - updateDate) / 86400000));
+      statusCard.className = "mileage-status-card";
+      statusCard.innerText = "Paid off / no limit car • No over-mile penalty";
+      resultGrid.innerHTML = `<div class="mileage-result-box"><div class="mileage-result-number">${formatNumber(actualOdo)}</div><div class="mileage-result-label">Current ODO</div></div><div class="mileage-result-box"><div class="mileage-result-number">${escapeHtml(formatServiceDate(tracker.updateDate))}</div><div class="mileage-result-label">Last Mileage Update</div></div><div class="mileage-result-box"><div class="mileage-result-number">${formatNumber(daysSinceUpdate)}</div><div class="mileage-result-label">Days Since Update</div></div><div class="mileage-result-box"><div class="mileage-result-number">$0</div><div class="mileage-result-label">Over-Mile Charge</div></div><div class="mileage-result-box"><div class="mileage-result-number">No Limit</div><div class="mileage-result-label">Mileage Limit</div></div><div class="mileage-result-box"><div class="mileage-result-number">Saved</div><div class="mileage-result-label">Mileage Record</div></div>`;
+    }
+
     // =========================
     // DOWNLOAD SELECTED CAR CSV
     // =========================
@@ -2895,6 +3182,34 @@
         .toLowerCase();
     }
 
+
+    // =========================
+    // PARSE LOCAL DATE
+    // =========================
+    function parseLocalDate(value) {
+      if (!value) return null;
+      const parts = String(value).split("-");
+      if (parts.length !== 3) return null;
+      const year = parseInt(parts[0], 10);
+      const month = parseInt(parts[1], 10) - 1;
+      const day = parseInt(parts[2], 10);
+      const date = new Date(year, month, day);
+      date.setHours(0, 0, 0, 0);
+      if (isNaN(date.getTime())) return null;
+      return date;
+    }
+
+    // =========================
+    // DATE TO INPUT VALUE
+    // =========================
+    function dateToInputValue(date) {
+      if (!date || isNaN(date.getTime())) return "";
+      const yyyy = date.getFullYear();
+      const mm = String(date.getMonth() + 1).padStart(2, "0");
+      const dd = String(date.getDate()).padStart(2, "0");
+      return yyyy + "-" + mm + "-" + dd;
+    }
+
     // =========================
     // GET TODAY DATE STRING
     // =========================
@@ -2941,6 +3256,16 @@
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&#039;");
     }
+
+
+    // =========================
+    // MILEAGE INPUT LIVE UPDATE
+    // =========================
+    document.addEventListener("input", function(event) {
+      if (event.target && event.target.id && (event.target.id.includes("mileage") || event.target.id.includes("lease"))) {
+        renderMileageLivePreview();
+      }
+    });
 
     // =========================
     // CLOSE MODAL WHEN CLICKING BACKDROP
