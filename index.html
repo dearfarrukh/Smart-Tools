@@ -9,8 +9,8 @@
   <meta name="apple-mobile-web-app-title" content="Smart Tools">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
 
-  <link rel="apple-touch-icon" href="images/icon.png?v=20260515-main-tools1">
-  <link rel="icon" type="image/png" href="images/icon.png?v=20260515-main-tools1">
+  <link rel="apple-touch-icon" href="images/icon.png?v=20260515-security1">
+  <link rel="icon" type="image/png" href="images/icon.png?v=20260515-security1">
 
   <meta charset="UTF-8" />
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
@@ -464,26 +464,18 @@
     }
 
     body.smart-tools-color-theme .dashboard-tool-card:nth-child(5) {
-      background: linear-gradient(135deg, #eef2ff, #ffffff);
-    }
-
-    body.smart-tools-color-theme .dashboard-tool-card:nth-child(6) {
-      background: linear-gradient(135deg, #eff6ff, #ffffff);
-    }
-
-    body.smart-tools-color-theme .dashboard-tool-card:nth-child(7) {
       background: linear-gradient(135deg, #f3e8ff, #ffffff);
     }
 
-    body.smart-tools-color-theme .dashboard-tool-card:nth-child(8) {
+    body.smart-tools-color-theme .dashboard-tool-card:nth-child(6) {
       background: linear-gradient(135deg, #ffedd5, #ffffff);
     }
 
-    body.smart-tools-color-theme .dashboard-tool-card:nth-child(9) {
+    body.smart-tools-color-theme .dashboard-tool-card:nth-child(7) {
       background: linear-gradient(135deg, #dcfce7, #ffffff);
     }
 
-    body.smart-tools-color-theme .dashboard-tool-card:nth-child(10) {
+    body.smart-tools-color-theme .dashboard-tool-card:nth-child(8) {
       background: linear-gradient(135deg, #eff6ff, #ffffff);
     }
 
@@ -629,7 +621,7 @@
     <div class="dashboard-topbar">
       <div class="dashboard-brand">
         <div class="dashboard-logo">
-          <img src="images/icon.png?v=20260515-main-tools1" alt="Smart Tools" onerror="this.style.display='none'; this.parentElement.innerHTML='🛠️';">
+          <img src="images/icon.png?v=20260515-security1" alt="Smart Tools" onerror="this.style.display='none'; this.parentElement.innerHTML='🛠️';">
         </div>
 
         <div class="dashboard-title">Smart <span>Tools</span></div>
@@ -733,24 +725,13 @@
         <div class="dashboard-card-arrow">›</div>
       </button>
 
-      <button class="dashboard-tool-card" onclick="openFolderPage('qr-barcode/')">
-        <div class="dashboard-tool-icon blue">▣</div>
-        <h3>QR Generator</h3>
-        <p>Create QR codes for website, text, phone, email, and Wi-Fi.</p>
-        <div class="dashboard-card-arrow">›</div>
-      </button>
-
-      <button class="dashboard-tool-card" onclick="openFolderPage('password/')">
-        <div class="dashboard-tool-icon blue">🛡️</div>
-        <h3>Password Generator</h3>
-        <p>Generate strong passwords with custom mix options.</p>
-        <div class="dashboard-card-arrow">›</div>
-      </button>
-
-      <button class="dashboard-tool-card" onclick="openFolderPage('password-vault/')">
+      <!-- =========================
+           SECURITY TOOLS CARD
+      ========================= -->
+      <button class="dashboard-tool-card" onclick="openFolderPage('security/')">
         <div class="dashboard-tool-icon purple">🔐</div>
-        <h3>Password Vault</h3>
-        <p>Save usernames and passwords with passcode lock.</p>
+        <h3>Security Tools</h3>
+        <p>QR Generator, Password Generator, and Password Vault in one place.</p>
         <div class="dashboard-card-arrow">›</div>
       </button>
 
@@ -972,7 +953,7 @@
     // FORCE ICON CACHE BUSTER ON LOAD
     // =========================
     function forceSmartToolsIconCacheBuster() {
-      const version = localStorage.getItem("smartToolsForceReloadVersion") || "20260515-main-tools1";
+      const version = localStorage.getItem("smartToolsForceReloadVersion") || "20260515-security1";
 
       document.querySelectorAll('link[rel="icon"], link[rel="apple-touch-icon"]').forEach(function(link) {
         const oldHref = link.getAttribute("href");
