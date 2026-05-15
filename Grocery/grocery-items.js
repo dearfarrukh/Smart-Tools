@@ -1,8 +1,9 @@
 /* =========================
    SMART TOOLS GROCERY ITEMS
    File: Smart-Tools/Grocery/grocery-items.js
-   2000+ suggestions generated from base grocery list
-   English + Pakistani / Indian / Desi names
+   Large smart grocery suggestion engine
+   English + Pakistani / Indian / Desi + Roman Urdu/Hindi + some Urdu names
+   This generates thousands of searchable suggestions from clean base items.
 ========================= */
 
 /* =========================
@@ -18,37 +19,37 @@ function buildPremiumGrocerySuggestions(){
     /* =========================
        VEGETABLES / SABZI
     ========================= */
-    ["Potato / Aloo", "Vegetables"],
-    ["Tomato / Tamatar", "Vegetables"],
-    ["Onion / Pyaz", "Vegetables"],
+    ["Potato / Aloo / آلو", "Vegetables"],
+    ["Tomato / Tamatar / ٹماٹر", "Vegetables"],
+    ["Onion / Pyaz / Pyaaz / پیاز", "Vegetables"],
     ["Red Onion / Laal Pyaz", "Vegetables"],
     ["White Onion / Safaid Pyaz", "Vegetables"],
     ["Yellow Onion", "Vegetables"],
     ["Green Onion / Hara Pyaz", "Vegetables"],
-    ["Garlic / Lehsan", "Vegetables"],
-    ["Ginger / Adrak", "Vegetables"],
-    ["Green Chili / Hari Mirch", "Vegetables"],
-    ["Red Chili / Laal Mirch", "Vegetables"],
-    ["Cilantro / Dhania", "Vegetables"],
+    ["Garlic / Lehsan / Lahsun / لہسن", "Vegetables"],
+    ["Ginger / Adrak / ادرک", "Vegetables"],
+    ["Green Chili / Hari Mirch / ہری مرچ", "Vegetables"],
+    ["Red Chili / Laal Mirch / لال مرچ", "Vegetables"],
+    ["Cilantro / Dhania / Hara Dhania / دھنیا", "Vegetables"],
     ["Coriander Leaves / Dhania", "Vegetables"],
-    ["Mint / Podina", "Vegetables"],
+    ["Mint / Podina / Pudina / پودینہ", "Vegetables"],
     ["Curry Leaves / Kari Patta", "Vegetables"],
     ["Fenugreek Leaves / Methi", "Vegetables"],
-    ["Spinach / Palak", "Vegetables"],
+    ["Spinach / Palak / پالک", "Vegetables"],
     ["Mustard Greens / Sarson Ka Saag", "Vegetables"],
-    ["Dill / Soya", "Vegetables"],
-    ["Carrot / Gajar", "Vegetables"],
-    ["Radish / Mooli", "Vegetables"],
-    ["Turnip / Shalgam", "Vegetables"],
+    ["Dill / Soya / Suwa", "Vegetables"],
+    ["Carrot / Gajar / گاجر", "Vegetables"],
+    ["Radish / Mooli / مولی", "Vegetables"],
+    ["Turnip / Shalgam / شلجم", "Vegetables"],
     ["Beetroot / Chukandar", "Vegetables"],
-    ["Cucumber / Kheera", "Vegetables"],
-    ["Eggplant / Baingan", "Vegetables"],
-    ["Okra / Bhindi", "Vegetables"],
-    ["Bitter Gourd / Karela", "Vegetables"],
-    ["Bottle Gourd / Lauki", "Vegetables"],
+    ["Cucumber / Kheera / کھیرا", "Vegetables"],
+    ["Eggplant / Baingan / بینگن", "Vegetables"],
+    ["Okra / Bhindi / بھنڈی", "Vegetables"],
+    ["Bitter Gourd / Karela / کریلا", "Vegetables"],
+    ["Bottle Gourd / Lauki / Loki", "Vegetables"],
     ["Ridge Gourd / Tori", "Vegetables"],
     ["Round Gourd / Tinda", "Vegetables"],
-    ["Pumpkin / Kaddu", "Vegetables"],
+    ["Pumpkin / Kaddu / کدو", "Vegetables"],
     ["Cauliflower / Phool Gobi", "Vegetables"],
     ["Cabbage / Band Gobi", "Vegetables"],
     ["Broccoli", "Vegetables"],
@@ -59,9 +60,11 @@ function buildPremiumGrocerySuggestions(){
     ["Yellow Pepper", "Vegetables"],
     ["Orange Pepper", "Vegetables"],
     ["Jalapeno", "Vegetables"],
-    ["Corn / Makai", "Vegetables"],
+    ["Corn / Makai / مکئی", "Vegetables"],
     ["Sweet Corn", "Vegetables"],
-    ["Green Peas / Matar", "Vegetables"],
+    ["Green Peas / Matar / مٹر", "Vegetables"],
+    ["Snow Peas", "Vegetables"],
+    ["Sugar Snap Peas", "Vegetables"],
     ["Green Beans", "Vegetables"],
     ["French Beans", "Vegetables"],
     ["Long Beans", "Vegetables"],
@@ -80,31 +83,41 @@ function buildPremiumGrocerySuggestions(){
     ["Spring Mix", "Vegetables"],
     ["Salad Mix", "Vegetables"],
     ["Coleslaw Mix", "Vegetables"],
+    ["Bean Sprouts", "Vegetables"],
+    ["Bok Choy", "Vegetables"],
+    ["Leeks", "Vegetables"],
+    ["Parsley", "Vegetables"],
+    ["Basil", "Vegetables"],
+    ["Rosemary", "Vegetables"],
+    ["Thyme", "Vegetables"],
 
     /* =========================
        FRUITS / PHAL
     ========================= */
-    ["Apple / Saib", "Fruits"],
+    ["Apple / Saib / سیب", "Fruits"],
     ["Red Apple", "Fruits"],
     ["Green Apple", "Fruits"],
-    ["Banana / Kela", "Fruits"],
-    ["Orange / Malta", "Fruits"],
-    ["Mandarin / Kinnow", "Fruits"],
+    ["Gala Apple", "Fruits"],
+    ["Fuji Apple", "Fruits"],
+    ["Honeycrisp Apple", "Fruits"],
+    ["Banana / Kela / کیلا", "Fruits"],
+    ["Orange / Malta / مالٹا", "Fruits"],
+    ["Mandarin / Kinnow / کینو", "Fruits"],
     ["Clementine", "Fruits"],
-    ["Mango / Aam", "Fruits"],
-    ["Grapes / Angoor", "Fruits"],
+    ["Mango / Aam / آم", "Fruits"],
+    ["Grapes / Angoor / انگور", "Fruits"],
     ["Green Grapes", "Fruits"],
     ["Red Grapes", "Fruits"],
     ["Black Grapes", "Fruits"],
-    ["Watermelon / Tarbooz", "Fruits"],
+    ["Watermelon / Tarbooz / تربوز", "Fruits"],
     ["Melon / Kharbooja", "Fruits"],
     ["Cantaloupe", "Fruits"],
     ["Honeydew", "Fruits"],
     ["Pear / Nashpati", "Fruits"],
-    ["Peach / Aaroo", "Fruits"],
+    ["Peach / Aadoo / Aaroo", "Fruits"],
     ["Plum / Aloo Bukhara", "Fruits"],
     ["Apricot / Khubani", "Fruits"],
-    ["Pomegranate / Anaar", "Fruits"],
+    ["Pomegranate / Anaar / انار", "Fruits"],
     ["Strawberry", "Fruits"],
     ["Blueberry", "Fruits"],
     ["Raspberry", "Fruits"],
@@ -112,12 +125,13 @@ function buildPremiumGrocerySuggestions(){
     ["Pineapple", "Fruits"],
     ["Kiwi", "Fruits"],
     ["Papaya / Papita", "Fruits"],
-    ["Guava / Amrood", "Fruits"],
-    ["Dates / Khajoor", "Fruits"],
+    ["Guava / Amrood / امرود", "Fruits"],
+    ["Dates / Khajoor / کھجور", "Fruits"],
     ["Medjool Dates", "Fruits"],
+    ["Ajwa Dates", "Fruits"],
     ["Figs / Anjeer", "Fruits"],
     ["Coconut / Nariyal", "Fruits"],
-    ["Lemon / Nimbu", "Fruits"],
+    ["Lemon / Nimbu / لیموں", "Fruits"],
     ["Lime", "Fruits"],
     ["Grapefruit", "Fruits"],
     ["Cherry", "Fruits"],
@@ -125,11 +139,15 @@ function buildPremiumGrocerySuggestions(){
     ["Passion Fruit", "Fruits"],
     ["Lychee", "Fruits"],
     ["Persimmon", "Fruits"],
+    ["Nectarine", "Fruits"],
+    ["Cranberries", "Fruits"],
+    ["Prunes", "Fruits"],
+    ["Raisins / Kishmish", "Fruits"],
 
     /* =========================
        DAIRY / DOODH DAHI
     ========================= */
-    ["Milk / Doodh", "Dairy"],
+    ["Milk / Doodh / دودھ", "Dairy"],
     ["Whole Milk / Full Cream Doodh", "Dairy"],
     ["Low Fat Milk", "Dairy"],
     ["Skim Milk", "Dairy"],
@@ -138,12 +156,14 @@ function buildPremiumGrocerySuggestions(){
     ["Oat Milk", "Dairy"],
     ["Soy Milk", "Dairy"],
     ["Coconut Milk Drink", "Dairy"],
-    ["Yogurt / Dahi", "Dairy"],
+    ["Evaporated Milk", "Dairy"],
+    ["Condensed Milk", "Dairy"],
+    ["Yogurt / Dahi / دہی", "Dairy"],
     ["Greek Yogurt", "Dairy"],
     ["Plain Yogurt / Saada Dahi", "Dairy"],
     ["Desi Yogurt / Desi Dahi", "Dairy"],
     ["Flavored Yogurt", "Dairy"],
-    ["Butter / Makhan", "Dairy"],
+    ["Butter / Makhan / مکھن", "Dairy"],
     ["Salted Butter", "Dairy"],
     ["Unsalted Butter", "Dairy"],
     ["Cheese", "Dairy"],
@@ -151,27 +171,30 @@ function buildPremiumGrocerySuggestions(){
     ["Cheddar Cheese", "Dairy"],
     ["American Cheese", "Dairy"],
     ["Swiss Cheese", "Dairy"],
+    ["Parmesan Cheese", "Dairy"],
+    ["Feta Cheese", "Dairy"],
     ["Cream Cheese", "Dairy"],
     ["Cottage Cheese / Paneer", "Dairy"],
-    ["Paneer", "Dairy"],
+    ["Paneer / پنیر", "Dairy"],
     ["Sour Cream", "Dairy"],
     ["Heavy Cream", "Dairy"],
     ["Whipping Cream", "Dairy"],
     ["Half and Half", "Dairy"],
-    ["Eggs / Anday", "Dairy"],
+    ["Eggs / Anday / انڈے", "Dairy"],
     ["Brown Eggs", "Dairy"],
     ["White Eggs", "Dairy"],
     ["Organic Eggs", "Dairy"],
-    ["Lassi", "Drinks"],
+    ["Lassi / لسی", "Drinks"],
     ["Butter Milk / Chaach", "Dairy"],
     ["Milk Powder / Doodh Powder", "Dairy"],
     ["Nido Milk Powder", "Dairy"],
     ["Everyday Milk Powder", "Dairy"],
+    ["Coffee Creamer", "Dairy"],
 
     /* =========================
        RICE / FLOUR / GRAINS
     ========================= */
-    ["Rice / Chawal", "Pantry"],
+    ["Rice / Chawal / چاول", "Pantry"],
     ["Basmati Rice / Basmati Chawal", "Pantry"],
     ["Sela Rice", "Pantry"],
     ["Jasmine Rice", "Pantry"],
@@ -179,21 +202,25 @@ function buildPremiumGrocerySuggestions(){
     ["White Rice", "Pantry"],
     ["Parboiled Rice", "Pantry"],
     ["Sushi Rice", "Pantry"],
-    ["Flour / Atta", "Pantry"],
+    ["Arborio Rice", "Pantry"],
+    ["Flour / Atta / آٹا", "Pantry"],
     ["Wheat Flour / Gehun Ka Atta", "Pantry"],
-    ["All Purpose Flour / Maida", "Pantry"],
+    ["All Purpose Flour / Maida / میدہ", "Pantry"],
     ["Bread Flour", "Pantry"],
     ["Cake Flour", "Pantry"],
-    ["Gram Flour / Besan", "Pantry"],
-    ["Semolina / Sooji", "Pantry"],
+    ["Gram Flour / Besan / بیسن", "Pantry"],
+    ["Semolina / Sooji / سوجی", "Pantry"],
     ["Corn Flour / Makai Ka Atta", "Pantry"],
     ["Rice Flour", "Pantry"],
     ["Barley / Jau", "Pantry"],
     ["Oats / Jau", "Pantry"],
     ["Quinoa", "Pantry"],
     ["Couscous", "Pantry"],
+    ["Bulgur", "Pantry"],
+    ["Millet / Bajra", "Pantry"],
+    ["Sorghum / Jowar", "Pantry"],
     ["Poha", "Pantry"],
-    ["Vermicelli / Seviyan", "Pantry"],
+    ["Vermicelli / Seviyan / سویاں", "Pantry"],
     ["Noodles", "Pantry"],
     ["Egg Noodles", "Pantry"],
     ["Ramen Noodles", "Pantry"],
@@ -203,11 +230,13 @@ function buildPremiumGrocerySuggestions(){
     ["Penne Pasta", "Pantry"],
     ["Lasagna Sheets", "Pantry"],
     ["Elbow Pasta", "Pantry"],
+    ["Fettuccine", "Pantry"],
+    ["Linguine", "Pantry"],
 
     /* =========================
        DAAL / BEANS
     ========================= */
-    ["Daal / Lentils", "Pantry"],
+    ["Daal / Dal / Lentils / دال", "Pantry"],
     ["Masoor Daal / Red Lentils", "Pantry"],
     ["Moong Daal", "Pantry"],
     ["Chana Daal", "Pantry"],
@@ -215,7 +244,7 @@ function buildPremiumGrocerySuggestions(){
     ["Urad Daal / Mash Daal", "Pantry"],
     ["Green Lentils", "Pantry"],
     ["Black Lentils / Sabut Mash", "Pantry"],
-    ["Chickpeas / Chana", "Pantry"],
+    ["Chickpeas / Chana / چنا", "Pantry"],
     ["Black Chickpeas / Kala Chana", "Pantry"],
     ["White Chickpeas / Safaid Chana", "Pantry"],
     ["Kidney Beans / Rajma", "Pantry"],
@@ -224,17 +253,20 @@ function buildPremiumGrocerySuggestions(){
     ["Pinto Beans", "Pantry"],
     ["Lima Beans", "Pantry"],
     ["Soy Beans", "Pantry"],
+    ["Fava Beans", "Pantry"],
+    ["Navy Beans", "Pantry"],
+    ["Mixed Beans", "Pantry"],
 
     /* =========================
        SPICES / MASALAY
     ========================= */
-    ["Salt / Namak", "Spices"],
-    ["Black Pepper / Kali Mirch", "Spices"],
+    ["Salt / Namak / نمک", "Spices"],
+    ["Black Pepper / Kali Mirch / کالی مرچ", "Spices"],
     ["White Pepper", "Spices"],
     ["Red Chili Powder / Laal Mirch Powder", "Spices"],
     ["Crushed Red Pepper", "Spices"],
-    ["Turmeric / Haldi", "Spices"],
-    ["Cumin / Zeera", "Spices"],
+    ["Turmeric / Haldi / ہلدی", "Spices"],
+    ["Cumin / Zeera / زیرہ", "Spices"],
     ["Cumin Powder / Zeera Powder", "Spices"],
     ["Coriander Seeds / Sabut Dhania", "Spices"],
     ["Coriander Powder / Dhania Powder", "Spices"],
@@ -254,7 +286,7 @@ function buildPremiumGrocerySuggestions(){
     ["Oregano", "Spices"],
     ["Italian Seasoning", "Spices"],
     ["Cinnamon / Daar Cheeni", "Spices"],
-    ["Cardamom / Elaichi", "Spices"],
+    ["Cardamom / Elaichi / الائچی", "Spices"],
     ["Black Cardamom / Bari Elaichi", "Spices"],
     ["Cloves / Laung", "Spices"],
     ["Bay Leaves / Tez Patta", "Spices"],
@@ -273,6 +305,9 @@ function buildPremiumGrocerySuggestions(){
     ["Saffron / Zafran", "Spices"],
     ["Rose Water / Arq Gulab", "Spices"],
     ["Kewra Water", "Spices"],
+    ["Citric Acid / Tatri", "Spices"],
+    ["Dry Mango Powder / Amchur", "Spices"],
+    ["Asafoetida / Hing", "Spices"],
 
     /* =========================
        DESI BRANDS / MASALA BOX
@@ -282,15 +317,19 @@ function buildPremiumGrocerySuggestions(){
     ["Laziza Masala", "Spices"],
     ["MDH Masala", "Spices"],
     ["Everest Masala", "Spices"],
+    ["Badshah Masala", "Spices"],
     ["Ahmed Pickle", "Pantry"],
     ["National Pickle", "Pantry"],
     ["Shan Pickle", "Pantry"],
+    ["Mother's Recipe Pickle", "Pantry"],
     ["Rooh Afza", "Drinks"],
     ["Jam-e-Shirin", "Drinks"],
     ["Tapal Tea", "Drinks"],
     ["Lipton Tea", "Drinks"],
     ["Red Label Tea", "Drinks"],
     ["Brooke Bond Tea", "Drinks"],
+    ["Tetley Tea", "Drinks"],
+    ["Wagh Bakri Tea", "Drinks"],
     ["Nestle Milk Pack", "Dairy"],
     ["Nido Milk Powder", "Dairy"],
     ["Everyday Milk Powder", "Dairy"],
@@ -298,20 +337,22 @@ function buildPremiumGrocerySuggestions(){
     /* =========================
        MEAT / HALAL
     ========================= */
-    ["Chicken / Murghi", "Meat"],
+    ["Chicken / Murghi / مرغی", "Meat"],
     ["Halal Chicken", "Meat"],
     ["Chicken Breast", "Meat"],
     ["Chicken Thighs", "Meat"],
     ["Chicken Wings", "Meat"],
     ["Chicken Legs", "Meat"],
     ["Chicken Drumsticks", "Meat"],
+    ["Chicken Tenderloins", "Meat"],
     ["Ground Chicken / Chicken Keema", "Meat"],
-    ["Beef / Gosht", "Meat"],
+    ["Beef / Gosht / گوشت", "Meat"],
     ["Halal Beef", "Meat"],
     ["Ground Beef / Beef Keema", "Meat"],
     ["Beef Steak", "Meat"],
     ["Beef Cubes", "Meat"],
     ["Beef Ribs", "Meat"],
+    ["Beef Shank", "Meat"],
     ["Lamb / Bakra Gosht", "Meat"],
     ["Goat Meat / Bakra", "Meat"],
     ["Lamb Chops", "Meat"],
@@ -327,11 +368,12 @@ function buildPremiumGrocerySuggestions(){
     ["Beef Kabab", "Frozen"],
     ["Chapli Kabab", "Frozen"],
     ["Shami Kabab", "Frozen"],
+    ["Gyro Meat", "Frozen"],
 
     /* =========================
        SEAFOOD
     ========================= */
-    ["Fish / Machli", "Seafood"],
+    ["Fish / Machli / مچھلی", "Seafood"],
     ["Salmon", "Seafood"],
     ["Tilapia", "Seafood"],
     ["Tuna", "Seafood"],
@@ -342,18 +384,22 @@ function buildPremiumGrocerySuggestions(){
     ["Catfish", "Seafood"],
     ["Fish Fillet", "Seafood"],
     ["Fish Sticks", "Frozen"],
+    ["Crab", "Seafood"],
+    ["Lobster", "Seafood"],
+    ["Scallops", "Seafood"],
 
     /* =========================
        BAKERY / ROTI
     ========================= */
-    ["Bread", "Bakery"],
+    ["Bread / Double Roti", "Bakery"],
     ["White Bread", "Bakery"],
     ["Wheat Bread", "Bakery"],
     ["Brown Bread", "Bakery"],
-    ["Naan", "Bakery"],
-    ["Roti", "Bakery"],
+    ["Sourdough Bread", "Bakery"],
+    ["Naan / نان", "Bakery"],
+    ["Roti / روٹی", "Bakery"],
     ["Chapati", "Bakery"],
-    ["Paratha", "Frozen"],
+    ["Paratha / پراٹھا", "Frozen"],
     ["Frozen Paratha", "Frozen"],
     ["Plain Paratha", "Frozen"],
     ["Aloo Paratha", "Frozen"],
@@ -368,18 +414,21 @@ function buildPremiumGrocerySuggestions(){
     ["Muffins", "Bakery"],
     ["Cake", "Bakery"],
     ["Rusk / Cake Rusk", "Bakery"],
+    ["Brioche", "Bakery"],
+    ["Dinner Rolls", "Bakery"],
 
     /* =========================
        FROZEN / DESI FROZEN
     ========================= */
     ["Frozen Samosa", "Frozen"],
-    ["Samosa", "Frozen"],
+    ["Samosa / سموسہ", "Frozen"],
     ["Frozen Spring Rolls", "Frozen"],
     ["Spring Rolls", "Frozen"],
     ["Frozen Pakora", "Frozen"],
     ["Pakora Mix", "Pantry"],
     ["Frozen Fries", "Frozen"],
     ["French Fries", "Frozen"],
+    ["Hash Browns", "Frozen"],
     ["Frozen Pizza", "Frozen"],
     ["Frozen Vegetables", "Frozen"],
     ["Frozen Peas", "Frozen"],
@@ -390,6 +439,9 @@ function buildPremiumGrocerySuggestions(){
     ["Ice Cream", "Frozen"],
     ["Kulfi", "Frozen"],
     ["Falooda Ice Cream", "Frozen"],
+    ["Frozen Garlic Naan", "Frozen"],
+    ["Frozen Aloo Tikki", "Frozen"],
+    ["Frozen Paneer", "Frozen"],
 
     /* =========================
        SNACKS / NAMKEEN
@@ -418,6 +470,11 @@ function buildPremiumGrocerySuggestions(){
     ["Chocolate", "Snacks"],
     ["Candy", "Snacks"],
     ["Pretzels", "Snacks"],
+    ["Chakri", "Snacks"],
+    ["Mathri", "Snacks"],
+    ["Khari", "Snacks"],
+    ["Pani Puri", "Snacks"],
+    ["Papdi", "Snacks"],
 
     /* =========================
        DRINKS
@@ -435,7 +492,7 @@ function buildPremiumGrocerySuggestions(){
     ["Cranberry Juice", "Drinks"],
     ["Lemonade", "Drinks"],
     ["Iced Tea", "Drinks"],
-    ["Tea / Chai", "Drinks"],
+    ["Tea / Chai / چائے", "Drinks"],
     ["Tea Bags", "Drinks"],
     ["Green Tea", "Drinks"],
     ["Black Tea", "Drinks"],
@@ -448,6 +505,8 @@ function buildPremiumGrocerySuggestions(){
     ["Coconut Water", "Drinks"],
     ["Yogurt Drink", "Drinks"],
     ["Smoothie", "Drinks"],
+    ["Sugarcane Juice", "Drinks"],
+    ["Falooda", "Drinks"],
 
     /* =========================
        CONDIMENTS / SAUCES
@@ -459,7 +518,7 @@ function buildPremiumGrocerySuggestions(){
     ["Hot Sauce", "Pantry"],
     ["Chili Garlic Sauce", "Pantry"],
     ["Soy Sauce", "Pantry"],
-    ["Vinegar", "Pantry"],
+    ["Vinegar / Sirka", "Pantry"],
     ["Apple Cider Vinegar", "Pantry"],
     ["Tomato Sauce", "Pantry"],
     ["Tomato Paste", "Pantry"],
@@ -467,8 +526,12 @@ function buildPremiumGrocerySuggestions(){
     ["Salsa", "Deli"],
     ["Hummus", "Deli"],
     ["Guacamole", "Deli"],
-    ["Pickles / Achar", "Pantry"],
+    ["Pickles / Achar / اچار", "Pantry"],
     ["Olives", "Pantry"],
+    ["Tahini", "Pantry"],
+    ["Sriracha", "Pantry"],
+    ["Buffalo Sauce", "Pantry"],
+    ["Ranch Dressing", "Pantry"],
 
     /* =========================
        BREAKFAST
@@ -479,12 +542,14 @@ function buildPremiumGrocerySuggestions(){
     ["Pancake Mix", "Pantry"],
     ["Waffle Mix", "Pantry"],
     ["Maple Syrup", "Pantry"],
-    ["Honey / Shehad", "Pantry"],
+    ["Honey / Shehad / شہد", "Pantry"],
     ["Jam", "Pantry"],
     ["Jelly", "Pantry"],
     ["Peanut Butter", "Pantry"],
+    ["Almond Butter", "Pantry"],
     ["Nutella", "Pantry"],
     ["Cream", "Dairy"],
+    ["Cream of Wheat", "Pantry"],
 
     /* =========================
        CANNED / PACKAGED
@@ -496,10 +561,13 @@ function buildPremiumGrocerySuggestions(){
     ["Canned Tuna", "Pantry"],
     ["Canned Soup", "Pantry"],
     ["Chicken Broth", "Pantry"],
+    ["Beef Broth", "Pantry"],
     ["Vegetable Broth", "Pantry"],
     ["Coconut Milk", "Pantry"],
     ["Evaporated Milk", "Pantry"],
     ["Condensed Milk", "Pantry"],
+    ["Instant Soup", "Pantry"],
+    ["Instant Noodles", "Pantry"],
 
     /* =========================
        HOUSEHOLD
@@ -511,6 +579,8 @@ function buildPremiumGrocerySuggestions(){
     ["Aluminum Foil", "Household"],
     ["Plastic Wrap", "Household"],
     ["Zip Bags", "Household"],
+    ["Sandwich Bags", "Household"],
+    ["Freezer Bags", "Household"],
     ["Trash Bags", "Household"],
     ["Dish Soap", "Household"],
     ["Dishwasher Pods", "Household"],
@@ -531,17 +601,22 @@ function buildPremiumGrocerySuggestions(){
     ["Plastic Cups", "Household"],
     ["Plastic Spoons", "Household"],
     ["Plastic Forks", "Household"],
+    ["Plastic Knives", "Household"],
+    ["Batteries", "Household"],
+    ["Light Bulbs", "Household"],
 
     /* =========================
        PERSONAL / BATHROOM
     ========================= */
     ["Body Wash", "Personal"],
     ["Soap", "Personal"],
+    ["Bar Soap", "Personal"],
     ["Shampoo", "Personal"],
     ["Conditioner", "Personal"],
     ["Toothpaste", "Personal"],
     ["Toothbrush", "Personal"],
     ["Mouthwash", "Personal"],
+    ["Dental Floss", "Personal"],
     ["Deodorant", "Personal"],
     ["Razors", "Personal"],
     ["Shaving Cream", "Personal"],
@@ -550,6 +625,8 @@ function buildPremiumGrocerySuggestions(){
     ["Hair Oil", "Personal"],
     ["Coconut Oil", "Personal"],
     ["Baby Oil", "Personal"],
+    ["Cotton Swabs", "Personal"],
+    ["Cotton Balls", "Personal"],
 
     /* =========================
        BABY
@@ -562,6 +639,7 @@ function buildPremiumGrocerySuggestions(){
     ["Baby Shampoo", "Baby"],
     ["Baby Soap", "Baby"],
     ["Baby Cereal", "Baby"],
+    ["Diaper Rash Cream", "Baby"],
 
     /* =========================
        PETS
@@ -571,6 +649,8 @@ function buildPremiumGrocerySuggestions(){
     ["Pet Treats", "Pets"],
     ["Cat Litter", "Pets"],
     ["Pet Shampoo", "Pets"],
+    ["Bird Food", "Pets"],
+    ["Fish Food", "Pets"],
 
     /* =========================
        BASIC OTC / HEALTH
@@ -581,7 +661,11 @@ function buildPremiumGrocerySuggestions(){
     ["Pain Reliever", "Health"],
     ["Cough Drops", "Health"],
     ["Vapor Rub", "Health"],
-    ["Electrolyte Drink", "Health"]
+    ["Electrolyte Drink", "Health"],
+    ["Antacid", "Health"],
+    ["Allergy Tablets", "Health"],
+    ["Vitamin C", "Health"],
+    ["Multivitamin", "Health"]
   ];
 
   const premiumWords = [
@@ -590,6 +674,7 @@ function buildPremiumGrocerySuggestions(){
     "Regular",
     "Large",
     "Small",
+    "Medium",
     "Family Pack",
     "Value Pack",
     "Mini",
@@ -604,9 +689,14 @@ function buildPremiumGrocerySuggestions(){
     "Cut",
     "Sliced",
     "Chopped",
+    "Diced",
+    "Washed",
+    "Pre Washed",
     "Bag",
     "Box",
     "Bottle",
+    "Can",
+    "Jar",
     "Pack",
     "Bulk",
     "Costco",
@@ -621,7 +711,13 @@ function buildPremiumGrocerySuggestions(){
     "Low Sodium",
     "No Salt",
     "Gluten Free",
-    "Lactose Free"
+    "Lactose Free",
+    "Non GMO",
+    "Vegan",
+    "Vegetarian",
+    "Low Fat",
+    "Full Fat",
+    "Extra Large"
   ];
 
   const desiWords = [
@@ -639,7 +735,34 @@ function buildPremiumGrocerySuggestions(){
     "Lahori Style",
     "Hyderabadi Style",
     "Punjabi Style",
-    "Bombay Style"
+    "Bombay Style",
+    "Delhi Style",
+    "Dhaba Style",
+    "Tandoori",
+    "Chatpata",
+    "Traditional"
+  ];
+
+  const quantityWords = [
+    "1 lb",
+    "2 lb",
+    "3 lb",
+    "5 lb",
+    "10 lb",
+    "1 pack",
+    "2 pack",
+    "3 pack",
+    "1 box",
+    "2 boxes",
+    "1 bag",
+    "2 bags",
+    "1 bottle",
+    "2 bottles",
+    "1 dozen",
+    "Half Gallon",
+    "1 Gallon",
+    "Small Pack",
+    "Large Pack"
   ];
 
   const allItems = [];
@@ -663,17 +786,29 @@ function buildPremiumGrocerySuggestions(){
     });
   }
 
+  function addSplitNames(name, category){
+    if(!name.includes(" / ")){ return; }
+
+    const parts = name.split(" / ").map(function(part){
+      return part.trim();
+    }).filter(Boolean);
+
+    parts.forEach(function(part){
+      addItem(part, category);
+    });
+
+    if(parts.length >= 2){
+      addItem(parts[0] + " / " + parts[1], category);
+      addItem(parts[1] + " / " + parts[0], category);
+    }
+  }
+
   baseItems.forEach(function(item){
     const name = item[0];
     const category = item[1];
 
     addItem(name, category);
-
-    if(name.includes(" / ")){
-      const parts = name.split(" / ");
-      addItem(parts[0], category);
-      addItem(parts[1], category);
-    }
+    addSplitNames(name, category);
 
     premiumWords.forEach(function(word){
       addItem(word + " " + name, category);
@@ -687,14 +822,18 @@ function buildPremiumGrocerySuggestions(){
       category === "Dairy" ||
       category === "Vegetables" ||
       category === "Drinks" ||
-      category === "Snacks"
+      category === "Snacks" ||
+      category === "Bakery"
     ){
       desiWords.forEach(function(word){
         addItem(word + " " + name, category);
       });
     }
+
+    quantityWords.forEach(function(word){
+      addItem(word + " " + name, category);
+    });
   });
 
   return allItems;
 }
-
