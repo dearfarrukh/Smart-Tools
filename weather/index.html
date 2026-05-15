@@ -293,42 +293,47 @@ input{
   position:sticky;
   top:0;
   z-index:100;
-  padding:14px 14px 10px;
+  width:100%;
+  padding:12px 8px 10px;
   display:flex;
-  gap:10px;
+  gap:6px;
   align-items:center;
   backdrop-filter:blur(26px);
   -webkit-backdrop-filter:blur(26px);
   background:rgba(0,0,0,0.10);
+  overflow:visible;
 }
 
 #searchWrap{
-  flex:1;
-  height:50px;
-  border-radius:25px;
+  flex:1 1 auto;
+  min-width:0;
+  height:48px;
+  border-radius:24px;
   background:rgba(255,255,255,0.16);
   display:flex;
   align-items:center;
-  padding:0 14px;
+  padding:0 9px;
   backdrop-filter:blur(20px);
   -webkit-backdrop-filter:blur(20px);
   border:1px solid rgba(255,255,255,0.08);
 }
 
 #searchIcon{
-  font-size:17px;
+  font-size:15px;
   opacity:0.75;
-  margin-right:8px;
+  margin-right:5px;
+  flex:0 0 auto;
 }
 
 #searchBox{
-  flex:1;
+  flex:1 1 auto;
+  min-width:0;
   height:48px;
   border:none;
   outline:none;
   background:transparent;
   color:white;
-  font-size:16px;
+  font-size:14px;
 }
 
 #searchBox::placeholder{
@@ -338,24 +343,30 @@ input{
 #backBtn,
 #currentBtn,
 #unitToggle{
-  width:52px;
-  height:50px;
-  border-radius:18px;
+  flex:0 0 40px;
+  width:40px;
+  min-width:40px;
+  height:48px;
+  border-radius:17px;
   color:white;
   background:rgba(255,255,255,0.16);
   backdrop-filter:blur(20px);
   -webkit-backdrop-filter:blur(20px);
   border:1px solid rgba(255,255,255,0.08);
-  font-size:17px;
+  font-size:15px;
   font-weight:700;
+  display:flex;
+  align-items:center;
+  justify-content:center;
 }
 
 #backBtn{
-  font-size:24px;
+  font-size:28px;
+  line-height:1;
 }
 
 #currentBtn{
-  font-size:20px;
+  font-size:18px;
 }
 
 /* =========================
