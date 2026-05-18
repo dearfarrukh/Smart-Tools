@@ -554,11 +554,30 @@
       margin: 0 0 8px 4px;
     }
 
-    .mini-grid-2 {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
+   .mini-grid-2 {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 12px;
+}
+
+.mini-grid-2 > div {
+  min-width: 0;
+}
+
+.car-input,
+.car-select,
+.car-textarea {
+  max-width: 100%;
+  min-width: 0;
+}
+
+input[type="date"].car-input {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+}
 
     .service-list,
     .reminder-list {
