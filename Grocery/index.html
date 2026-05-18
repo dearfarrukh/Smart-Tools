@@ -6,9 +6,6 @@
 <title>Grocery List</title>
 
 <style>
-/* =========================
-   BASIC RESET
-========================= */
 *{
   box-sizing:border-box;
   -webkit-tap-highlight-color:transparent;
@@ -37,9 +34,6 @@ textarea{
   font:inherit;
 }
 
-/* =========================
-   APP WRAPPER
-========================= */
 .app{
   width:100%;
   min-height:100vh;
@@ -50,9 +44,6 @@ textarea{
   padding:14px 14px 120px;
 }
 
-/* =========================
-   TOP BAR
-========================= */
 .topBar{
   width:100%;
   display:flex;
@@ -100,9 +91,6 @@ textarea{
   color:#6b7280;
   font-weight:700;
   margin-top:3px;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
 }
 
 .topIcon{
@@ -118,148 +106,8 @@ textarea{
   box-shadow:0 12px 26px rgba(34,197,94,0.25);
 }
 
-/* =========================
-   HERO CARD
-========================= */
-.heroCard{
-  width:100%;
-  border-radius:28px;
-  padding:18px;
-  background:
-    linear-gradient(135deg,rgba(255,255,255,0.92),rgba(255,255,255,0.70)),
-    linear-gradient(135deg,#dcfce7,#dbeafe);
-  box-shadow:0 18px 44px rgba(15,23,42,0.12);
-  border:1px solid rgba(255,255,255,0.75);
-  overflow:hidden;
-  position:relative;
-}
-
-.heroCard:before{
-  content:"";
-  position:absolute;
-  width:150px;
-  height:150px;
-  border-radius:50%;
-  right:-50px;
-  top:-55px;
-  background:rgba(34,197,94,0.18);
-}
-
-.heroHeader{
-  position:relative;
-  z-index:2;
-  display:flex;
-  align-items:flex-start;
-  justify-content:space-between;
-  gap:12px;
-}
-
-.heroText h1{
-  margin:0;
-  font-size:23px;
-  line-height:1.1;
-  letter-spacing:-0.4px;
-}
-
-.heroText p{
-  margin:6px 0 0;
-  color:#4b5563;
-  font-size:14px;
-  font-weight:650;
-}
-
-.heroEmoji{
-  width:54px;
-  height:54px;
-  border-radius:18px;
-  background:rgba(255,255,255,0.8);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:29px;
-  box-shadow:0 10px 24px rgba(15,23,42,0.08);
-}
-
-.activeListPill{
-  position:relative;
-  z-index:2;
-  margin-top:14px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:10px;
-  background:rgba(255,255,255,0.78);
-  border:1px solid rgba(255,255,255,0.86);
-  border-radius:18px;
-  padding:11px 12px;
-}
-
-.activeListLeft{
-  min-width:0;
-}
-
-.activeListLabel{
-  font-size:11px;
-  color:#6b7280;
-  font-weight:900;
-  letter-spacing:0.3px;
-}
-
-.activeListName{
-  margin-top:2px;
-  font-size:15px;
-  font-weight:950;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-}
-
-.activeListBtn{
-  flex:0 0 auto;
-  border:none;
-  border-radius:14px;
-  background:#111827;
-  color:white;
-  padding:10px 12px;
-  font-size:12px;
-  font-weight:950;
-}
-
-.statsGrid{
-  position:relative;
-  z-index:2;
-  margin-top:12px;
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:10px;
-}
-
-.statBox{
-  background:rgba(255,255,255,0.78);
-  border:1px solid rgba(255,255,255,0.85);
-  border-radius:18px;
-  padding:12px 8px;
-  text-align:center;
-}
-
-.statNum{
-  font-size:20px;
-  font-weight:950;
-}
-
-.statLabel{
-  font-size:11px;
-  color:#6b7280;
-  font-weight:900;
-  margin-top:3px;
-}
-
-/* =========================
-   ADD CARD
-========================= */
 .addCard{
-  margin-top:16px;
-  background:rgba(255,255,255,0.88);
+  background:rgba(255,255,255,0.90);
   border:1px solid rgba(255,255,255,0.85);
   box-shadow:0 18px 38px rgba(15,23,42,0.10);
   border-radius:28px;
@@ -323,15 +171,8 @@ textarea{
   margin-top:13px;
 }
 
-.qtyRow{
-  display:flex;
-  align-items:center;
-  gap:10px;
-}
-
 #qtyInput{
-  flex:1;
-  min-width:0;
+  width:100%;
   height:46px;
   border:none;
   outline:none;
@@ -341,10 +182,6 @@ textarea{
   padding:0 14px;
   font-size:16px;
   font-weight:800;
-}
-
-#qtyInput::placeholder{
-  color:#9ca3af;
 }
 
 .quickQty{
@@ -376,9 +213,6 @@ textarea{
   color:white;
 }
 
-/* =========================
-   SUGGESTIONS
-========================= */
 .suggestionsBox{
   display:none;
   margin-top:12px;
@@ -441,13 +275,10 @@ textarea{
   font-weight:950;
 }
 
-/* =========================
-   TOOL BUTTONS
-========================= */
 .toolRow{
   margin-top:14px;
   display:grid;
-  grid-template-columns:1fr 1fr;
+  grid-template-columns:1fr 1fr 1fr;
   gap:10px;
 }
 
@@ -455,16 +286,11 @@ textarea{
   min-height:48px;
   border:none;
   border-radius:20px;
-  background:rgba(255,255,255,0.88);
+  background:rgba(255,255,255,0.90);
   color:#111827;
   font-size:14px;
   font-weight:950;
   box-shadow:0 10px 24px rgba(15,23,42,0.07);
-}
-
-.toolBtn.primary{
-  background:#111827;
-  color:white;
 }
 
 .toolBtn.green{
@@ -472,46 +298,16 @@ textarea{
   color:white;
 }
 
-.toolBtn.danger{
-  color:#dc2626;
-}
-
-/* =========================
-   CATEGORY FILTERS
-========================= */
-.categoryScroll{
-  margin-top:16px;
-  display:flex;
-  gap:9px;
-  overflow-x:auto;
-  padding-bottom:2px;
-  scrollbar-width:none;
-}
-
-.categoryScroll::-webkit-scrollbar{
-  display:none;
-}
-
-.catBtn{
-  flex:0 0 auto;
-  border:none;
-  border-radius:999px;
-  padding:11px 14px;
-  background:rgba(255,255,255,0.84);
-  color:#374151;
-  font-size:13px;
-  font-weight:950;
-  box-shadow:0 9px 20px rgba(15,23,42,0.06);
-}
-
-.catBtn.active{
+.toolBtn.primary{
   background:#111827;
   color:white;
 }
 
-/* =========================
-   LIST
-========================= */
+.toolBtn.danger{
+  background:#fee2e2;
+  color:#dc2626;
+}
+
 .listHeader{
   margin:18px 2px 10px;
   display:flex;
@@ -646,78 +442,6 @@ textarea{
   background:#fee2e2;
 }
 
-/* =========================
-   SAVED LISTS MODAL LIST
-========================= */
-.savedListsWrap{
-  margin-top:14px;
-  display:flex;
-  flex-direction:column;
-  gap:10px;
-  max-height:320px;
-  overflow-y:auto;
-}
-
-.savedListCard{
-  width:100%;
-  border:none;
-  border-radius:20px;
-  background:#f8fafc;
-  border:1px solid #e5e7eb;
-  padding:12px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:10px;
-  text-align:left;
-}
-
-.savedListInfo{
-  min-width:0;
-  flex:1;
-}
-
-.savedListName{
-  font-size:16px;
-  font-weight:950;
-  color:#111827;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-}
-
-.savedListMeta{
-  margin-top:4px;
-  font-size:12px;
-  color:#6b7280;
-  font-weight:800;
-}
-
-.savedListActions{
-  display:flex;
-  gap:7px;
-  flex:0 0 auto;
-}
-
-.savedActionBtn{
-  border:none;
-  border-radius:14px;
-  min-width:52px;
-  height:38px;
-  font-size:12px;
-  font-weight:950;
-  background:#111827;
-  color:white;
-}
-
-.savedActionBtn.red{
-  background:#fee2e2;
-  color:#dc2626;
-}
-
-/* =========================
-   EMPTY STATE
-========================= */
 .emptyState{
   display:none;
   margin-top:18px;
@@ -745,9 +469,6 @@ textarea{
   font-weight:700;
 }
 
-/* =========================
-   MODAL
-========================= */
 .modalOverlay{
   display:none;
   position:fixed;
@@ -808,7 +529,7 @@ textarea{
 }
 
 .modalTextArea{
-  height:150px;
+  height:180px;
   padding-top:13px;
   resize:none;
   line-height:1.4;
@@ -819,10 +540,6 @@ textarea{
   display:grid;
   grid-template-columns:1fr 1fr;
   gap:10px;
-}
-
-.modalActions.three{
-  grid-template-columns:1fr 1fr 1fr;
 }
 
 .modalBtn{
@@ -843,19 +560,11 @@ textarea{
   color:white;
 }
 
-.modalBtn.green{
-  background:#16a34a;
-  color:white;
-}
-
 .modalBtn.red{
   background:#dc2626;
   color:white;
 }
 
-/* =========================
-   TOAST
-========================= */
 .toast{
   position:fixed;
   left:50%;
@@ -881,9 +590,6 @@ textarea{
   transform:translateX(-50%) translateY(0);
 }
 
-/* =========================
-   MOBILE SAFE AREA
-========================= */
 @media (min-width:700px){
   .app{
     max-width:560px;
@@ -898,10 +604,6 @@ textarea{
     grid-template-columns:1fr;
   }
 
-  .modalActions.three{
-    grid-template-columns:1fr;
-  }
-
   .topTitle{
     font-size:22px;
   }
@@ -913,65 +615,23 @@ textarea{
 
 <div class="app">
 
-  <!-- =========================
-       TOP BAR
-  ========================= -->
   <div class="topBar">
     <button class="backBtn" onclick="goBackToMainPage()">‹</button>
 
     <div class="topTitleWrap">
       <div class="topTitle">Grocery List</div>
-      <div class="topSub">Smart, simple, premium shopping</div>
+      <div class="topSub">Simple shopping list</div>
     </div>
 
     <div class="topIcon">🛒</div>
   </div>
 
-  <!-- =========================
-       HERO CARD
-  ========================= -->
-  <section class="heroCard">
-    <div class="heroHeader">
-      <div class="heroText">
-        <h1>Plan your shopping faster</h1>
-        <p>Type one word and choose from smart grocery suggestions.</p>
-      </div>
-      <div class="heroEmoji">🥬</div>
-    </div>
-
-    <div class="activeListPill">
-      <div class="activeListLeft">
-        <div class="activeListLabel">CURRENT LIST</div>
-        <div class="activeListName" id="currentListNameEl">Quick Grocery List</div>
-      </div>
-      <button class="activeListBtn" onclick="openSavedListsModal()">Saved Lists</button>
-    </div>
-
-    <div class="statsGrid">
-      <div class="statBox">
-        <div class="statNum" id="totalCount">0</div>
-        <div class="statLabel">TOTAL</div>
-      </div>
-      <div class="statBox">
-        <div class="statNum" id="remainingCount">0</div>
-        <div class="statLabel">LEFT</div>
-      </div>
-      <div class="statBox">
-        <div class="statNum" id="boughtCount">0</div>
-        <div class="statLabel">BOUGHT</div>
-      </div>
-    </div>
-  </section>
-
-  <!-- =========================
-       ADD GROCERY CARD
-  ========================= -->
   <section class="addCard">
     <div class="inputLabel">Add item</div>
 
     <div class="itemInputWrap">
       <span>🔎</span>
-      <input id="itemInput" type="text" placeholder="Type potato, milk, pasta..." autocomplete="off" />
+      <input id="itemInput" type="text" placeholder="Type milk, doodh, potato..." autocomplete="off" />
       <button id="addItemBtn" onclick="addItemFromInput()">Add</button>
     </div>
 
@@ -979,10 +639,7 @@ textarea{
 
     <div class="qtySection">
       <div class="inputLabel">Quantity</div>
-
-      <div class="qtyRow">
-        <input id="qtyInput" type="text" placeholder="Example: 2 lb, 1 gallon, 3 pack" />
-      </div>
+      <input id="qtyInput" type="text" placeholder="Example: 2 lb, 1 gallon, 3 pack" />
 
       <div class="quickQty" id="quickQty">
         <button class="qtyChip" onclick="setQuickQty('1')">1</button>
@@ -999,62 +656,29 @@ textarea{
     </div>
   </section>
 
-  <!-- =========================
-       TOOL BUTTONS
-  ========================= -->
   <div class="toolRow">
-    <button class="toolBtn green" onclick="openSaveListModal()">Save List</button>
-    <button class="toolBtn primary" onclick="openSavedListsModal()">Open Lists</button>
-    <button class="toolBtn" onclick="sendGroceryList()">Send List</button>
-    <button class="toolBtn" onclick="openImportModal()">Import List</button>
-    <button class="toolBtn" onclick="clearAllBought()">Clear Bought</button>
+    <button class="toolBtn green" onclick="copyGroceryList()">Copy List</button>
+    <button class="toolBtn primary" onclick="openPasteModal()">Paste List</button>
     <button class="toolBtn danger" onclick="confirmClearAll()">Clear All</button>
   </div>
 
-  <!-- =========================
-       CATEGORY FILTERS
-  ========================= -->
-  <div class="categoryScroll" id="categoryScroll">
-    <button class="catBtn active" onclick="setCategoryFilter('All', this)">All</button>
-    <button class="catBtn" onclick="setCategoryFilter('Vegetables', this)">Vegetables</button>
-    <button class="catBtn" onclick="setCategoryFilter('Fruits', this)">Fruits</button>
-    <button class="catBtn" onclick="setCategoryFilter('Dairy', this)">Dairy</button>
-    <button class="catBtn" onclick="setCategoryFilter('Drinks', this)">Drinks</button>
-    <button class="catBtn" onclick="setCategoryFilter('Pantry', this)">Pantry</button>
-    <button class="catBtn" onclick="setCategoryFilter('Frozen', this)">Frozen</button>
-    <button class="catBtn" onclick="setCategoryFilter('Snacks', this)">Snacks</button>
-    <button class="catBtn" onclick="setCategoryFilter('Household', this)">Household</button>
-  </div>
-
-  <!-- =========================
-       LIST HEADER
-  ========================= -->
   <div class="listHeader">
     <div>
       <div class="listTitle">Your List</div>
-      <div class="listHint">Unchecked items stay on top automatically.</div>
+      <div class="listHint" id="listCountText">0 items</div>
     </div>
   </div>
 
-  <!-- =========================
-       GROCERY LIST
-  ========================= -->
   <div id="groceryList" class="groceryList"></div>
 
-  <!-- =========================
-       EMPTY STATE
-  ========================= -->
   <div id="emptyState" class="emptyState">
     <div class="emptyIcon">🛒</div>
     <div class="emptyTitle">Your grocery list is empty</div>
-    <div class="emptyText">Start typing above and choose from the smart list.</div>
+    <div class="emptyText">Add items above. This list saves automatically on this phone.</div>
   </div>
 
 </div>
 
-<!-- =========================
-     EDIT MODAL
-========================= -->
 <div id="editModal" class="modalOverlay">
   <div class="modalCard">
     <div class="modalTitle">Edit Item</div>
@@ -1070,66 +694,26 @@ textarea{
   </div>
 </div>
 
-<!-- =========================
-     SAVE LIST MODAL
-========================= -->
-<div id="saveListModal" class="modalOverlay">
+<div id="pasteModal" class="modalOverlay">
   <div class="modalCard">
-    <div class="modalTitle">Save Grocery List</div>
-    <div class="modalText">Give this list a name so you can open it again later.</div>
-
-    <input id="saveListNameInput" class="modalInput" type="text" placeholder="Example: Walmart, Costco, Weekly Groceries" />
-
-    <div class="modalActions">
-      <button class="modalBtn cancel" onclick="closeSaveListModal()">Cancel</button>
-      <button class="modalBtn green" onclick="saveCurrentListAsNamedList()">Save List</button>
-    </div>
-  </div>
-</div>
-
-<!-- =========================
-     SAVED LISTS MODAL
-========================= -->
-<div id="savedListsModal" class="modalOverlay">
-  <div class="modalCard">
-    <div class="modalTitle">Saved Grocery Lists</div>
-    <div class="modalText">Open a saved list, or delete old saved lists.</div>
-
-    <div id="savedListsWrap" class="savedListsWrap"></div>
-
-    <div class="modalActions">
-      <button class="modalBtn cancel" onclick="closeSavedListsModal()">Close</button>
-      <button class="modalBtn save" onclick="openSaveListModalFromSaved()">Save Current</button>
-    </div>
-  </div>
-</div>
-
-<!-- =========================
-     IMPORT GROCERY LIST MODAL
-========================= -->
-<div id="importModal" class="modalOverlay">
-  <div class="modalCard">
-    <div class="modalTitle">Import Grocery List</div>
+    <div class="modalTitle">Paste Grocery List</div>
     <div class="modalText">
-      Paste the shared grocery text here. It will add the items into this phone.
+      Paste a copied grocery list here. It will add those items into this app.
     </div>
 
     <textarea
-      id="importTextInput"
+      id="pasteTextInput"
       class="modalInput modalTextArea"
       placeholder="Paste grocery list here..."
     ></textarea>
 
     <div class="modalActions">
-      <button class="modalBtn cancel" onclick="closeImportModal()">Cancel</button>
-      <button class="modalBtn save" onclick="importGroceryListFromText()">Import</button>
+      <button class="modalBtn cancel" onclick="closePasteModal()">Cancel</button>
+      <button class="modalBtn save" onclick="pasteGroceryList()">Add Items</button>
     </div>
   </div>
 </div>
 
-<!-- =========================
-     CONFIRM MODAL
-========================= -->
 <div id="confirmModal" class="modalOverlay">
   <div class="modalCard">
     <div class="modalTitle" id="confirmTitle">Are you sure?</div>
@@ -1142,96 +726,54 @@ textarea{
   </div>
 </div>
 
-<!-- =========================
-     TOAST
-========================= -->
 <div id="toast" class="toast">Saved</div>
 
 <script src="grocery-items.js"></script>
 
 <script>
-/* =========================
-   BACK TO MAIN PAGE
-========================= */
 function goBackToMainPage(){
   window.location.href = "../";
 }
 
-/* =========================
-   LOCAL STORAGE KEYS
-========================= */
-const GROCERY_STORAGE_KEY = "smartToolsPremiumGroceryListV2";
-const GROCERY_CURRENT_NAME_KEY = "smartToolsPremiumGroceryCurrentListNameV1";
-const GROCERY_SAVED_LISTS_KEY = "smartToolsPremiumGrocerySavedListsV1";
+const GROCERY_STORAGE_KEY = "smartToolsSimpleGroceryListV1";
 
-/* =========================
-   APP STATE
-========================= */
 let groceryItems = [];
-let savedGroceryLists = [];
-let currentListName = "Quick Grocery List";
-let currentCategoryFilter = "All";
 let editingItemId = null;
 let pendingConfirmAction = null;
+let toastTimer = null;
 
-/* =========================
-   LOAD ITEMS
-========================= */
 function loadGroceryItems(){
   try{
     const saved = localStorage.getItem(GROCERY_STORAGE_KEY);
     groceryItems = saved ? JSON.parse(saved) : [];
+    if(!Array.isArray(groceryItems)){
+      groceryItems = [];
+    }
   }catch(error){
     groceryItems = [];
   }
-
-  currentListName = localStorage.getItem(GROCERY_CURRENT_NAME_KEY) || "Quick Grocery List";
 }
 
-/* =========================
-   SAVE CURRENT ITEMS
-========================= */
 function saveGroceryItems(){
   localStorage.setItem(GROCERY_STORAGE_KEY, JSON.stringify(groceryItems));
-  localStorage.setItem(GROCERY_CURRENT_NAME_KEY, currentListName);
 }
 
-/* =========================
-   LOAD SAVED LISTS
-========================= */
-function loadSavedGroceryLists(){
-  try{
-    const saved = localStorage.getItem(GROCERY_SAVED_LISTS_KEY);
-    savedGroceryLists = saved ? JSON.parse(saved) : [];
-    if(!Array.isArray(savedGroceryLists)){
-      savedGroceryLists = [];
-    }
-  }catch(error){
-    savedGroceryLists = [];
+function normalizeText(text){
+  return String(text || "").trim().toLowerCase();
+}
+
+function guessCategory(itemName){
+  if(typeof grocerySuggestions === "undefined"){
+    return "Other";
   }
+
+  const found = grocerySuggestions.find(function(item){
+    return normalizeText(item.name) === normalizeText(itemName);
+  });
+
+  return found ? found.category : "Other";
 }
 
-/* =========================
-   SAVE SAVED LISTS
-========================= */
-function saveSavedGroceryLists(){
-  localStorage.setItem(GROCERY_SAVED_LISTS_KEY, JSON.stringify(savedGroceryLists));
-}
-
-/* =========================
-   UPDATE CURRENT LIST NAME UI
-========================= */
-function updateCurrentListNameUI(){
-  const el = document.getElementById("currentListNameEl");
-  if(el){
-    el.textContent = currentListName || "Quick Grocery List";
-  }
-}
-
-/* =========================
-   SORT ITEMS
-   UNMARKED TOP / MARKED BOTTOM
-========================= */
 function getSortedItems(){
   return [...groceryItems].sort(function(a,b){
     if(a.bought !== b.bought){
@@ -1241,27 +783,6 @@ function getSortedItems(){
   });
 }
 
-/* =========================
-   NORMALIZE TEXT
-========================= */
-function normalizeText(text){
-  return String(text || "").trim().toLowerCase();
-}
-
-/* =========================
-   GUESS CATEGORY
-========================= */
-function guessCategory(itemName){
-  const found = grocerySuggestions.find(function(item){
-    return normalizeText(item.name) === normalizeText(itemName);
-  });
-
-  return found ? found.category : "Other";
-}
-
-/* =========================
-   SET QUICK QUANTITY
-========================= */
 function setQuickQty(value){
   document.getElementById("qtyInput").value = value;
 
@@ -1273,9 +794,6 @@ function setQuickQty(value){
   });
 }
 
-/* =========================
-   ADD ITEM FROM INPUT
-========================= */
 function addItemFromInput(){
   const itemInput = document.getElementById("itemInput");
   const qtyInput = document.getElementById("qtyInput");
@@ -1289,16 +807,15 @@ function addItemFromInput(){
     return;
   }
 
-  const newItem = {
+  groceryItems.push({
     id: Date.now().toString() + Math.random().toString(16).slice(2),
     name: name,
     quantity: qty,
     category: guessCategory(name),
     bought: false,
     createdAt: Date.now()
-  };
+  });
 
-  groceryItems.push(newItem);
   saveGroceryItems();
 
   itemInput.value = "";
@@ -1309,25 +826,21 @@ function addItemFromInput(){
 
   hideSuggestions();
   renderGroceryList();
-  showToast("Added to grocery list");
+  showToast("Added");
 }
 
-/* =========================
-   ADD ITEM DIRECTLY FROM SUGGESTION
-========================= */
 function addSuggestionItem(name, category){
   const qtyValue = document.getElementById("qtyInput").value.trim() || "1";
 
-  const newItem = {
+  groceryItems.push({
     id: Date.now().toString() + Math.random().toString(16).slice(2),
     name: name,
     quantity: qtyValue,
     category: category,
     bought: false,
     createdAt: Date.now()
-  };
+  });
 
-  groceryItems.push(newItem);
   saveGroceryItems();
 
   document.getElementById("itemInput").value = "";
@@ -1341,9 +854,6 @@ function addSuggestionItem(name, category){
   showToast(name + " added");
 }
 
-/* =========================
-   TOGGLE BOUGHT
-========================= */
 function toggleBought(id){
   groceryItems = groceryItems.map(function(item){
     if(item.id === id){
@@ -1359,9 +869,6 @@ function toggleBought(id){
   renderGroceryList();
 }
 
-/* =========================
-   DELETE ITEM
-========================= */
 function deleteItem(id){
   pendingConfirmAction = function(){
     groceryItems = groceryItems.filter(function(item){
@@ -1377,9 +884,6 @@ function deleteItem(id){
   openConfirmModal("Delete item?", "This item will be removed from your grocery list.", "Delete");
 }
 
-/* =========================
-   OPEN EDIT MODAL
-========================= */
 function openEditModal(id){
   const item = groceryItems.find(function(i){
     return i.id === id;
@@ -1393,17 +897,11 @@ function openEditModal(id){
   document.getElementById("editModal").style.display = "flex";
 }
 
-/* =========================
-   CLOSE EDIT MODAL
-========================= */
 function closeEditModal(){
   editingItemId = null;
   document.getElementById("editModal").style.display = "none";
 }
 
-/* =========================
-   SAVE EDIT ITEM
-========================= */
 function saveEditItem(){
   const newName = document.getElementById("editNameInput").value.trim();
   const newQty = document.getElementById("editQtyInput").value.trim() || "1";
@@ -1431,415 +929,86 @@ function saveEditItem(){
   showToast("Item updated");
 }
 
-/* =========================
-   OPEN SAVE LIST MODAL
-========================= */
-function openSaveListModal(){
-  const input = document.getElementById("saveListNameInput");
-  input.value = currentListName || "";
-  document.getElementById("saveListModal").style.display = "flex";
+function buildSimpleCopyText(){
+  const sortedItems = getSortedItems();
 
-  setTimeout(function(){
-    input.focus();
-    input.select();
-  }, 150);
+  let text = "Grocery List\n";
+
+  sortedItems.forEach(function(item){
+    const mark = item.bought ? "✓ " : "";
+    text += mark + item.name + " — " + item.quantity + "\n";
+  });
+
+  return text.trim();
 }
 
-/* =========================
-   OPEN SAVE LIST FROM SAVED MODAL
-========================= */
-function openSaveListModalFromSaved(){
-  closeSavedListsModal();
-  openSaveListModal();
-}
-
-/* =========================
-   CLOSE SAVE LIST MODAL
-========================= */
-function closeSaveListModal(){
-  document.getElementById("saveListModal").style.display = "none";
-}
-
-/* =========================
-   SAVE CURRENT LIST AS NAMED LIST
-========================= */
-function saveCurrentListAsNamedList(){
-  const nameInput = document.getElementById("saveListNameInput");
-  const listName = nameInput.value.trim();
-
-  if(!listName){
-    showToast("Please enter list name");
-    return;
-  }
-
+async function copyGroceryList(){
   if(groceryItems.length === 0){
     showToast("List is empty");
     return;
   }
 
-  loadSavedGroceryLists();
-
-  const cleanItems = groceryItems.map(function(item){
-    return {
-      id:item.id,
-      name:item.name,
-      quantity:item.quantity,
-      category:item.category,
-      bought:item.bought,
-      createdAt:item.createdAt || Date.now()
-    };
-  });
-
-  const existingIndex = savedGroceryLists.findIndex(function(list){
-    return normalizeText(list.name) === normalizeText(listName);
-  });
-
-  const savedList = {
-    id: existingIndex >= 0 ? savedGroceryLists[existingIndex].id : Date.now().toString(),
-    name: listName,
-    items: cleanItems,
-    updatedAt: new Date().toISOString(),
-    createdAt: existingIndex >= 0 ? savedGroceryLists[existingIndex].createdAt : new Date().toISOString()
-  };
-
-  if(existingIndex >= 0){
-    savedGroceryLists[existingIndex] = savedList;
-  }else{
-    savedGroceryLists.unshift(savedList);
-  }
-
-  currentListName = listName;
-
-  saveSavedGroceryLists();
-  saveGroceryItems();
-  updateCurrentListNameUI();
-  closeSaveListModal();
-  showToast("List saved");
-}
-
-/* =========================
-   OPEN SAVED LISTS MODAL
-========================= */
-function openSavedListsModal(){
-  loadSavedGroceryLists();
-  renderSavedLists();
-  document.getElementById("savedListsModal").style.display = "flex";
-}
-
-/* =========================
-   CLOSE SAVED LISTS MODAL
-========================= */
-function closeSavedListsModal(){
-  document.getElementById("savedListsModal").style.display = "none";
-}
-
-/* =========================
-   RENDER SAVED LISTS
-========================= */
-function renderSavedLists(){
-  const wrap = document.getElementById("savedListsWrap");
-  wrap.innerHTML = "";
-
-  if(savedGroceryLists.length === 0){
-    wrap.innerHTML = `
-      <div class="emptyState" style="display:block; margin-top:0;">
-        <div class="emptyIcon">📋</div>
-        <div class="emptyTitle">No saved lists yet</div>
-        <div class="emptyText">Tap Save List to keep your current grocery list for later.</div>
-      </div>
-    `;
-    return;
-  }
-
-  savedGroceryLists.forEach(function(list){
-    const total = Array.isArray(list.items) ? list.items.length : 0;
-    const bought = Array.isArray(list.items) ? list.items.filter(function(item){ return item.bought; }).length : 0;
-    const dateText = list.updatedAt ? new Date(list.updatedAt).toLocaleDateString() : "";
-
-    const card = document.createElement("div");
-    card.className = "savedListCard";
-
-    card.innerHTML = `
-      <div class="savedListInfo">
-        <div class="savedListName">${escapeHtml(list.name)}</div>
-        <div class="savedListMeta">${total} items • ${bought} bought • ${escapeHtml(dateText)}</div>
-      </div>
-
-      <div class="savedListActions">
-        <button class="savedActionBtn" onclick="openSavedGroceryList('${escapeJs(list.id)}')">Open</button>
-        <button class="savedActionBtn red" onclick="deleteSavedGroceryList('${escapeJs(list.id)}')">Delete</button>
-      </div>
-    `;
-
-    wrap.appendChild(card);
-  });
-}
-
-/* =========================
-   OPEN SAVED GROCERY LIST
-========================= */
-function openSavedGroceryList(listId){
-  const list = savedGroceryLists.find(function(item){
-    return item.id === listId;
-  });
-
-  if(!list){
-    showToast("Saved list not found");
-    return;
-  }
-
-  pendingConfirmAction = function(){
-    groceryItems = (list.items || []).map(function(item){
-      return {
-        id: Date.now().toString() + Math.random().toString(16).slice(2),
-        name: item.name,
-        quantity: item.quantity || "1",
-        category: item.category || guessCategory(item.name),
-        bought: Boolean(item.bought),
-        createdAt: item.createdAt || Date.now()
-      };
-    });
-
-    currentListName = list.name || "Saved Grocery List";
-
-    saveGroceryItems();
-    updateCurrentListNameUI();
-    renderGroceryList();
-    closeConfirmModal();
-    closeSavedListsModal();
-    showToast("Saved list opened");
-  };
-
-  openConfirmModal("Open saved list?", "This will replace the current list on screen. Save current list first if needed.", "Open");
-}
-
-/* =========================
-   DELETE SAVED GROCERY LIST
-========================= */
-function deleteSavedGroceryList(listId){
-  const list = savedGroceryLists.find(function(item){
-    return item.id === listId;
-  });
-
-  if(!list){
-    showToast("Saved list not found");
-    return;
-  }
-
-  pendingConfirmAction = function(){
-    savedGroceryLists = savedGroceryLists.filter(function(item){
-      return item.id !== listId;
-    });
-
-    saveSavedGroceryLists();
-    renderSavedLists();
-    closeConfirmModal();
-    showToast("Saved list deleted");
-  };
-
-  openConfirmModal("Delete saved list?", "This will delete “" + list.name + "” from saved lists only.", "Delete");
-}
-
-/* =========================
-   BUILD GROCERY SHARE TEXT
-========================= */
-function buildGroceryShareText(){
-  const sortedItems = getSortedItems();
-
-  if(sortedItems.length === 0){
-    return "";
-  }
-
-  const notBought = sortedItems.filter(function(item){
-    return !item.bought;
-  });
-
-  const bought = sortedItems.filter(function(item){
-    return item.bought;
-  });
-
-  let text = currentListName + "\n";
-  text += "Grocery List\n\n";
-
-  if(notBought.length > 0){
-    text += "Need to Buy:\n";
-    notBought.forEach(function(item){
-      text += "☐ " + item.name + " — " + item.quantity + "\n";
-    });
-    text += "\n";
-  }
-
-  if(bought.length > 0){
-    text += "Already Bought:\n";
-    bought.forEach(function(item){
-      text += "✓ " + item.name + " — " + item.quantity + "\n";
-    });
-    text += "\n";
-  }
-
-  text += buildGroceryImportCode();
-
-  return text;
-}
-
-/* =========================
-   BUILD GROCERY IMPORT CODE
-========================= */
-function buildGroceryImportCode(){
-  const cleanItems = groceryItems.map(function(item){
-    return {
-      name:item.name,
-      quantity:item.quantity,
-      category:item.category,
-      bought:item.bought
-    };
-  });
-
-  const payload = {
-    listName: currentListName,
-    items: cleanItems
-  };
-
-  const jsonText = JSON.stringify(payload);
-  const encodedText = btoa(unescape(encodeURIComponent(jsonText)));
-  const appLink = window.location.origin + window.location.pathname + "#groceryImport=" + encodedText;
-
-  return "\nOpen in Smart Tools Grocery App:\n" + appLink + "\n\nOr paste this import code inside Grocery app:\nSMART_TOOLS_GROCERY_LIST:" + encodedText;
-}
-
-/* =========================
-   SEND GROCERY LIST
-========================= */
-async function sendGroceryList(){
-  if(groceryItems.length === 0){
-    showToast("Your grocery list is empty");
-    return;
-  }
-
-  const shareText = buildGroceryShareText();
-
-  if(navigator.share){
-    try{
-      await navigator.share({
-        title: currentListName || "Grocery List",
-        text: shareText
-      });
-      showToast("Share menu opened");
-      return;
-    }catch(error){
-      console.log("Share cancelled or failed:", error);
-    }
-  }
+  const text = buildSimpleCopyText();
 
   try{
-    await navigator.clipboard.writeText(shareText);
-    showToast("Grocery list copied");
+    await navigator.clipboard.writeText(text);
+    showToast("List copied");
   }catch(error){
-    alert(shareText);
+    openTextFallback(text);
   }
 }
 
-/* =========================
-   OPEN IMPORT MODAL
-========================= */
-function openImportModal(){
-  document.getElementById("importTextInput").value = "";
-  document.getElementById("importModal").style.display = "flex";
+function openTextFallback(text){
+  const message = "Copy this grocery list:\n\n" + text;
+  alert(message);
 }
 
-/* =========================
-   CLOSE IMPORT MODAL
-========================= */
-function closeImportModal(){
-  document.getElementById("importModal").style.display = "none";
+function openPasteModal(){
+  document.getElementById("pasteTextInput").value = "";
+  document.getElementById("pasteModal").style.display = "flex";
+
+  setTimeout(function(){
+    document.getElementById("pasteTextInput").focus();
+  }, 150);
 }
 
-/* =========================
-   IMPORT GROCERY LIST FROM TEXT
-========================= */
-function importGroceryListFromText(){
-  const text = document.getElementById("importTextInput").value.trim();
+function closePasteModal(){
+  document.getElementById("pasteModal").style.display = "none";
+}
+
+function pasteGroceryList(){
+  const text = document.getElementById("pasteTextInput").value.trim();
 
   if(!text){
-    showToast("Paste grocery list first");
+    showToast("Paste list first");
     return;
   }
 
-  const imported = parseGroceryImportText(text);
+  const importedItems = parseSimpleGroceryText(text);
 
-  if(imported.items.length === 0){
-    alert("No grocery items found. Please paste a valid shared grocery list.");
+  if(importedItems.length === 0){
+    alert("No grocery items found. Please paste a grocery list.");
     return;
   }
 
-  addImportedGroceryItems(imported.items, imported.listName);
-  closeImportModal();
-  showToast("Grocery list imported");
-}
-
-/* =========================
-   PARSE GROCERY IMPORT TEXT
-========================= */
-function parseGroceryImportText(text){
-  try{
-    let code = "";
-
-    if(text.includes("SMART_TOOLS_GROCERY_LIST:")){
-      code = text.split("SMART_TOOLS_GROCERY_LIST:")[1].trim().split(/\s+/)[0];
-    }
-
-    if(text.includes("#groceryImport=")){
-      code = text.split("#groceryImport=")[1].trim().split(/\s+/)[0];
-    }
-
-    if(code){
-      const jsonText = decodeURIComponent(escape(atob(code)));
-      const parsed = JSON.parse(jsonText);
-
-      if(Array.isArray(parsed)){
-        return {
-          listName:"Imported Grocery List",
-          items:cleanImportedItems(parsed)
-        };
-      }
-
-      if(parsed && Array.isArray(parsed.items)){
-        return {
-          listName: parsed.listName || "Imported Grocery List",
-          items: cleanImportedItems(parsed.items)
-        };
-      }
-    }
-  }catch(error){
-    console.log("Import code failed:", error);
-  }
-
-  return {
-    listName:"Imported Grocery List",
-    items:parsePlainGroceryText(text)
-  };
-}
-
-/* =========================
-   CLEAN IMPORTED ITEMS
-========================= */
-function cleanImportedItems(items){
-  return items.map(function(item){
-    return {
-      name:String(item.name || "").trim(),
-      quantity:String(item.quantity || "1").trim(),
-      category:String(item.category || guessCategory(item.name || "Other")).trim(),
-      bought:Boolean(item.bought)
-    };
-  }).filter(function(item){
-    return item.name;
+  importedItems.forEach(function(item){
+    groceryItems.push({
+      id:Date.now().toString() + Math.random().toString(16).slice(2),
+      name:item.name,
+      quantity:item.quantity,
+      category:guessCategory(item.name),
+      bought:item.bought,
+      createdAt:Date.now()
+    });
   });
+
+  saveGroceryItems();
+  renderGroceryList();
+  closePasteModal();
+  showToast("List added");
 }
 
-/* =========================
-   PARSE NORMAL TEXT LIST
-========================= */
-function parsePlainGroceryText(text){
+function parseSimpleGroceryText(text){
   const lines = text.split(/\n+/);
   const items = [];
 
@@ -1850,12 +1019,9 @@ function parsePlainGroceryText(text){
 
     const lowerLine = cleanLine.toLowerCase();
 
-    if(lowerLine.includes("grocery list")){ return; }
+    if(lowerLine === "grocery list"){ return; }
     if(lowerLine.includes("need to buy")){ return; }
     if(lowerLine.includes("already bought")){ return; }
-    if(lowerLine.includes("open in smart tools")){ return; }
-    if(lowerLine.includes("smart_tools_grocery_list")){ return; }
-    if(cleanLine.includes("#groceryImport=")){ return; }
 
     let bought = false;
 
@@ -1877,17 +1043,20 @@ function parsePlainGroceryText(text){
       const parts = cleanLine.split("—");
       name = parts[0].trim();
       quantity = parts.slice(1).join("—").trim() || "1";
-    }else if(cleanLine.includes("-")){
-      const parts = cleanLine.split("-");
+    }else if(cleanLine.includes(" - ")){
+      const parts = cleanLine.split(" - ");
       name = parts[0].trim();
-      quantity = parts.slice(1).join("-").trim() || "1";
+      quantity = parts.slice(1).join(" - ").trim() || "1";
+    }else if(cleanLine.includes(":")){
+      const parts = cleanLine.split(":");
+      name = parts[0].trim();
+      quantity = parts.slice(1).join(":").trim() || "1";
     }
 
     if(name){
       items.push({
         name:name,
         quantity:quantity,
-        category:guessCategory(name),
         bought:bought
       });
     }
@@ -1896,93 +1065,6 @@ function parsePlainGroceryText(text){
   return items;
 }
 
-/* =========================
-   ADD IMPORTED GROCERY ITEMS
-========================= */
-function addImportedGroceryItems(importedItems, importedListName){
-  importedItems.forEach(function(item){
-    groceryItems.push({
-      id:Date.now().toString() + Math.random().toString(16).slice(2),
-      name:item.name,
-      quantity:item.quantity || "1",
-      category:item.category || guessCategory(item.name),
-      bought:Boolean(item.bought),
-      createdAt:Date.now()
-    });
-  });
-
-  if(importedListName){
-    currentListName = importedListName;
-  }
-
-  saveGroceryItems();
-  updateCurrentListNameUI();
-  renderGroceryList();
-}
-
-/* =========================
-   CHECK URL FOR SHARED GROCERY LIST
-========================= */
-function checkSharedGroceryListFromUrl(){
-  if(!window.location.hash.includes("groceryImport=")){
-    return;
-  }
-
-  const code = window.location.hash.split("groceryImport=")[1];
-
-  if(!code){
-    return;
-  }
-
-  const confirmed = confirm("Import shared grocery list into this phone?");
-
-  if(!confirmed){
-    window.history.replaceState({}, document.title, window.location.pathname);
-    return;
-  }
-
-  const imported = parseGroceryImportText("#groceryImport=" + code);
-
-  if(imported.items.length > 0){
-    addImportedGroceryItems(imported.items, imported.listName);
-    showToast("Shared list imported");
-  }else{
-    alert("Could not import this grocery list.");
-  }
-
-  window.history.replaceState({}, document.title, window.location.pathname);
-}
-
-/* =========================
-   CLEAR BOUGHT ITEMS
-========================= */
-function clearAllBought(){
-  const boughtItems = groceryItems.filter(function(item){
-    return item.bought;
-  });
-
-  if(boughtItems.length === 0){
-    showToast("No bought items to clear");
-    return;
-  }
-
-  pendingConfirmAction = function(){
-    groceryItems = groceryItems.filter(function(item){
-      return !item.bought;
-    });
-
-    saveGroceryItems();
-    renderGroceryList();
-    closeConfirmModal();
-    showToast("Bought items cleared");
-  };
-
-  openConfirmModal("Clear bought items?", "Only checked items will be removed.", "Clear");
-}
-
-/* =========================
-   CONFIRM CLEAR ALL
-========================= */
 function confirmClearAll(){
   if(groceryItems.length === 0){
     showToast("List is already empty");
@@ -1991,20 +1073,15 @@ function confirmClearAll(){
 
   pendingConfirmAction = function(){
     groceryItems = [];
-    currentListName = "Quick Grocery List";
     saveGroceryItems();
-    updateCurrentListNameUI();
     renderGroceryList();
     closeConfirmModal();
     showToast("All items cleared");
   };
 
-  openConfirmModal("Clear full list?", "This will remove every grocery item from the current screen.", "Clear All");
+  openConfirmModal("Clear full list?", "This will remove every grocery item from this phone list.", "Clear All");
 }
 
-/* =========================
-   OPEN CONFIRM MODAL
-========================= */
 function openConfirmModal(title, text, yesText){
   document.getElementById("confirmTitle").textContent = title;
   document.getElementById("confirmText").textContent = text;
@@ -2019,44 +1096,21 @@ function openConfirmModal(title, text, yesText){
   document.getElementById("confirmModal").style.display = "flex";
 }
 
-/* =========================
-   CLOSE CONFIRM MODAL
-========================= */
 function closeConfirmModal(){
   pendingConfirmAction = null;
   document.getElementById("confirmModal").style.display = "none";
 }
 
-/* =========================
-   SET CATEGORY FILTER
-========================= */
-function setCategoryFilter(category, btn){
-  currentCategoryFilter = category;
-
-  document.querySelectorAll(".catBtn").forEach(function(button){
-    button.classList.remove("active");
-  });
-
-  btn.classList.add("active");
-  renderGroceryList();
-}
-
-/* =========================
-   RENDER GROCERY LIST
-========================= */
 function renderGroceryList(){
   const listEl = document.getElementById("groceryList");
   const emptyState = document.getElementById("emptyState");
+  const listCountText = document.getElementById("listCountText");
 
   listEl.innerHTML = "";
 
-  let displayItems = getSortedItems();
+  const displayItems = getSortedItems();
 
-  if(currentCategoryFilter !== "All"){
-    displayItems = displayItems.filter(function(item){
-      return item.category === currentCategoryFilter;
-    });
-  }
+  listCountText.textContent = groceryItems.length === 1 ? "1 item" : groceryItems.length + " items";
 
   if(displayItems.length === 0){
     emptyState.style.display = "block";
@@ -2087,34 +1141,18 @@ function renderGroceryList(){
 
     listEl.appendChild(card);
   });
-
-  updateStats();
-  updateCurrentListNameUI();
 }
 
-/* =========================
-   UPDATE STATS
-========================= */
-function updateStats(){
-  const total = groceryItems.length;
-  const bought = groceryItems.filter(function(item){
-    return item.bought;
-  }).length;
-  const remaining = total - bought;
-
-  document.getElementById("totalCount").textContent = total;
-  document.getElementById("remainingCount").textContent = remaining;
-  document.getElementById("boughtCount").textContent = bought;
-}
-
-/* =========================
-   SHOW SUGGESTIONS
-========================= */
 function showSuggestions(searchText){
   const box = document.getElementById("suggestionsBox");
   const query = normalizeText(searchText);
 
   if(!query){
+    hideSuggestions();
+    return;
+  }
+
+  if(typeof grocerySuggestions === "undefined"){
     hideSuggestions();
     return;
   }
@@ -2157,25 +1195,16 @@ function showSuggestions(searchText){
   }).join("");
 }
 
-/* =========================
-   HIDE SUGGESTIONS
-========================= */
 function hideSuggestions(){
   const box = document.getElementById("suggestionsBox");
   box.style.display = "none";
   box.innerHTML = "";
 }
 
-/* =========================
-   USE TYPED CUSTOM ITEM
-========================= */
 function useTypedAsCustom(){
   addItemFromInput();
 }
 
-/* =========================
-   ESCAPE HTML
-========================= */
 function escapeHtml(value){
   return String(value || "")
     .replaceAll("&","&amp;")
@@ -2185,20 +1214,12 @@ function escapeHtml(value){
     .replaceAll("'","&#039;");
 }
 
-/* =========================
-   ESCAPE JS STRING
-========================= */
 function escapeJs(value){
   return String(value || "")
     .replaceAll("\\","\\\\")
     .replaceAll("'","\\'")
     .replaceAll('"','\\"');
 }
-
-/* =========================
-   SHOW TOAST
-========================= */
-let toastTimer = null;
 
 function showToast(message){
   const toast = document.getElementById("toast");
@@ -2211,9 +1232,6 @@ function showToast(message){
   }, 1800);
 }
 
-/* =========================
-   INPUT EVENTS
-========================= */
 document.getElementById("itemInput").addEventListener("input", function(){
   showSuggestions(this.value);
 });
@@ -2230,12 +1248,6 @@ document.getElementById("qtyInput").addEventListener("keydown", function(event){
   }
 });
 
-document.getElementById("saveListNameInput").addEventListener("keydown", function(event){
-  if(event.key === "Enter"){
-    saveCurrentListAsNamedList();
-  }
-});
-
 document.addEventListener("click", function(event){
   const addCard = document.querySelector(".addCard");
   if(addCard && !addCard.contains(event.target)){
@@ -2243,13 +1255,8 @@ document.addEventListener("click", function(event){
   }
 });
 
-/* =========================
-   INIT APP
-========================= */
 loadGroceryItems();
-loadSavedGroceryLists();
 renderGroceryList();
-checkSharedGroceryListFromUrl();
 </script>
 
 </body>
