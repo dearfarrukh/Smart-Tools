@@ -362,7 +362,7 @@
 
     .csv-textarea {
       width: 100%;
-      min-height: 270px;
+      min-height: 520px;
       resize: vertical;
       border: 2px solid #e5e7eb;
       border-radius: 18px;
@@ -374,56 +374,12 @@
       line-height: 1.55;
       font-family: Consolas, Menlo, monospace;
       overflow: auto;
+      white-space: pre;
     }
 
     .csv-textarea:focus {
       border-color: #2563eb;
       box-shadow: 0 0 0 4px rgba(37,99,235,0.10);
-    }
-
-    .preview-table-wrap {
-      width: 100%;
-      max-width: 100%;
-      overflow-x: auto;
-      overflow-y: auto;
-      border-radius: 16px;
-      background: white;
-    }
-
-    .preview-table {
-      width: max-content;
-      min-width: 100%;
-      border-collapse: collapse;
-      font-size: 13px;
-    }
-
-    .preview-table th,
-    .preview-table td {
-      padding: 10px;
-      border-bottom: 1px solid #e5e7eb;
-      text-align: left;
-      vertical-align: top;
-      color: #111827;
-      white-space: nowrap;
-    }
-
-    .preview-table th {
-      background: #eff6ff;
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 0.6px;
-      color: #1e40af;
-      font-weight: 900;
-      position: sticky;
-      top: 0;
-      z-index: 1;
-    }
-
-    .preview-table td:nth-child(5),
-    .preview-table td:nth-child(6) {
-      max-width: 340px;
-      overflow: hidden;
-      text-overflow: ellipsis;
     }
 
     /* =========================
@@ -448,8 +404,7 @@
     body.smart-tools-dark-theme .card,
     body.smart-tools-dark-theme .result-box,
     body.smart-tools-dark-theme .file-upload-box,
-    body.smart-tools-dark-theme .file-pill,
-    body.smart-tools-dark-theme .preview-table-wrap {
+    body.smart-tools-dark-theme .file-pill {
       background: linear-gradient(180deg, rgba(30,41,59,0.88), rgba(15,23,42,0.84));
       border-color: rgba(148,163,184,0.20);
       color: #f8fafc;
@@ -474,17 +429,6 @@
     body.smart-tools-dark-theme .account-number-input::placeholder,
     body.smart-tools-dark-theme .csv-textarea::placeholder {
       color: #94a3b8;
-    }
-
-    body.smart-tools-dark-theme .preview-table th {
-      background: rgba(37,99,235,0.25);
-      color: #bfdbfe;
-      border-color: rgba(148,163,184,0.20);
-    }
-
-    body.smart-tools-dark-theme .preview-table td {
-      color: #f8fafc;
-      border-color: rgba(148,163,184,0.20);
     }
 
     /* =========================
@@ -659,19 +603,6 @@
           <div id="converterStatusBox" class="result-box">
             <div class="result-placeholder">
               Upload files and press <strong>Convert to CSV</strong>.
-            </div>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-title">Preview</div>
-          <div class="card-subtitle">
-            Preview of rows that will be placed in the CSV.
-          </div>
-
-          <div id="converterPreviewBox" class="result-box">
-            <div class="result-placeholder">
-              No preview yet.
             </div>
           </div>
         </div>
@@ -879,7 +810,6 @@
         if (rowsMissingAccount.length) {
           const sourceNames = [...new Set(rowsMissingAccount.map(row => row.source || "file"))].join(", ");
           setConverterStatus("error", "Account number is missing. Type the correct account number in the Account Numbers box for: " + sourceNames);
-          renderConverterPreview();
           document.getElementById("converterCsvOutput").value = "";
           return;
         }
@@ -890,15 +820,12 @@
 
         if (!converterRows.length) {
           setConverterStatus("error", "No check rows found. Make sure the file is one of your supported PDF or Excel formats.");
-          renderConverterPreview();
           document.getElementById("converterCsvOutput").value = "";
           return;
         }
 
         const csvText = buildBankUploadCsv(converterRows);
         document.getElementById("converterCsvOutput").value = csvText;
-
-        renderConverterPreview();
 
         setConverterStatus("success", "Done. " + converterRows.length + " CSV row(s) created.");
       } catch (error) {
@@ -1277,58 +1204,6 @@
     }
 
     // =========================
-    // RENDER CONVERTER PREVIEW
-    // =========================
-    function renderConverterPreview() {
-      const previewBox = document.getElementById("converterPreviewBox");
-
-      if (!previewBox) return;
-
-      if (!converterRows.length) {
-        previewBox.className = "result-box";
-        previewBox.innerHTML = `
-          <div class="result-placeholder">
-            No preview yet.
-          </div>
-        `;
-        applySmartToolsTheme();
-        return;
-      }
-
-      const rowsHtml = converterRows.map(row => `
-        <tr>
-          <td title="${escapeHtml(row.account)}">${escapeHtml(row.account)}</td>
-          <td title="${escapeHtml(row.checkNumber)}">${escapeHtml(row.checkNumber)}</td>
-          <td title="${escapeHtml(row.date)}">${escapeHtml(row.date)}</td>
-          <td title="${escapeHtml(row.amount)}">${escapeHtml(row.amount)}</td>
-          <td title="${escapeHtml(row.payee)}">${escapeHtml(row.payee)}</td>
-          <td title="${escapeHtml(row.source || "")}">${escapeHtml(row.source || "")}</td>
-        </tr>
-      `).join("");
-
-      previewBox.className = "result-box result-success";
-      previewBox.innerHTML = `
-        <div class="preview-table-wrap">
-          <table class="preview-table">
-            <thead>
-              <tr>
-                <th>Account</th>
-                <th>Check #</th>
-                <th>Date</th>
-                <th>Amount</th>
-                <th>Payee</th>
-                <th>Source</th>
-              </tr>
-            </thead>
-            <tbody>${rowsHtml}</tbody>
-          </table>
-        </div>
-      `;
-
-      applySmartToolsTheme();
-    }
-
-    // =========================
     // DOWNLOAD CONVERTED CSV
     // =========================
     function downloadConvertedCsv() {
@@ -1389,13 +1264,6 @@
       renderConverterFileList();
 
       document.getElementById("converterCsvOutput").value = "";
-
-      document.getElementById("converterPreviewBox").className = "result-box";
-      document.getElementById("converterPreviewBox").innerHTML = `
-        <div class="result-placeholder">
-          No preview yet.
-        </div>
-      `;
 
       setConverterStatus("ready", "Upload files and press Convert to CSV.");
 
