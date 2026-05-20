@@ -13,7 +13,7 @@
   <link rel="icon" type="image/png" href="../images/icon.png">
 
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 
   <title>PDF / Excel to CSV</title>
 
@@ -38,10 +38,12 @@
       width: 100%;
       min-height: 100%;
       font-family: Arial, Helvetica, sans-serif;
+      overflow-x: auto;
     }
 
     body {
       min-height: 100vh;
+      min-width: 1180px;
       padding-bottom: 34px;
       color: #111827;
       background:
@@ -61,12 +63,12 @@
     ========================= */
     .top-bar-wrap {
       width: 100%;
-      padding: 20px 4% 0 4%;
+      padding: 22px 32px 0 32px;
     }
 
     .top-bar {
       width: 100%;
-      max-width: 1200px;
+      max-width: 1520px;
       margin: 0 auto;
       display: flex;
       align-items: center;
@@ -95,7 +97,7 @@
     .top-bar-title {
       flex: 1;
       text-align: center;
-      font-size: 22px;
+      font-size: 23px;
       font-weight: 900;
       color: #111827;
       letter-spacing: -0.4px;
@@ -112,9 +114,9 @@
     ========================= */
     .page-inner {
       width: 100%;
-      max-width: 1200px;
+      max-width: 1520px;
       margin: 0 auto;
-      padding: 0 4% 40px 4%;
+      padding: 0 32px 44px 32px;
     }
 
     .inner-page-hero {
@@ -122,12 +124,12 @@
       background: linear-gradient(135deg, #0ea5e9 0%, #2563eb 45%, #7c3aed 100%);
       color: white;
       border-radius: 30px;
-      padding: 32px 24px;
+      padding: 32px 30px;
       box-shadow: 0 14px 32px rgba(37, 99, 235, 0.20);
     }
 
     .inner-page-hero h1 {
-      font-size: 34px;
+      font-size: 36px;
       font-weight: 900;
       line-height: 1.1;
       margin-bottom: 12px;
@@ -138,7 +140,7 @@
       font-size: 17px;
       line-height: 1.6;
       color: rgba(255,255,255,0.95);
-      max-width: 760px;
+      max-width: 900px;
     }
 
     /* =========================
@@ -151,6 +153,7 @@
       border-radius: 28px;
       padding: 24px;
       box-shadow: 0 14px 34px rgba(15,23,42,0.10);
+      min-width: 0;
     }
 
     .card + .card {
@@ -174,7 +177,7 @@
 
     .button-row {
       display: flex;
-      flex-wrap: wrap;
+      flex-wrap: nowrap;
       gap: 14px;
     }
 
@@ -189,6 +192,7 @@
       flex: 1;
       transition: transform 0.16s ease, opacity 0.16s ease;
       color: white;
+      white-space: nowrap;
     }
 
     .action-btn:active {
@@ -208,14 +212,19 @@
     }
 
     /* =========================
-       CSV CONVERTER
+       DESKTOP CSV CONVERTER LAYOUT
     ========================= */
     .converter-layout {
       margin-top: 24px;
       display: grid;
-      grid-template-columns: 0.95fr 1.05fr;
-      gap: 22px;
+      grid-template-columns: 470px minmax(0, 1fr);
+      gap: 24px;
       align-items: start;
+      width: 100%;
+    }
+
+    .converter-layout > div {
+      min-width: 0;
     }
 
     .file-upload-box {
@@ -225,6 +234,7 @@
       text-align: center;
       background: linear-gradient(180deg, #f8fafc 0%, #eef2ff 100%);
       cursor: pointer;
+      display: block;
     }
 
     .file-upload-icon {
@@ -262,7 +272,19 @@
       font-size: 14px;
       color: #334155;
       font-weight: 800;
-      word-break: break-word;
+      overflow: hidden;
+    }
+
+    .file-pill span:first-child {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .file-pill span:last-child {
+      white-space: nowrap;
+      flex-shrink: 0;
     }
 
     .account-input-list {
@@ -272,7 +294,7 @@
 
     .account-input-row {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 170px minmax(0, 1fr);
       gap: 12px;
       align-items: center;
     }
@@ -282,6 +304,7 @@
       font-weight: 900;
       color: #334155;
       line-height: 1.4;
+      white-space: normal;
     }
 
     .account-number-input {
@@ -295,6 +318,7 @@
       color: #111827;
       font-size: 16px;
       font-weight: 800;
+      min-width: 0;
     }
 
     .account-number-input:focus {
@@ -308,6 +332,8 @@
       padding: 18px;
       background: linear-gradient(180deg, #f9fafb 0%, #f3f4f6 100%);
       border: 1px solid #eef2f7;
+      overflow: hidden;
+      min-width: 0;
     }
 
     .result-success {
@@ -336,7 +362,7 @@
 
     .csv-textarea {
       width: 100%;
-      min-height: 260px;
+      min-height: 270px;
       resize: vertical;
       border: 2px solid #e5e7eb;
       border-radius: 18px;
@@ -347,6 +373,7 @@
       font-size: 14px;
       line-height: 1.55;
       font-family: Consolas, Menlo, monospace;
+      overflow: auto;
     }
 
     .csv-textarea:focus {
@@ -356,15 +383,17 @@
 
     .preview-table-wrap {
       width: 100%;
-      overflow: auto;
+      max-width: 100%;
+      overflow-x: auto;
+      overflow-y: auto;
       border-radius: 16px;
       background: white;
     }
 
     .preview-table {
-      width: 100%;
+      width: max-content;
+      min-width: 100%;
       border-collapse: collapse;
-      min-width: 760px;
       font-size: 13px;
     }
 
@@ -375,6 +404,7 @@
       text-align: left;
       vertical-align: top;
       color: #111827;
+      white-space: nowrap;
     }
 
     .preview-table th {
@@ -384,6 +414,16 @@
       letter-spacing: 0.6px;
       color: #1e40af;
       font-weight: 900;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+
+    .preview-table td:nth-child(5),
+    .preview-table td:nth-child(6) {
+      max-width: 340px;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     /* =========================
@@ -474,66 +514,24 @@
     }
 
     /* =========================
-       RESPONSIVE
+       SMALL DESKTOP / LAPTOP
     ========================= */
-    @media (max-width: 900px) {
+    @media (max-width: 1280px) {
+      body {
+        min-width: 1080px;
+      }
+
+      .page-inner,
+      .top-bar {
+        max-width: 1320px;
+      }
+
       .converter-layout {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    @media (max-width: 640px) {
-      .top-bar-wrap {
-        padding: 16px 4% 0 4%;
-      }
-
-      .page-inner {
-        padding: 0 5% 30px 5%;
-      }
-
-      .inner-page-hero {
-        padding: 26px 18px;
-        border-radius: 24px;
-      }
-
-      .inner-page-hero h1 {
-        font-size: 28px;
-      }
-
-      .inner-page-hero p {
-        font-size: 16px;
-      }
-
-      .card {
-        border-radius: 24px;
-        padding: 20px;
-      }
-
-      .card-title {
-        font-size: 21px;
-      }
-
-      .top-bar-title {
-        font-size: 20px;
-      }
-
-      .back-btn,
-      .top-bar-spacer {
-        width: 48px;
-        height: 48px;
+        grid-template-columns: 430px minmax(0, 1fr);
       }
 
       .account-input-row {
-        grid-template-columns: 1fr;
-        gap: 8px;
-      }
-
-      .button-row {
-        flex-direction: column;
-      }
-
-      .action-btn {
-        width: 100%;
+        grid-template-columns: 155px minmax(0, 1fr);
       }
     }
   </style>
@@ -705,7 +703,7 @@
         "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
     }
 
-       // =========================
+    // =========================
     // BACK TO OFFICE PAGE
     // =========================
     function goBackToMainPage() {
@@ -831,7 +829,7 @@
 
       fileList.innerHTML = converterSelectedFiles.map(file => `
         <div class="file-pill">
-          <span>${escapeHtml(file.name)}</span>
+          <span title="${escapeHtml(file.name)}">${escapeHtml(file.name)}</span>
           <span>${formatFileSize(file.size)}</span>
         </div>
       `).join("");
@@ -1299,12 +1297,12 @@
 
       const rowsHtml = converterRows.map(row => `
         <tr>
-          <td>${escapeHtml(row.account)}</td>
-          <td>${escapeHtml(row.checkNumber)}</td>
-          <td>${escapeHtml(row.date)}</td>
-          <td>${escapeHtml(row.amount)}</td>
-          <td>${escapeHtml(row.payee)}</td>
-          <td>${escapeHtml(row.source || "")}</td>
+          <td title="${escapeHtml(row.account)}">${escapeHtml(row.account)}</td>
+          <td title="${escapeHtml(row.checkNumber)}">${escapeHtml(row.checkNumber)}</td>
+          <td title="${escapeHtml(row.date)}">${escapeHtml(row.date)}</td>
+          <td title="${escapeHtml(row.amount)}">${escapeHtml(row.amount)}</td>
+          <td title="${escapeHtml(row.payee)}">${escapeHtml(row.payee)}</td>
+          <td title="${escapeHtml(row.source || "")}">${escapeHtml(row.source || "")}</td>
         </tr>
       `).join("");
 
