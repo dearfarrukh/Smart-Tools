@@ -160,6 +160,23 @@
       white-space: nowrap;
     }
 
+    .recovery-message {
+      display: none;
+      width: 100%;
+      margin-bottom: 12px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      background: #dcfce7;
+      color: #166534;
+      font-size: 14px;
+      line-height: 1.35;
+      font-weight: 700;
+    }
+
+    .recovery-message.show {
+      display: block;
+    }
+
     .search-wrap {
       width: 100%;
       height: 38px;
@@ -529,6 +546,11 @@
       color: #f5f5f7;
     }
 
+    body.smart-tools-dark-theme .recovery-message {
+      background: rgba(22, 101, 52, 0.35);
+      color: #bbf7d0;
+    }
+
     body.smart-tools-dark-theme .search-wrap {
       background: #1c1c1e;
     }
@@ -625,6 +647,8 @@
           <div id="notesCount" class="notes-count">0 notes</div>
         </div>
 
+        <div id="recoveryMessage" class="recovery-message"></div>
+
         <div class="search-wrap">
           <div class="search-icon">⌕</div>
           <input
@@ -717,6 +741,29 @@
     }
 
     // =========================
+    // NOTES STORAGE KEYS
+    // Main key stays same as your old app
+    // =========================
+    const NOTES_MAIN_KEY = "pocketToolsNotes";
+
+    const NOTES_RECOVERY_KEYS = [
+      "pocketToolsNotes",
+      "smartToolsNotes",
+      "smartToolsNotesData",
+      "smartToolsNotesDataV1",
+      "smartToolsNotesDataV2",
+      "notesData",
+      "notes",
+      "appleNotesData",
+      "appleStyleNotes",
+      "simpleNotes",
+      "myNotes",
+      "savedNotes",
+      "quickNotes",
+      "pocketNotes"
+    ];
+
+    // =========================
     // NOTES STATE
     // =========================
     let currentNoteId = null;
@@ -729,10 +776,173 @@
     let swipeIsMoving = false;
 
     // =========================
+    // SHOW RECOVERY MESSAGE
+    // =========================
+    function showRecoveryMessage(message) {
+      const box = document.getElementById("recoveryMessage");
+      if (!box) return;
+
+      box.innerText = message;
+      box.classList.add("show");
+
+      setTimeout(function() {
+        box.classList.remove("show");
+      }, 9000);
+    }
+
+    // =========================
+    // NORMALIZE NOTE
+    // Makes old saved note formats work
+    // =========================
+    function normalizeNote(rawNote, index) {
+      if (!rawNote || typeof rawNote !== "object") {
+        return null;
+      }
+
+      const now = new Date().toISOString();
+
+      const body =
+        rawNote.body ||
+        rawNote.text ||
+        rawNote.note ||
+        rawNote.content ||
+        rawNote.description ||
+        "";
+
+      const title =
+        rawNote.title ||
+        rawNote.heading ||
+        rawNote.name ||
+        "";
+
+      const finalBody = String(body || title || "").trim();
+
+      if (finalBody === "") {
+        return null;
+      }
+
+      return {
+        id: rawNote.id || rawNote.noteId || ("recovered_note_" + Date.now() + "_" + index + "_" + Math.random().toString(16).slice(2)),
+        title: "",
+        body: finalBody,
+        createdAt: rawNote.createdAt || rawNote.dateCreated || rawNote.created || rawNote.date || rawNote.time || now,
+        updatedAt: rawNote.updatedAt || rawNote.dateUpdated || rawNote.modified || rawNote.date || rawNote.time || now
+      };
+    }
+
+    // =========================
+    // READ NOTES ARRAY FROM STORAGE KEY
+    // Supports array format and object formats
+    // =========================
+    function readNotesFromStorageKey(key) {
+      const saved = localStorage.getItem(key);
+
+      if (!saved) {
+        return [];
+      }
+
+      try {
+        const parsed = JSON.parse(saved);
+
+        let rawList = [];
+
+        if (Array.isArray(parsed)) {
+          rawList = parsed;
+        } else if (parsed && Array.isArray(parsed.notes)) {
+          rawList = parsed.notes;
+        } else if (parsed && Array.isArray(parsed.data)) {
+          rawList = parsed.data;
+        } else if (parsed && Array.isArray(parsed.items)) {
+          rawList = parsed.items;
+        } else {
+          return [];
+        }
+
+        return rawList
+          .map(function(item, index) {
+            return normalizeNote(item, index);
+          })
+          .filter(function(item) {
+            return item !== null;
+          });
+      } catch (error) {
+        return [];
+      }
+    }
+
+    // =========================
+    // DEDUPE NOTES
+    // Stops duplicate copies after recovery
+    // =========================
+    function dedupeNotes(notes) {
+      const seen = {};
+      const clean = [];
+
+      notes.forEach(function(note) {
+        const body = String(note.body || "").trim();
+        const updatedAt = String(note.updatedAt || "");
+        const key = body + "___" + updatedAt;
+
+        if (body === "") {
+          return;
+        }
+
+        if (seen[key]) {
+          return;
+        }
+
+        seen[key] = true;
+        clean.push(note);
+      });
+
+      clean.sort(function(a, b) {
+        const timeA = new Date(a.updatedAt || a.createdAt || 0).getTime();
+        const timeB = new Date(b.updatedAt || b.createdAt || 0).getTime();
+        return timeB - timeA;
+      });
+
+      return clean;
+    }
+
+    // =========================
+    // RECOVER OLD NOTES IF NEEDED
+    // Important:
+    // - Does not erase old keys
+    // - Copies found notes into pocketToolsNotes
+    // =========================
+    function recoverOldNotesIfNeeded() {
+      const currentNotes = readNotesFromStorageKey(NOTES_MAIN_KEY);
+      let allFoundNotes = [].concat(currentNotes);
+      let foundFromOtherKeys = 0;
+
+      NOTES_RECOVERY_KEYS.forEach(function(key) {
+        if (key === NOTES_MAIN_KEY) {
+          return;
+        }
+
+        const notesFromKey = readNotesFromStorageKey(key);
+
+        if (notesFromKey.length > 0) {
+          foundFromOtherKeys += notesFromKey.length;
+          allFoundNotes = allFoundNotes.concat(notesFromKey);
+        }
+      });
+
+      const mergedNotes = dedupeNotes(allFoundNotes);
+
+      if (mergedNotes.length > currentNotes.length) {
+        saveNotesData(mergedNotes);
+        showRecoveryMessage("Recovered " + mergedNotes.length + " saved notes into this Notes page.");
+      } else if (currentNotes.length > 0) {
+        saveNotesData(dedupeNotes(currentNotes));
+      }
+    }
+
+    // =========================
     // GET NOTES DATA
     // =========================
     function getNotesData() {
-      const saved = localStorage.getItem("pocketToolsNotes");
+      const saved = localStorage.getItem(NOTES_MAIN_KEY);
 
       if (!saved) {
         return [];
@@ -742,7 +952,23 @@
         const parsed = JSON.parse(saved);
 
         if (Array.isArray(parsed)) {
-          return parsed;
+          return parsed
+            .map(function(item, index) {
+              return normalizeNote(item, index);
+            })
+            .filter(function(item) {
+              return item !== null;
+            });
+        }
+
+        if (parsed && Array.isArray(parsed.notes)) {
+          return parsed.notes
+            .map(function(item, index) {
+              return normalizeNote(item, index);
+            })
+            .filter(function(item) {
+              return item !== null;
+            });
         }
 
         return [];
@@ -755,7 +981,11 @@
     // SAVE NOTES DATA
     // =========================
     function saveNotesData(data) {
-      localStorage.setItem("pocketToolsNotes", JSON.stringify(data));
+      const cleanData = dedupeNotes(Array.isArray(data) ? data : []);
+      localStorage.setItem(NOTES_MAIN_KEY, JSON.stringify(cleanData));
+
+      // Safety backup with same latest data
+      localStorage.setItem("smartToolsNotesBackup", JSON.stringify(cleanData));
     }
 
     // =========================
@@ -778,7 +1008,11 @@
       }
 
       if (body !== "") {
-        const lines = body.split("\n").map(line => line.trim()).filter(line => line !== "");
+        const lines = body.split("\n").map(function(line) {
+          return line.trim();
+        }).filter(function(line) {
+          return line !== "";
+        });
 
         if (lines.length > 0) {
           return lines[0];
@@ -798,7 +1032,11 @@
         return "No additional text";
       }
 
-      const lines = body.split("\n").map(line => line.trim()).filter(line => line !== "");
+      const lines = body.split("\n").map(function(line) {
+        return line.trim();
+      }).filter(function(line) {
+        return line !== "";
+      });
 
       if (lines.length <= 1) {
         return "No additional text";
@@ -820,7 +1058,7 @@
       const allNotes = getNotesData();
       const searchText = searchInput ? searchInput.value.trim().toLowerCase() : "";
 
-      const filteredNotes = allNotes.filter(note => {
+      const filteredNotes = allNotes.filter(function(note) {
         const heading = getNoteHeading(note).toLowerCase();
         const body = String(note.body || "").toLowerCase();
 
@@ -856,20 +1094,20 @@
         return;
       }
 
-      notesList.innerHTML = filteredNotes.map(note => {
+      notesList.innerHTML = filteredNotes.map(function(note) {
         const heading = escapeHtml(getNoteHeading(note));
         const preview = escapeHtml(getNotePreview(note));
         const dateText = escapeHtml(formatAppleNoteDate(note.updatedAt || note.createdAt));
 
         return `
-          <div class="note-row-wrap" data-note-id="${note.id}">
+          <div class="note-row-wrap" data-note-id="${escapeHtml(note.id)}">
             <div class="note-delete-bg">
-              <button class="note-delete-btn" onclick="askDeleteNoteFromList('${note.id}', event)">Delete</button>
+              <button class="note-delete-btn" onclick="askDeleteNoteFromList('${escapeJs(note.id)}', event)">Delete</button>
             </div>
 
             <div
               class="note-row"
-              onclick="openExistingNote('${note.id}')"
+              onclick="openExistingNote('${escapeJs(note.id)}')"
               ontouchstart="startSwipe(event, this)"
               ontouchmove="moveSwipe(event, this)"
               ontouchend="endSwipe(event, this)"
@@ -922,7 +1160,9 @@
       closeAnyOpenSwipe();
 
       const notes = getNotesData();
-      const note = notes.find(item => item.id === noteId);
+      const note = notes.find(function(item) {
+        return item.id === noteId;
+      });
 
       if (!note) return;
 
@@ -1002,7 +1242,7 @@
 
       if (currentNoteId === null) {
         notes.unshift({
-          id: "note_" + Date.now(),
+          id: "note_" + Date.now() + "_" + Math.random().toString(16).slice(2),
           title: "",
           body: body,
           createdAt: now,
@@ -1013,7 +1253,9 @@
         return;
       }
 
-      const index = notes.findIndex(note => note.id === currentNoteId);
+      const index = notes.findIndex(function(note) {
+        return note.id === currentNoteId;
+      });
 
       if (index === -1) {
         return;
@@ -1101,7 +1343,10 @@
       }
 
       let notes = getNotesData();
-      notes = notes.filter(note => note.id !== pendingDeleteNoteId);
+      notes = notes.filter(function(note) {
+        return note.id !== pendingDeleteNoteId;
+      });
+
       saveNotesData(notes);
 
       if (currentNoteId === pendingDeleteNoteId) {
@@ -1358,6 +1603,18 @@
     }
 
     // =========================
+    // ESCAPE JS STRING
+    // =========================
+    function escapeJs(value) {
+      return String(value || "")
+        .replace(/\\/g, "\\\\")
+        .replace(/'/g, "\\'")
+        .replace(/"/g, "&quot;")
+        .replace(/\n/g, "\\n")
+        .replace(/\r/g, "");
+    }
+
+    // =========================
     // CLOSE SWIPE WHEN CLICKING OUTSIDE
     // =========================
     document.addEventListener("click", function(event) {
@@ -1385,6 +1642,7 @@
     // =========================
     document.addEventListener("DOMContentLoaded", function() {
       applySmartToolsTheme();
+      recoverOldNotesIfNeeded();
       renderNotes();
     });
   </script>
