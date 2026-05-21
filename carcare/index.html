@@ -1752,6 +1752,7 @@ body.smart-tools-dark-theme .cloud-menu-dot-btn {
     // =========================
     const CAR_DATA_KEY = "smartToolsCarCareDataV2";
     const OLD_CAR_DATA_KEY = "pocketToolsCarData";
+    const CAR_DELETED_IDS_KEY = "smartToolsCarCareDeletedIds";
 
     let selectedCarId = null;
     let editingCarId = null;
@@ -1890,7 +1891,7 @@ body.smart-tools-dark-theme .cloud-menu-dot-btn {
           reminders: Array.isArray(car.reminders) ? car.reminders : []
         }));
 
-        return parsed;
+        return applyDeletedCarCareIdsToData(parsed);
       } catch (error) {
         return getDefaultCarData();
       }
@@ -1900,10 +1901,12 @@ body.smart-tools-dark-theme .cloud-menu-dot-btn {
     // SAVE CAR DATA
     // =========================
  function saveCarData(data, shouldCloudSave = true) {
-  localStorage.setItem(CAR_DATA_KEY, JSON.stringify(data));
+  const cleanData = applyDeletedCarCareIdsToData(data);
+
+  localStorage.setItem(CAR_DATA_KEY, JSON.stringify(cleanData));
 
   // Local safety backup
-  localStorage.setItem("smartToolsCarCareBackup", JSON.stringify(data));
+  localStorage.setItem("smartToolsCarCareBackup", JSON.stringify(cleanData));
 
   if (shouldCloudSave) {
     scheduleCarCareCloudAutoSave();
@@ -1994,14 +1997,266 @@ function closeCarCloudMenu() {
 
 
 // =========================
+// DELETED CAR CARE SYNC HELPERS
+// These keep deleted cars/services/reminders/mileage history deleted on every device.
+// =========================
+function getDeletedCarCareIds() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(CAR_DELETED_IDS_KEY) || "{}");
+
+    return {
+      cars: Array.isArray(saved.cars) ? saved.cars.map(String) : [],
+      services: Array.isArray(saved.services) ? saved.services.map(String) : [],
+      reminders: Array.isArray(saved.reminders) ? saved.reminders.map(String) : [],
+      mileageHistory: Array.isArray(saved.mileageHistory) ? saved.mileageHistory.map(String) : []
+    };
+  } catch (error) {
+    return {
+      cars: [],
+      services: [],
+      reminders: [],
+      mileageHistory: []
+    };
+  }
+}
+
+function saveDeletedCarCareIds(ids) {
+  const clean = {
+    cars: Array.from(new Set((ids && Array.isArray(ids.cars) ? ids.cars : []).map(String).filter(Boolean))),
+    services: Array.from(new Set((ids && Array.isArray(ids.services) ? ids.services : []).map(String).filter(Boolean))),
+    reminders: Array.from(new Set((ids && Array.isArray(ids.reminders) ? ids.reminders : []).map(String).filter(Boolean))),
+    mileageHistory: Array.from(new Set((ids && Array.isArray(ids.mileageHistory) ? ids.mileageHistory : []).map(String).filter(Boolean)))
+  };
+
+  localStorage.setItem(CAR_DELETED_IDS_KEY, JSON.stringify(clean));
+  return clean;
+}
+
+function addDeletedCarCareId(type, id) {
+  if (!id) return;
+
+  const ids = getDeletedCarCareIds();
+
+  if (!Array.isArray(ids[type])) {
+    ids[type] = [];
+  }
+
+  ids[type].push(String(id));
+  saveDeletedCarCareIds(ids);
+}
+
+function normalizeDeletedCarCareIdsFromCloud(cloudData) {
+  if (!cloudData) {
+    return {
+      cars: [],
+      services: [],
+      reminders: [],
+      mileageHistory: []
+    };
+  }
+
+  const source = cloudData.deletedCarCareIds || cloudData.deletedIds || {};
+
+  return {
+    cars: Array.isArray(source.cars) ? source.cars.map(String) : [],
+    services: Array.isArray(source.services) ? source.services.map(String) : [],
+    reminders: Array.isArray(source.reminders) ? source.reminders.map(String) : [],
+    mileageHistory: Array.isArray(source.mileageHistory) ? source.mileageHistory.map(String) : []
+  };
+}
+
+function mergeDeletedCarCareIds(localIds, cloudIds) {
+  return saveDeletedCarCareIds({
+    cars: [].concat((localIds && localIds.cars) || [], (cloudIds && cloudIds.cars) || []),
+    services: [].concat((localIds && localIds.services) || [], (cloudIds && cloudIds.services) || []),
+    reminders: [].concat((localIds && localIds.reminders) || [], (cloudIds && cloudIds.reminders) || []),
+    mileageHistory: [].concat((localIds && localIds.mileageHistory) || [], (cloudIds && cloudIds.mileageHistory) || [])
+  });
+}
+
+function makeDeletedMap(list) {
+  const map = {};
+  (Array.isArray(list) ? list : []).forEach(function(id) {
+    map[String(id)] = true;
+  });
+  return map;
+}
+
+function normalizeCarCareDataShape(carData) {
+  const fallback = {
+    cars: []
+  };
+
+  const data = carData && Array.isArray(carData.cars) ? JSON.parse(JSON.stringify(carData)) : fallback;
+
+  data.cars = data.cars.map(function(car) {
+    const cleanCar = {
+      id: car.id || ("car_" + Date.now() + "_" + Math.random().toString(16).slice(2)),
+      name: car.name || "My Car",
+      icon: car.icon || "🚗",
+      makeModel: car.makeModel || "",
+      year: car.year || "",
+      plate: car.plate || "",
+      vin: car.vin || "",
+      insurance: car.insurance || "",
+      registrationExpiry: car.registrationExpiry || "",
+      inspectionExpiry: car.inspectionExpiry || "",
+      currentMileage: car.currentMileage || "",
+      notes: car.notes || "",
+      mileageTracker: normalizeMileageTracker(car.mileageTracker),
+      services: Array.isArray(car.services) ? car.services : [],
+      reminders: Array.isArray(car.reminders) ? car.reminders : []
+    };
+
+    return cleanCar;
+  });
+
+  return data;
+}
+
+function applyDeletedCarCareIdsToData(carData, deletedIds) {
+  const ids = deletedIds || getDeletedCarCareIds();
+  const carDeletedMap = makeDeletedMap(ids.cars);
+  const serviceDeletedMap = makeDeletedMap(ids.services);
+  const reminderDeletedMap = makeDeletedMap(ids.reminders);
+  const mileageDeletedMap = makeDeletedMap(ids.mileageHistory);
+
+  const data = normalizeCarCareDataShape(carData);
+
+  data.cars = data.cars
+    .filter(function(car) {
+      return !carDeletedMap[String(car.id || "")];
+    })
+    .map(function(car) {
+      const tracker = normalizeMileageTracker(car.mileageTracker);
+
+      car.services = (Array.isArray(car.services) ? car.services : []).filter(function(service) {
+        return !serviceDeletedMap[String(service.id || "")];
+      });
+
+      car.reminders = (Array.isArray(car.reminders) ? car.reminders : []).filter(function(reminder) {
+        return !reminderDeletedMap[String(reminder.id || "")];
+      });
+
+      tracker.history = (Array.isArray(tracker.history) ? tracker.history : []).filter(function(item) {
+        return !mileageDeletedMap[String(item.id || "")];
+      });
+
+      car.mileageTracker = tracker;
+
+      return car;
+    });
+
+  return data;
+}
+
+function getUpdatedTimeValue(item) {
+  const value = item && (item.updatedAt || item.createdAt || item.date || item.dueDate || item.updateDate || "");
+  const time = value ? new Date(value).getTime() : 0;
+  return isNaN(time) ? 0 : time;
+}
+
+function mergeRecordsByIdCloudWins(localList, cloudList, deletedMap) {
+  const byId = {};
+  const order = [];
+
+  (Array.isArray(localList) ? localList : []).forEach(function(item) {
+    if (!item || !item.id || deletedMap[String(item.id)]) return;
+
+    const id = String(item.id);
+    if (!byId[id]) order.push(id);
+    byId[id] = item;
+  });
+
+  (Array.isArray(cloudList) ? cloudList : []).forEach(function(item) {
+    if (!item || !item.id || deletedMap[String(item.id)]) return;
+
+    const id = String(item.id);
+    if (!byId[id]) order.push(id);
+
+    // Cloud wins for the same record ID.
+    byId[id] = item;
+  });
+
+  return order
+    .map(function(id) {
+      return byId[id];
+    })
+    .filter(Boolean);
+}
+
+function mergeMileageTrackerCloudWins(localTracker, cloudTracker, deletedIds) {
+  const localClean = normalizeMileageTracker(localTracker);
+  const cloudClean = normalizeMileageTracker(cloudTracker);
+  const mileageDeletedMap = makeDeletedMap((deletedIds && deletedIds.mileageHistory) || []);
+
+  const merged = {
+    ...localClean,
+    ...cloudClean
+  };
+
+  merged.history = mergeRecordsByIdCloudWins(localClean.history, cloudClean.history, mileageDeletedMap);
+
+  return merged;
+}
+
+function mergeCarCareDataCloudWins(localData, cloudData, deletedIds) {
+  const ids = deletedIds || getDeletedCarCareIds();
+  const carDeletedMap = makeDeletedMap(ids.cars);
+  const serviceDeletedMap = makeDeletedMap(ids.services);
+  const reminderDeletedMap = makeDeletedMap(ids.reminders);
+
+  const localClean = applyDeletedCarCareIdsToData(localData, ids);
+  const cloudClean = applyDeletedCarCareIdsToData(cloudData, ids);
+
+  const byId = {};
+  const order = [];
+
+  localClean.cars.forEach(function(car) {
+    const id = String(car.id || "");
+    if (!id || carDeletedMap[id]) return;
+
+    if (!byId[id]) order.push(id);
+    byId[id] = car;
+  });
+
+  cloudClean.cars.forEach(function(cloudCar) {
+    const id = String(cloudCar.id || "");
+    if (!id || carDeletedMap[id]) return;
+
+    const localCar = byId[id] || {};
+
+    if (!byId[id]) order.push(id);
+
+    byId[id] = {
+      ...localCar,
+      ...cloudCar,
+      services: mergeRecordsByIdCloudWins(localCar.services, cloudCar.services, serviceDeletedMap),
+      reminders: mergeRecordsByIdCloudWins(localCar.reminders, cloudCar.reminders, reminderDeletedMap),
+      mileageTracker: mergeMileageTrackerCloudWins(localCar.mileageTracker, cloudCar.mileageTracker, ids)
+    };
+  });
+
+  return applyDeletedCarCareIdsToData({
+    cars: order
+      .map(function(id) {
+        return byId[id];
+      })
+      .filter(Boolean)
+  }, ids);
+}
+
+// =========================
 // COUNT CAR CARE RECORDS
 // =========================
 function countCarCareRecords(carData) {
-  if (!carData || !Array.isArray(carData.cars)) return 0;
+  const cleanData = applyDeletedCarCareIdsToData(carData);
 
-  let total = carData.cars.length;
+  if (!cleanData || !Array.isArray(cleanData.cars)) return 0;
 
-  carData.cars.forEach(function(car) {
+  let total = cleanData.cars.length;
+
+  cleanData.cars.forEach(function(car) {
     total += Array.isArray(car.services) ? car.services.length : 0;
     total += Array.isArray(car.reminders) ? car.reminders.length : 0;
 
@@ -2014,16 +2269,26 @@ function countCarCareRecords(carData) {
 
 // =========================
 // APPLY CAR CARE CLOUD DATA
+// Cloud wins for matching IDs. Local-only records stay safe.
+// Deleted IDs are respected so deleted records do not come back.
 // =========================
-function applyCarCareCloudData(cloudCarData) {
+function applyCarCareCloudData(cloudCarData, cloudDeletedIds) {
+  const combinedDeletedIds = mergeDeletedCarCareIds(getDeletedCarCareIds(), cloudDeletedIds || {});
+  const localCarData = getCarData();
+  const mergedData = mergeCarCareDataCloudWins(localCarData, cloudCarData, combinedDeletedIds);
+
   localStorage.setItem("smartToolsCarCareBeforeCloudLoad", localStorage.getItem(CAR_DATA_KEY) || "");
 
-  saveCarData(cloudCarData, false);
+  saveCarData(mergedData, false);
 
   selectedCarId = null;
   editingCarId = null;
   editingServiceId = null;
   editingReminderId = null;
+  openedServiceId = null;
+  openedReminderId = null;
+  currentReceiptData = "";
+  currentCarTab = "";
 
   const carDetailsPage = document.getElementById("carDetailsPage");
   const carMainPage = document.getElementById("carMainPage");
@@ -2059,13 +2324,23 @@ async function autoCheckCarCareCloud() {
       return;
     }
 
-    const localCount = countCarCareRecords(getCarData());
-    const cloudCount = countCarCareRecords(cloudData.carData);
+    const combinedDeletedIds = mergeDeletedCarCareIds(getDeletedCarCareIds(), normalizeDeletedCarCareIdsFromCloud(cloudData));
+    const localData = applyDeletedCarCareIdsToData(getCarData(), combinedDeletedIds);
+    const cloudClean = applyDeletedCarCareIdsToData(cloudData.carData, combinedDeletedIds);
 
-    if (cloudCount > localCount) {
-      applyCarCareCloudData(cloudData.carData);
-      setCarCareCloudStatus("Cloud: Auto-loaded Car Care from cloud.", true);
-      return;
+    const localCount = countCarCareRecords(localData);
+    const cloudCount = countCarCareRecords(cloudClean);
+
+    if (cloudCount > 0) {
+      const mergedData = mergeCarCareDataCloudWins(localData, cloudClean, combinedDeletedIds);
+      const mergedJson = JSON.stringify(mergedData);
+      const localJson = JSON.stringify(localData);
+
+      if (mergedJson !== localJson) {
+        applyCarCareCloudData(cloudClean, combinedDeletedIds);
+        setCarCareCloudStatus("Cloud: Auto-synced Car Care from cloud.", true);
+        return;
+      }
     }
 
     if (localCount > cloudCount) {
@@ -2079,7 +2354,6 @@ async function autoCheckCarCareCloud() {
     setCarCareCloudStatus("Cloud auto-check failed. You can still use Load from Cloud.", false);
   }
 }
-
 
 // =========================
 // SAVE CAR CARE TO CLOUD
@@ -2098,13 +2372,25 @@ async function saveCarCareToCloud() {
       return;
     }
 
-    const carData = getCarData();
-    const localCount = countCarCareRecords(carData);
+    let deletedIds = getDeletedCarCareIds();
+    let carData = applyDeletedCarCareIdsToData(getCarData(), deletedIds);
+    let localCount = countCarCareRecords(carData);
 
     setCarCareCloudStatus("Cloud: Checking before save...", true);
 
     const cloudData = await window.smartToolsCloud.loadAppData("carCare");
-    const cloudCount = cloudData && cloudData.carData ? countCarCareRecords(cloudData.carData) : 0;
+
+    if (cloudData) {
+      deletedIds = mergeDeletedCarCareIds(deletedIds, normalizeDeletedCarCareIdsFromCloud(cloudData));
+      carData = applyDeletedCarCareIdsToData(carData, deletedIds);
+      localCount = countCarCareRecords(carData);
+    }
+
+    const cloudClean = cloudData && cloudData.carData
+      ? applyDeletedCarCareIdsToData(cloudData.carData, deletedIds)
+      : { cars: [] };
+
+    const cloudCount = countCarCareRecords(cloudClean);
 
     if (cloudCount > localCount) {
       setCarCareCloudStatus("Cloud has more Car Care records. Load from Cloud first to avoid overwriting.", false);
@@ -2116,6 +2402,7 @@ async function saveCarCareToCloud() {
 
     await window.smartToolsCloud.saveAppData("carCare", {
       carData: carData,
+      deletedCarCareIds: deletedIds,
       savedAt: new Date().toISOString(),
       recordCount: localCount,
       source: "Smart Tools Car Care"
@@ -2130,6 +2417,7 @@ async function saveCarCareToCloud() {
 
 // =========================
 // LOAD CAR CARE FROM CLOUD
+// Cloud wins for matching IDs, local-only records remain safe.
 // =========================
 async function loadCarCareFromCloud(skipConfirm = false) {
   try {
@@ -2156,7 +2444,7 @@ async function loadCarCareFromCloud(skipConfirm = false) {
 
     if (!skipConfirm) {
       const confirmed = confirm(
-        "Load Car Care from cloud?\n\nThis will replace Car Care data on this device with your cloud copy. A local backup will be saved before loading."
+        "Load Car Care from cloud?\n\nCloud data will update this device. Matching records will use the cloud version. Local-only records stay safe. A local backup will be saved before loading."
       );
 
       if (!confirmed) {
@@ -2165,9 +2453,9 @@ async function loadCarCareFromCloud(skipConfirm = false) {
       }
     }
 
-    applyCarCareCloudData(cloudData.carData);
+    applyCarCareCloudData(cloudData.carData, normalizeDeletedCarCareIdsFromCloud(cloudData));
 
-    setCarCareCloudStatus("Cloud: Car Care loaded.", true);
+    setCarCareCloudStatus("Cloud: Car Care loaded and synced.", true);
   } catch (error) {
     console.error(error);
     setCarCareCloudStatus("Cloud load failed. Check internet or Firebase rules.", false);
@@ -2689,6 +2977,8 @@ window.addEventListener("smartToolsCloudUserChanged", function() {
       const car = data.cars.find(item => item.id === selectedCarId);
       if (!car) return;
 
+      addDeletedCarCareId("services", openedServiceId);
+
       car.services = car.services.filter(item => item.id !== openedServiceId);
 
       saveCarData(data);
@@ -2858,6 +3148,8 @@ window.addEventListener("smartToolsCloudUserChanged", function() {
       if (!confirmDelete) return;
 
       const data = getCarData();
+      addDeletedCarCareId("cars", selectedCarId);
+
       data.cars = data.cars.filter(item => item.id !== selectedCarId);
       saveCarData(data);
 
@@ -3066,6 +3358,8 @@ window.addEventListener("smartToolsCloudUserChanged", function() {
       const data = getCarData();
       const car = data.cars.find(item => item.id === selectedCarId);
       if (!car) return;
+
+      addDeletedCarCareId("reminders", openedReminderId);
 
       car.reminders = car.reminders.filter(item => item.id !== openedReminderId);
 
@@ -3366,6 +3660,8 @@ window.addEventListener("smartToolsCloudUserChanged", function() {
       const car = data.cars.find(item => item.id === selectedCarId);
       if (!car) return;
       const tracker = normalizeMileageTracker(car.mileageTracker);
+      addDeletedCarCareId("mileageHistory", historyId);
+
       tracker.history = tracker.history.filter(item => item.id !== historyId);
       car.mileageTracker = tracker;
       saveCarData(data);
