@@ -17,6 +17,13 @@
 
   <title>Notes</title>
 
+  <!-- =========================
+       FIREBASE CLOUD SYNC FILE
+       File must exist here:
+       Smart-Tools/shared/cloud-sync.js
+  ========================= -->
+  <script type="module" src="../shared/cloud-sync.js"></script>
+
   <style>
     /* =========================
        RESET
@@ -175,6 +182,73 @@
 
     .recovery-message.show {
       display: block;
+    }
+
+    /* =========================
+       CLOUD SYNC BAR
+    ========================= */
+    .cloud-sync-card {
+      width: 100%;
+      margin-bottom: 12px;
+      padding: 12px;
+      border-radius: 16px;
+      background: #ffffff;
+      box-shadow: 0 1px 0 rgba(0,0,0,0.04);
+      display: grid;
+      gap: 10px;
+    }
+
+    .cloud-status-line {
+      font-size: 14px;
+      line-height: 1.35;
+      font-weight: 700;
+      color: #6b7280;
+    }
+
+    .cloud-status-line.signed-in {
+      color: #166534;
+    }
+
+    .cloud-status-line.not-signed-in {
+      color: #9a3412;
+    }
+
+    .cloud-btn-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .cloud-btn {
+      min-height: 38px;
+      border-radius: 12px;
+      padding: 0 12px;
+      background: #007aff;
+      color: #ffffff;
+      font-size: 14px;
+      font-weight: 800;
+      flex: 1;
+      min-width: 120px;
+    }
+
+    .cloud-btn.secondary {
+      background: #e5e5ea;
+      color: #111111;
+    }
+
+    .cloud-btn.green {
+      background: #16a34a;
+      color: #ffffff;
+    }
+
+    .cloud-btn.orange {
+      background: #f97316;
+      color: #ffffff;
+    }
+
+    .cloud-btn.red {
+      background: #ef4444;
+      color: #ffffff;
     }
 
     .search-wrap {
@@ -551,6 +625,28 @@
       color: #bbf7d0;
     }
 
+    body.smart-tools-dark-theme .cloud-sync-card {
+      background: #1c1c1e;
+      box-shadow: none;
+    }
+
+    body.smart-tools-dark-theme .cloud-status-line {
+      color: #c7c7cc;
+    }
+
+    body.smart-tools-dark-theme .cloud-status-line.signed-in {
+      color: #bbf7d0;
+    }
+
+    body.smart-tools-dark-theme .cloud-status-line.not-signed-in {
+      color: #fed7aa;
+    }
+
+    body.smart-tools-dark-theme .cloud-btn.secondary {
+      background: #2c2c2e;
+      color: #f5f5f7;
+    }
+
     body.smart-tools-dark-theme .search-wrap {
       background: #1c1c1e;
     }
@@ -621,6 +717,10 @@
       #noteBodyEditor {
         font-size: 20px;
       }
+
+      .cloud-btn {
+        min-width: 100%;
+      }
     }
   </style>
 </head>
@@ -648,6 +748,22 @@
         </div>
 
         <div id="recoveryMessage" class="recovery-message"></div>
+
+        <!-- =========================
+             CLOUD SYNC CARD
+        ========================= -->
+        <div class="cloud-sync-card">
+          <div id="cloudStatusLine" class="cloud-status-line not-signed-in">
+            Cloud: Not signed in
+          </div>
+
+          <div class="cloud-btn-row">
+            <button id="cloudSignInBtn" class="cloud-btn" onclick="signInToNotesCloud()">Sign in with Google</button>
+            <button id="cloudSaveBtn" class="cloud-btn green" onclick="saveNotesToCloud()">Save to Cloud</button>
+            <button id="cloudLoadBtn" class="cloud-btn orange" onclick="loadNotesFromCloud()">Load from Cloud</button>
+            <button id="cloudSignOutBtn" class="cloud-btn red" onclick="signOutFromNotesCloud()">Sign out</button>
+          </div>
+        </div>
 
         <div class="search-wrap">
           <div class="search-icon">⌕</div>
@@ -774,6 +890,8 @@
     let swipeStartY = 0;
     let swipeCurrentX = 0;
     let swipeIsMoving = false;
+    let notesCloudAutoSaveTimer = null;
+    let notesCloudReady = false;
 
     // =========================
     // SHOW RECOVERY MESSAGE
@@ -788,6 +906,213 @@
       setTimeout(function() {
         box.classList.remove("show");
       }, 9000);
+    }
+
+    // =========================
+    // CLOUD STATUS MESSAGE
+    // =========================
+    function setCloudStatus(message, type) {
+      const line = document.getElementById("cloudStatusLine");
+      if (!line) return;
+
+      line.innerText = message;
+      line.classList.remove("signed-in");
+      line.classList.remove("not-signed-in");
+
+      if (type === "signed-in") {
+        line.classList.add("signed-in");
+      } else {
+        line.classList.add("not-signed-in");
+      }
+    }
+
+    // =========================
+    // UPDATE CLOUD BUTTONS
+    // =========================
+    function updateCloudButtons() {
+      const cloud = window.smartToolsCloud;
+      const user = cloud && cloud.getCurrentUser ? cloud.getCurrentUser() : null;
+
+      const signInBtn = document.getElementById("cloudSignInBtn");
+      const signOutBtn = document.getElementById("cloudSignOutBtn");
+      const saveBtn = document.getElementById("cloudSaveBtn");
+      const loadBtn = document.getElementById("cloudLoadBtn");
+
+      if (user) {
+        setCloudStatus("Cloud: Signed in as " + (user.email || "Google user"), "signed-in");
+        if (signInBtn) signInBtn.style.display = "none";
+        if (signOutBtn) signOutBtn.style.display = "block";
+        if (saveBtn) saveBtn.style.display = "block";
+        if (loadBtn) loadBtn.style.display = "block";
+      } else {
+        setCloudStatus("Cloud: Not signed in", "not-signed-in");
+        if (signInBtn) signInBtn.style.display = "block";
+        if (signOutBtn) signOutBtn.style.display = "none";
+        if (saveBtn) saveBtn.style.display = "none";
+        if (loadBtn) loadBtn.style.display = "none";
+      }
+    }
+
+    // =========================
+    // WAIT FOR CLOUD FILE
+    // =========================
+    function waitForCloudFile() {
+      let tries = 0;
+
+      const timer = setInterval(function() {
+        tries++;
+
+        if (window.smartToolsCloud) {
+          notesCloudReady = true;
+          clearInterval(timer);
+          updateCloudButtons();
+          return;
+        }
+
+        if (tries > 40) {
+          clearInterval(timer);
+          setCloudStatus("Cloud file not loaded. Check Smart-Tools/shared/cloud-sync.js", "not-signed-in");
+        }
+      }, 250);
+    }
+
+    // =========================
+    // SIGN IN TO NOTES CLOUD
+    // =========================
+    async function signInToNotesCloud() {
+      try {
+        if (!window.smartToolsCloud) {
+          setCloudStatus("Cloud file is not ready yet. Try again in a few seconds.", "not-signed-in");
+          return;
+        }
+
+        setCloudStatus("Cloud: Opening Google sign-in...", "not-signed-in");
+
+        await window.smartToolsCloud.signIn();
+
+        updateCloudButtons();
+
+        setCloudStatus("Cloud: Signed in. Press Save to Cloud to upload these notes.", "signed-in");
+      } catch (error) {
+        console.error(error);
+        setCloudStatus("Cloud sign-in failed. Check popup blocker or Firebase settings.", "not-signed-in");
+      }
+    }
+
+    // =========================
+    // SIGN OUT FROM NOTES CLOUD
+    // =========================
+    async function signOutFromNotesCloud() {
+      try {
+        if (!window.smartToolsCloud) return;
+
+        await window.smartToolsCloud.signOut();
+
+        updateCloudButtons();
+        setCloudStatus("Cloud: Signed out. Notes are still saved on this device.", "not-signed-in");
+      } catch (error) {
+        console.error(error);
+        setCloudStatus("Cloud sign-out failed.", "not-signed-in");
+      }
+    }
+
+    // =========================
+    // SAVE NOTES TO CLOUD
+    // =========================
+    async function saveNotesToCloud() {
+      try {
+        if (!window.smartToolsCloud) {
+          setCloudStatus("Cloud file is not ready yet.", "not-signed-in");
+          return;
+        }
+
+        const user = window.smartToolsCloud.getCurrentUser();
+
+        if (!user) {
+          setCloudStatus("Please sign in before saving to cloud.", "not-signed-in");
+          return;
+        }
+
+        const notes = getNotesData();
+
+        setCloudStatus("Cloud: Saving notes...", "signed-in");
+
+        await window.smartToolsCloud.saveAppData("notes", {
+          notes: notes,
+          savedAt: new Date().toISOString(),
+          source: "Smart Tools Notes"
+        });
+
+        setCloudStatus("Cloud: Saved " + notes.length + " note(s).", "signed-in");
+      } catch (error) {
+        console.error(error);
+        setCloudStatus("Cloud save failed. Check Firebase rules and internet.", "not-signed-in");
+      }
+    }
+
+    // =========================
+    // LOAD NOTES FROM CLOUD
+    // Merges cloud notes with local notes, then saves locally
+    // =========================
+    async function loadNotesFromCloud() {
+      try {
+        if (!window.smartToolsCloud) {
+          setCloudStatus("Cloud file is not ready yet.", "not-signed-in");
+          return;
+        }
+
+        const user = window.smartToolsCloud.getCurrentUser();
+
+        if (!user) {
+          setCloudStatus("Please sign in before loading from cloud.", "not-signed-in");
+          return;
+        }
+
+        setCloudStatus("Cloud: Loading notes...", "signed-in");
+
+        const cloudData = await window.smartToolsCloud.loadAppData("notes");
+
+        if (!cloudData || !Array.isArray(cloudData.notes)) {
+          setCloudStatus("Cloud: No saved notes found yet. Press Save to Cloud first.", "signed-in");
+          return;
+        }
+
+        const localNotes = getNotesData();
+        const cloudNotes = cloudData.notes
+          .map(function(item, index) {
+            return normalizeNote(item, index);
+          })
+          .filter(function(item) {
+            return item !== null;
+          });
+
+        const mergedNotes = dedupeNotes(localNotes.concat(cloudNotes));
+
+        saveNotesData(mergedNotes);
+        renderNotes();
+
+        setCloudStatus("Cloud: Loaded and merged " + mergedNotes.length + " note(s).", "signed-in");
+      } catch (error) {
+        console.error(error);
+        setCloudStatus("Cloud load failed. Check Firebase rules and internet.", "not-signed-in");
+      }
+    }
+
+    // =========================
+    // SCHEDULE CLOUD AUTO SAVE
+    // Saves after local save, but not every second
+    // =========================
+    function scheduleNotesCloudAutoSave() {
+      if (!window.smartToolsCloud) return;
+
+      const user = window.smartToolsCloud.getCurrentUser();
+      if (!user) return;
+
+      clearTimeout(notesCloudAutoSaveTimer);
+
+      notesCloudAutoSaveTimer = setTimeout(function() {
+        saveNotesToCloud();
+      }, 1800);
     }
 
     // =========================
@@ -872,26 +1197,35 @@
 
     // =========================
     // DEDUPE NOTES
-    // Stops duplicate copies after recovery
+    // Stops duplicate copies after recovery/cloud merge
     // =========================
     function dedupeNotes(notes) {
-      const seen = {};
+      const seenById = {};
+      const seenByBody = {};
       const clean = [];
 
       notes.forEach(function(note) {
         const body = String(note.body || "").trim();
-        const updatedAt = String(note.updatedAt || "");
-        const key = body + "___" + updatedAt;
 
         if (body === "") {
           return;
         }
 
-        if (seen[key]) {
+        if (note.id && seenById[note.id]) {
           return;
         }
 
-        seen[key] = true;
+        const bodyKey = body + "___" + String(note.updatedAt || "");
+
+        if (seenByBody[bodyKey]) {
+          return;
+        }
+
+        if (note.id) {
+          seenById[note.id] = true;
+        }
+
+        seenByBody[bodyKey] = true;
         clean.push(note);
       });
 
@@ -931,10 +1265,10 @@
       const mergedNotes = dedupeNotes(allFoundNotes);
 
       if (mergedNotes.length > currentNotes.length) {
-        saveNotesData(mergedNotes);
+        saveNotesData(mergedNotes, false);
         showRecoveryMessage("Recovered " + mergedNotes.length + " saved notes into this Notes page.");
       } else if (currentNotes.length > 0) {
-        saveNotesData(dedupeNotes(currentNotes));
+        saveNotesData(dedupeNotes(currentNotes), false);
       }
     }
 
@@ -980,12 +1314,16 @@
     // =========================
     // SAVE NOTES DATA
     // =========================
-    function saveNotesData(data) {
+    function saveNotesData(data, shouldCloudSave = true) {
       const cleanData = dedupeNotes(Array.isArray(data) ? data : []);
       localStorage.setItem(NOTES_MAIN_KEY, JSON.stringify(cleanData));
 
       // Safety backup with same latest data
       localStorage.setItem("smartToolsNotesBackup", JSON.stringify(cleanData));
+
+      if (shouldCloudSave) {
+        scheduleNotesCloudAutoSave();
+      }
     }
 
     // =========================
@@ -1615,6 +1953,13 @@
     }
 
     // =========================
+    // CLOUD USER CHANGE LISTENER
+    // =========================
+    window.addEventListener("smartToolsCloudUserChanged", function() {
+      updateCloudButtons();
+    });
+
+    // =========================
     // CLOSE SWIPE WHEN CLICKING OUTSIDE
     // =========================
     document.addEventListener("click", function(event) {
@@ -1644,6 +1989,8 @@
       applySmartToolsTheme();
       recoverOldNotesIfNeeded();
       renderNotes();
+      updateCloudButtons();
+      waitForCloudFile();
     });
   </script>
 
