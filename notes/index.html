@@ -187,16 +187,61 @@
     /* =========================
        CLOUD SYNC BAR
     ========================= */
-    .cloud-sync-card {
-      width: 100%;
-      margin-bottom: 12px;
-      padding: 12px;
-      border-radius: 16px;
-      background: #ffffff;
-      box-shadow: 0 1px 0 rgba(0,0,0,0.04);
-      display: grid;
-      gap: 10px;
-    }
+ .cloud-sync-card {
+  width: 100%;
+  margin-bottom: 12px;
+  padding: 10px 12px;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 1px 0 rgba(0,0,0,0.04);
+  position: relative;
+}
+
+.cloud-main-line {
+  width: 100%;
+  min-height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.cloud-menu-dot-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: #e5e5ea;
+  color: #111111;
+  font-size: 24px;
+  font-weight: 900;
+  line-height: 1;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.cloud-menu-dot-btn.show {
+  display: flex;
+}
+
+.cloud-menu-box {
+  display: none;
+  position: absolute;
+  top: 52px;
+  right: 12px;
+  z-index: 50;
+  width: 210px;
+  padding: 8px;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 14px 34px rgba(0,0,0,0.16);
+}
+
+.cloud-menu-box.show {
+  display: grid;
+  gap: 8px;
+}
 
     .cloud-status-line {
       font-size: 14px;
@@ -753,17 +798,24 @@
              CLOUD SYNC CARD
         ========================= -->
         <div class="cloud-sync-card">
-          <div id="cloudStatusLine" class="cloud-status-line not-signed-in">
-            Cloud: Not signed in
-          </div>
+  <div class="cloud-main-line">
+    <div id="cloudStatusLine" class="cloud-status-line not-signed-in">
+      Cloud: Not signed in
+    </div>
 
-          <div class="cloud-btn-row">
-            <button id="cloudSignInBtn" class="cloud-btn" onclick="signInToNotesCloud()">Sign in with Google</button>
-            <button id="cloudSaveBtn" class="cloud-btn green" onclick="saveNotesToCloud()">Save to Cloud</button>
-            <button id="cloudLoadBtn" class="cloud-btn orange" onclick="loadNotesFromCloud()">Load from Cloud</button>
-            <button id="cloudSignOutBtn" class="cloud-btn red" onclick="signOutFromNotesCloud()">Sign out</button>
-          </div>
-        </div>
+    <button id="cloudMenuDotBtn" class="cloud-menu-dot-btn" onclick="toggleCloudMenu()" aria-label="Cloud Menu">⋯</button>
+  </div>
+
+  <div class="cloud-btn-row">
+    <button id="cloudSignInBtn" class="cloud-btn" onclick="signInToNotesCloud()">Sign in with Google</button>
+  </div>
+
+  <div id="cloudMenuBox" class="cloud-menu-box">
+    <button id="cloudSaveBtn" class="cloud-btn green" onclick="saveNotesToCloud(); closeCloudMenu();">Save to Cloud</button>
+    <button id="cloudLoadBtn" class="cloud-btn orange" onclick="loadNotesFromCloud(); closeCloudMenu();">Load from Cloud</button>
+    <button id="cloudSignOutBtn" class="cloud-btn red" onclick="signOutFromNotesCloud(); closeCloudMenu();">Sign out</button>
+  </div>
+</div>
 
         <div class="search-wrap">
           <div class="search-icon">⌕</div>
@@ -929,29 +981,48 @@
     // =========================
     // UPDATE CLOUD BUTTONS
     // =========================
-    function updateCloudButtons() {
-      const cloud = window.smartToolsCloud;
-      const user = cloud && cloud.getCurrentUser ? cloud.getCurrentUser() : null;
+   function updateCloudButtons() {
+  const cloud = window.smartToolsCloud;
+  const user = cloud && cloud.getCurrentUser ? cloud.getCurrentUser() : null;
 
-      const signInBtn = document.getElementById("cloudSignInBtn");
-      const signOutBtn = document.getElementById("cloudSignOutBtn");
-      const saveBtn = document.getElementById("cloudSaveBtn");
-      const loadBtn = document.getElementById("cloudLoadBtn");
+  const signInBtn = document.getElementById("cloudSignInBtn");
+  const menuDotBtn = document.getElementById("cloudMenuDotBtn");
+  const menuBox = document.getElementById("cloudMenuBox");
 
-      if (user) {
-        setCloudStatus("Cloud: Signed in as " + (user.email || "Google user"), "signed-in");
-        if (signInBtn) signInBtn.style.display = "none";
-        if (signOutBtn) signOutBtn.style.display = "block";
-        if (saveBtn) saveBtn.style.display = "block";
-        if (loadBtn) loadBtn.style.display = "block";
-      } else {
-        setCloudStatus("Cloud: Not signed in", "not-signed-in");
-        if (signInBtn) signInBtn.style.display = "block";
-        if (signOutBtn) signOutBtn.style.display = "none";
-        if (saveBtn) saveBtn.style.display = "none";
-        if (loadBtn) loadBtn.style.display = "none";
-      }
-    }
+  if (user) {
+    setCloudStatus("Cloud: Signed in as " + (user.email || "Google user"), "signed-in");
+
+    if (signInBtn) signInBtn.style.display = "none";
+    if (menuDotBtn) menuDotBtn.classList.add("show");
+  } else {
+    setCloudStatus("Cloud: Not signed in", "not-signed-in");
+
+    if (signInBtn) signInBtn.style.display = "block";
+    if (menuDotBtn) menuDotBtn.classList.remove("show");
+    if (menuBox) menuBox.classList.remove("show");
+  }
+}
+
+
+    // =========================
+// TOGGLE CLOUD MENU
+// =========================
+function toggleCloudMenu() {
+  const menuBox = document.getElementById("cloudMenuBox");
+  if (!menuBox) return;
+
+  menuBox.classList.toggle("show");
+}
+
+// =========================
+// CLOSE CLOUD MENU
+// =========================
+function closeCloudMenu() {
+  const menuBox = document.getElementById("cloudMenuBox");
+  if (!menuBox) return;
+
+  menuBox.classList.remove("show");
+}
 
     // =========================
     // WAIT FOR CLOUD FILE
@@ -1962,14 +2033,19 @@
     // =========================
     // CLOSE SWIPE WHEN CLICKING OUTSIDE
     // =========================
-    document.addEventListener("click", function(event) {
-      const rowWrap = event.target.closest(".note-row-wrap");
-      const deleteOverlay = event.target.closest("#deleteConfirmOverlay");
+   document.addEventListener("click", function(event) {
+  const rowWrap = event.target.closest(".note-row-wrap");
+  const deleteOverlay = event.target.closest("#deleteConfirmOverlay");
+  const cloudCard = event.target.closest(".cloud-sync-card");
 
-      if (!rowWrap && !deleteOverlay) {
-        closeAnyOpenSwipe();
-      }
-    });
+  if (!rowWrap && !deleteOverlay) {
+    closeAnyOpenSwipe();
+  }
+
+  if (!cloudCard) {
+    closeCloudMenu();
+  }
+});
 
     // =========================
     // SAVE WHEN LEAVING PAGE
