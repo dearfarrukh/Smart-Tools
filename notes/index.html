@@ -943,6 +943,10 @@
     let notesCloudReady = false;
     let notesCloudAutoCheckDone = false;
 
+    // Allows one cloud save after an intentional delete.
+    // Without this, safety block thinks cloud has more notes and blocks delete sync.
+    let notesAllowIntentionalDeleteCloudSave = false;
+
     // =========================
     // SHOW RECOVERY MESSAGE
     // =========================
@@ -1165,7 +1169,7 @@ function closeCloudMenu() {
         const cloudData = await window.smartToolsCloud.loadAppData("notes");
         const cloudCount = cloudData && Array.isArray(cloudData.notes) ? cloudData.notes.length : 0;
 
-        if (cloudCount > notes.length) {
+        if (cloudCount > notes.length && !notesAllowIntentionalDeleteCloudSave) {
           setCloudStatus("Cloud has more notes. Load from Cloud first to avoid overwriting.", "not-signed-in");
           alert("Cloud has more notes than this device.\n\nPlease press Load from Cloud first, then add/edit, then save again.");
           return;
@@ -1179,6 +1183,8 @@ function closeCloudMenu() {
           recordCount: notes.length,
           source: "Smart Tools Notes"
         });
+
+        notesAllowIntentionalDeleteCloudSave = false;
 
         setCloudStatus("Cloud: Saved " + notes.length + " note(s).", "signed-in");
       } catch (error) {
@@ -1226,6 +1232,7 @@ function closeCloudMenu() {
         const mergedNotes = dedupeNotes(localNotes.concat(cloudNotes));
 
         localStorage.setItem("smartToolsNotesBeforeCloudLoad", localStorage.getItem(NOTES_MAIN_KEY) || "");
+        notesAllowIntentionalDeleteCloudSave = false;
         saveNotesData(mergedNotes);
         renderNotes();
 
@@ -1738,6 +1745,7 @@ function closeCloudMenu() {
       }
 
       if (body === "") {
+        notesAllowIntentionalDeleteCloudSave = true;
         notes.splice(index, 1);
         saveNotesData(notes);
         return;
@@ -1823,6 +1831,7 @@ function closeCloudMenu() {
         return note.id !== pendingDeleteNoteId;
       });
 
+      notesAllowIntentionalDeleteCloudSave = true;
       saveNotesData(notes);
 
       if (currentNoteId === pendingDeleteNoteId) {
