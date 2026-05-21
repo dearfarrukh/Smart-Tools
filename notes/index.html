@@ -910,6 +910,7 @@
     // Main key stays same as your old app
     // =========================
     const NOTES_MAIN_KEY = "pocketToolsNotes";
+    const NOTES_DELETED_KEY = "pocketToolsDeletedNoteIds";
 
     const NOTES_RECOVERY_KEYS = [
       "pocketToolsNotes",
@@ -960,6 +961,54 @@
       setTimeout(function() {
         box.classList.remove("show");
       }, 9000);
+    }
+
+    // =========================
+    // DELETED NOTES SYNC HELPERS
+    // These keep deleted notes deleted on phone and computer.
+    // =========================
+    function getDeletedNoteIds() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(NOTES_DELETED_KEY) || "[]");
+        return Array.isArray(saved) ? saved.map(String) : [];
+      } catch (error) {
+        return [];
+      }
+    }
+
+    function saveDeletedNoteIds(ids) {
+      const cleanIds = Array.from(new Set((Array.isArray(ids) ? ids : []).map(String).filter(Boolean)));
+      localStorage.setItem(NOTES_DELETED_KEY, JSON.stringify(cleanIds));
+      return cleanIds;
+    }
+
+    function addDeletedNoteId(noteId) {
+      if (!noteId || noteId === "__new_note__") return;
+      const ids = getDeletedNoteIds();
+      ids.push(String(noteId));
+      saveDeletedNoteIds(ids);
+    }
+
+    function mergeDeletedNoteIds(localIds, cloudIds) {
+      return saveDeletedNoteIds([].concat(localIds || [], cloudIds || []));
+    }
+
+    function filterOutDeletedNotes(notes, deletedIds) {
+      const deletedMap = {};
+      (deletedIds || getDeletedNoteIds()).forEach(function(id) {
+        deletedMap[String(id)] = true;
+      });
+
+      return (Array.isArray(notes) ? notes : []).filter(function(note) {
+        return note && !deletedMap[String(note.id || "")];
+      });
+    }
+
+    function normalizeDeletedNoteIdsFromCloud(cloudData) {
+      if (!cloudData) return [];
+      if (Array.isArray(cloudData.deletedNoteIds)) return cloudData.deletedNoteIds.map(String);
+      if (Array.isArray(cloudData.deletedIds)) return cloudData.deletedIds.map(String);
+      return [];
     }
 
     // =========================
@@ -1050,21 +1099,35 @@ function closeCloudMenu() {
           return;
         }
 
-        const localNotes = getNotesData();
-        const cloudNotes = cloudData.notes
-          .map(function(item, index) {
-            return normalizeNote(item, index);
-          })
-          .filter(function(item) {
-            return item !== null;
-          });
+        const cloudDeletedIds = normalizeDeletedNoteIdsFromCloud(cloudData);
+        const combinedDeletedIds = mergeDeletedNoteIds(getDeletedNoteIds(), cloudDeletedIds);
+
+        const localNotesBeforeDeletedFilter = readNotesFromStorageKey(NOTES_MAIN_KEY);
+        const localNotes = filterOutDeletedNotes(getNotesData(), combinedDeletedIds);
+
+        if (localNotesBeforeDeletedFilter.length !== localNotes.length) {
+          localStorage.setItem("smartToolsNotesBeforeDeletedSync", localStorage.getItem(NOTES_MAIN_KEY) || "");
+          saveNotesData(localNotes, false);
+          renderNotes();
+        }
+
+        const cloudNotes = filterOutDeletedNotes(
+          cloudData.notes
+            .map(function(item, index) {
+              return normalizeNote(item, index);
+            })
+            .filter(function(item) {
+              return item !== null;
+            }),
+          combinedDeletedIds
+        );
 
         if (cloudNotes.length > localNotes.length) {
-          const mergedNotes = dedupeNotes(localNotes.concat(cloudNotes));
+          const mergedNotes = filterOutDeletedNotes(dedupeNotes(localNotes.concat(cloudNotes)), combinedDeletedIds);
           localStorage.setItem("smartToolsNotesBeforeCloudAutoLoad", localStorage.getItem(NOTES_MAIN_KEY) || "");
           saveNotesData(mergedNotes, false);
           renderNotes();
-          setCloudStatus("Cloud: Auto-loaded and merged " + mergedNotes.length + " note(s).", "signed-in");
+          setCloudStatus("Cloud: Auto-loaded and synced " + mergedNotes.length + " note(s).", "signed-in");
           return;
         }
 
@@ -1162,14 +1225,26 @@ function closeCloudMenu() {
           return;
         }
 
-        const notes = getNotesData();
+        const deletedNoteIds = getDeletedNoteIds();
+        const notes = filterOutDeletedNotes(getNotesData(), deletedNoteIds);
 
         setCloudStatus("Cloud: Checking before save...", "signed-in");
 
         const cloudData = await window.smartToolsCloud.loadAppData("notes");
-        const cloudCount = cloudData && Array.isArray(cloudData.notes) ? cloudData.notes.length : 0;
+        const cloudDeletedIds = normalizeDeletedNoteIdsFromCloud(cloudData);
+        const combinedDeletedIds = mergeDeletedNoteIds(deletedNoteIds, cloudDeletedIds);
 
-        if (cloudCount > notes.length && !notesAllowIntentionalDeleteCloudSave) {
+        const cloudNotes = cloudData && Array.isArray(cloudData.notes)
+          ? filterOutDeletedNotes(cloudData.notes.map(function(item, index) {
+              return normalizeNote(item, index);
+            }).filter(function(item) {
+              return item !== null;
+            }), combinedDeletedIds)
+          : [];
+
+        const localNotes = filterOutDeletedNotes(notes, combinedDeletedIds);
+
+        if (cloudNotes.length > localNotes.length && !notesAllowIntentionalDeleteCloudSave) {
           setCloudStatus("Cloud has more notes. Load from Cloud first to avoid overwriting.", "not-signed-in");
           alert("Cloud has more notes than this device.\n\nPlease press Load from Cloud first, then add/edit, then save again.");
           return;
@@ -1178,15 +1253,16 @@ function closeCloudMenu() {
         setCloudStatus("Cloud: Saving notes...", "signed-in");
 
         await window.smartToolsCloud.saveAppData("notes", {
-          notes: notes,
+          notes: localNotes,
+          deletedNoteIds: combinedDeletedIds,
           savedAt: new Date().toISOString(),
-          recordCount: notes.length,
+          recordCount: localNotes.length,
           source: "Smart Tools Notes"
         });
 
         notesAllowIntentionalDeleteCloudSave = false;
 
-        setCloudStatus("Cloud: Saved " + notes.length + " note(s).", "signed-in");
+        setCloudStatus("Cloud: Saved " + localNotes.length + " note(s).", "signed-in");
       } catch (error) {
         console.error(error);
         setCloudStatus("Cloud save failed. Check Firebase rules and internet.", "not-signed-in");
@@ -1220,23 +1296,28 @@ function closeCloudMenu() {
           return;
         }
 
-        const localNotes = getNotesData();
-        const cloudNotes = cloudData.notes
-          .map(function(item, index) {
-            return normalizeNote(item, index);
-          })
-          .filter(function(item) {
-            return item !== null;
-          });
+        const combinedDeletedIds = mergeDeletedNoteIds(getDeletedNoteIds(), normalizeDeletedNoteIdsFromCloud(cloudData));
 
-        const mergedNotes = dedupeNotes(localNotes.concat(cloudNotes));
+        const localNotes = filterOutDeletedNotes(getNotesData(), combinedDeletedIds);
+        const cloudNotes = filterOutDeletedNotes(
+          cloudData.notes
+            .map(function(item, index) {
+              return normalizeNote(item, index);
+            })
+            .filter(function(item) {
+              return item !== null;
+            }),
+          combinedDeletedIds
+        );
+
+        const mergedNotes = filterOutDeletedNotes(dedupeNotes(localNotes.concat(cloudNotes)), combinedDeletedIds);
 
         localStorage.setItem("smartToolsNotesBeforeCloudLoad", localStorage.getItem(NOTES_MAIN_KEY) || "");
         notesAllowIntentionalDeleteCloudSave = false;
-        saveNotesData(mergedNotes);
+        saveNotesData(mergedNotes, false);
         renderNotes();
 
-        setCloudStatus("Cloud: Loaded and merged " + mergedNotes.length + " note(s).", "signed-in");
+        setCloudStatus("Cloud: Loaded and synced " + mergedNotes.length + " note(s).", "signed-in");
       } catch (error) {
         console.error(error);
         setCloudStatus("Cloud load failed. Check Firebase rules and internet.", "not-signed-in");
@@ -1431,23 +1512,23 @@ function closeCloudMenu() {
         const parsed = JSON.parse(saved);
 
         if (Array.isArray(parsed)) {
-          return parsed
+          return filterOutDeletedNotes(parsed
             .map(function(item, index) {
               return normalizeNote(item, index);
             })
             .filter(function(item) {
               return item !== null;
-            });
+            }));
         }
 
         if (parsed && Array.isArray(parsed.notes)) {
-          return parsed.notes
+          return filterOutDeletedNotes(parsed.notes
             .map(function(item, index) {
               return normalizeNote(item, index);
             })
             .filter(function(item) {
               return item !== null;
-            });
+            }));
         }
 
         return [];
@@ -1460,7 +1541,7 @@ function closeCloudMenu() {
     // SAVE NOTES DATA
     // =========================
     function saveNotesData(data, shouldCloudSave = true) {
-      const cleanData = dedupeNotes(Array.isArray(data) ? data : []);
+      const cleanData = filterOutDeletedNotes(dedupeNotes(Array.isArray(data) ? data : []));
       localStorage.setItem(NOTES_MAIN_KEY, JSON.stringify(cleanData));
 
       // Safety backup with same latest data
@@ -1745,6 +1826,7 @@ function closeCloudMenu() {
       }
 
       if (body === "") {
+        addDeletedNoteId(currentNoteId);
         notesAllowIntentionalDeleteCloudSave = true;
         notes.splice(index, 1);
         saveNotesData(notes);
@@ -1827,6 +1909,9 @@ function closeCloudMenu() {
       }
 
       let notes = getNotesData();
+
+      addDeletedNoteId(pendingDeleteNoteId);
+
       notes = notes.filter(function(note) {
         return note.id !== pendingDeleteNoteId;
       });
