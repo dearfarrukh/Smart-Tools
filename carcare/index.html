@@ -1915,6 +1915,7 @@ body.smart-tools-dark-theme .cloud-menu-dot-btn {
 // CAR CARE CLOUD STATE
 // =========================
 let carCareCloudAutoSaveTimer = null;
+let carCareCloudAutoCheckDone = false;
 
 // =========================
 // SET CAR CARE CLOUD STATUS
@@ -1959,6 +1960,7 @@ function waitForCarCareCloudFile() {
     if (window.smartToolsCloud) {
       clearInterval(timer);
       updateCarCareCloudUI();
+      autoCheckCarCareCloud();
       return;
     }
 
@@ -1989,6 +1991,96 @@ function closeCarCloudMenu() {
   menuBox.classList.remove("show");
 }
 
+
+
+// =========================
+// COUNT CAR CARE RECORDS
+// =========================
+function countCarCareRecords(carData) {
+  if (!carData || !Array.isArray(carData.cars)) return 0;
+
+  let total = carData.cars.length;
+
+  carData.cars.forEach(function(car) {
+    total += Array.isArray(car.services) ? car.services.length : 0;
+    total += Array.isArray(car.reminders) ? car.reminders.length : 0;
+
+    const tracker = car.mileageTracker || {};
+    total += Array.isArray(tracker.history) ? tracker.history.length : 0;
+  });
+
+  return total;
+}
+
+// =========================
+// APPLY CAR CARE CLOUD DATA
+// =========================
+function applyCarCareCloudData(cloudCarData) {
+  localStorage.setItem("smartToolsCarCareBeforeCloudLoad", localStorage.getItem(CAR_DATA_KEY) || "");
+
+  saveCarData(cloudCarData, false);
+
+  selectedCarId = null;
+  editingCarId = null;
+  editingServiceId = null;
+  editingReminderId = null;
+
+  const carDetailsPage = document.getElementById("carDetailsPage");
+  const carMainPage = document.getElementById("carMainPage");
+
+  if (carDetailsPage) carDetailsPage.style.display = "none";
+  if (carMainPage) carMainPage.style.display = "block";
+
+  renderCarMainPage();
+}
+
+// =========================
+// AUTO CHECK / AUTO LOAD CAR CARE FROM CLOUD
+// =========================
+async function autoCheckCarCareCloud() {
+  try {
+    if (carCareCloudAutoCheckDone) return;
+    if (!window.smartToolsCloud) return;
+
+    if (window.smartToolsCloud.waitForAuthReady) {
+      await window.smartToolsCloud.waitForAuthReady();
+    }
+
+    const user = window.smartToolsCloud.getCurrentUser();
+    if (!user) return;
+
+    carCareCloudAutoCheckDone = true;
+    setCarCareCloudStatus("Cloud: Checking Car Care...", true);
+
+    const cloudData = await window.smartToolsCloud.loadAppData("carCare");
+
+    if (!cloudData || !cloudData.carData || !Array.isArray(cloudData.carData.cars)) {
+      setCarCareCloudStatus("Cloud: Signed in as " + (user.email || "Google user") + ". No cloud Car Care found yet.", true);
+      return;
+    }
+
+    const localCount = countCarCareRecords(getCarData());
+    const cloudCount = countCarCareRecords(cloudData.carData);
+
+    if (cloudCount > localCount) {
+      applyCarCareCloudData(cloudData.carData);
+      setCarCareCloudStatus("Cloud: Auto-loaded Car Care from cloud.", true);
+      return;
+    }
+
+    if (localCount > cloudCount) {
+      setCarCareCloudStatus("Cloud: This device has more Car Care records. Save to Cloud when ready.", true);
+      return;
+    }
+
+    setCarCareCloudStatus("Cloud: Signed in as " + (user.email || "Google user"), true);
+  } catch (error) {
+    console.error(error);
+    setCarCareCloudStatus("Cloud auto-check failed. You can still use Load from Cloud.", false);
+  }
+}
+
+
 // =========================
 // SAVE CAR CARE TO CLOUD
 // =========================
@@ -2007,12 +2099,25 @@ async function saveCarCareToCloud() {
     }
 
     const carData = getCarData();
+    const localCount = countCarCareRecords(carData);
+
+    setCarCareCloudStatus("Cloud: Checking before save...", true);
+
+    const cloudData = await window.smartToolsCloud.loadAppData("carCare");
+    const cloudCount = cloudData && cloudData.carData ? countCarCareRecords(cloudData.carData) : 0;
+
+    if (cloudCount > localCount) {
+      setCarCareCloudStatus("Cloud has more Car Care records. Load from Cloud first to avoid overwriting.", false);
+      alert("Cloud has more Car Care records than this device.\n\nPlease press Load Car Care from Cloud first, then add/edit, then save again.");
+      return;
+    }
 
     setCarCareCloudStatus("Cloud: Saving Car Care...", true);
 
     await window.smartToolsCloud.saveAppData("carCare", {
       carData: carData,
       savedAt: new Date().toISOString(),
+      recordCount: localCount,
       source: "Smart Tools Car Care"
     });
 
@@ -2026,7 +2131,7 @@ async function saveCarCareToCloud() {
 // =========================
 // LOAD CAR CARE FROM CLOUD
 // =========================
-async function loadCarCareFromCloud() {
+async function loadCarCareFromCloud(skipConfirm = false) {
   try {
     if (!window.smartToolsCloud) {
       setCarCareCloudStatus("Cloud file is not ready yet.", false);
@@ -2049,31 +2154,18 @@ async function loadCarCareFromCloud() {
       return;
     }
 
-    const confirmed = confirm(
-      "Load Car Care from cloud?\n\nThis will replace Car Care data on this device with your cloud copy."
-    );
+    if (!skipConfirm) {
+      const confirmed = confirm(
+        "Load Car Care from cloud?\n\nThis will replace Car Care data on this device with your cloud copy. A local backup will be saved before loading."
+      );
 
-    if (!confirmed) {
-      setCarCareCloudStatus("Cloud load cancelled.", true);
-      return;
+      if (!confirmed) {
+        setCarCareCloudStatus("Cloud load cancelled.", true);
+        return;
+      }
     }
 
-    localStorage.setItem("smartToolsCarCareBeforeCloudLoad", localStorage.getItem(CAR_DATA_KEY) || "");
-
-    saveCarData(cloudData.carData, false);
-
-    selectedCarId = null;
-    editingCarId = null;
-    editingServiceId = null;
-    editingReminderId = null;
-
-    const carDetailsPage = document.getElementById("carDetailsPage");
-    const carMainPage = document.getElementById("carMainPage");
-
-    if (carDetailsPage) carDetailsPage.style.display = "none";
-    if (carMainPage) carMainPage.style.display = "block";
-
-    renderCarMainPage();
+    applyCarCareCloudData(cloudData.carData);
 
     setCarCareCloudStatus("Cloud: Car Care loaded.", true);
   } catch (error) {
@@ -2103,6 +2195,8 @@ function scheduleCarCareCloudAutoSave() {
 // =========================
 window.addEventListener("smartToolsCloudUserChanged", function() {
   updateCarCareCloudUI();
+  carCareCloudAutoCheckDone = false;
+  autoCheckCarCareCloud();
 });
 
     // =========================
