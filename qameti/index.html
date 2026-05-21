@@ -971,24 +971,169 @@
     // QAMETI TRACKER DATA
     // =========================
     const QAMETI_DATA_KEY = "pocketToolsQametiData";
+    const QAMETI_DELETED_IDS_KEY = "smartToolsQametiDeletedIds";
+
     let currentQametiId = null;
+    let qametiAllowIntentionalDeleteCloudSave = false;
 
     function getQametiData() {
       try {
         const saved = JSON.parse(localStorage.getItem(QAMETI_DATA_KEY) || "[]");
-        return Array.isArray(saved) ? saved : [];
+        const list = Array.isArray(saved) ? saved : [];
+        return applyDeletedQametiIdsToData(normalizeQametiDataShape(list));
       } catch (error) {
         return [];
       }
     }
 
     function saveQametiData(data, shouldCloudSave = true) {
-      localStorage.setItem(QAMETI_DATA_KEY, JSON.stringify(data));
-      localStorage.setItem("smartToolsQametiBackup", JSON.stringify(data));
+      const cleanData = applyDeletedQametiIdsToData(normalizeQametiDataShape(Array.isArray(data) ? data : []));
+      localStorage.setItem(QAMETI_DATA_KEY, JSON.stringify(cleanData));
+      localStorage.setItem("smartToolsQametiBackup", JSON.stringify(cleanData));
 
       if (shouldCloudSave) {
         scheduleQametiCloudAutoSave();
       }
+    }
+
+    // =========================
+    // QAMETI DELETED ID HELPERS
+    // Keeps deleted Qameti records deleted on every device.
+    // =========================
+    function getDeletedQametiIds() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(QAMETI_DELETED_IDS_KEY) || "[]");
+        return Array.isArray(saved) ? saved.map(String).filter(Boolean) : [];
+      } catch (error) {
+        return [];
+      }
+    }
+
+    function saveDeletedQametiIds(ids) {
+      const clean = Array.from(new Set((Array.isArray(ids) ? ids : []).map(String).filter(Boolean)));
+      localStorage.setItem(QAMETI_DELETED_IDS_KEY, JSON.stringify(clean));
+      return clean;
+    }
+
+    function addDeletedQametiId(id) {
+      if (!id) return;
+      const ids = getDeletedQametiIds();
+      ids.push(String(id));
+      saveDeletedQametiIds(ids);
+    }
+
+    function normalizeDeletedQametiIdsFromCloud(cloudData) {
+      if (!cloudData) return [];
+      if (Array.isArray(cloudData.deletedQametiIds)) return cloudData.deletedQametiIds.map(String);
+      if (Array.isArray(cloudData.deletedIds)) return cloudData.deletedIds.map(String);
+      return [];
+    }
+
+    function mergeDeletedQametiIds(localIds, cloudIds) {
+      return saveDeletedQametiIds([].concat(localIds || [], cloudIds || []));
+    }
+
+    function makeQametiDeletedMap(ids) {
+      const map = {};
+      (Array.isArray(ids) ? ids : []).forEach(function(id) {
+        map[String(id)] = true;
+      });
+      return map;
+    }
+
+    function normalizeQametiPayment(payment, qametiId, index, monthly, startMonth, dueDay) {
+      const monthInfo = getQametiMonthInfo(startMonth || getCurrentMonthInputValue(), index, dueDay || 5);
+      const cleanPayment = payment && typeof payment === "object" ? payment : {};
+
+      return {
+        id: cleanPayment.id || ("payment_" + qametiId + "_" + index),
+        label: cleanPayment.label || monthInfo.label,
+        dueDate: cleanPayment.dueDate || monthInfo.date,
+        paidDate: cleanPayment.paidDate || "",
+        method: cleanPayment.method || "",
+        amount: cleanPayment.amount !== undefined && cleanPayment.amount !== "" ? cleanPayment.amount : monthly,
+        notes: cleanPayment.notes || "",
+        updatedAt: cleanPayment.updatedAt || cleanPayment.createdAt || ""
+      };
+    }
+
+    function normalizeQametiItem(item, index) {
+      const now = new Date().toISOString();
+      const raw = item && typeof item === "object" ? item : {};
+      const qametiId = raw.id || ("qameti_" + Date.now() + "_" + index + "_" + Math.random().toString(16).slice(2));
+      const monthly = Number(raw.monthly || 0);
+      const months = Number(raw.months || (Array.isArray(raw.payments) ? raw.payments.length : 0) || 0);
+      const dueDay = Number(raw.dueDay || 5);
+      const startMonth = raw.startMonth || getCurrentMonthInputValue();
+      const oldPayments = Array.isArray(raw.payments) ? raw.payments : [];
+      const payments = [];
+
+      for (let i = 0; i < months; i++) {
+        payments.push(normalizeQametiPayment(oldPayments[i], qametiId, i, monthly, startMonth, dueDay));
+      }
+
+      return {
+        id: qametiId,
+        name: raw.name || "Qameti",
+        currency: raw.currency || "$",
+        members: raw.members || months || "",
+        monthly: raw.monthly || monthly,
+        total: raw.total || ((Number(raw.members || months || 0)) * monthly),
+        months: months,
+        startMonth: startMonth,
+        dueDay: dueDay,
+        receiveMonth: raw.receiveMonth || "",
+        payments: payments,
+        createdAt: raw.createdAt || now,
+        updatedAt: raw.updatedAt || raw.createdAt || now
+      };
+    }
+
+    function normalizeQametiDataShape(qametiData) {
+      return (Array.isArray(qametiData) ? qametiData : [])
+        .map(function(item, index) {
+          return normalizeQametiItem(item, index);
+        })
+        .filter(function(item) {
+          return item && item.id;
+        });
+    }
+
+    function applyDeletedQametiIdsToData(qametiData, deletedIds) {
+      const deletedMap = makeQametiDeletedMap(deletedIds || getDeletedQametiIds());
+      return normalizeQametiDataShape(qametiData).filter(function(item) {
+        return !deletedMap[String(item.id || "")];
+      });
+    }
+
+    function mergeQametiDataCloudWins(localData, cloudData, deletedIds) {
+      const deletedMap = makeQametiDeletedMap(deletedIds || getDeletedQametiIds());
+      const localClean = applyDeletedQametiIdsToData(localData, deletedIds);
+      const cloudClean = applyDeletedQametiIdsToData(cloudData, deletedIds);
+      const byId = {};
+      const order = [];
+
+      localClean.forEach(function(item) {
+        const id = String(item.id || "");
+        if (!id || deletedMap[id]) return;
+        if (!byId[id]) order.push(id);
+        byId[id] = item;
+      });
+
+      cloudClean.forEach(function(item) {
+        const id = String(item.id || "");
+        if (!id || deletedMap[id]) return;
+        if (!byId[id]) order.push(id);
+
+        // Cloud wins for the same Qameti ID, including edited payments.
+        byId[id] = item;
+      });
+
+      return order
+        .map(function(id) {
+          return byId[id];
+        })
+        .filter(Boolean);
     }
 
     // =========================
@@ -1055,11 +1200,13 @@
     // COUNT QAMETI RECORDS
     // =========================
     function countQametiRecords(qametiData) {
-      if (!Array.isArray(qametiData)) return 0;
+      const cleanData = applyDeletedQametiIdsToData(qametiData);
 
-      let total = qametiData.length;
+      if (!Array.isArray(cleanData)) return 0;
 
-      qametiData.forEach(function(qameti) {
+      let total = cleanData.length;
+
+      cleanData.forEach(function(qameti) {
         total += Array.isArray(qameti.payments) ? qameti.payments.length : 0;
       });
 
@@ -1069,12 +1216,16 @@
     // =========================
     // APPLY QAMETI CLOUD DATA
     // =========================
-    function applyQametiCloudData(cloudQametiData) {
+    function applyQametiCloudData(cloudQametiData, cloudDeletedIds) {
+      const combinedDeletedIds = mergeDeletedQametiIds(getDeletedQametiIds(), cloudDeletedIds || []);
+      const localQametiData = getQametiData();
+      const mergedData = mergeQametiDataCloudWins(localQametiData, cloudQametiData, combinedDeletedIds);
+
       localStorage.setItem("smartToolsQametiBeforeCloudLoad", localStorage.getItem(QAMETI_DATA_KEY) || "");
-      saveQametiData(cloudQametiData, false);
+      saveQametiData(mergedData, false);
 
       currentQametiId = null;
-      repairAllQametiPaymentMonths();
+      repairAllQametiPaymentMonths(false);
       clearSelectedQameti();
       renderQametiPage();
     }
@@ -1104,13 +1255,23 @@
           return;
         }
 
-        const localCount = countQametiRecords(getQametiData());
-        const cloudCount = countQametiRecords(cloudData.qametiData);
+        const combinedDeletedIds = mergeDeletedQametiIds(getDeletedQametiIds(), normalizeDeletedQametiIdsFromCloud(cloudData));
+        const localData = applyDeletedQametiIdsToData(getQametiData(), combinedDeletedIds);
+        const cloudClean = applyDeletedQametiIdsToData(cloudData.qametiData, combinedDeletedIds);
 
-        if (cloudCount > localCount) {
-          applyQametiCloudData(cloudData.qametiData);
-          setQametiCloudStatus("Cloud: Auto-loaded Qameti from cloud.", true);
-          return;
+        const localCount = countQametiRecords(localData);
+        const cloudCount = countQametiRecords(cloudClean);
+
+        if (cloudCount > 0) {
+          const mergedData = mergeQametiDataCloudWins(localData, cloudClean, combinedDeletedIds);
+          const mergedJson = JSON.stringify(mergedData);
+          const localJson = JSON.stringify(localData);
+
+          if (mergedJson !== localJson) {
+            applyQametiCloudData(cloudClean, combinedDeletedIds);
+            setQametiCloudStatus("Cloud: Auto-synced Qameti from cloud.", true);
+            return;
+          }
         }
 
         if (localCount > cloudCount) {
@@ -1125,7 +1286,6 @@
       }
     }
 
-
     async function saveQametiToCloud() {
       try {
         if (!window.smartToolsCloud) {
@@ -1139,15 +1299,27 @@
           return;
         }
 
-        const qametiData = getQametiData();
-        const localCount = countQametiRecords(qametiData);
+        let deletedIds = getDeletedQametiIds();
+        let qametiData = applyDeletedQametiIdsToData(getQametiData(), deletedIds);
+        let localCount = countQametiRecords(qametiData);
 
         setQametiCloudStatus("Cloud: Checking before save...", true);
 
         const cloudData = await window.smartToolsCloud.loadAppData("qameti");
-        const cloudCount = cloudData && Array.isArray(cloudData.qametiData) ? countQametiRecords(cloudData.qametiData) : 0;
 
-        if (cloudCount > localCount) {
+        if (cloudData) {
+          deletedIds = mergeDeletedQametiIds(deletedIds, normalizeDeletedQametiIdsFromCloud(cloudData));
+          qametiData = applyDeletedQametiIdsToData(qametiData, deletedIds);
+          localCount = countQametiRecords(qametiData);
+        }
+
+        const cloudClean = cloudData && Array.isArray(cloudData.qametiData)
+          ? applyDeletedQametiIdsToData(cloudData.qametiData, deletedIds)
+          : [];
+
+        const cloudCount = countQametiRecords(cloudClean);
+
+        if (cloudCount > localCount && !qametiAllowIntentionalDeleteCloudSave) {
           setQametiCloudStatus("Cloud has more Qameti records. Load from Cloud first to avoid overwriting.", false);
           alert("Cloud has more Qameti records than this device.\n\nPlease press Load Qameti from Cloud first, then add/edit, then save again.");
           return;
@@ -1157,10 +1329,13 @@
 
         await window.smartToolsCloud.saveAppData("qameti", {
           qametiData: qametiData,
+          deletedQametiIds: deletedIds,
           savedAt: new Date().toISOString(),
           recordCount: localCount,
           source: "Smart Tools Qameti"
         });
+
+        qametiAllowIntentionalDeleteCloudSave = false;
 
         setQametiCloudStatus("Cloud: Qameti saved.", true);
       } catch (error) {
@@ -1191,16 +1366,16 @@
         }
 
         if (!skipConfirm) {
-          const confirmed = confirm("Load Qameti from cloud?\n\nThis will replace Qameti data on this device with your cloud copy. A local backup will be saved before loading.");
+          const confirmed = confirm("Load Qameti from cloud?\n\nCloud data will update this device. Matching Qameti records will use the cloud version. Local-only records stay safe. A local backup will be saved before loading.");
           if (!confirmed) {
             setQametiCloudStatus("Cloud load cancelled.", true);
             return;
           }
         }
 
-        applyQametiCloudData(cloudData.qametiData);
+        applyQametiCloudData(cloudData.qametiData, normalizeDeletedQametiIdsFromCloud(cloudData));
 
-        setQametiCloudStatus("Cloud: Qameti loaded.", true);
+        setQametiCloudStatus("Cloud: Qameti loaded and synced.", true);
       } catch (error) {
         console.error(error);
         setQametiCloudStatus("Cloud load failed. Check internet or Firebase rules.", false);
@@ -1251,7 +1426,7 @@
       });
     }
 
-    function repairAllQametiPaymentMonths() {
+    function repairAllQametiPaymentMonths(shouldCloudSave = true) {
       const data = getQametiData();
       let changed = false;
 
@@ -1267,6 +1442,7 @@
           const monthInfo = getQametiMonthInfo(startMonth, i, dueDay);
           const oldPayment = oldPayments[i] || {};
           newPayments.push({
+            id: oldPayment.id || ("payment_" + qameti.id + "_" + i),
             label: monthInfo.label,
             dueDate: oldPayment.dueDate || monthInfo.date,
             paidDate: oldPayment.paidDate || "",
@@ -1282,7 +1458,7 @@
         }
       });
 
-      if (changed) saveQametiData(data);
+      if (changed) saveQametiData(data, shouldCloudSave);
     }
 
     function clearSelectedQameti() {
@@ -1567,7 +1743,16 @@
 
       for (let i = 0; i < months; i++) {
         const monthInfo = getQametiMonthInfo(startMonth, i, dueDay);
-        payments.push({ label: monthInfo.label, dueDate: monthInfo.date, paidDate: "", method: "", amount: monthly, notes: "" });
+        payments.push({
+          id: "payment_" + Date.now() + "_" + i,
+          label: monthInfo.label,
+          dueDate: monthInfo.date,
+          paidDate: "",
+          method: "",
+          amount: monthly,
+          notes: "",
+          updatedAt: ""
+        });
       }
 
       const newQameti = {
@@ -1582,7 +1767,8 @@
         dueDay,
         receiveMonth,
         payments,
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
       };
 
       const data = getQametiData();
@@ -1635,6 +1821,9 @@
       payment.amount = Number(document.getElementById("qametiPaymentAmountInput").value || 0);
       payment.method = document.getElementById("qametiPaymentMethodInput").value;
       payment.notes = document.getElementById("qametiPaymentNotesInput").value.trim();
+      payment.id = payment.id || ("payment_" + qameti.id + "_" + index);
+      payment.updatedAt = new Date().toISOString();
+      data[qametiIndex].updatedAt = new Date().toISOString();
 
       saveQametiData(data);
       closeQametiPaymentPopup();
@@ -1656,6 +1845,8 @@
       if (!qameti) return;
       const confirmed = confirm("Delete this qameti? This cannot be undone.");
       if (!confirmed) return;
+      addDeletedQametiId(qameti.id);
+      qametiAllowIntentionalDeleteCloudSave = true;
       const data = getQametiData().filter(item => item.id !== qameti.id);
       saveQametiData(data);
       currentQametiId = null;
@@ -1726,7 +1917,7 @@
 
     document.addEventListener("DOMContentLoaded", function() {
       applySmartToolsTheme();
-      repairAllQametiPaymentMonths();
+      repairAllQametiPaymentMonths(false);
       clearSelectedQameti();
       renderQametiPage();
       updateQametiCloudUI();
