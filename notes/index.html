@@ -1122,12 +1122,13 @@ function closeCloudMenu() {
           combinedDeletedIds
         );
 
-        if (cloudNotes.length > localNotes.length) {
-          const mergedNotes = filterOutDeletedNotes(dedupeNotes(localNotes.concat(cloudNotes)), combinedDeletedIds);
+        const mergedNotes = mergeNotesCloudWins(localNotes, cloudNotes, combinedDeletedIds);
+
+        if (!areNotesListsSame(mergedNotes, localNotes)) {
           localStorage.setItem("smartToolsNotesBeforeCloudAutoLoad", localStorage.getItem(NOTES_MAIN_KEY) || "");
           saveNotesData(mergedNotes, false);
           renderNotes();
-          setCloudStatus("Cloud: Auto-loaded and synced " + mergedNotes.length + " note(s).", "signed-in");
+          setCloudStatus("Cloud: Auto-loaded latest cloud notes. Total " + mergedNotes.length + " note(s).", "signed-in");
           return;
         }
 
@@ -1310,14 +1311,14 @@ function closeCloudMenu() {
           combinedDeletedIds
         );
 
-        const mergedNotes = filterOutDeletedNotes(dedupeNotes(localNotes.concat(cloudNotes)), combinedDeletedIds);
+        const mergedNotes = mergeNotesCloudWins(localNotes, cloudNotes, combinedDeletedIds);
 
         localStorage.setItem("smartToolsNotesBeforeCloudLoad", localStorage.getItem(NOTES_MAIN_KEY) || "");
         notesAllowIntentionalDeleteCloudSave = false;
         saveNotesData(mergedNotes, false);
         renderNotes();
 
-        setCloudStatus("Cloud: Loaded and synced " + mergedNotes.length + " note(s).", "signed-in");
+        setCloudStatus("Cloud: Loaded latest cloud notes. Total " + mergedNotes.length + " note(s).", "signed-in");
       } catch (error) {
         console.error(error);
         setCloudStatus("Cloud load failed. Check Firebase rules and internet.", "not-signed-in");
@@ -1462,6 +1463,59 @@ function closeCloudMenu() {
       });
 
       return clean;
+    }
+
+    // =========================
+    // MERGE NOTES - CLOUD WINS
+    // Important:
+    // - Local-only notes stay safe.
+    // - If the same note exists on cloud and local, cloud version replaces local.
+    // - Deleted note IDs stay deleted on every device.
+    // =========================
+    function mergeNotesCloudWins(localNotes, cloudNotes, deletedIds) {
+      const noteMap = {};
+
+      filterOutDeletedNotes(localNotes || [], deletedIds).forEach(function(note) {
+        if (!note || !note.id) return;
+        noteMap[String(note.id)] = note;
+      });
+
+      filterOutDeletedNotes(cloudNotes || [], deletedIds).forEach(function(note) {
+        if (!note || !note.id) return;
+        noteMap[String(note.id)] = note;
+      });
+
+      return filterOutDeletedNotes(dedupeNotes(Object.values(noteMap)), deletedIds);
+    }
+
+    // =========================
+    // COMPARE NOTES LISTS
+    // Used so auto-load can update even when count is same
+    // =========================
+    function areNotesListsSame(listA, listB) {
+      const cleanA = dedupeNotes(listA || []).map(function(note) {
+        return {
+          id: String(note.id || ""),
+          body: String(note.body || ""),
+          updatedAt: String(note.updatedAt || ""),
+          createdAt: String(note.createdAt || "")
+        };
+      }).sort(function(a, b) {
+        return a.id.localeCompare(b.id);
+      });
+
+      const cleanB = dedupeNotes(listB || []).map(function(note) {
+        return {
+          id: String(note.id || ""),
+          body: String(note.body || ""),
+          updatedAt: String(note.updatedAt || ""),
+          createdAt: String(note.createdAt || "")
+        };
+      }).sort(function(a, b) {
+        return a.id.localeCompare(b.id);
+      });
+
+      return JSON.stringify(cleanA) === JSON.stringify(cleanB);
     }
 
     // =========================
