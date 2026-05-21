@@ -42,12 +42,41 @@ const db = getFirestore(app);
 const provider = new GoogleAuthProvider();
 
 let currentSmartToolsUser = null;
+let smartToolsAuthReady = false;
+let smartToolsAuthReadyResolvers = [];
+
+// =========================
+// MARK AUTH READY
+// =========================
+function markSmartToolsAuthReady() {
+  smartToolsAuthReady = true;
+
+  smartToolsAuthReadyResolvers.forEach(function(resolve) {
+    resolve(currentSmartToolsUser);
+  });
+
+  smartToolsAuthReadyResolvers = [];
+}
+
+// =========================
+// WAIT UNTIL FIREBASE AUTH IS READY
+// =========================
+function smartToolsWaitForAuthReady() {
+  if (smartToolsAuthReady) {
+    return Promise.resolve(currentSmartToolsUser);
+  }
+
+  return new Promise(function(resolve) {
+    smartToolsAuthReadyResolvers.push(resolve);
+  });
+}
 
 // =========================
 // WATCH LOGIN STATE
 // =========================
 onAuthStateChanged(auth, function(user) {
   currentSmartToolsUser = user || null;
+  markSmartToolsAuthReady();
 
   window.dispatchEvent(new CustomEvent("smartToolsCloudUserChanged", {
     detail: {
@@ -77,7 +106,7 @@ async function smartToolsSignOut() {
 // GET CURRENT USER
 // =========================
 function smartToolsGetCurrentUser() {
-  return currentSmartToolsUser;
+  return currentSmartToolsUser || auth.currentUser || null;
 }
 
 // =========================
@@ -85,6 +114,8 @@ function smartToolsGetCurrentUser() {
 // Example appName: "notes", "carCare", "qameti"
 // =========================
 async function smartToolsSaveAppData(appName, data) {
+  await smartToolsWaitForAuthReady();
+
   const user = auth.currentUser;
 
   if (!user) {
@@ -109,6 +140,8 @@ async function smartToolsSaveAppData(appName, data) {
 // Example appName: "notes", "carCare", "qameti"
 // =========================
 async function smartToolsLoadAppData(appName) {
+  await smartToolsWaitForAuthReady();
+
   const user = auth.currentUser;
 
   if (!user) {
@@ -127,12 +160,37 @@ async function smartToolsLoadAppData(appName) {
 }
 
 // =========================
+// LOAD ONE APP FULL CLOUD DOCUMENT
+// Gives data + updatedAt if needed later
+// =========================
+async function smartToolsLoadAppDocument(appName) {
+  await smartToolsWaitForAuthReady();
+
+  const user = auth.currentUser;
+
+  if (!user) {
+    throw new Error("Please sign in before loading cloud data.");
+  }
+
+  const ref = doc(db, "users", user.uid, "apps", appName);
+  const snap = await getDoc(ref);
+
+  if (!snap.exists()) {
+    return null;
+  }
+
+  return snap.data();
+}
+
+// =========================
 // MAKE FUNCTIONS AVAILABLE TO HTML PAGES
 // =========================
 window.smartToolsCloud = {
   signIn: smartToolsSignInWithGoogle,
   signOut: smartToolsSignOut,
   getCurrentUser: smartToolsGetCurrentUser,
+  waitForAuthReady: smartToolsWaitForAuthReady,
   saveAppData: smartToolsSaveAppData,
-  loadAppData: smartToolsLoadAppData
+  loadAppData: smartToolsLoadAppData,
+  loadAppDocument: smartToolsLoadAppDocument
 };
