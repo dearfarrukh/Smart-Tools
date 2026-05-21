@@ -17,6 +17,12 @@
 
   <title>Car Care</title>
 
+  <!-- =========================
+     FIREBASE CLOUD SYNC FILE
+     Uses main Smart Tools Google login
+========================= -->
+<script type="module" src="../shared/cloud-sync.js"></script>
+
   <style>
     /* =========================
        RESET
@@ -987,6 +993,119 @@ input[type="date"].car-input {
     body.smart-tools-dark-theme .mileage-type-btn { background:rgba(15,23,42,0.82); color:#cbd5e1; border-color:rgba(148,163,184,0.30); }
     body.smart-tools-dark-theme .mileage-type-btn.active { background:linear-gradient(135deg,#2563eb 0%,#7c3aed 100%); color:white; }
 
+
+/* =========================
+   CLOUD SYNC CARD
+========================= */
+.cloud-sync-card {
+  width: 100%;
+  margin-top: 18px;
+  padding: 10px 12px;
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: 0 10px 24px rgba(15,23,42,0.08);
+  position: relative;
+  border: 1px solid rgba(15,23,42,0.07);
+}
+
+.cloud-main-line {
+  width: 100%;
+  min-height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.cloud-status-line {
+  font-size: 14px;
+  line-height: 1.35;
+  font-weight: 900;
+  color: #9a3412;
+}
+
+.cloud-status-line.signed-in {
+  color: #166534;
+}
+
+.cloud-menu-dot-btn {
+  width: 34px;
+  height: 34px;
+  border: none;
+  border-radius: 50%;
+  background: #e5e5ea;
+  color: #111827;
+  font-size: 24px;
+  font-weight: 900;
+  line-height: 1;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.cloud-menu-dot-btn.show {
+  display: flex;
+}
+
+.cloud-menu-box {
+  display: none;
+  position: absolute;
+  top: 52px;
+  right: 12px;
+  z-index: 50;
+  width: 210px;
+  padding: 8px;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 14px 34px rgba(0,0,0,0.16);
+}
+
+.cloud-menu-box.show {
+  display: grid;
+  gap: 8px;
+}
+
+.cloud-menu-action {
+  min-height: 42px;
+  border: none;
+  border-radius: 13px;
+  color: white;
+  font-size: 14px;
+  font-weight: 900;
+  padding: 0 12px;
+  cursor: pointer;
+}
+
+.cloud-menu-action.green {
+  background: #16a34a;
+}
+
+.cloud-menu-action.orange {
+  background: #f97316;
+}
+
+body.smart-tools-dark-theme .cloud-sync-card,
+body.smart-tools-dark-theme .cloud-menu-box {
+  background: linear-gradient(180deg, rgba(30,41,59,0.96), rgba(15,23,42,0.94));
+  border-color: rgba(148,163,184,0.20);
+  box-shadow: 0 14px 34px rgba(0,0,0,0.22);
+}
+
+body.smart-tools-dark-theme .cloud-status-line {
+  color: #fed7aa;
+}
+
+body.smart-tools-dark-theme .cloud-status-line.signed-in {
+  color: #bbf7d0;
+}
+
+body.smart-tools-dark-theme .cloud-menu-dot-btn {
+  background: #2c2c2e;
+  color: #f8fafc;
+}
+
+    
     /* =========================
        RESPONSIVE
     ========================= */
@@ -1175,7 +1294,23 @@ input[type="date"].car-input {
           </div>
         </div>
       </div>
+<!-- =========================
+     CLOUD SYNC CARD
+========================= -->
+<div class="cloud-sync-card">
+  <div class="cloud-main-line">
+    <div id="carCloudStatusLine" class="cloud-status-line">
+      Cloud: Not signed in. Sign in from Smart Tools main menu.
+    </div>
 
+    <button id="carCloudMenuDotBtn" class="cloud-menu-dot-btn" onclick="toggleCarCloudMenu()" aria-label="Cloud Menu">⋯</button>
+  </div>
+
+  <div id="carCloudMenuBox" class="cloud-menu-box">
+    <button class="cloud-menu-action green" onclick="saveCarCareToCloud(); closeCarCloudMenu();">Save Car Care to Cloud</button>
+    <button class="cloud-menu-action orange" onclick="loadCarCareFromCloud(); closeCarCloudMenu();">Load Car Care from Cloud</button>
+  </div>
+</div>
       <div class="main-actions single-action">
         <button class="action-btn save-btn" onclick="openCarForm()">＋ Add Car</button>
       </div>
@@ -1764,9 +1899,211 @@ input[type="date"].car-input {
     // =========================
     // SAVE CAR DATA
     // =========================
-    function saveCarData(data) {
-      localStorage.setItem(CAR_DATA_KEY, JSON.stringify(data));
+ function saveCarData(data, shouldCloudSave = true) {
+  localStorage.setItem(CAR_DATA_KEY, JSON.stringify(data));
+
+  // Local safety backup
+  localStorage.setItem("smartToolsCarCareBackup", JSON.stringify(data));
+
+  if (shouldCloudSave) {
+    scheduleCarCareCloudAutoSave();
+  }
+}
+
+
+    // =========================
+// CAR CARE CLOUD STATE
+// =========================
+let carCareCloudAutoSaveTimer = null;
+
+// =========================
+// SET CAR CARE CLOUD STATUS
+// =========================
+function setCarCareCloudStatus(message, signedIn) {
+  const line = document.getElementById("carCloudStatusLine");
+  if (!line) return;
+
+  line.innerText = message;
+  line.classList.toggle("signed-in", !!signedIn);
+}
+
+// =========================
+// UPDATE CAR CARE CLOUD UI
+// =========================
+function updateCarCareCloudUI() {
+  const cloud = window.smartToolsCloud;
+  const user = cloud && cloud.getCurrentUser ? cloud.getCurrentUser() : null;
+
+  const dotBtn = document.getElementById("carCloudMenuDotBtn");
+  const menuBox = document.getElementById("carCloudMenuBox");
+
+  if (user) {
+    setCarCareCloudStatus("Cloud: Signed in as " + (user.email || "Google user"), true);
+    if (dotBtn) dotBtn.classList.add("show");
+  } else {
+    setCarCareCloudStatus("Cloud: Not signed in. Sign in from Smart Tools main menu.", false);
+    if (dotBtn) dotBtn.classList.remove("show");
+    if (menuBox) menuBox.classList.remove("show");
+  }
+}
+
+// =========================
+// WAIT FOR CAR CARE CLOUD FILE
+// =========================
+function waitForCarCareCloudFile() {
+  let tries = 0;
+
+  const timer = setInterval(function() {
+    tries++;
+
+    if (window.smartToolsCloud) {
+      clearInterval(timer);
+      updateCarCareCloudUI();
+      return;
     }
+
+    if (tries > 40) {
+      clearInterval(timer);
+      setCarCareCloudStatus("Cloud file not loaded. Check shared/cloud-sync.js", false);
+    }
+  }, 250);
+}
+
+// =========================
+// TOGGLE CAR CARE CLOUD MENU
+// =========================
+function toggleCarCloudMenu() {
+  const menuBox = document.getElementById("carCloudMenuBox");
+  if (!menuBox) return;
+
+  menuBox.classList.toggle("show");
+}
+
+// =========================
+// CLOSE CAR CARE CLOUD MENU
+// =========================
+function closeCarCloudMenu() {
+  const menuBox = document.getElementById("carCloudMenuBox");
+  if (!menuBox) return;
+
+  menuBox.classList.remove("show");
+}
+
+// =========================
+// SAVE CAR CARE TO CLOUD
+// =========================
+async function saveCarCareToCloud() {
+  try {
+    if (!window.smartToolsCloud) {
+      setCarCareCloudStatus("Cloud file is not ready yet.", false);
+      return;
+    }
+
+    const user = window.smartToolsCloud.getCurrentUser();
+
+    if (!user) {
+      setCarCareCloudStatus("Sign in from Smart Tools main menu first.", false);
+      return;
+    }
+
+    const carData = getCarData();
+
+    setCarCareCloudStatus("Cloud: Saving Car Care...", true);
+
+    await window.smartToolsCloud.saveAppData("carCare", {
+      carData: carData,
+      savedAt: new Date().toISOString(),
+      source: "Smart Tools Car Care"
+    });
+
+    setCarCareCloudStatus("Cloud: Car Care saved.", true);
+  } catch (error) {
+    console.error(error);
+    setCarCareCloudStatus("Cloud save failed. Check internet or Firebase rules.", false);
+  }
+}
+
+// =========================
+// LOAD CAR CARE FROM CLOUD
+// =========================
+async function loadCarCareFromCloud() {
+  try {
+    if (!window.smartToolsCloud) {
+      setCarCareCloudStatus("Cloud file is not ready yet.", false);
+      return;
+    }
+
+    const user = window.smartToolsCloud.getCurrentUser();
+
+    if (!user) {
+      setCarCareCloudStatus("Sign in from Smart Tools main menu first.", false);
+      return;
+    }
+
+    setCarCareCloudStatus("Cloud: Loading Car Care...", true);
+
+    const cloudData = await window.smartToolsCloud.loadAppData("carCare");
+
+    if (!cloudData || !cloudData.carData || !Array.isArray(cloudData.carData.cars)) {
+      setCarCareCloudStatus("Cloud: No Car Care data found yet.", true);
+      return;
+    }
+
+    const confirmed = confirm(
+      "Load Car Care from cloud?\n\nThis will replace Car Care data on this device with your cloud copy."
+    );
+
+    if (!confirmed) {
+      setCarCareCloudStatus("Cloud load cancelled.", true);
+      return;
+    }
+
+    localStorage.setItem("smartToolsCarCareBeforeCloudLoad", localStorage.getItem(CAR_DATA_KEY) || "");
+
+    saveCarData(cloudData.carData, false);
+
+    selectedCarId = null;
+    editingCarId = null;
+    editingServiceId = null;
+    editingReminderId = null;
+
+    const carDetailsPage = document.getElementById("carDetailsPage");
+    const carMainPage = document.getElementById("carMainPage");
+
+    if (carDetailsPage) carDetailsPage.style.display = "none";
+    if (carMainPage) carMainPage.style.display = "block";
+
+    renderCarMainPage();
+
+    setCarCareCloudStatus("Cloud: Car Care loaded.", true);
+  } catch (error) {
+    console.error(error);
+    setCarCareCloudStatus("Cloud load failed. Check internet or Firebase rules.", false);
+  }
+}
+
+// =========================
+// SCHEDULE CAR CARE CLOUD AUTO SAVE
+// =========================
+function scheduleCarCareCloudAutoSave() {
+  if (!window.smartToolsCloud) return;
+
+  const user = window.smartToolsCloud.getCurrentUser();
+  if (!user) return;
+
+  clearTimeout(carCareCloudAutoSaveTimer);
+
+  carCareCloudAutoSaveTimer = setTimeout(function() {
+    saveCarCareToCloud();
+  }, 1800);
+}
+
+// =========================
+// CAR CARE CLOUD USER CHANGE LISTENER
+// =========================
+window.addEventListener("smartToolsCloudUserChanged", function() {
+  updateCarCareCloudUI();
+});
 
     // =========================
     // FIND CAR
@@ -3290,21 +3627,29 @@ input[type="date"].car-input {
     // =========================
     // CLOSE MODAL WHEN CLICKING BACKDROP
     // =========================
-    document.addEventListener("click", function(event) {
-      if (event.target.classList && event.target.classList.contains("modal-overlay")) {
-        event.target.classList.remove("show");
-      }
-    });
+   document.addEventListener("click", function(event) {
+  if (event.target.classList && event.target.classList.contains("modal-overlay")) {
+    event.target.classList.remove("show");
+  }
+
+  const cloudCard = event.target.closest(".cloud-sync-card");
+
+  if (!cloudCard) {
+    closeCarCloudMenu();
+  }
+});
 
     // =========================
     // PAGE LOAD
     // =========================
-    document.addEventListener("DOMContentLoaded", function() {
-      migrateOldDataIfNeeded();
-      applySmartToolsTheme();
-      resetServiceForm();
-      renderCarMainPage();
-    });
+   document.addEventListener("DOMContentLoaded", function() {
+  migrateOldDataIfNeeded();
+  applySmartToolsTheme();
+  resetServiceForm();
+  renderCarMainPage();
+  updateCarCareCloudUI();
+  waitForCarCareCloudFile();
+});
   </script>
 
 </body>
