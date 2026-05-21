@@ -1920,6 +1920,10 @@ body.smart-tools-dark-theme .cloud-menu-dot-btn {
 let carCareCloudAutoSaveTimer = null;
 let carCareCloudAutoCheckDone = false;
 
+// Allows one cloud save after an intentional delete.
+// Without this, safety block can think cloud has more records and block delete sync.
+let carCareAllowIntentionalDeleteCloudSave = false;
+
 // =========================
 // SET CAR CARE CLOUD STATUS
 // =========================
@@ -2392,7 +2396,7 @@ async function saveCarCareToCloud() {
 
     const cloudCount = countCarCareRecords(cloudClean);
 
-    if (cloudCount > localCount) {
+    if (cloudCount > localCount && !carCareAllowIntentionalDeleteCloudSave) {
       setCarCareCloudStatus("Cloud has more Car Care records. Load from Cloud first to avoid overwriting.", false);
       alert("Cloud has more Car Care records than this device.\n\nPlease press Load Car Care from Cloud first, then add/edit, then save again.");
       return;
@@ -2407,6 +2411,8 @@ async function saveCarCareToCloud() {
       recordCount: localCount,
       source: "Smart Tools Car Care"
     });
+
+    carCareAllowIntentionalDeleteCloudSave = false;
 
     setCarCareCloudStatus("Cloud: Car Care saved.", true);
   } catch (error) {
@@ -2978,6 +2984,7 @@ window.addEventListener("smartToolsCloudUserChanged", function() {
       if (!car) return;
 
       addDeletedCarCareId("services", openedServiceId);
+      carCareAllowIntentionalDeleteCloudSave = true;
 
       car.services = car.services.filter(item => item.id !== openedServiceId);
 
@@ -3149,6 +3156,7 @@ window.addEventListener("smartToolsCloudUserChanged", function() {
 
       const data = getCarData();
       addDeletedCarCareId("cars", selectedCarId);
+      carCareAllowIntentionalDeleteCloudSave = true;
 
       data.cars = data.cars.filter(item => item.id !== selectedCarId);
       saveCarData(data);
@@ -3360,6 +3368,7 @@ window.addEventListener("smartToolsCloudUserChanged", function() {
       if (!car) return;
 
       addDeletedCarCareId("reminders", openedReminderId);
+      carCareAllowIntentionalDeleteCloudSave = true;
 
       car.reminders = car.reminders.filter(item => item.id !== openedReminderId);
 
@@ -3661,6 +3670,7 @@ window.addEventListener("smartToolsCloudUserChanged", function() {
       if (!car) return;
       const tracker = normalizeMileageTracker(car.mileageTracker);
       addDeletedCarCareId("mileageHistory", historyId);
+      carCareAllowIntentionalDeleteCloudSave = true;
 
       tracker.history = tracker.history.filter(item => item.id !== historyId);
       car.mileageTracker = tracker;
