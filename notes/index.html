@@ -806,15 +806,12 @@
     <button id="cloudMenuDotBtn" class="cloud-menu-dot-btn" onclick="toggleCloudMenu()" aria-label="Cloud Menu">⋯</button>
   </div>
 
-  <div class="cloud-btn-row">
-    <button id="cloudSignInBtn" class="cloud-btn" onclick="signInToNotesCloud()">Sign in with Google</button>
-  </div>
+<div class="cloud-btn-row" style="display:none;"></div>
 
-  <div id="cloudMenuBox" class="cloud-menu-box">
-    <button id="cloudSaveBtn" class="cloud-btn green" onclick="saveNotesToCloud(); closeCloudMenu();">Save to Cloud</button>
-    <button id="cloudLoadBtn" class="cloud-btn orange" onclick="loadNotesFromCloud(); closeCloudMenu();">Load from Cloud</button>
-    <button id="cloudSignOutBtn" class="cloud-btn red" onclick="signOutFromNotesCloud(); closeCloudMenu();">Sign out</button>
-  </div>
+ <div id="cloudMenuBox" class="cloud-menu-box">
+  <button id="cloudSaveBtn" class="cloud-btn green" onclick="saveNotesToCloud(); closeCloudMenu();">Save to Cloud</button>
+  <button id="cloudLoadBtn" class="cloud-btn orange" onclick="loadNotesFromCloud(); closeCloudMenu();">Load from Cloud</button>
+</div>
 </div>
 
         <div class="search-wrap">
@@ -981,23 +978,20 @@
     // =========================
     // UPDATE CLOUD BUTTONS
     // =========================
-   function updateCloudButtons() {
+  function updateCloudButtons() {
   const cloud = window.smartToolsCloud;
   const user = cloud && cloud.getCurrentUser ? cloud.getCurrentUser() : null;
 
-  const signInBtn = document.getElementById("cloudSignInBtn");
   const menuDotBtn = document.getElementById("cloudMenuDotBtn");
   const menuBox = document.getElementById("cloudMenuBox");
 
   if (user) {
     setCloudStatus("Cloud: Signed in as " + (user.email || "Google user"), "signed-in");
 
-    if (signInBtn) signInBtn.style.display = "none";
     if (menuDotBtn) menuDotBtn.classList.add("show");
   } else {
-    setCloudStatus("Cloud: Not signed in", "not-signed-in");
+    setCloudStatus("Cloud: Not signed in. Sign in from Smart Tools main menu.", "not-signed-in");
 
-    if (signInBtn) signInBtn.style.display = "block";
     if (menuDotBtn) menuDotBtn.classList.remove("show");
     if (menuBox) menuBox.classList.remove("show");
   }
