@@ -941,6 +941,7 @@
     let swipeIsMoving = false;
     let notesCloudAutoSaveTimer = null;
     let notesCloudReady = false;
+    let notesCloudAutoCheckDone = false;
 
     // =========================
     // SHOW RECOVERY MESSAGE
@@ -1018,6 +1019,64 @@ function closeCloudMenu() {
   menuBox.classList.remove("show");
 }
 
+
+
+    // =========================
+    // AUTO CHECK / AUTO LOAD NOTES FROM CLOUD
+    // =========================
+    async function autoCheckNotesCloud() {
+      try {
+        if (notesCloudAutoCheckDone) return;
+        if (!window.smartToolsCloud) return;
+
+        if (window.smartToolsCloud.waitForAuthReady) {
+          await window.smartToolsCloud.waitForAuthReady();
+        }
+
+        const user = window.smartToolsCloud.getCurrentUser();
+        if (!user) return;
+
+        notesCloudAutoCheckDone = true;
+        setCloudStatus("Cloud: Checking notes...", "signed-in");
+
+        const cloudData = await window.smartToolsCloud.loadAppData("notes");
+
+        if (!cloudData || !Array.isArray(cloudData.notes)) {
+          setCloudStatus("Cloud: Signed in as " + (user.email || "Google user") + ". No cloud notes found yet.", "signed-in");
+          return;
+        }
+
+        const localNotes = getNotesData();
+        const cloudNotes = cloudData.notes
+          .map(function(item, index) {
+            return normalizeNote(item, index);
+          })
+          .filter(function(item) {
+            return item !== null;
+          });
+
+        if (cloudNotes.length > localNotes.length) {
+          const mergedNotes = dedupeNotes(localNotes.concat(cloudNotes));
+          localStorage.setItem("smartToolsNotesBeforeCloudAutoLoad", localStorage.getItem(NOTES_MAIN_KEY) || "");
+          saveNotesData(mergedNotes, false);
+          renderNotes();
+          setCloudStatus("Cloud: Auto-loaded and merged " + mergedNotes.length + " note(s).", "signed-in");
+          return;
+        }
+
+        if (localNotes.length > cloudNotes.length) {
+          setCloudStatus("Cloud: This device has more notes. Save to Cloud when ready.", "signed-in");
+          return;
+        }
+
+        setCloudStatus("Cloud: Signed in as " + (user.email || "Google user"), "signed-in");
+      } catch (error) {
+        console.error(error);
+        setCloudStatus("Cloud auto-check failed. You can still use Load from Cloud.", "not-signed-in");
+      }
+    }
+
+
     // =========================
     // WAIT FOR CLOUD FILE
     // =========================
@@ -1031,6 +1090,7 @@ function closeCloudMenu() {
           notesCloudReady = true;
           clearInterval(timer);
           updateCloudButtons();
+          autoCheckNotesCloud();
           return;
         }
 
@@ -1100,11 +1160,23 @@ function closeCloudMenu() {
 
         const notes = getNotesData();
 
+        setCloudStatus("Cloud: Checking before save...", "signed-in");
+
+        const cloudData = await window.smartToolsCloud.loadAppData("notes");
+        const cloudCount = cloudData && Array.isArray(cloudData.notes) ? cloudData.notes.length : 0;
+
+        if (cloudCount > notes.length) {
+          setCloudStatus("Cloud has more notes. Load from Cloud first to avoid overwriting.", "not-signed-in");
+          alert("Cloud has more notes than this device.\n\nPlease press Load from Cloud first, then add/edit, then save again.");
+          return;
+        }
+
         setCloudStatus("Cloud: Saving notes...", "signed-in");
 
         await window.smartToolsCloud.saveAppData("notes", {
           notes: notes,
           savedAt: new Date().toISOString(),
+          recordCount: notes.length,
           source: "Smart Tools Notes"
         });
 
@@ -1153,6 +1225,7 @@ function closeCloudMenu() {
 
         const mergedNotes = dedupeNotes(localNotes.concat(cloudNotes));
 
+        localStorage.setItem("smartToolsNotesBeforeCloudLoad", localStorage.getItem(NOTES_MAIN_KEY) || "");
         saveNotesData(mergedNotes);
         renderNotes();
 
@@ -2022,6 +2095,8 @@ function closeCloudMenu() {
     // =========================
     window.addEventListener("smartToolsCloudUserChanged", function() {
       updateCloudButtons();
+      notesCloudAutoCheckDone = false;
+      autoCheckNotesCloud();
     });
 
     // =========================
