@@ -20,6 +20,12 @@
 
   <title>Smart Tools</title>
 
+  <!-- =========================
+     FIREBASE CLOUD SYNC FILE
+     File: Smart-Tools/shared/cloud-sync.js
+========================= -->
+<script type="module" src="shared/cloud-sync.js"></script>
+
   <style>
     /* =========================
        RESET
@@ -641,11 +647,23 @@
           aria-label="Open app tools menu"
         >⋮</button>
 
-        <div id="homeToolsMenu" class="dashboard-menu-dropdown">
-          <button onclick="hardRefreshAppKeepData()"><span>↻</span> Refresh App</button>
-          <button onclick="downloadSmartToolsBackup()"><span>⇩</span> Export Backup</button>
-          <button onclick="openSmartToolsBackupFileChooser()"><span>⇧</span> Import Backup</button>
-        </div>
+      <div id="homeToolsMenu" class="dashboard-menu-dropdown">
+  <button id="smartCloudStatusBtn" onclick="signInSmartToolsCloudFromHome()">
+    <span>☁</span> <span id="smartCloudStatusText">Cloud: Not signed in</span>
+  </button>
+
+  <button id="smartCloudSignInBtn" onclick="signInSmartToolsCloudFromHome()">
+    <span>🔑</span> Sign in with Google
+  </button>
+
+  <button id="smartCloudSignOutBtn" onclick="signOutSmartToolsCloudFromHome()" style="display:none;">
+    <span>🚪</span> Sign out Cloud
+  </button>
+
+  <button onclick="hardRefreshAppKeepData()"><span>↻</span> Refresh App</button>
+  <button onclick="downloadSmartToolsBackup()"><span>⇩</span> Export Backup</button>
+  <button onclick="openSmartToolsBackupFileChooser()"><span>⇧</span> Import Backup</button>
+</div>
       </div>
     </div>
 
@@ -1127,15 +1145,113 @@
       }
     }
 
+
+// =========================
+// WAIT FOR SMART TOOLS CLOUD FILE
+// =========================
+function waitForSmartToolsCloudFile() {
+  let tries = 0;
+
+  const timer = setInterval(function() {
+    tries++;
+
+    if (window.smartToolsCloud) {
+      clearInterval(timer);
+      updateSmartToolsCloudMenu();
+      return;
+    }
+
+    if (tries > 40) {
+      clearInterval(timer);
+      updateSmartToolsCloudMenu();
+    }
+  }, 250);
+}
+
+// =========================
+// UPDATE SMART TOOLS CLOUD MENU
+// =========================
+function updateSmartToolsCloudMenu() {
+  const cloud = window.smartToolsCloud;
+  const user = cloud && cloud.getCurrentUser ? cloud.getCurrentUser() : null;
+
+  const statusText = document.getElementById("smartCloudStatusText");
+  const signInBtn = document.getElementById("smartCloudSignInBtn");
+  const signOutBtn = document.getElementById("smartCloudSignOutBtn");
+
+  if (user) {
+    if (statusText) statusText.innerText = "Cloud: " + (user.email || "Signed in");
+    if (signInBtn) signInBtn.style.display = "none";
+    if (signOutBtn) signOutBtn.style.display = "flex";
+  } else {
+    if (statusText) statusText.innerText = "Cloud: Not signed in";
+    if (signInBtn) signInBtn.style.display = "flex";
+    if (signOutBtn) signOutBtn.style.display = "none";
+  }
+}
+
+// =========================
+// SIGN IN SMART TOOLS CLOUD FROM HOME
+// =========================
+async function signInSmartToolsCloudFromHome() {
+  try {
+    closeHomeToolsMenu();
+
+    if (!window.smartToolsCloud) {
+      alert("Cloud file is not ready yet. Please try again in a few seconds.");
+      return;
+    }
+
+    await window.smartToolsCloud.signIn();
+    updateSmartToolsCloudMenu();
+
+    alert("Cloud signed in successfully.");
+  } catch (error) {
+    console.error(error);
+    alert("Cloud sign-in failed. Check popup blocker or Firebase settings.");
+  }
+}
+
+// =========================
+// SIGN OUT SMART TOOLS CLOUD FROM HOME
+// =========================
+async function signOutSmartToolsCloudFromHome() {
+  try {
+    closeHomeToolsMenu();
+
+    if (!window.smartToolsCloud) {
+      return;
+    }
+
+    await window.smartToolsCloud.signOut();
+    updateSmartToolsCloudMenu();
+
+    alert("Cloud signed out.");
+  } catch (error) {
+    console.error(error);
+    alert("Cloud sign-out failed.");
+  }
+}
+
+// =========================
+// CLOUD USER CHANGE LISTENER
+// =========================
+window.addEventListener("smartToolsCloudUserChanged", function() {
+  updateSmartToolsCloudMenu();
+});
+
+    
     // =========================
     // PAGE LOAD
     // =========================
-    document.addEventListener("DOMContentLoaded", function() {
-      cleanSmartToolsRefreshUrl();
-      forceSmartToolsIconCacheBuster();
-      applySmartToolsHomeTheme();
-      updateSmartToolsDashboard();
-    });
+  document.addEventListener("DOMContentLoaded", function() {
+  cleanSmartToolsRefreshUrl();
+  forceSmartToolsIconCacheBuster();
+  applySmartToolsHomeTheme();
+  updateSmartToolsDashboard();
+  updateSmartToolsCloudMenu();
+  waitForSmartToolsCloudFile();
+});
   </script>
 
 </body>
