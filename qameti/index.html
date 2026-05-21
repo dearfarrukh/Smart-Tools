@@ -995,6 +995,7 @@
     // QAMETI CLOUD STATE
     // =========================
     let qametiCloudAutoSaveTimer = null;
+    let qametiCloudAutoCheckDone = false;
 
     function setQametiCloudStatus(message, signedIn) {
       const line = document.getElementById("qametiCloudStatusLine");
@@ -1026,6 +1027,7 @@
         if (window.smartToolsCloud) {
           clearInterval(timer);
           updateQametiCloudUI();
+          autoCheckQametiCloud();
           return;
         }
         if (tries > 40) {
@@ -1047,6 +1049,83 @@
       menuBox.classList.remove("show");
     }
 
+
+
+    // =========================
+    // COUNT QAMETI RECORDS
+    // =========================
+    function countQametiRecords(qametiData) {
+      if (!Array.isArray(qametiData)) return 0;
+
+      let total = qametiData.length;
+
+      qametiData.forEach(function(qameti) {
+        total += Array.isArray(qameti.payments) ? qameti.payments.length : 0;
+      });
+
+      return total;
+    }
+
+    // =========================
+    // APPLY QAMETI CLOUD DATA
+    // =========================
+    function applyQametiCloudData(cloudQametiData) {
+      localStorage.setItem("smartToolsQametiBeforeCloudLoad", localStorage.getItem(QAMETI_DATA_KEY) || "");
+      saveQametiData(cloudQametiData, false);
+
+      currentQametiId = null;
+      repairAllQametiPaymentMonths();
+      clearSelectedQameti();
+      renderQametiPage();
+    }
+
+    // =========================
+    // AUTO CHECK / AUTO LOAD QAMETI FROM CLOUD
+    // =========================
+    async function autoCheckQametiCloud() {
+      try {
+        if (qametiCloudAutoCheckDone) return;
+        if (!window.smartToolsCloud) return;
+
+        if (window.smartToolsCloud.waitForAuthReady) {
+          await window.smartToolsCloud.waitForAuthReady();
+        }
+
+        const user = window.smartToolsCloud.getCurrentUser();
+        if (!user) return;
+
+        qametiCloudAutoCheckDone = true;
+        setQametiCloudStatus("Cloud: Checking Qameti...", true);
+
+        const cloudData = await window.smartToolsCloud.loadAppData("qameti");
+
+        if (!cloudData || !Array.isArray(cloudData.qametiData)) {
+          setQametiCloudStatus("Cloud: Signed in as " + (user.email || "Google user") + ". No cloud Qameti found yet.", true);
+          return;
+        }
+
+        const localCount = countQametiRecords(getQametiData());
+        const cloudCount = countQametiRecords(cloudData.qametiData);
+
+        if (cloudCount > localCount) {
+          applyQametiCloudData(cloudData.qametiData);
+          setQametiCloudStatus("Cloud: Auto-loaded Qameti from cloud.", true);
+          return;
+        }
+
+        if (localCount > cloudCount) {
+          setQametiCloudStatus("Cloud: This device has more Qameti records. Save to Cloud when ready.", true);
+          return;
+        }
+
+        setQametiCloudStatus("Cloud: Signed in as " + (user.email || "Google user"), true);
+      } catch (error) {
+        console.error(error);
+        setQametiCloudStatus("Cloud auto-check failed. You can still use Load from Cloud.", false);
+      }
+    }
+
+
     async function saveQametiToCloud() {
       try {
         if (!window.smartToolsCloud) {
@@ -1060,11 +1139,26 @@
           return;
         }
 
+        const qametiData = getQametiData();
+        const localCount = countQametiRecords(qametiData);
+
+        setQametiCloudStatus("Cloud: Checking before save...", true);
+
+        const cloudData = await window.smartToolsCloud.loadAppData("qameti");
+        const cloudCount = cloudData && Array.isArray(cloudData.qametiData) ? countQametiRecords(cloudData.qametiData) : 0;
+
+        if (cloudCount > localCount) {
+          setQametiCloudStatus("Cloud has more Qameti records. Load from Cloud first to avoid overwriting.", false);
+          alert("Cloud has more Qameti records than this device.\n\nPlease press Load Qameti from Cloud first, then add/edit, then save again.");
+          return;
+        }
+
         setQametiCloudStatus("Cloud: Saving Qameti...", true);
 
         await window.smartToolsCloud.saveAppData("qameti", {
-          qametiData: getQametiData(),
+          qametiData: qametiData,
           savedAt: new Date().toISOString(),
+          recordCount: localCount,
           source: "Smart Tools Qameti"
         });
 
@@ -1075,7 +1169,7 @@
       }
     }
 
-    async function loadQametiFromCloud() {
+    async function loadQametiFromCloud(skipConfirm = false) {
       try {
         if (!window.smartToolsCloud) {
           setQametiCloudStatus("Cloud file is not ready yet.", false);
@@ -1096,19 +1190,15 @@
           return;
         }
 
-        const confirmed = confirm("Load Qameti from cloud?\n\nThis will replace Qameti data on this device with your cloud copy.");
-        if (!confirmed) {
-          setQametiCloudStatus("Cloud load cancelled.", true);
-          return;
+        if (!skipConfirm) {
+          const confirmed = confirm("Load Qameti from cloud?\n\nThis will replace Qameti data on this device with your cloud copy. A local backup will be saved before loading.");
+          if (!confirmed) {
+            setQametiCloudStatus("Cloud load cancelled.", true);
+            return;
+          }
         }
 
-        localStorage.setItem("smartToolsQametiBeforeCloudLoad", localStorage.getItem(QAMETI_DATA_KEY) || "");
-        saveQametiData(cloudData.qametiData, false);
-
-        currentQametiId = null;
-        repairAllQametiPaymentMonths();
-        clearSelectedQameti();
-        renderQametiPage();
+        applyQametiCloudData(cloudData.qametiData);
 
         setQametiCloudStatus("Cloud: Qameti loaded.", true);
       } catch (error) {
@@ -1130,6 +1220,8 @@
 
     window.addEventListener("smartToolsCloudUserChanged", function() {
       updateQametiCloudUI();
+      qametiCloudAutoCheckDone = false;
+      autoCheckQametiCloud();
     });
 
     // =========================
