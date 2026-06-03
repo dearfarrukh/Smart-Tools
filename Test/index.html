@@ -9,13 +9,14 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg: linear-gradient(145deg, #0d0d1a 0%, #1a0a3d 55%, #0a0a1f 100%);
-      --glass: rgba(255,255,255,0.07);
-      --glass-border: rgba(255,255,255,0.10);
-      --accent: #a78bfa;
-      --accent-deep: #7c3aed;
-      --text: #ffffff;
-      --text-muted: rgba(255,255,255,0.42);
+      --bg: #f0f0f7;
+      --glass: rgba(255,255,255,0.90);
+      --glass-border: rgba(180,170,220,0.35);
+      --accent: #7c3aed;
+      --accent-deep: #5b21b6;
+      --accent-light: #ede9fe;
+      --text: #1a1035;
+      --text-muted: #8878b0;
       --font: 'DM Sans', sans-serif;
     }
 
@@ -63,7 +64,7 @@
     }
     .search-box input {
       background: none; border: none; outline: none;
-      color: #fff; font-size: 15px; font-family: var(--font);
+      color: var(--text); font-size: 15px; font-family: var(--font);
       flex: 1; min-width: 0;
     }
     .search-box input::placeholder { color: var(--text-muted); }
@@ -80,7 +81,7 @@
     }
     .empty-state .icon { font-size: 48px; margin-bottom: 14px; }
     .empty-state .title { font-size: 15px; font-weight: 500; }
-    .empty-state .sub { font-size: 13px; color: rgba(255,255,255,0.22); margin-top: 6px; }
+    .empty-state .sub { font-size: 13px; color: #b0a8cc; margin-top: 6px; }
 
     /* ── Visual Card ── */
     .card-item { margin-bottom: 24px; }
@@ -125,14 +126,14 @@
       backdrop-filter: blur(10px);
     }
     .btn-edit {
-      background: rgba(255,255,255,0.07);
-      border-color: rgba(255,255,255,0.10);
-      color: rgba(255,255,255,0.85);
+      background: #fff;
+      border-color: #ddd8f5;
+      color: #4c3d8a;
     }
     .btn-delete {
-      background: rgba(255,60,60,0.10);
-      border-color: rgba(255,80,80,0.18);
-      color: #ff7878;
+      background: #fff5f5;
+      border-color: #fcd0d0;
+      color: #e53e3e;
     }
 
     /* ── Modal Overlay ── */
@@ -150,10 +151,10 @@
 
     .sheet {
       width: 100%;
-      background: linear-gradient(180deg, #1c1c38 0%, #12122a 100%);
+      background: #fafafa;
       border-radius: 26px 26px 0 0;
       padding: 20px 22px 48px;
-      border: 1px solid rgba(255,255,255,0.09);
+      border: 1px solid #e2ddf5;
       transform: translateY(100%);
       transition: transform 0.3s cubic-bezier(0.32,0.72,0,1);
       max-height: 92vh;
@@ -163,7 +164,7 @@
 
     .drag-handle {
       width: 38px; height: 4px; border-radius: 2px;
-      background: rgba(255,255,255,0.18);
+      background: #d4cef0;
       margin: 0 auto 20px;
     }
     .sheet-title { font-size: 18px; font-weight: 700; margin-bottom: 20px; }
@@ -176,16 +177,17 @@
     }
     .glass-input {
       width: 100%;
-      background: rgba(255,255,255,0.07);
-      border: 1px solid rgba(255,255,255,0.10);
+      background: #fff;
+      border: 1.5px solid #e0daf5;
       border-radius: 13px;
       padding: 12px 14px;
-      color: #fff; font-size: 15px;
+      color: var(--text); font-size: 15px;
       font-family: var(--font);
       outline: none;
       margin-bottom: 14px;
     }
-    .glass-input::placeholder { color: var(--text-muted); }
+    .glass-input:focus { border-color: var(--accent); }
+    .glass-input::placeholder { color: #b0a8cc; }
 
     .row-2 { display: flex; gap: 12px; }
     .row-2 > div { flex: 1; }
@@ -193,17 +195,17 @@
     .toggle-row { display: flex; gap: 10px; margin-bottom: 14px; }
     .toggle-btn {
       flex: 1; padding: 10px 6px; border-radius: 11px;
-      border: 1px solid rgba(255,255,255,0.10);
-      background: rgba(255,255,255,0.05);
-      color: rgba(255,255,255,0.5);
+      border: 1.5px solid #e0daf5;
+      background: #fff;
+      color: #9588bc;
       font-size: 13px; font-weight: 600;
       cursor: pointer; font-family: var(--font);
       transition: all 0.15s;
     }
     .toggle-btn.active {
       border-color: var(--accent);
-      background: rgba(167,139,250,0.18);
-      color: #c4b5fd;
+      background: var(--accent-light);
+      color: var(--accent);
     }
 
     .color-row { display: flex; gap: 9px; flex-wrap: wrap; margin-bottom: 22px; }
@@ -242,9 +244,9 @@
     }
     .del-overlay.active { opacity: 1; pointer-events: all; }
     .del-box {
-      background: linear-gradient(180deg, #1e1e3a, #13132a);
+      background: #fff;
       border-radius: 22px; padding: 28px 24px;
-      border: 1px solid rgba(255,255,255,0.10);
+      border: 1px solid #e8e2f8;
       max-width: 320px; width: 100%; text-align: center;
       transform: scale(0.9);
       transition: transform 0.2s;
@@ -252,13 +254,13 @@
     .del-overlay.active .del-box { transform: scale(1); }
     .del-icon { font-size: 36px; margin-bottom: 12px; }
     .del-title { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
-    .del-sub { font-size: 13px; color: var(--text-muted); margin-bottom: 24px; }
+    .del-sub { font-size: 13px; color: #8878b0; margin-bottom: 24px; }
     .del-btns { display: flex; gap: 12px; }
     .btn-cancel {
       flex: 1; padding: 12px; border-radius: 13px;
-      border: 1px solid rgba(255,255,255,0.12);
-      background: rgba(255,255,255,0.07);
-      color: #fff; font-size: 14px; font-weight: 600;
+      border: 1.5px solid #e0daf5;
+      background: #f5f3ff;
+      color: var(--text); font-size: 14px; font-weight: 600;
       cursor: pointer; font-family: var(--font);
     }
     .btn-del-confirm {
@@ -284,7 +286,7 @@
   <!-- Search -->
   <div class="search-wrap">
     <div class="search-box">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#b0a8cc" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
         <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
       </svg>
       <input id="search-input" type="tel" maxlength="4" placeholder="Search by last 4 digits…" oninput="onSearch(this.value)" />
