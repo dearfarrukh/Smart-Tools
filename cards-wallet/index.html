@@ -4,112 +4,26 @@
 <meta charset="UTF-8">
 <title>Cards Wallet</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{
-  font-family:Arial,Helvetica,sans-serif;
-  background:#f4f7ff;
-  color:#111827;
-  min-height:100vh;
-  padding:18px 4% 90px;
-}
-.topbar{
-  display:flex;
-  align-items:center;
-  gap:12px;
-  margin-bottom:18px;
-}
-.backBtn{
-  width:44px;height:44px;border:none;border-radius:15px;
-  background:white;font-size:24px;font-weight:900;
-  box-shadow:0 8px 20px rgba(0,0,0,.10);
-}
-.title{
-  font-size:26px;
-  font-weight:900;
-}
-.searchBox{
-  width:100%;
-  height:52px;
-  border:none;
-  border-radius:18px;
-  padding:0 16px;
-  font-size:17px;
-  background:white;
-  box-shadow:0 8px 22px rgba(0,0,0,.08);
-  margin-bottom:14px;
-}
-.formCard,.cardItem{
-  background:white;
-  border-radius:22px;
-  padding:16px;
-  box-shadow:0 10px 26px rgba(0,0,0,.08);
-  margin-bottom:14px;
-}
-.input{
-  width:100%;
-  height:48px;
-  border:1px solid #e5e7eb;
-  border-radius:15px;
-  padding:0 13px;
-  font-size:16px;
-  margin-bottom:10px;
-}
-.row{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
-}
-.saveBtn{
-  width:100%;
-  height:50px;
-  border:none;
-  border-radius:16px;
-  background:#2563eb;
-  color:white;
-  font-size:17px;
-  font-weight:900;
-}
-.cardTop{
-  display:flex;
-  justify-content:space-between;
-  gap:10px;
-}
-.bankName{
-  font-size:19px;
-  font-weight:900;
-}
-.last4{
-  font-size:22px;
-  font-weight:900;
-  color:#2563eb;
-}
-.cardType{
-  margin-top:6px;
-  color:#64748b;
-  font-weight:800;
-}
-.actions{
-  display:flex;
-  gap:10px;
-  margin-top:14px;
-}
-.editBtn,.deleteBtn{
-  flex:1;
-  height:42px;
-  border:none;
-  border-radius:14px;
-  font-weight:900;
-}
+body{font-family:Arial,Helvetica,sans-serif;background:#f4f7ff;color:#111827;min-height:100vh;padding:18px 4% 90px}
+.topbar{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+.backBtn{width:44px;height:44px;border:none;border-radius:15px;background:white;font-size:24px;font-weight:900;box-shadow:0 8px 20px rgba(0,0,0,.10)}
+.title{font-size:26px;font-weight:900}
+.searchBox{width:100%;height:52px;border:none;border-radius:18px;padding:0 16px;font-size:17px;background:white;box-shadow:0 8px 22px rgba(0,0,0,.08);margin-bottom:14px}
+.formCard,.cardItem{background:white;border-radius:22px;padding:16px;box-shadow:0 10px 26px rgba(0,0,0,.08);margin-bottom:14px}
+.input{width:100%;height:48px;border:1px solid #e5e7eb;border-radius:15px;padding:0 13px;font-size:16px;margin-bottom:10px;background:white}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.saveBtn{width:100%;height:50px;border:none;border-radius:16px;background:#2563eb;color:white;font-size:17px;font-weight:900}
+.cardTop{display:flex;justify-content:space-between;gap:10px}
+.bankName{font-size:19px;font-weight:900}
+.last4{font-size:22px;font-weight:900;color:#2563eb}
+.cardType{margin-top:6px;color:#64748b;font-weight:800}
+.actions{display:flex;gap:10px;margin-top:14px}
+.editBtn,.deleteBtn{flex:1;height:42px;border:none;border-radius:14px;font-weight:900}
 .editBtn{background:#e0f2fe;color:#0369a1}
 .deleteBtn{background:#fee2e2;color:#b91c1c}
-.empty{
-  text-align:center;
-  color:#64748b;
-  font-weight:800;
-  margin-top:30px;
-}
+.empty{text-align:center;color:#64748b;font-weight:800;margin-top:30px}
 </style>
 </head>
 
@@ -120,30 +34,28 @@ body{
   <div class="title">Cards Wallet</div>
 </div>
 
-<input
-  id="searchInput"
-  class="searchBox"
-  placeholder="Search bank or last 4..."
-  oninput="renderCards()"
-/>
+<input id="searchInput" class="searchBox" placeholder="Search bank or last 4..." oninput="renderCards()">
 
 <div class="formCard">
   <input id="bankInput" class="input" placeholder="Bank name">
+
   <div class="row">
     <select id="typeInput" class="input">
       <option value="Credit">Credit</option>
       <option value="Debit">Debit</option>
     </select>
+
     <input id="last4Input" class="input" placeholder="Last 4" maxlength="4" inputmode="numeric">
   </div>
+
   <button class="saveBtn" onclick="saveCard()">Save Card</button>
 </div>
 
 <div id="cardsList"></div>
 
 <script>
-let cards = [];
-let editId = null;
+var cards = [];
+var editId = null;
 
 function goBack(){
   window.location.href = "../";
@@ -152,8 +64,10 @@ function goBack(){
 function loadCards(){
   try{
     cards = JSON.parse(localStorage.getItem("smartToolsCardsWallet") || "[]");
-    if(!Array.isArray(cards)) cards = [];
-  }catch(e){
+    if(!Array.isArray(cards)){
+      cards = [];
+    }
+  }catch(error){
     cards = [];
   }
 }
@@ -163,11 +77,11 @@ function saveCards(){
 }
 
 function saveCard(){
-  const bank = document.getElementById("bankInput").value.trim();
-  const type = document.getElementById("typeInput").value;
-  const last4 = document.getElementById("last4Input").value.trim();
+  var bank = document.getElementById("bankInput").value.trim();
+  var type = document.getElementById("typeInput").value;
+  var last4 = document.getElementById("last4Input").value.trim();
 
-  if(!bank){
+  if(bank === ""){
     alert("Please enter bank name.");
     return;
   }
@@ -178,19 +92,20 @@ function saveCard(){
   }
 
   if(editId){
-    cards = cards.map(card => {
-      if(card.id === editId){
-        return {id:editId, bank:bank, type:type, last4:last4};
+    for(var i = 0; i < cards.length; i++){
+      if(cards[i].id === editId){
+        cards[i].bank = bank;
+        cards[i].type = type;
+        cards[i].last4 = last4;
       }
-      return card;
-    });
+    }
     editId = null;
   }else{
     cards.unshift({
-      id:Date.now().toString(),
-      bank:bank,
-      type:type,
-      last4:last4
+      id: String(Date.now()),
+      bank: bank,
+      type: type,
+      last4: last4
     });
   }
 
@@ -206,67 +121,104 @@ function clearForm(){
 }
 
 function editCard(id){
-  const card = cards.find(c => c.id === id);
+  var card = null;
+
+  for(var i = 0; i < cards.length; i++){
+    if(cards[i].id === id){
+      card = cards[i];
+    }
+  }
+
   if(!card) return;
 
   editId = id;
   document.getElementById("bankInput").value = card.bank;
   document.getElementById("typeInput").value = card.type;
   document.getElementById("last4Input").value = card.last4;
-  window.scrollTo({top:0,behavior:"smooth"});
+
+  window.scrollTo(0, 0);
 }
 
 function deleteCard(id){
-  const ok = confirm("Delete this card?");
+  var ok = confirm("Delete this card?");
   if(!ok) return;
 
-  cards = cards.filter(card => card.id !== id);
+  var newCards = [];
+
+  for(var i = 0; i < cards.length; i++){
+    if(cards[i].id !== id){
+      newCards.push(cards[i]);
+    }
+  }
+
+  cards = newCards;
   saveCards();
   renderCards();
 }
 
 function renderCards(){
-  const list = document.getElementById("cardsList");
-  const search = document.getElementById("searchInput").value.toLowerCase().trim();
+  var list = document.getElementById("cardsList");
+  var searchInput = document.getElementById("searchInput");
+  var search = "";
 
-  const filtered = cards.filter(card => {
-    return (
-      card.bank.toLowerCase().includes(search) ||
-      card.type.toLowerCase().includes(search) ||
-      card.last4.includes(search)
-    );
-  });
+  if(searchInput){
+    search = searchInput.value.toLowerCase().trim();
+  }
+
+  var filtered = [];
+
+  for(var i = 0; i < cards.length; i++){
+    var card = cards[i];
+
+    var bank = String(card.bank || "").toLowerCase();
+    var type = String(card.type || "").toLowerCase();
+    var last4 = String(card.last4 || "");
+
+    if(
+      bank.indexOf(search) !== -1 ||
+      type.indexOf(search) !== -1 ||
+      last4.indexOf(search) !== -1
+    ){
+      filtered.push(card);
+    }
+  }
 
   if(filtered.length === 0){
     list.innerHTML = '<div class="empty">No cards found.</div>';
     return;
   }
 
-  list.innerHTML = filtered.map(card => `
-    <div class="cardItem">
-      <div class="cardTop">
-        <div>
-          <div class="bankName">${escapeHtml(card.bank)}</div>
-          <div class="cardType">${escapeHtml(card.type)} Card</div>
-        </div>
-        <div class="last4">•••• ${escapeHtml(card.last4)}</div>
-      </div>
+  var html = "";
 
-      <div class="actions">
-        <button class="editBtn" onclick="editCard('${card.id}')">Edit</button>
-        <button class="deleteBtn" onclick="deleteCard('${card.id}')">Delete</button>
-      </div>
-    </div>
-  `).join("");
+  for(var j = 0; j < filtered.length; j++){
+    var c = filtered[j];
+
+    html += '<div class="cardItem">';
+    html += '<div class="cardTop">';
+    html += '<div>';
+    html += '<div class="bankName">' + escapeHtml(c.bank) + '</div>';
+    html += '<div class="cardType">' + escapeHtml(c.type) + ' Card</div>';
+    html += '</div>';
+    html += '<div class="last4">•••• ' + escapeHtml(c.last4) + '</div>';
+    html += '</div>';
+    html += '<div class="actions">';
+    html += '<button class="editBtn" onclick="editCard(\'' + c.id + '\')">Edit</button>';
+    html += '<button class="deleteBtn" onclick="deleteCard(\'' + c.id + '\')">Delete</button>';
+    html += '</div>';
+    html += '</div>';
+  }
+
+  list.innerHTML = html;
 }
 
 function escapeHtml(text){
-  return String(text)
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;")
-    .replaceAll("'","&#039;");
+  text = String(text || "");
+  text = text.split("&").join("&amp;");
+  text = text.split("<").join("&lt;");
+  text = text.split(">").join("&gt;");
+  text = text.split('"').join("&quot;");
+  text = text.split("'").join("&#039;");
+  return text;
 }
 
 document.addEventListener("DOMContentLoaded", function(){
