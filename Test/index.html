@@ -7,153 +7,125 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     :root {
       --bg: #f0f0f7;
-      --glass: rgba(255,255,255,0.90);
-      --glass-border: rgba(180,170,220,0.35);
-      --accent: #7c3aed;
-      --accent-deep: #5b21b6;
-      --accent-light: #ede9fe;
-      --text: #4a3f72;
-      --text-dark: #2d2550;
-      --text-muted: #9b8fc0;
+      --accent: #7c3aed; --accent-deep: #5b21b6; --accent-light: #ede9fe;
+      --text: #4a3f72; --text-dark: #2d2550; --text-muted: #9b8fc0;
       --font: 'DM Sans', sans-serif;
     }
-
-    body {
-      font-family: var(--font);
-      background: var(--bg);
-      min-height: 100vh;
-      color: var(--text);
-      -webkit-font-smoothing: antialiased;
-    }
+    body { font-family: var(--font); background: var(--bg); min-height: 100vh; color: var(--text); -webkit-font-smoothing: antialiased; }
 
     /* ── Header ── */
-    .header {
-      padding: 32px 20px 0;
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-    }
+    .header { padding: 32px 20px 0; display: flex; justify-content: space-between; align-items: flex-start; }
     .header-title { font-size: 26px; font-weight: 700; letter-spacing: -0.3px; color: var(--text-dark); }
     .header-sub { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
     .btn-add {
       background: linear-gradient(135deg, var(--accent), var(--accent-deep));
-      border: none; border-radius: 14px;
-      color: #fff; font-size: 13px; font-weight: 600;
-      padding: 10px 18px; cursor: pointer;
-      font-family: var(--font);
-      box-shadow: 0 4px 16px rgba(124,58,237,0.35);
-      white-space: nowrap;
+      border: none; border-radius: 14px; color: #fff; font-size: 13px; font-weight: 600;
+      padding: 10px 18px; cursor: pointer; font-family: var(--font);
+      box-shadow: 0 4px 16px rgba(124,58,237,0.35); white-space: nowrap;
     }
 
     /* ── Search ── */
-    .search-wrap { padding: 18px 20px 0; }
+    .search-wrap { padding: 16px 20px 0; }
     .search-box {
-      background: #fff;
-      border-radius: 16px;
-      border: 1.5px solid #e2ddf5;
-      display: flex; align-items: center;
-      padding: 13px 16px; gap: 10px;
+      background: #fff; border-radius: 16px; border: 1.5px solid #e2ddf5;
+      display: flex; align-items: center; padding: 12px 16px; gap: 10px;
       box-shadow: 0 2px 8px rgba(124,58,237,0.06);
     }
     .search-box input {
       background: none; border: none; outline: none;
-      color: var(--text-dark); font-size: 15px; font-family: var(--font);
-      flex: 1; min-width: 0;
+      color: var(--text-dark); font-size: 15px; font-family: var(--font); flex: 1; min-width: 0;
     }
     .search-box input::placeholder { color: var(--text-muted); }
-    .search-clear {
-      color: var(--text-muted); font-size: 20px; cursor: pointer;
-      display: none; line-height: 1; user-select: none;
+    .search-clear { color: var(--text-muted); font-size: 20px; cursor: pointer; display: none; line-height: 1; user-select: none; }
+
+    /* ── Filter Pills ── */
+    .filter-row { display: flex; gap: 8px; padding: 10px 20px 0; }
+    .filter-pill {
+      padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 600;
+      border: 1.5px solid #e0daf5; background: #fff; color: var(--text-muted);
+      cursor: pointer; font-family: var(--font); transition: all 0.15s; white-space: nowrap;
     }
+    .filter-pill.active { background: var(--accent-light); border-color: var(--accent); color: var(--accent); }
+
+    /* ── Type filter buttons (shown when filter=type) ── */
+    .type-filter-row { display: none; gap: 10px; padding: 10px 20px 0; }
+    .type-filter-row.visible { display: flex; }
+    .type-filter-btn {
+      flex: 1; padding: 10px; border-radius: 12px; border: 1.5px solid #e0daf5;
+      background: #fff; color: var(--text-muted); font-size: 14px; font-weight: 600;
+      cursor: pointer; font-family: var(--font); transition: all 0.15s;
+    }
+    .type-filter-btn.active { background: var(--accent-light); border-color: var(--accent); color: var(--accent); }
 
     /* ── Card List ── */
-    .card-list { padding: 20px 20px 60px; }
+    .card-list { padding: 16px 20px 60px; }
     .empty-state { text-align: center; color: var(--text-muted); margin-top: 80px; }
     .empty-state .icon { font-size: 48px; margin-bottom: 14px; }
     .empty-state .title { font-size: 15px; font-weight: 500; }
     .empty-state .sub { font-size: 13px; color: #c0b8dc; margin-top: 6px; }
 
     /* ── Visual Card ── */
-    .card-item { margin-bottom: 20px; }
+    .card-wrapper { position: relative; margin-bottom: 20px; }
     .card-visual {
-      border-radius: 20px;
-      padding: 18px 22px 16px;
-      position: relative;
-      overflow: hidden;
-      min-height: 140px;
-      box-shadow: 0 8px 28px rgba(0,0,0,0.30);
+      border-radius: 20px; padding: 16px 20px 16px;
+      position: relative; overflow: hidden; min-height: 140px;
+      box-shadow: 0 8px 28px rgba(0,0,0,0.28);
     }
     .card-visual .deco1 {
-      position: absolute; top: -40px; right: -40px;
-      width: 130px; height: 130px; border-radius: 50%;
-      background: rgba(255,255,255,0.06); pointer-events: none;
+      position: absolute; top: -40px; right: -40px; width: 130px; height: 130px;
+      border-radius: 50%; background: rgba(255,255,255,0.06); pointer-events: none;
     }
     .card-visual .deco2 {
-      position: absolute; bottom: -25px; right: 45px;
-      width: 90px; height: 90px; border-radius: 50%;
-      background: rgba(255,255,255,0.04); pointer-events: none;
+      position: absolute; bottom: -25px; right: 45px; width: 90px; height: 90px;
+      border-radius: 50%; background: rgba(255,255,255,0.04); pointer-events: none;
     }
-    .card-top-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; }
-    .card-bank-label { font-size: 9px; color: rgba(255,255,255,0.55); text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 2px; }
-    .card-bank-name { font-size: 16px; font-weight: 700; color: #fff; letter-spacing: 0.2px; }
+
+    /* Card top: bank info left, 3-dot right — badge moved under bank name */
+    .card-top-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; padding-right: 36px; }
+    .card-bank-label { font-size: 9px; color: rgba(255,255,255,0.55); text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 3px; }
+    .card-bank-name { font-size: 16px; font-weight: 700; color: #fff; letter-spacing: 0.2px; margin-bottom: 5px; }
     .card-type-badge {
-      background: rgba(255,255,255,0.15);
-      border-radius: 7px; padding: 3px 9px;
-      font-size: 11px; font-weight: 600; letter-spacing: 0.4px; color: #fff;
+      display: inline-block;
+      background: rgba(255,255,255,0.2); border-radius: 7px; padding: 4px 11px;
+      font-size: 13px; font-weight: 700; letter-spacing: 0.3px; color: #fff;
     }
     .card-number { font-size: 18px; font-weight: 700; letter-spacing: 3px; margin-bottom: 14px; color: rgba(255,255,255,0.95); }
     .card-bottom-row { display: flex; justify-content: space-between; align-items: flex-end; }
     .card-exp-label { font-size: 9px; color: rgba(255,255,255,0.55); text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 2px; }
     .card-exp-val { font-size: 13px; font-weight: 600; color: #fff; }
     .card-notes-row {
-      margin-top: 6px;
-      font-size: 11px; color: rgba(255,255,255,0.65);
-      font-style: italic; white-space: normal;
-      line-height: 1.4;
+      margin-top: 6px; font-size: 11px; color: rgba(255,255,255,0.65);
+      font-style: italic; white-space: normal; line-height: 1.4;
     }
 
-    /* ── 3-dot menu ── */
-    .card-wrapper { position: relative; margin-bottom: 20px; }
+    /* ── 3-dot button — top-right of wrapper, above card ── */
     .card-menu-btn {
       position: absolute; top: 10px; right: 10px;
-      width: 30px; height: 30px; border-radius: 50%;
-      background: rgba(255,255,255,0.18);
-      border: none; cursor: pointer;
+      width: 28px; height: 28px; border-radius: 50%;
+      background: rgba(255,255,255,0.22); border: none; cursor: pointer;
       display: flex; align-items: center; justify-content: center;
-      font-size: 18px; color: #fff; line-height: 1;
-      z-index: 10; transition: background 0.15s;
-      font-family: var(--font);
-      letter-spacing: 0; padding: 0;
+      font-size: 17px; color: #fff; z-index: 10;
+      transition: background 0.15s; padding: 0; font-family: var(--font);
     }
-    .card-menu-btn:hover { background: rgba(255,255,255,0.28); }
+    .card-menu-btn:hover { background: rgba(255,255,255,0.34); }
+
+    /* ── Dropdown ── */
     .card-dropdown {
-      position: absolute; top: 44px; right: 10px;
-      background: #fff;
-      border-radius: 14px;
+      position: absolute; top: 42px; right: 10px;
+      background: #fff; border-radius: 14px;
       box-shadow: 0 8px 28px rgba(80,60,160,0.18), 0 2px 8px rgba(0,0,0,0.08);
-      border: 1.5px solid #e8e2f8;
-      overflow: hidden;
-      z-index: 20;
+      border: 1.5px solid #e8e2f8; overflow: hidden; z-index: 20;
       opacity: 0; pointer-events: none;
-      transform: scale(0.92) translateY(-6px);
-      transform-origin: top right;
-      transition: opacity 0.16s, transform 0.16s;
-      min-width: 140px;
+      transform: scale(0.92) translateY(-6px); transform-origin: top right;
+      transition: opacity 0.16s, transform 0.16s; min-width: 145px;
     }
-    .card-dropdown.open {
-      opacity: 1; pointer-events: all;
-      transform: scale(1) translateY(0);
-    }
+    .card-dropdown.open { opacity: 1; pointer-events: all; transform: scale(1) translateY(0); }
     .card-dropdown button {
-      display: flex; align-items: center; gap: 10px;
-      width: 100%; padding: 12px 16px;
-      background: none; border: none;
-      font-family: var(--font); font-size: 14px; font-weight: 600;
-      cursor: pointer; text-align: left;
-      transition: background 0.1s;
+      display: flex; align-items: center; gap: 10px; width: 100%; padding: 12px 16px;
+      background: none; border: none; font-family: var(--font); font-size: 14px;
+      font-weight: 600; cursor: pointer; text-align: left; transition: background 0.1s;
     }
     .card-dropdown button:hover { background: #f5f3ff; }
     .card-dropdown .dd-edit { color: #5a4a95; }
@@ -161,110 +133,62 @@
 
     /* ── Modal Overlay ── */
     .overlay {
-      position: fixed; inset: 0;
-      background: rgba(60,40,120,0.35);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      display: flex; align-items: flex-end;
-      z-index: 200;
-      opacity: 0; pointer-events: none;
-      transition: opacity 0.25s;
+      position: fixed; inset: 0; background: rgba(60,40,120,0.35);
+      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      display: flex; align-items: flex-end; z-index: 200;
+      opacity: 0; pointer-events: none; transition: opacity 0.25s;
     }
     .overlay.active { opacity: 1; pointer-events: all; }
-
     .sheet {
-      width: 100%;
-      background: #fff;
-      border-radius: 26px 26px 0 0;
-      padding: 20px 22px 48px;
-      border-top: 1.5px solid #e8e2f8;
-      transform: translateY(100%);
-      transition: transform 0.3s cubic-bezier(0.32,0.72,0,1);
-      max-height: 92vh;
-      overflow-y: auto;
+      width: 100%; background: #fff; border-radius: 26px 26px 0 0;
+      padding: 20px 22px 48px; border-top: 1.5px solid #e8e2f8;
+      transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.32,0.72,0,1);
+      max-height: 92vh; overflow-y: auto;
     }
     .overlay.active .sheet { transform: translateY(0); }
-
-    .drag-handle {
-      width: 38px; height: 4px; border-radius: 2px;
-      background: #d4cef0; margin: 0 auto 20px;
-    }
+    .drag-handle { width: 38px; height: 4px; border-radius: 2px; background: #d4cef0; margin: 0 auto 20px; }
     .sheet-title { font-size: 18px; font-weight: 700; margin-bottom: 20px; color: var(--text-dark); }
 
     /* ── Form Fields ── */
-    .field-label {
-      font-size: 11px; color: var(--text-muted);
-      text-transform: uppercase; letter-spacing: 1px;
-      margin-bottom: 7px; display: block;
-    }
+    .field-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 7px; display: block; }
     .glass-input {
-      width: 100%;
-      background: #faf9ff;
-      border: 1.5px solid #e0daf5;
-      border-radius: 13px;
-      padding: 12px 14px;
-      color: var(--text-dark); font-size: 15px;
-      font-family: var(--font);
-      outline: none; margin-bottom: 14px;
-      resize: none;
+      width: 100%; background: #faf9ff; border: 1.5px solid #e0daf5; border-radius: 13px;
+      padding: 12px 14px; color: var(--text-dark); font-size: 15px; font-family: var(--font);
+      outline: none; margin-bottom: 14px; resize: none;
     }
     .glass-input:focus { border-color: var(--accent); background: #fff; }
     .glass-input::placeholder { color: #c0b8dc; }
-
     .row-2 { display: flex; gap: 12px; }
     .row-2 > div { flex: 1; }
-
     .toggle-row { display: flex; gap: 8px; margin-bottom: 14px; }
     .toggle-btn {
-      flex: 1; padding: 9px 4px; border-radius: 11px;
-      border: 1.5px solid #e0daf5;
-      background: #faf9ff;
-      color: var(--text-muted);
-      font-size: 12px; font-weight: 600;
-      cursor: pointer; font-family: var(--font);
-      transition: all 0.15s;
+      flex: 1; padding: 9px 4px; border-radius: 11px; border: 1.5px solid #e0daf5;
+      background: #faf9ff; color: var(--text-muted); font-size: 12px; font-weight: 600;
+      cursor: pointer; font-family: var(--font); transition: all 0.15s;
       display: flex; align-items: center; justify-content: center; gap: 4px;
     }
-    .toggle-btn.active {
-      border-color: var(--accent);
-      background: var(--accent-light);
-      color: var(--accent);
-    }
-
+    .toggle-btn.active { border-color: var(--accent); background: var(--accent-light); color: var(--accent); }
     .color-row { display: flex; gap: 9px; flex-wrap: wrap; margin-bottom: 22px; }
-    .color-dot {
-      width: 30px; height: 30px; border-radius: 50%;
-      cursor: pointer; border: 2.5px solid transparent;
-      transition: all 0.15s;
-    }
-    .color-dot.active {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 1px rgba(124,58,237,0.4);
-    }
-
+    .color-dot { width: 30px; height: 30px; border-radius: 50%; cursor: pointer; border: 2.5px solid transparent; transition: all 0.15s; }
+    .color-dot.active { border-color: var(--accent); box-shadow: 0 0 0 1px rgba(124,58,237,0.4); }
     .btn-save {
       width: 100%; padding: 15px; border-radius: 15px; border: none;
       background: linear-gradient(135deg, var(--accent), var(--accent-deep));
-      color: #fff; font-size: 15px; font-weight: 700;
-      cursor: pointer; font-family: var(--font);
-      box-shadow: 0 4px 16px rgba(124,58,237,0.3);
+      color: #fff; font-size: 15px; font-weight: 700; cursor: pointer;
+      font-family: var(--font); box-shadow: 0 4px 16px rgba(124,58,237,0.3);
     }
 
     /* ── Delete Confirm ── */
     .del-overlay {
-      position: fixed; inset: 0;
-      background: rgba(60,40,120,0.35);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
+      position: fixed; inset: 0; background: rgba(60,40,120,0.35);
+      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
       display: flex; align-items: center; justify-content: center;
-      z-index: 300; padding: 24px;
-      opacity: 0; pointer-events: none; transition: opacity 0.2s;
+      z-index: 300; padding: 24px; opacity: 0; pointer-events: none; transition: opacity 0.2s;
     }
     .del-overlay.active { opacity: 1; pointer-events: all; }
     .del-box {
       background: #fff; border-radius: 22px; padding: 28px 24px;
-      border: 1.5px solid #e8e2f8;
-      max-width: 320px; width: 100%; text-align: center;
+      border: 1.5px solid #e8e2f8; max-width: 320px; width: 100%; text-align: center;
       transform: scale(0.9); transition: transform 0.2s;
     }
     .del-overlay.active .del-box { transform: scale(1); }
@@ -273,16 +197,14 @@
     .del-sub { font-size: 13px; color: var(--text-muted); margin-bottom: 24px; }
     .del-btns { display: flex; gap: 12px; }
     .btn-cancel {
-      flex: 1; padding: 12px; border-radius: 13px;
-      border: 1.5px solid #e0daf5; background: #faf9ff;
-      color: var(--text); font-size: 14px; font-weight: 600;
+      flex: 1; padding: 12px; border-radius: 13px; border: 1.5px solid #e0daf5;
+      background: #faf9ff; color: var(--text); font-size: 14px; font-weight: 600;
       cursor: pointer; font-family: var(--font);
     }
     .btn-del-confirm {
       flex: 1; padding: 12px; border-radius: 13px; border: none;
       background: linear-gradient(135deg, #ff4444, #cc0000);
-      color: #fff; font-size: 14px; font-weight: 600;
-      cursor: pointer; font-family: var(--font);
+      color: #fff; font-size: 14px; font-weight: 600; cursor: pointer; font-family: var(--font);
     }
   </style>
 </head>
@@ -306,6 +228,20 @@
       <input id="search-input" type="tel" maxlength="4" placeholder="Search by last 4 digits…" oninput="onSearch(this.value)" />
       <span class="search-clear" id="search-clear" onclick="clearSearch()">×</span>
     </div>
+  </div>
+
+  <!-- Filter Pills -->
+  <div class="filter-row">
+    <button class="filter-pill active" data-mode="last4" onclick="setSearchMode('last4')">🔢 Last 4</button>
+    <button class="filter-pill" data-mode="bank"  onclick="setSearchMode('bank')">🏦 Bank</button>
+    <button class="filter-pill" data-mode="type"  onclick="setSearchMode('type')">💳 Type</button>
+  </div>
+
+  <!-- Type filter buttons (only shown when mode=type) -->
+  <div class="type-filter-row" id="type-filter-row">
+    <button class="type-filter-btn active" data-tfilter="all"    onclick="setTypeFilter('all')">All</button>
+    <button class="type-filter-btn"        data-tfilter="Credit" onclick="setTypeFilter('Credit')">Credit</button>
+    <button class="type-filter-btn"        data-tfilter="Debit"  onclick="setTypeFilter('Debit')">Debit</button>
   </div>
 
   <!-- Card List -->
@@ -366,27 +302,17 @@
 
   <script>
     const STORAGE_KEY = "smarttools-card-wallet";
-
     const GRADIENTS = [
-      ["#1a1a2e","#16213e"],
-      ["#0f3460","#533483"],
-      ["#1b4332","#2d6a4f"],
-      ["#4a0e6e","#7b2d8b"],
-      ["#7b0000","#c9181e"],
-      ["#c0392b","#ff6b35"],
-      ["#2c3e50","#4ca1af"],
-      ["#373b44","#4286f4"],
+      ["#1a1a2e","#16213e"],["#0f3460","#533483"],["#1b4332","#2d6a4f"],
+      ["#4a0e6e","#7b2d8b"],["#7b0000","#c9181e"],["#c0392b","#ff6b35"],
+      ["#2c3e50","#4ca1af"],["#373b44","#4286f4"],
     ];
-
     const NETWORKS = ["Visa","Mastercard","Amex","Discover"];
 
     let cards = [];
-    let editingId = null;
-    let deleteId = null;
-    let currentType = "Credit";
-    let currentNetwork = "Visa";
-    let currentColor = 0;
-    let searchVal = "";
+    let editingId = null, deleteId = null;
+    let currentType = "Credit", currentNetwork = "Visa", currentColor = 0;
+    let searchVal = "", searchMode = "last4", typeFilter = "all";
 
     /* ── Network Logos ── */
     function networkLogo(network, dark) {
@@ -398,113 +324,145 @@
         const r  = dark ? "rgba(235,0,27,0.9)"   : "#EB001B";
         const o  = dark ? "rgba(247,158,27,0.85)" : "#F79E1B";
         const ov = dark ? "rgba(255,95,0,0.75)"   : "#FF5F00";
-        return `<svg width="34" height="21" viewBox="0 0 34 21" style="display:block">
-          <circle cx="13" cy="10.5" r="10" fill="${r}"/>
-          <circle cx="21" cy="10.5" r="10" fill="${o}"/>
-          <path d="M17 1.8a10 10 0 0 1 0 17.4A10 10 0 0 1 17 1.8z" fill="${ov}"/>
-        </svg>`;
+        return `<svg width="34" height="21" viewBox="0 0 34 21" style="display:block"><circle cx="13" cy="10.5" r="10" fill="${r}"/><circle cx="21" cy="10.5" r="10" fill="${o}"/><path d="M17 1.8a10 10 0 0 1 0 17.4A10 10 0 0 1 17 1.8z" fill="${ov}"/></svg>`;
       }
       if (network === "Amex") {
         const c = dark ? "#fff" : "#016FD0";
         return `<span style="font-weight:800;font-size:12px;color:${c};letter-spacing:1.5px;font-family:'DM Sans',sans-serif">AMEX</span>`;
       }
       if (network === "Discover") {
-        const c  = dark ? "rgba(255,255,255,0.9)" : "#231F20";
+        const c   = dark ? "rgba(255,255,255,0.9)" : "#231F20";
         const dot = dark ? "#ffb347" : "#FF6600";
         return `<span style="font-weight:800;font-size:10px;color:${c};letter-spacing:0.5px;font-family:'DM Sans',sans-serif">DISC<span style="color:${dot};font-size:15px;vertical-align:-2px">●</span>VER</span>`;
       }
       return `<span style="font-weight:700;font-size:13px;color:${dark?"#fff":"#333"}">${esc(network)}</span>`;
     }
 
-    /* ── Build Network Buttons ── */
     function buildNetworkRow() {
-      const row = document.getElementById("network-row");
-      row.innerHTML = NETWORKS.map(n => `
-        <button class="toggle-btn${n === currentNetwork ? " active" : ""}"
-          data-network="${n}" onclick="setNetwork('${n}')">
-          ${networkLogo(n, false)}
-        </button>`).join("");
+      document.getElementById("network-row").innerHTML = NETWORKS.map(n =>
+        `<button class="toggle-btn${n===currentNetwork?" active":""}" data-network="${n}" onclick="setNetwork('${n}')">${networkLogo(n,false)}</button>`
+      ).join("");
     }
 
     /* ── Storage ── */
-    function load() {
-      try { cards = JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
-      catch { cards = []; }
-    }
-    function save() {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(cards));
-    }
+    function load() { try { cards = JSON.parse(localStorage.getItem(STORAGE_KEY))||[]; } catch { cards=[]; } }
+    function save() { localStorage.setItem(STORAGE_KEY, JSON.stringify(cards)); }
 
     /* ── Render ── */
     function render() {
       const list  = document.getElementById("card-list");
       const count = document.getElementById("card-count");
-      count.textContent = `${cards.length} card${cards.length !== 1 ? "s" : ""} saved`;
+      count.textContent = `${cards.length} card${cards.length!==1?"s":""} saved`;
 
-      const filtered = searchVal
-        ? cards.filter(c => c.last4.includes(searchVal))
-        : [...cards];
+      let filtered = [...cards];
+      if (searchMode === "last4" && searchVal)  filtered = filtered.filter(c => c.last4.includes(searchVal));
+      if (searchMode === "bank"  && searchVal)  filtered = filtered.filter(c => c.bank.toLowerCase().includes(searchVal.toLowerCase()));
+      if (searchMode === "type"  && typeFilter !== "all") filtered = filtered.filter(c => c.type === typeFilter);
 
       if (filtered.length === 0) {
-        list.innerHTML = `
-          <div class="empty-state">
-            <div class="icon">💳</div>
-            <div class="title">${searchVal ? `No cards ending in ${searchVal}` : "No cards saved yet"}</div>
-            ${!searchVal ? '<div class="sub">Tap "+ Add Card" to get started</div>' : ""}
-          </div>`;
+        list.innerHTML = `<div class="empty-state">
+          <div class="icon">💳</div>
+          <div class="title">${searchVal||typeFilter!=="all" ? "No matching cards found" : "No cards saved yet"}</div>
+          ${!searchVal&&typeFilter==="all" ? '<div class="sub">Tap "+ Add Card" to get started</div>' : ""}
+        </div>`;
         return;
       }
 
       list.innerHTML = filtered.map(card => {
-        const [from, to] = GRADIENTS[card.colorIndex % GRADIENTS.length];
-        const notesHtml = card.notes
-          ? `<div class="card-notes-row">📝 ${esc(card.notes)}</div>` : "";
-        return `
-          <div class="card-wrapper">
-            <div class="card-visual" style="background:linear-gradient(140deg,${from},${to})">
-              <div class="deco1"></div>
-              <div class="deco2"></div>
-              <div class="card-top-row">
-                <div>
-                  <div class="card-bank-label">Bank</div>
-                  <div class="card-bank-name">${esc(card.bank)}</div>
-                </div>
-                <div style="display:flex;align-items:center;gap:8px">
-                  <div class="card-type-badge">${esc(card.type)}</div>
-                </div>
-              </div>
-              <div class="card-number">•••• &nbsp;•••• &nbsp;•••• &nbsp;${esc(card.last4)}</div>
-              <div class="card-bottom-row">
-                <div>
-                  <div class="card-exp-label">Expires</div>
-                  <div class="card-exp-val">${esc(card.expiry)}</div>
-                  ${notesHtml}
-                </div>
-                <div>${networkLogo(card.network, true)}</div>
+        const [from,to] = GRADIENTS[card.colorIndex % GRADIENTS.length];
+        const notesHtml = card.notes ? `<div class="card-notes-row">📝 ${esc(card.notes)}</div>` : "";
+        return `<div class="card-wrapper">
+          <div class="card-visual" style="background:linear-gradient(140deg,${from},${to})">
+            <div class="deco1"></div><div class="deco2"></div>
+            <div class="card-top-row">
+              <div>
+                <div class="card-bank-label">Bank</div>
+                <div class="card-bank-name">${esc(card.bank)}</div>
+                <div class="card-type-badge">${esc(card.type)}</div>
               </div>
             </div>
-            <button class="card-menu-btn" onclick="toggleMenu('${card.id}',event)">⋮</button>
-            <div class="card-dropdown" id="menu-${card.id}">
-              <button class="dd-edit" onclick="openEdit('${card.id}');closeAllMenus()">✏️ Edit Card</button>
-              <button class="dd-delete" onclick="openDelete('${card.id}');closeAllMenus()">🗑️ Delete Card</button>
+            <div class="card-number">•••• &nbsp;•••• &nbsp;•••• &nbsp;${esc(card.last4)}</div>
+            <div class="card-bottom-row">
+              <div>
+                <div class="card-exp-label">Expires</div>
+                <div class="card-exp-val">${esc(card.expiry)}</div>
+                ${notesHtml}
+              </div>
+              <div>${networkLogo(card.network,true)}</div>
             </div>
-          </div>`;
+          </div>
+          <button class="card-menu-btn" onclick="toggleMenu('${card.id}',event)">⋮</button>
+          <div class="card-dropdown" id="menu-${card.id}">
+            <button class="dd-edit" onclick="openEdit('${card.id}');closeAllMenus()">✏️ Edit Card</button>
+            <button class="dd-delete" onclick="openDelete('${card.id}');closeAllMenus()">🗑️ Delete Card</button>
+          </div>
+        </div>`;
       }).join("");
     }
 
     function esc(str) {
-      return String(str||"")
-        .replace(/&/g,"&amp;").replace(/</g,"&lt;")
-        .replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+      return String(str||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
     }
 
-    /* ── Search ── */
+    /* ── Search Mode ── */
+    function setSearchMode(mode) {
+      searchMode = mode;
+      searchVal  = "";
+      typeFilter = "all";
+
+      // Update pills
+      document.querySelectorAll(".filter-pill").forEach(p =>
+        p.classList.toggle("active", p.dataset.mode === mode));
+
+      const input     = document.getElementById("search-input");
+      const typeRow   = document.getElementById("type-filter-row");
+      const clearBtn  = document.getElementById("search-clear");
+
+      // Reset input
+      input.value = "";
+      clearBtn.style.display = "none";
+
+      if (mode === "last4") {
+        input.type        = "tel";
+        input.maxLength   = 4;
+        input.placeholder = "Search by last 4 digits…";
+        input.style.display = "";
+        typeRow.classList.remove("visible");
+      } else if (mode === "bank") {
+        input.type        = "text";
+        input.maxLength   = 50;
+        input.placeholder = "Search by bank name…";
+        input.style.display = "";
+        typeRow.classList.remove("visible");
+      } else {
+        input.style.display = "none";
+        clearBtn.style.display = "none";
+        typeRow.classList.add("visible");
+        // reset type buttons
+        document.querySelectorAll(".type-filter-btn").forEach(b =>
+          b.classList.toggle("active", b.dataset.tfilter === "all"));
+      }
+      render();
+    }
+
+    function setTypeFilter(val) {
+      typeFilter = val;
+      document.querySelectorAll(".type-filter-btn").forEach(b =>
+        b.classList.toggle("active", b.dataset.tfilter === val));
+      render();
+    }
+
     function onSearch(val) {
-      searchVal = val.replace(/\D/g,"").slice(0,4);
-      document.getElementById("search-input").value = searchVal;
+      if (searchMode === "last4") {
+        searchVal = val.replace(/\D/g,"").slice(0,4);
+        document.getElementById("search-input").value = searchVal;
+      } else {
+        searchVal = val;
+      }
       document.getElementById("search-clear").style.display = searchVal ? "block" : "none";
       render();
     }
+
     function clearSearch() {
       searchVal = "";
       document.getElementById("search-input").value = "";
@@ -514,145 +472,88 @@
 
     /* ── Color Dots ── */
     function buildColorDots() {
-      const row = document.getElementById("color-row");
-      row.innerHTML = GRADIENTS.map(([f,t], i) => `
-        <div class="color-dot${i === currentColor ? " active" : ""}"
-          style="background:linear-gradient(135deg,${f},${t})"
-          onclick="setColor(${i})"></div>
-      `).join("");
+      document.getElementById("color-row").innerHTML = GRADIENTS.map(([f,t],i) =>
+        `<div class="color-dot${i===currentColor?" active":""}" style="background:linear-gradient(135deg,${f},${t})" onclick="setColor(${i})"></div>`
+      ).join("");
     }
     function setColor(i) {
       currentColor = i;
-      document.querySelectorAll(".color-dot").forEach((d,idx) =>
-        d.classList.toggle("active", idx === i));
+      document.querySelectorAll(".color-dot").forEach((d,idx) => d.classList.toggle("active",idx===i));
     }
 
     /* ── Toggles ── */
     function setType(val) {
       currentType = val;
-      document.querySelectorAll("#type-row .toggle-btn").forEach(b =>
-        b.classList.toggle("active", b.dataset.type === val));
+      document.querySelectorAll("#type-row .toggle-btn").forEach(b => b.classList.toggle("active", b.dataset.type===val));
     }
     function setNetwork(val) {
       currentNetwork = val;
-      document.querySelectorAll("#network-row .toggle-btn").forEach(b =>
-        b.classList.toggle("active", b.dataset.network === val));
+      document.querySelectorAll("#network-row .toggle-btn").forEach(b => b.classList.toggle("active", b.dataset.network===val));
     }
 
-    /* ── Open Add ── */
+    /* ── Open Add / Edit ── */
     function openAdd() {
-      editingId = null;
-      currentType = "Credit";
-      currentNetwork = "Visa";
-      currentColor = Math.floor(Math.random() * GRADIENTS.length);
-
+      editingId = null; currentType="Credit"; currentNetwork="Visa";
+      currentColor = Math.floor(Math.random()*GRADIENTS.length);
       document.getElementById("form-title").textContent = "Add New Card";
-      document.getElementById("btn-save").textContent = "Add Card";
-      document.getElementById("f-bank").value = "";
-      document.getElementById("f-last4").value = "";
-      document.getElementById("f-expiry").value = "";
-      document.getElementById("f-notes").value = "";
-
-      setType("Credit");
-      buildNetworkRow();
-      buildColorDots();
-      setColor(currentColor);
-
+      document.getElementById("btn-save").textContent   = "Add Card";
+      ["f-bank","f-last4","f-expiry","f-notes"].forEach(id => document.getElementById(id).value="");
+      setType("Credit"); buildNetworkRow(); buildColorDots(); setColor(currentColor);
       document.getElementById("form-overlay").classList.add("active");
     }
-
-    /* ── Open Edit ── */
     function openEdit(id) {
-      const card = cards.find(c => c.id === id);
-      if (!card) return;
-      editingId    = id;
-      currentType    = card.type;
-      currentNetwork = card.network;
-      currentColor   = card.colorIndex;
-
+      const card = cards.find(c=>c.id===id); if(!card) return;
+      editingId=id; currentType=card.type; currentNetwork=card.network; currentColor=card.colorIndex;
       document.getElementById("form-title").textContent = "Edit Card";
       document.getElementById("btn-save").textContent   = "Save Changes";
       document.getElementById("f-bank").value   = card.bank;
       document.getElementById("f-last4").value  = card.last4;
       document.getElementById("f-expiry").value = card.expiry;
-      document.getElementById("f-notes").value  = card.notes || "";
-
-      setType(card.type);
-      buildNetworkRow();
-      buildColorDots();
-      setColor(card.colorIndex);
-
+      document.getElementById("f-notes").value  = card.notes||"";
+      setType(card.type); buildNetworkRow(); buildColorDots(); setColor(card.colorIndex);
       document.getElementById("form-overlay").classList.add("active");
     }
 
     /* ── Save ── */
     function handleSave() {
-      const bank   = document.getElementById("f-bank").value.trim();
-      const last4  = document.getElementById("f-last4").value.trim();
-      const expiry = document.getElementById("f-expiry").value.trim();
-      const notes  = document.getElementById("f-notes").value.trim();
-
-      if (!bank || last4.length !== 4 || !expiry) {
-        alert("Please fill in Bank Name, Last 4 Digits, and Expiry Date.");
-        return;
-      }
-
-      const data = { bank, last4, expiry, notes, type: currentType, network: currentNetwork, colorIndex: currentColor };
-
-      if (editingId) {
-        cards = cards.map(c => c.id === editingId ? { ...c, ...data } : c);
-      } else {
-        cards.push({ id: Date.now().toString(), ...data });
-      }
-
+      const bank=document.getElementById("f-bank").value.trim();
+      const last4=document.getElementById("f-last4").value.trim();
+      const expiry=document.getElementById("f-expiry").value.trim();
+      const notes=document.getElementById("f-notes").value.trim();
+      if (!bank||last4.length!==4||!expiry) { alert("Please fill in Bank Name, Last 4 Digits, and Expiry Date."); return; }
+      const data={bank,last4,expiry,notes,type:currentType,network:currentNetwork,colorIndex:currentColor};
+      if (editingId) { cards=cards.map(c=>c.id===editingId?{...c,...data}:c); }
+      else { cards.push({id:Date.now().toString(),...data}); }
       save(); closeForm(); render();
     }
 
     /* ── Delete ── */
-    function openDelete(id) {
-      deleteId = id;
-      document.getElementById("del-overlay").classList.add("active");
-    }
-    function closeDelete() {
-      deleteId = null;
-      document.getElementById("del-overlay").classList.remove("active");
-    }
-    function confirmDelete() {
-      cards = cards.filter(c => c.id !== deleteId);
-      save(); closeDelete(); render();
-    }
+    function openDelete(id) { deleteId=id; document.getElementById("del-overlay").classList.add("active"); }
+    function closeDelete()  { deleteId=null; document.getElementById("del-overlay").classList.remove("active"); }
+    function confirmDelete(){ cards=cards.filter(c=>c.id!==deleteId); save(); closeDelete(); render(); }
 
-    /* ── Close Form ── */
-    function closeForm() {
-      document.getElementById("form-overlay").classList.remove("active");
-    }
-    function onOverlayClick(e) {
-      if (e.target === document.getElementById("form-overlay")) closeForm();
-    }
-
-    /* ── Expiry Formatting ── */
+    /* ── Form / Overlay ── */
+    function closeForm() { document.getElementById("form-overlay").classList.remove("active"); }
+    function onOverlayClick(e) { if(e.target===document.getElementById("form-overlay")) closeForm(); }
     function formatExpiry(input) {
-      let val = input.value.replace(/[^\d/]/g,"");
-      if (val.length === 2 && !val.includes("/")) val = val + "/";
-      input.value = val.slice(0,5);
+      let val=input.value.replace(/[^\d/]/g,"");
+      if(val.length===2&&!val.includes("/")) val=val+"/";
+      input.value=val.slice(0,5);
     }
 
     /* ── 3-dot Menu ── */
-    function toggleMenu(id, e) {
+    function toggleMenu(id,e) {
       e.stopPropagation();
-      const menu = document.getElementById("menu-" + id);
-      const isOpen = menu.classList.contains("open");
+      const menu=document.getElementById("menu-"+id);
+      const isOpen=menu.classList.contains("open");
       closeAllMenus();
-      if (!isOpen) menu.classList.add("open");
+      if(!isOpen) menu.classList.add("open");
     }
-    function closeAllMenus() {
-      document.querySelectorAll(".card-dropdown").forEach(m => m.classList.remove("open"));
-    }
+    function closeAllMenus() { document.querySelectorAll(".card-dropdown").forEach(m=>m.classList.remove("open")); }
     document.addEventListener("click", closeAllMenus);
 
     /* ── Init ── */
-    load();
-    render();
+    load(); render();
   </script>
 </body>
 </html>
