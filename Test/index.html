@@ -199,8 +199,8 @@ body{font-family:'DM Sans',sans-serif;background:#f0ece4;min-height:100vh;paddin
 
   <!-- Filter + Search -->
   <div class="filter-bar">
-    <button class="filter-btn active" onclick="setFilter('all',this)">All</button>
-    <button class="filter-btn" onclick="setFilter('upcoming',this)">Upcoming</button>
+  <button class="filter-btn" onclick="setFilter('all',this)">All</button>
+    <button class="filter-btn active" onclick="setFilter('upcoming',this)">Upcoming</button>
     <button class="filter-btn" onclick="setFilter('history',this)">History</button>
   </div>
   <div class="search-wrap">
@@ -271,7 +271,7 @@ body{font-family:'DM Sans',sans-serif;background:#f0ece4;min-height:100vh;paddin
 <script>
 var trips = [];
 
-var activeFilter='all';
+var activeFilter='upcoming';
 var openMenu=null;
 var editingId=null;
 
