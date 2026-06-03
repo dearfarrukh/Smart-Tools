@@ -1385,7 +1385,7 @@ function loadTrips(){
       if(Array.isArray(parsed)) return parsed;
     }
   }catch(e){}
-  return getDemoTrips();
+  return [];
 }
 
 function saveTrips(){
@@ -1405,48 +1405,6 @@ function loadTravelers(){
 
 function saveTravelers(){
   localStorage.setItem(TRAVEL_WALLET_TRAVELERS_KEY, JSON.stringify(travelers));
-}
-
-/* =========================
-   DEMO DATA
-========================= */
-
-function getDemoTrips(){
-  return [
-    {
-      id:makeId("trip"),
-      name:"London Summer Trip",
-      status:"upcoming",
-      type:"flight",
-      airline:"Icelandair",
-      code:"FI",
-      flightNum:"FI614",
-      from:"JFK",
-      firstStop:"KEF",
-      to:"LHR",
-      connecting:true,
-      date:"July 21, 2026",
-      dep:"8:30 PM",
-      arr:"6:20 AM",
-      confirm:"CRDDAB",
-      airline2:"Icelandair",
-      flight2:"FI450",
-      from2:"KEF",
-      date2:"July 22, 2026",
-      dep2:"7:40 AM",
-      arr2:"12:55 PM",
-      confirm2:"CRDDAB",
-      ticket:"1087446439330",
-      bookingCode:"H-UNZZWH",
-      traveler:"Farrukh Saeed",
-      traveler2:"Arsala Hassan - 1087446439331\nAli Saeed - 1087446439332",
-      hotel:"London hotel",
-      hotelCheckin:"July 22, 2026",
-      hotelCheckout:"July 28, 2026",
-      hotelConfirm:"",
-      notes:"Imported sample trip. Edit or delete anytime."
-    }
-  ];
 }
 
 /* =========================
