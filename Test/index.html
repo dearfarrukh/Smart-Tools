@@ -1,983 +1,445 @@
-<!DOCTYPE html>
-<html lang="ur" dir="rtl">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+import { useState, useEffect } from "react";
 
-<title>Noorani Qaida Guess Game</title>
+const STORAGE_KEY = "smarttools-card-wallet";
 
-<style>
-/* =========================
-   BASIC RESET
-========================= */
-*{
-  box-sizing:border-box;
-  -webkit-tap-highlight-color:transparent;
-}
-
-html, body{
-  margin:0;
-  padding:0;
-  width:100%;
-  min-height:100%;
-  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
-  background:#e9e9ee;
-  overflow-x:hidden;
-  touch-action:manipulation;
-  user-select:none;
-  -webkit-user-select:none;
-}
-
-/* =========================
-   APP WRAPPER
-========================= */
-.app{
-  width:100%;
-  min-height:100vh;
-  background:
-    radial-gradient(circle at top,#ffffff 0%,#f4f4f8 34%,#e9e9ee 100%);
-  padding:14px;
-  padding-bottom:30px;
-}
-
-/* =========================
-   TOP BAR
-========================= */
-.topBar{
-  width:100%;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:10px;
-  margin-bottom:14px;
-}
-
-.backBtn,
-.smallBtn{
-  border:none;
-  outline:none;
-  min-width:44px;
-  min-height:44px;
-  border-radius:50%;
-  background:#ffffff;
-  box-shadow:0 4px 14px rgba(0,0,0,0.12);
-  font-size:20px;
-  font-weight:800;
-  color:#111827;
-}
-
-.topTitleBox{
-  flex:1;
-  text-align:center;
-}
-
-.topTitle{
-  font-size:22px;
-  font-weight:900;
-  color:#111827;
-  line-height:1.2;
-}
-
-.topSubTitle{
-  font-size:13px;
-  color:#6b7280;
-  margin-top:3px;
-}
-
-/* =========================
-   HERO CARD
-========================= */
-.heroCard{
-  width:100%;
-  border-radius:28px;
-  background:linear-gradient(135deg,#064e3b,#16a34a);
-  color:white;
-  padding:18px;
-  box-shadow:0 14px 30px rgba(6,78,59,0.28);
-  margin-bottom:16px;
-  position:relative;
-  overflow:hidden;
-}
-
-.heroCard:before{
-  content:"";
-  position:absolute;
-  width:180px;
-  height:180px;
-  border-radius:50%;
-  background:rgba(255,255,255,0.13);
-  top:-70px;
-  left:-60px;
-}
-
-.heroBismillah{
-  font-size:25px;
-  font-weight:900;
-  text-align:center;
-  margin-bottom:8px;
-  position:relative;
-  z-index:2;
-}
-
-.heroText{
-  font-size:15px;
-  line-height:1.8;
-  text-align:center;
-  position:relative;
-  z-index:2;
-}
-
-.lessonBadge{
-  width:max-content;
-  max-width:100%;
-  margin:14px auto 0;
-  background:rgba(255,255,255,0.18);
-  border:1px solid rgba(255,255,255,0.35);
-  padding:8px 14px;
-  border-radius:999px;
-  font-size:14px;
-  font-weight:800;
-  position:relative;
-  z-index:2;
-}
-
-/* =========================
-   STATS ROW
-========================= */
-.statsRow{
-  display:grid;
-  grid-template-columns:1fr 1fr 1fr;
-  gap:10px;
-  margin-bottom:16px;
-}
-
-.statCard{
-  background:#ffffff;
-  border-radius:20px;
-  padding:12px 8px;
-  text-align:center;
-  box-shadow:0 5px 18px rgba(0,0,0,0.08);
-}
-
-.statLabel{
-  font-size:12px;
-  color:#6b7280;
-  margin-bottom:5px;
-}
-
-.statValue{
-  font-size:20px;
-  font-weight:900;
-  color:#111827;
-}
-
-/* =========================
-   QUESTION CARD
-========================= */
-.questionCard{
-  width:100%;
-  background:#ffffff;
-  border-radius:30px;
-  box-shadow:0 10px 28px rgba(0,0,0,0.12);
-  padding:18px;
-  margin-bottom:16px;
-}
-
-.questionTop{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:10px;
-  margin-bottom:14px;
-}
-
-.questionNumber{
-  font-size:14px;
-  font-weight:800;
-  color:#2563eb;
-  background:#eff6ff;
-  padding:7px 12px;
-  border-radius:999px;
-}
-
-.questionType{
-  font-size:13px;
-  font-weight:800;
-  color:#047857;
-  background:#ecfdf5;
-  padding:7px 12px;
-  border-radius:999px;
-}
-
-.questionText{
-  font-size:20px;
-  font-weight:900;
-  color:#111827;
-  text-align:center;
-  margin-bottom:16px;
-  line-height:1.5;
-}
-
-.bigArabicBox{
-  width:100%;
-  min-height:160px;
-  border-radius:28px;
-  background:linear-gradient(180deg,#fff7ed,#ffffff);
-  border:2px solid #fed7aa;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  margin-bottom:18px;
-  position:relative;
-}
-
-.bigArabic{
-  font-family:"Times New Roman","Amiri","Scheherazade New",serif;
-  font-size:92px;
-  font-weight:900;
-  color:#111827;
-  line-height:1;
-}
-
-.soundHint{
-  position:absolute;
-  bottom:10px;
-  left:12px;
-  font-size:12px;
-  color:#9a3412;
-  background:#ffedd5;
-  border-radius:999px;
-  padding:5px 10px;
-  font-weight:800;
-}
-
-/* =========================
-   OPTIONS
-========================= */
-.optionsGrid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:12px;
-}
-
-.optionBtn{
-  border:none;
-  outline:none;
-  min-height:58px;
-  border-radius:20px;
-  background:#f3f4f6;
-  color:#111827;
-  font-size:18px;
-  font-weight:900;
-  box-shadow:inset 0 -2px 0 rgba(0,0,0,0.06);
-  transition:0.15s ease;
-}
-
-.optionBtn:active{
-  transform:scale(0.97);
-}
-
-.optionBtn.correct{
-  background:#dcfce7;
-  color:#166534;
-  border:2px solid #22c55e;
-}
-
-.optionBtn.wrong{
-  background:#fee2e2;
-  color:#991b1b;
-  border:2px solid #ef4444;
-}
-
-.optionBtn.disabled{
-  pointer-events:none;
-  opacity:0.82;
-}
-
-/* =========================
-   FEEDBACK CARD
-========================= */
-.feedbackCard{
-  display:none;
-  width:100%;
-  border-radius:24px;
-  padding:15px;
-  margin-bottom:16px;
-  text-align:center;
-  font-weight:900;
-  font-size:18px;
-  line-height:1.5;
-}
-
-.feedbackCard.show{
-  display:block;
-}
-
-.feedbackCard.good{
-  background:#dcfce7;
-  color:#166534;
-  border:1px solid #86efac;
-}
-
-.feedbackCard.bad{
-  background:#fee2e2;
-  color:#991b1b;
-  border:1px solid #fca5a5;
-}
-
-.correctAnswerText{
-  display:block;
-  font-size:14px;
-  margin-top:5px;
-  opacity:0.85;
-}
-
-/* =========================
-   ACTION BUTTONS
-========================= */
-.actionRow{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:12px;
-}
-
-.mainActionBtn{
-  border:none;
-  outline:none;
-  min-height:56px;
-  border-radius:20px;
-  font-size:17px;
-  font-weight:900;
-  color:white;
-  background:#16a34a;
-  box-shadow:0 8px 18px rgba(22,163,74,0.25);
-}
-
-.secondaryActionBtn{
-  border:none;
-  outline:none;
-  min-height:56px;
-  border-radius:20px;
-  font-size:17px;
-  font-weight:900;
-  color:#111827;
-  background:#ffffff;
-  box-shadow:0 5px 16px rgba(0,0,0,0.10);
-}
-
-/* =========================
-   LESSON MENU
-========================= */
-.lessonMenu{
-  display:none;
-  width:100%;
-  background:#ffffff;
-  border-radius:28px;
-  padding:16px;
-  box-shadow:0 10px 28px rgba(0,0,0,0.12);
-  margin-bottom:16px;
-}
-
-.lessonMenu.show{
-  display:block;
-}
-
-.menuTitle{
-  font-size:20px;
-  font-weight:900;
-  text-align:center;
-  color:#111827;
-  margin-bottom:12px;
-}
-
-.lessonBtn{
-  width:100%;
-  border:none;
-  outline:none;
-  background:#f9fafb;
-  border:1px solid #e5e7eb;
-  border-radius:20px;
-  padding:14px;
-  margin-bottom:10px;
-  text-align:right;
-}
-
-.lessonName{
-  font-size:17px;
-  font-weight:900;
-  color:#111827;
-}
-
-.lessonDesc{
-  font-size:13px;
-  color:#6b7280;
-  margin-top:4px;
-  line-height:1.5;
-}
-
-/* =========================
-   FINISH SCREEN
-========================= */
-.finishOverlay{
-  display:none;
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,0.45);
-  z-index:50;
-  align-items:center;
-  justify-content:center;
-  padding:18px;
-}
-
-.finishOverlay.show{
-  display:flex;
-}
-
-.finishCard{
-  width:100%;
-  max-width:420px;
-  background:#ffffff;
-  border-radius:32px;
-  padding:22px;
-  text-align:center;
-  box-shadow:0 18px 40px rgba(0,0,0,0.25);
-}
-
-.finishIcon{
-  font-size:54px;
-  margin-bottom:8px;
-}
-
-.finishTitle{
-  font-size:25px;
-  font-weight:900;
-  color:#111827;
-  margin-bottom:6px;
-}
-
-.finishScore{
-  font-size:42px;
-  font-weight:1000;
-  color:#16a34a;
-  margin:10px 0;
-}
-
-.finishMsg{
-  font-size:15px;
-  color:#4b5563;
-  line-height:1.7;
-  margin-bottom:16px;
-}
-
-/* =========================
-   FOOT NOTE
-========================= */
-.noteCard{
-  width:100%;
-  background:#fffbeb;
-  border:1px solid #fde68a;
-  color:#92400e;
-  border-radius:22px;
-  padding:13px;
-  font-size:13px;
-  line-height:1.7;
-  margin-top:16px;
-}
-
-/* =========================
-   MOBILE SMALL
-========================= */
-@media(max-width:380px){
-  .bigArabic{
-    font-size:78px;
-  }
-
-  .questionText{
-    font-size:18px;
-  }
-
-  .optionBtn{
-    font-size:16px;
+async function loadCards() {
+  try {
+    const result = await window.storage.get(STORAGE_KEY);
+    return result ? JSON.parse(result.value) : [];
+  } catch {
+    return [];
   }
 }
-</style>
-</head>
 
-<body>
+async function saveCards(cards) {
+  try {
+    await window.storage.set(STORAGE_KEY, JSON.stringify(cards));
+  } catch (e) {
+    console.error("Storage error:", e);
+  }
+}
 
-<div class="app">
-
-  <!-- =========================
-       TOP BAR
-  ========================= -->
-  <div class="topBar">
-    <button class="backBtn" onclick="goBack()">‹</button>
-
-    <div class="topTitleBox">
-      <div class="topTitle">نورانی قاعدہ گیم</div>
-      <div class="topSubTitle">Guess Game • Learn Letters</div>
-    </div>
-
-    <button class="smallBtn" onclick="toggleLessonMenu()">☰</button>
-  </div>
-
-  <!-- =========================
-       HERO CARD
-  ========================= -->
-  <div class="heroCard">
-    <div class="heroBismillah">بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِيْمِ</div>
-    <div class="heroText">
-      حروف کو پہچانیں، صحیح جواب منتخب کریں، اور اپنا اسکور بہتر بنائیں۔
-    </div>
-    <div class="lessonBadge" id="currentLessonBadge">تختی نمبر 1: مفردات</div>
-  </div>
-
-  <!-- =========================
-       LESSON MENU
-  ========================= -->
-  <div class="lessonMenu" id="lessonMenu">
-    <div class="menuTitle">سبق منتخب کریں</div>
-
-    <button class="lessonBtn" onclick="selectLesson('letters')">
-      <div class="lessonName">تختی نمبر 1 — مفردات</div>
-      <div class="lessonDesc">Single Arabic letters: Alif, Bay, Tay, Say...</div>
-    </button>
-
-    <button class="lessonBtn" onclick="selectLesson('harakat')">
-      <div class="lessonName">حرکات — زبر، زیر، پیش</div>
-      <div class="lessonDesc">Ba, Bi, Bu style reading practice.</div>
-    </button>
-
-    <button class="lessonBtn" onclick="selectLesson('mixed')">
-      <div class="lessonName">Mixed Practice</div>
-      <div class="lessonDesc">Letters + simple harakat mixed questions.</div>
-    </button>
-  </div>
-
-  <!-- =========================
-       STATS
-  ========================= -->
-  <div class="statsRow">
-    <div class="statCard">
-      <div class="statLabel">Score</div>
-      <div class="statValue" id="scoreText">0</div>
-    </div>
-
-    <div class="statCard">
-      <div class="statLabel">Question</div>
-      <div class="statValue" id="questionCountText">1/10</div>
-    </div>
-
-    <div class="statCard">
-      <div class="statLabel">Best</div>
-      <div class="statValue" id="bestText">0</div>
-    </div>
-  </div>
-
-  <!-- =========================
-       QUESTION CARD
-  ========================= -->
-  <div class="questionCard">
-    <div class="questionTop">
-      <div class="questionNumber" id="questionNumber">سوال 1</div>
-      <div class="questionType" id="questionType">Letter</div>
-    </div>
-
-    <div class="questionText" id="questionText">
-      یہ کون سا حرف ہے؟
-    </div>
-
-    <div class="bigArabicBox">
-      <div class="bigArabic" id="bigArabic">ا</div>
-      <div class="soundHint" id="soundHint">Choose correct name</div>
-    </div>
-
-    <div class="optionsGrid" id="optionsGrid"></div>
-  </div>
-
-  <!-- =========================
-       FEEDBACK
-  ========================= -->
-  <div class="feedbackCard" id="feedbackCard"></div>
-
-  <!-- =========================
-       ACTION BUTTONS
-  ========================= -->
-  <div class="actionRow">
-    <button class="secondaryActionBtn" onclick="restartQuiz()">Restart</button>
-    <button class="mainActionBtn" onclick="nextQuestion()" id="nextBtn">Next</button>
-  </div>
-
-  <!-- =========================
-       NOTE
-  ========================= -->
-  <div class="noteCard">
-    یہ پہلا version ہے۔ ابھی اس میں تختی نمبر 1 کے حروف اور basic حرکات شامل ہیں۔
-    بعد میں ہم آپ کے PDF کی باقی تختیاں بھی اسی طرح quiz میں add کر سکتے ہیں۔
-  </div>
-
-</div>
-
-<!-- =========================
-     FINISH POPUP
-========================= -->
-<div class="finishOverlay" id="finishOverlay">
-  <div class="finishCard">
-    <div class="finishIcon">🌟</div>
-    <div class="finishTitle">Mashallah!</div>
-    <div class="finishScore" id="finishScore">0/10</div>
-    <div class="finishMsg" id="finishMsg">
-      آپ نے lesson complete کر لیا۔
-    </div>
-
-    <div class="actionRow">
-      <button class="secondaryActionBtn" onclick="closeFinish()">Close</button>
-      <button class="mainActionBtn" onclick="restartQuiz()">Practice Again</button>
-    </div>
-  </div>
-</div>
-
-<script>
-/* =========================
-   DATA: TAKTI 1 LETTERS
-========================= */
-const letterQuestions = [
-  { arabic:"ا", answer:"Alif", options:["Alif","Bay","Tay","Jeem"] },
-  { arabic:"ب", answer:"Bay", options:["Bay","Alif","Tay","Hay"] },
-  { arabic:"ت", answer:"Tay", options:["Tay","Say","Bay","Khay"] },
-  { arabic:"ث", answer:"Say", options:["Say","Jeem","Tay","Daal"] },
-  { arabic:"ج", answer:"Jeem", options:["Jeem","Hay","Khay","Zay"] },
-  { arabic:"ح", answer:"Hay", options:["Hay","Jeem","Khay","Ray"] },
-  { arabic:"خ", answer:"Khay", options:["Khay","Hay","Daal","Seen"] },
-  { arabic:"د", answer:"Daal", options:["Daal","Zaal","Ray","Bay"] },
-  { arabic:"ذ", answer:"Zaal", options:["Zaal","Daal","Zay","Seen"] },
-  { arabic:"ر", answer:"Ray", options:["Ray","Zay","Daal","Noon"] },
-  { arabic:"ز", answer:"Zay", options:["Zay","Ray","Seen","Sheen"] },
-  { arabic:"س", answer:"Seen", options:["Seen","Sheen","Saad","Zay"] },
-  { arabic:"ش", answer:"Sheen", options:["Sheen","Seen","Saad","Daad"] },
-  { arabic:"ص", answer:"Saad", options:["Saad","Seen","Sheen","Daad"] },
-  { arabic:"ض", answer:"Daad", options:["Daad","Saad","Taa","Zaa"] },
-  { arabic:"ط", answer:"Taa", options:["Taa","Zaa","Daad","Ain"] },
-  { arabic:"ظ", answer:"Zaa", options:["Zaa","Taa","Ghain","Fay"] },
-  { arabic:"ع", answer:"Ain", options:["Ain","Ghain","Fay","Qaaf"] },
-  { arabic:"غ", answer:"Ghain", options:["Ghain","Ain","Qaaf","Kaaf"] },
-  { arabic:"ف", answer:"Fay", options:["Fay","Qaaf","Kaaf","Laam"] },
-  { arabic:"ق", answer:"Qaaf", options:["Qaaf","Fay","Kaaf","Meem"] },
-  { arabic:"ک", answer:"Kaaf", options:["Kaaf","Qaaf","Laam","Noon"] },
-  { arabic:"ل", answer:"Laam", options:["Laam","Meem","Noon","Wao"] },
-  { arabic:"م", answer:"Meem", options:["Meem","Laam","Noon","Hay"] },
-  { arabic:"ن", answer:"Noon", options:["Noon","Meem","Wao","Yay"] },
-  { arabic:"و", answer:"Wao", options:["Wao","Noon","Hay","Yay"] },
-  { arabic:"ہ", answer:"Hay", options:["Hay","Wao","Yay","Alif"] },
-  { arabic:"ی", answer:"Yay", options:["Yay","Hay","Wao","Noon"] }
+const CARD_GRADIENTS = [
+  ["#1a1a2e", "#16213e"],
+  ["#0f3460", "#533483"],
+  ["#1b4332", "#2d6a4f"],
+  ["#4a0e6e", "#7b2d8b"],
+  ["#7b0000", "#c9181e"],
+  ["#c0392b", "#ff6b35"],
+  ["#2c3e50", "#4ca1af"],
+  ["#373b44", "#4286f4"],
 ];
 
-/* =========================
-   DATA: HARAKAT QUESTIONS
-========================= */
-const harakatQuestions = [
-  { arabic:"بَ", answer:"Ba", options:["Ba","Bi","Bu","Bay"] },
-  { arabic:"بِ", answer:"Bi", options:["Bi","Ba","Bu","Bee"] },
-  { arabic:"بُ", answer:"Bu", options:["Bu","Ba","Bi","Baa"] },
+const EMPTY_FORM = {
+  bank: "", type: "Credit", last4: "", expiry: "", network: "Visa", colorIndex: 0,
+};
 
-  { arabic:"تَ", answer:"Ta", options:["Ta","Ti","Tu","Tay"] },
-  { arabic:"تِ", answer:"Ti", options:["Ti","Ta","Tu","Tee"] },
-  { arabic:"تُ", answer:"Tu", options:["Tu","Ta","Ti","Too"] },
+export default function CardWallet() {
+  const [cards, setCards] = useState([]);
+  const [search, setSearch] = useState("");
+  const [showForm, setShowForm] = useState(false);
+  const [editingId, setEditingId] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [deleteConfirm, setDeleteConfirm] = useState(null);
+  const [form, setForm] = useState(EMPTY_FORM);
 
-  { arabic:"جَ", answer:"Ja", options:["Ja","Ji","Ju","Jeem"] },
-  { arabic:"جِ", answer:"Ji", options:["Ji","Ja","Ju","Jee"] },
-  { arabic:"جُ", answer:"Ju", options:["Ju","Ja","Ji","Joo"] },
+  useEffect(() => {
+    loadCards().then((data) => { setCards(data); setLoading(false); });
+  }, []);
 
-  { arabic:"دَ", answer:"Da", options:["Da","Di","Du","Daal"] },
-  { arabic:"دِ", answer:"Di", options:["Di","Da","Du","Dee"] },
-  { arabic:"دُ", answer:"Du", options:["Du","Da","Di","Doo"] },
+  const filtered = cards.filter((c) =>
+    search.trim() ? c.last4.includes(search.trim()) : true
+  );
 
-  { arabic:"سَ", answer:"Sa", options:["Sa","Si","Su","Seen"] },
-  { arabic:"سِ", answer:"Si", options:["Si","Sa","Su","See"] },
-  { arabic:"سُ", answer:"Su", options:["Su","Sa","Si","Soon"] },
+  const openAdd = () => {
+    setForm({ ...EMPTY_FORM, colorIndex: Math.floor(Math.random() * CARD_GRADIENTS.length) });
+    setEditingId(null);
+    setShowForm(true);
+  };
 
-  { arabic:"مَ", answer:"Ma", options:["Ma","Mi","Mu","Meem"] },
-  { arabic:"مِ", answer:"Mi", options:["Mi","Ma","Mu","Mee"] },
-  { arabic:"مُ", answer:"Mu", options:["Mu","Ma","Mi","Moo"] }
-];
+  const openEdit = (card) => {
+    setForm({ ...card });
+    setEditingId(card.id);
+    setShowForm(true);
+  };
 
-/* =========================
-   APP STATE
-========================= */
-let currentLesson = "letters";
-let quizQuestions = [];
-let currentIndex = 0;
-let score = 0;
-let answered = false;
-let totalQuestions = 10;
-
-/* =========================
-   START APP
-========================= */
-window.addEventListener("load", function(){
-  loadBestScore();
-  startQuiz();
-});
-
-/* =========================
-   GO BACK
-========================= */
-function goBack(){
-  if(window.history.length > 1){
-    window.history.back();
-  }else{
-    window.location.href = "../";
-  }
-}
-
-/* =========================
-   TOGGLE LESSON MENU
-========================= */
-function toggleLessonMenu(){
-  document.getElementById("lessonMenu").classList.toggle("show");
-}
-
-/* =========================
-   SELECT LESSON
-========================= */
-function selectLesson(type){
-  currentLesson = type;
-  document.getElementById("lessonMenu").classList.remove("show");
-
-  if(type === "letters"){
-    document.getElementById("currentLessonBadge").innerText = "تختی نمبر 1: مفردات";
-  }
-
-  if(type === "harakat"){
-    document.getElementById("currentLessonBadge").innerText = "حرکات: زبر، زیر، پیش";
-  }
-
-  if(type === "mixed"){
-    document.getElementById("currentLessonBadge").innerText = "Mixed Practice";
-  }
-
-  restartQuiz();
-}
-
-/* =========================
-   START QUIZ
-========================= */
-function startQuiz(){
-  score = 0;
-  currentIndex = 0;
-  answered = false;
-
-  let baseData = [];
-
-  if(currentLesson === "letters"){
-    baseData = letterQuestions;
-    document.getElementById("questionType").innerText = "Letter";
-  }
-
-  if(currentLesson === "harakat"){
-    baseData = harakatQuestions;
-    document.getElementById("questionType").innerText = "Harakat";
-  }
-
-  if(currentLesson === "mixed"){
-    baseData = letterQuestions.concat(harakatQuestions);
-    document.getElementById("questionType").innerText = "Mixed";
-  }
-
-  quizQuestions = shuffleArray(baseData).slice(0,totalQuestions);
-
-  updateStats();
-  showQuestion();
-}
-
-/* =========================
-   SHOW QUESTION
-========================= */
-function showQuestion(){
-  answered = false;
-
-  const feedbackCard = document.getElementById("feedbackCard");
-  feedbackCard.className = "feedbackCard";
-  feedbackCard.innerHTML = "";
-
-  const q = quizQuestions[currentIndex];
-
-  document.getElementById("questionNumber").innerText = "سوال " + (currentIndex + 1);
-  document.getElementById("bigArabic").innerText = q.arabic;
-
-  if(currentLesson === "letters"){
-    document.getElementById("questionText").innerText = "یہ کون سا حرف ہے؟";
-    document.getElementById("soundHint").innerText = "Choose correct letter name";
-  }else if(currentLesson === "harakat"){
-    document.getElementById("questionText").innerText = "اس کو کیسے پڑھیں گے؟";
-    document.getElementById("soundHint").innerText = "Choose correct sound";
-  }else{
-    if(q.arabic.length > 1){
-      document.getElementById("questionText").innerText = "اس کو کیسے پڑھیں گے؟";
-      document.getElementById("soundHint").innerText = "Choose correct sound";
-    }else{
-      document.getElementById("questionText").innerText = "یہ کون سا حرف ہے؟";
-      document.getElementById("soundHint").innerText = "Choose correct letter name";
+  const handleSave = async () => {
+    if (!form.bank.trim() || form.last4.length !== 4 || !form.expiry) return;
+    let updated;
+    if (editingId) {
+      updated = cards.map((c) => (c.id === editingId ? { ...form, id: editingId } : c));
+    } else {
+      updated = [...cards, { ...form, id: Date.now().toString() }];
     }
-  }
+    setCards(updated);
+    await saveCards(updated);
+    setShowForm(false);
+  };
 
-  const optionsGrid = document.getElementById("optionsGrid");
-  optionsGrid.innerHTML = "";
+  const handleDelete = async (id) => {
+    const updated = cards.filter((c) => c.id !== id);
+    setCards(updated);
+    await saveCards(updated);
+    setDeleteConfirm(null);
+  };
 
-  const shuffledOptions = shuffleArray(q.options);
+  const updateForm = (key, val) => setForm((f) => ({ ...f, [key]: val }));
 
-  shuffledOptions.forEach(function(option){
-    const btn = document.createElement("button");
-    btn.className = "optionBtn";
-    btn.innerText = option;
-    btn.onclick = function(){
-      checkAnswer(option, btn);
-    };
-    optionsGrid.appendChild(btn);
-  });
+  return (
+    <div style={{
+      minHeight: "100vh",
+      background: "linear-gradient(145deg, #0d0d1a 0%, #1a0a3d 55%, #0a0a1f 100%)",
+      fontFamily: "'DM Sans', sans-serif",
+      color: "#fff",
+      overflowX: "hidden",
+    }}>
+      <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
 
-  updateStats();
+      {/* Header */}
+      <div style={{ padding: "32px 20px 0" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+          <div>
+            <h1 style={{ margin: 0, fontSize: 26, fontWeight: 700, letterSpacing: -0.3 }}>💳 My Cards</h1>
+            <p style={{ margin: "4px 0 0", fontSize: 13, color: "rgba(255,255,255,0.4)" }}>
+              {cards.length} card{cards.length !== 1 ? "s" : ""} saved
+            </p>
+          </div>
+          <button onClick={openAdd} style={{
+            background: "linear-gradient(135deg, #a78bfa, #7c3aed)",
+            border: "none",
+            borderRadius: 14,
+            color: "#fff",
+            fontSize: 13,
+            fontWeight: 600,
+            padding: "10px 18px",
+            cursor: "pointer",
+            fontFamily: "'DM Sans', sans-serif",
+            boxShadow: "0 4px 16px rgba(124,58,237,0.4)",
+          }}>+ Add Card</button>
+        </div>
+      </div>
+
+      {/* Search Bar */}
+      <div style={{ padding: "18px 20px 0" }}>
+        <div style={{
+          background: "rgba(255,255,255,0.07)",
+          backdropFilter: "blur(24px)",
+          WebkitBackdropFilter: "blur(24px)",
+          borderRadius: 16,
+          border: "1px solid rgba(255,255,255,0.1)",
+          display: "flex",
+          alignItems: "center",
+          padding: "13px 16px",
+          gap: 10,
+        }}>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          <input
+            value={search}
+            onChange={(e) => setSearch(e.target.value.replace(/\D/g, "").slice(0, 4))}
+            placeholder="Search by last 4 digits..."
+            maxLength={4}
+            inputMode="numeric"
+            style={{
+              background: "none", border: "none", outline: "none",
+              color: "#fff", fontSize: 15, fontFamily: "'DM Sans', sans-serif",
+              flex: 1, minWidth: 0,
+            }}
+          />
+          {search && (
+            <span onClick={() => setSearch("")} style={{ cursor: "pointer", color: "rgba(255,255,255,0.35)", fontSize: 18, lineHeight: 1 }}>×</span>
+          )}
+        </div>
+      </div>
+
+      {/* Cards List */}
+      <div style={{ padding: "20px 20px 40px" }}>
+        {loading ? (
+          <div style={{ textAlign: "center", color: "rgba(255,255,255,0.35)", marginTop: 80, fontSize: 14 }}>Loading your cards...</div>
+        ) : filtered.length === 0 ? (
+          <div style={{ textAlign: "center", color: "rgba(255,255,255,0.35)", marginTop: 80 }}>
+            <div style={{ fontSize: 48, marginBottom: 14 }}>💳</div>
+            <div style={{ fontSize: 15, fontWeight: 500 }}>
+              {search ? `No cards ending in ${search}` : "No cards saved yet"}
+            </div>
+            {!search && (
+              <div style={{ fontSize: 13, color: "rgba(255,255,255,0.25)", marginTop: 6 }}>
+                Tap "+ Add Card" to get started
+              </div>
+            )}
+          </div>
+        ) : (
+          filtered.map((card) => {
+            const [from, to] = CARD_GRADIENTS[card.colorIndex % CARD_GRADIENTS.length];
+            return (
+              <div key={card.id} style={{ marginBottom: 24 }}>
+                {/* Visual Card */}
+                <div style={{
+                  background: `linear-gradient(140deg, ${from} 0%, ${to} 100%)`,
+                  borderRadius: 22,
+                  padding: "22px 24px 20px",
+                  position: "relative",
+                  overflow: "hidden",
+                  boxShadow: "0 12px 40px rgba(0,0,0,0.45)",
+                  minHeight: 164,
+                  boxSizing: "border-box",
+                }}>
+                  {/* Decoration */}
+                  <div style={{ position: "absolute", top: -40, right: -40, width: 140, height: 140, borderRadius: "50%", background: "rgba(255,255,255,0.05)", pointerEvents: "none" }} />
+                  <div style={{ position: "absolute", bottom: -30, right: 50, width: 100, height: 100, borderRadius: "50%", background: "rgba(255,255,255,0.04)", pointerEvents: "none" }} />
+
+                  {/* Top Row */}
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 22 }}>
+                    <div>
+                      <div style={{ fontSize: 10, color: "rgba(255,255,255,0.5)", textTransform: "uppercase", letterSpacing: 1.2, marginBottom: 3 }}>Bank</div>
+                      <div style={{ fontSize: 18, fontWeight: 700, letterSpacing: 0.2 }}>{card.bank}</div>
+                    </div>
+                    <div style={{
+                      background: "rgba(255,255,255,0.14)",
+                      backdropFilter: "blur(8px)",
+                      borderRadius: 8,
+                      padding: "4px 11px",
+                      fontSize: 12,
+                      fontWeight: 600,
+                      letterSpacing: 0.5,
+                    }}>{card.type}</div>
+                  </div>
+
+                  {/* Number */}
+                  <div style={{ fontSize: 21, fontWeight: 700, letterSpacing: 4, marginBottom: 18, fontVariantNumeric: "tabular-nums" }}>
+                    •••• &nbsp;•••• &nbsp;•••• &nbsp;{card.last4}
+                  </div>
+
+                  {/* Bottom Row */}
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
+                    <div>
+                      <div style={{ fontSize: 10, color: "rgba(255,255,255,0.5)", textTransform: "uppercase", letterSpacing: 1.2, marginBottom: 2 }}>Expires</div>
+                      <div style={{ fontSize: 15, fontWeight: 600 }}>{card.expiry}</div>
+                    </div>
+                    <div style={{ fontSize: 15, fontWeight: 700, letterSpacing: 1, color: "rgba(255,255,255,0.8)" }}>{card.network}</div>
+                  </div>
+                </div>
+
+                {/* Actions */}
+                <div style={{ display: "flex", gap: 10, marginTop: 10 }}>
+                  <button onClick={() => openEdit(card)} style={{
+                    flex: 1, background: "rgba(255,255,255,0.07)",
+                    border: "1px solid rgba(255,255,255,0.1)", borderRadius: 13,
+                    color: "rgba(255,255,255,0.85)", padding: "11px",
+                    fontSize: 13, fontWeight: 600, cursor: "pointer",
+                    fontFamily: "'DM Sans', sans-serif",
+                    backdropFilter: "blur(10px)",
+                  }}>✏️ Edit</button>
+                  <button onClick={() => setDeleteConfirm(card.id)} style={{
+                    flex: 1, background: "rgba(255,60,60,0.1)",
+                    border: "1px solid rgba(255,80,80,0.18)", borderRadius: 13,
+                    color: "#ff7878", padding: "11px",
+                    fontSize: 13, fontWeight: 600, cursor: "pointer",
+                    fontFamily: "'DM Sans', sans-serif",
+                    backdropFilter: "blur(10px)",
+                  }}>🗑️ Delete</button>
+                </div>
+              </div>
+            );
+          })
+        )}
+      </div>
+
+      {/* Add / Edit Modal */}
+      {showForm && (
+        <div onClick={(e) => e.target === e.currentTarget && setShowForm(false)} style={{
+          position: "fixed", inset: 0,
+          background: "rgba(0,0,0,0.65)",
+          backdropFilter: "blur(10px)",
+          WebkitBackdropFilter: "blur(10px)",
+          display: "flex", alignItems: "flex-end",
+          zIndex: 200,
+        }}>
+          <div style={{
+            width: "100%",
+            background: "linear-gradient(180deg, #1c1c38 0%, #12122a 100%)",
+            borderRadius: "26px 26px 0 0",
+            padding: "20px 22px 44px",
+            border: "1px solid rgba(255,255,255,0.09)",
+            boxSizing: "border-box",
+          }}>
+            {/* Drag handle */}
+            <div style={{ width: 38, height: 4, borderRadius: 2, background: "rgba(255,255,255,0.18)", margin: "0 auto 20px" }} />
+            <h2 style={{ margin: "0 0 20px", fontSize: 18, fontWeight: 700 }}>
+              {editingId ? "Edit Card" : "Add New Card"}
+            </h2>
+
+            {/* Bank Name */}
+            <FieldLabel>Bank Name</FieldLabel>
+            <GlassInput
+              placeholder="e.g. Chase, Wells Fargo, Citi"
+              value={form.bank}
+              onChange={(e) => updateForm("bank", e.target.value)}
+            />
+
+            {/* Last 4 + Expiry row */}
+            <div style={{ display: "flex", gap: 12 }}>
+              <div style={{ flex: 1 }}>
+                <FieldLabel>Last 4 Digits</FieldLabel>
+                <GlassInput
+                  placeholder="0000"
+                  value={form.last4}
+                  inputMode="numeric"
+                  maxLength={4}
+                  onChange={(e) => updateForm("last4", e.target.value.replace(/\D/g, "").slice(0, 4))}
+                />
+              </div>
+              <div style={{ flex: 1 }}>
+                <FieldLabel>Expiry</FieldLabel>
+                <GlassInput
+                  placeholder="MM/YY"
+                  value={form.expiry}
+                  maxLength={5}
+                  onChange={(e) => {
+                    let val = e.target.value.replace(/[^\d/]/g, "");
+                    if (val.length === 2 && form.expiry.length === 1 && !val.includes("/")) val = val + "/";
+                    updateForm("expiry", val.slice(0, 5));
+                  }}
+                />
+              </div>
+            </div>
+
+            {/* Type */}
+            <FieldLabel>Card Type</FieldLabel>
+            <div style={{ display: "flex", gap: 10, marginBottom: 14 }}>
+              {["Credit", "Debit"].map((t) => (
+                <ToggleBtn key={t} active={form.type === t} onClick={() => updateForm("type", t)}>{t}</ToggleBtn>
+              ))}
+            </div>
+
+            {/* Network */}
+            <FieldLabel>Network</FieldLabel>
+            <div style={{ display: "flex", gap: 10, marginBottom: 14 }}>
+              {["Visa", "Mastercard", "Amex", "Discover"].map((n) => (
+                <ToggleBtn key={n} active={form.network === n} onClick={() => updateForm("network", n)} small>{n}</ToggleBtn>
+              ))}
+            </div>
+
+            {/* Card Color */}
+            <FieldLabel>Card Color</FieldLabel>
+            <div style={{ display: "flex", gap: 9, marginBottom: 22, flexWrap: "wrap" }}>
+              {CARD_GRADIENTS.map(([from, to], i) => (
+                <div key={i} onClick={() => updateForm("colorIndex", i)} style={{
+                  width: 30, height: 30, borderRadius: "50%",
+                  background: `linear-gradient(135deg, ${from}, ${to})`,
+                  cursor: "pointer",
+                  border: form.colorIndex === i ? "2.5px solid #a78bfa" : "2.5px solid transparent",
+                  boxSizing: "border-box",
+                  boxShadow: form.colorIndex === i ? "0 0 0 1px rgba(167,139,250,0.5)" : "none",
+                  transition: "all 0.15s",
+                }} />
+              ))}
+            </div>
+
+            <button onClick={handleSave} style={{
+              width: "100%", padding: "15px",
+              borderRadius: 15, border: "none",
+              background: !form.bank.trim() || form.last4.length !== 4 || !form.expiry
+                ? "rgba(167,139,250,0.3)"
+                : "linear-gradient(135deg, #a78bfa, #7c3aed)",
+              color: "#fff", fontSize: 15, fontWeight: 700,
+              cursor: "pointer", fontFamily: "'DM Sans', sans-serif",
+              boxShadow: "0 4px 16px rgba(124,58,237,0.3)",
+              transition: "all 0.2s",
+            }}>
+              {editingId ? "Save Changes" : "Add Card"}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirm */}
+      {deleteConfirm && (
+        <div style={{
+          position: "fixed", inset: 0,
+          background: "rgba(0,0,0,0.7)",
+          backdropFilter: "blur(10px)",
+          WebkitBackdropFilter: "blur(10px)",
+          display: "flex", alignItems: "center", justifyContent: "center",
+          zIndex: 300, padding: 24,
+        }}>
+          <div style={{
+            background: "linear-gradient(180deg, #1e1e3a, #13132a)",
+            borderRadius: 22,
+            padding: "28px 24px",
+            border: "1px solid rgba(255,255,255,0.1)",
+            maxWidth: 320, width: "100%", textAlign: "center",
+          }}>
+            <div style={{ fontSize: 36, marginBottom: 12 }}>🗑️</div>
+            <div style={{ fontSize: 16, fontWeight: 700, marginBottom: 8 }}>Delete this card?</div>
+            <div style={{ fontSize: 13, color: "rgba(255,255,255,0.45)", marginBottom: 24 }}>
+              This can't be undone.
+            </div>
+            <div style={{ display: "flex", gap: 12 }}>
+              <button onClick={() => setDeleteConfirm(null)} style={{
+                flex: 1, padding: "12px", borderRadius: 13,
+                border: "1px solid rgba(255,255,255,0.12)",
+                background: "rgba(255,255,255,0.07)",
+                color: "#fff", fontSize: 14, fontWeight: 600,
+                cursor: "pointer", fontFamily: "'DM Sans', sans-serif",
+              }}>Cancel</button>
+              <button onClick={() => handleDelete(deleteConfirm)} style={{
+                flex: 1, padding: "12px", borderRadius: 13,
+                border: "none",
+                background: "linear-gradient(135deg, #ff4444, #cc0000)",
+                color: "#fff", fontSize: 14, fontWeight: 600,
+                cursor: "pointer", fontFamily: "'DM Sans', sans-serif",
+              }}>Delete</button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
 }
 
-/* =========================
-   CHECK ANSWER
-========================= */
-function checkAnswer(selected, clickedBtn){
-  if(answered) return;
-
-  answered = true;
-
-  const q = quizQuestions[currentIndex];
-  const allBtns = document.querySelectorAll(".optionBtn");
-  const feedbackCard = document.getElementById("feedbackCard");
-
-  allBtns.forEach(function(btn){
-    btn.classList.add("disabled");
-
-    if(btn.innerText === q.answer){
-      btn.classList.add("correct");
-    }
-  });
-
-  if(selected === q.answer){
-    score++;
-    clickedBtn.classList.add("correct");
-
-    feedbackCard.className = "feedbackCard show good";
-    feedbackCard.innerHTML = "درست جواب ✅<span class='correctAnswerText'>Mashallah! Answer: " + q.answer + "</span>";
-  }else{
-    clickedBtn.classList.add("wrong");
-
-    feedbackCard.className = "feedbackCard show bad";
-    feedbackCard.innerHTML = "غلط جواب ❌<span class='correctAnswerText'>صحیح جواب: " + q.answer + "</span>";
-  }
-
-  updateStats();
+function FieldLabel({ children }) {
+  return (
+    <div style={{
+      fontSize: 11, color: "rgba(255,255,255,0.45)",
+      textTransform: "uppercase", letterSpacing: 1,
+      marginBottom: 7,
+    }}>{children}</div>
+  );
 }
 
-/* =========================
-   NEXT QUESTION
-========================= */
-function nextQuestion(){
-  if(!answered){
-    const feedbackCard = document.getElementById("feedbackCard");
-    feedbackCard.className = "feedbackCard show bad";
-    feedbackCard.innerHTML = "پہلے جواب منتخب کریں۔";
-    return;
-  }
-
-  if(currentIndex < quizQuestions.length - 1){
-    currentIndex++;
-    showQuestion();
-  }else{
-    finishQuiz();
-  }
+function GlassInput({ ...props }) {
+  return (
+    <input {...props} style={{
+      width: "100%",
+      background: "rgba(255,255,255,0.07)",
+      border: "1px solid rgba(255,255,255,0.1)",
+      borderRadius: 13,
+      padding: "12px 14px",
+      color: "#fff",
+      fontSize: 15,
+      fontFamily: "'DM Sans', sans-serif",
+      outline: "none",
+      boxSizing: "border-box",
+      marginBottom: 14,
+    }} />
+  );
 }
 
-/* =========================
-   FINISH QUIZ
-========================= */
-function finishQuiz(){
-  const bestKey = getBestKey();
-  const oldBest = Number(localStorage.getItem(bestKey) || "0");
-
-  if(score > oldBest){
-    localStorage.setItem(bestKey, String(score));
-  }
-
-  loadBestScore();
-
-  document.getElementById("finishScore").innerText = score + "/" + quizQuestions.length;
-
-  let msg = "آپ نے lesson complete کر لیا۔";
-
-  if(score === quizQuestions.length){
-    msg = "Excellent! سب answers درست ہیں۔";
-  }else if(score >= 7){
-    msg = "بہت اچھا! تھوڑی practice اور کریں۔";
-  }else{
-    msg = "کوئی بات نہیں، دوبارہ practice کریں۔";
-  }
-
-  document.getElementById("finishMsg").innerText = msg;
-  document.getElementById("finishOverlay").classList.add("show");
+function ToggleBtn({ children, active, onClick, small }) {
+  return (
+    <button onClick={onClick} style={{
+      flex: 1,
+      padding: small ? "9px 6px" : "10px",
+      borderRadius: 11,
+      border: active ? "1px solid #a78bfa" : "1px solid rgba(255,255,255,0.1)",
+      background: active ? "rgba(167,139,250,0.18)" : "rgba(255,255,255,0.05)",
+      color: active ? "#c4b5fd" : "rgba(255,255,255,0.5)",
+      fontSize: small ? 12 : 13,
+      fontWeight: 600, cursor: "pointer",
+      fontFamily: "'DM Sans', sans-serif",
+      transition: "all 0.15s",
+    }}>{children}</button>
+  );
 }
-
-/* =========================
-   CLOSE FINISH
-========================= */
-function closeFinish(){
-  document.getElementById("finishOverlay").classList.remove("show");
-}
-
-/* =========================
-   RESTART QUIZ
-========================= */
-function restartQuiz(){
-  document.getElementById("finishOverlay").classList.remove("show");
-  startQuiz();
-}
-
-/* =========================
-   UPDATE STATS
-========================= */
-function updateStats(){
-  document.getElementById("scoreText").innerText = score;
-  document.getElementById("questionCountText").innerText = (currentIndex + 1) + "/" + quizQuestions.length;
-}
-
-/* =========================
-   LOAD BEST SCORE
-========================= */
-function loadBestScore(){
-  const bestKey = getBestKey();
-  const best = Number(localStorage.getItem(bestKey) || "0");
-  document.getElementById("bestText").innerText = best;
-}
-
-/* =========================
-   GET BEST SCORE KEY
-========================= */
-function getBestKey(){
-  return "nooraniQaidaGameBest_" + currentLesson;
-}
-
-/* =========================
-   SHUFFLE ARRAY
-========================= */
-function shuffleArray(array){
-  const copied = array.slice();
-
-  for(let i = copied.length - 1; i > 0; i--){
-    const j = Math.floor(Math.random() * (i + 1));
-    const temp = copied[i];
-    copied[i] = copied[j];
-    copied[j] = temp;
-  }
-
-  return copied;
-}
-</script>
-
-</body>
-</html>
