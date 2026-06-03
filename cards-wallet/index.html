@@ -4,54 +4,426 @@
 <meta charset="UTF-8">
 <title>Cards Wallet</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#101827">
+
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:Arial,Helvetica,sans-serif;background:#f4f7ff;color:#111827;min-height:100vh;padding:18px 4% 90px}
-.topbar{display:flex;align-items:center;gap:12px;margin-bottom:18px}
-.backBtn{width:44px;height:44px;border:none;border-radius:15px;background:white;font-size:24px;font-weight:900;box-shadow:0 8px 20px rgba(0,0,0,.10)}
-.title{font-size:26px;font-weight:900}
-.searchBox{width:100%;height:52px;border:none;border-radius:18px;padding:0 16px;font-size:17px;background:white;box-shadow:0 8px 22px rgba(0,0,0,.08);margin-bottom:14px}
-.formCard,.cardItem{background:white;border-radius:22px;padding:16px;box-shadow:0 10px 26px rgba(0,0,0,.08);margin-bottom:14px}
-.input{width:100%;height:48px;border:1px solid #e5e7eb;border-radius:15px;padding:0 13px;font-size:16px;margin-bottom:10px;background:white}
-.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.saveBtn{width:100%;height:50px;border:none;border-radius:16px;background:#2563eb;color:white;font-size:17px;font-weight:900}
-.cardTop{display:flex;justify-content:space-between;gap:10px}
-.bankName{font-size:19px;font-weight:900}
-.last4{font-size:22px;font-weight:900;color:#2563eb}
-.cardType{margin-top:6px;color:#64748b;font-weight:800}
-.actions{display:flex;gap:10px;margin-top:14px}
-.editBtn,.deleteBtn{flex:1;height:42px;border:none;border-radius:14px;font-weight:900}
-.editBtn{background:#e0f2fe;color:#0369a1}
-.deleteBtn{background:#fee2e2;color:#b91c1c}
-.empty{text-align:center;color:#64748b;font-weight:800;margin-top:30px}
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+  -webkit-tap-highlight-color:transparent;
+}
+
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+  min-height:100vh;
+  background:
+    radial-gradient(circle at top left, rgba(59,130,246,.35), transparent 32%),
+    radial-gradient(circle at top right, rgba(168,85,247,.30), transparent 34%),
+    linear-gradient(180deg,#08111f 0%,#101827 50%,#070b14 100%);
+  color:white;
+  padding:18px 4% 90px;
+}
+
+.appShell{
+  width:100%;
+  max-width:760px;
+  margin:0 auto;
+}
+
+.topbar{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin-bottom:18px;
+}
+
+.backBtn{
+  width:46px;
+  height:46px;
+  border:none;
+  border-radius:17px;
+  background:rgba(255,255,255,.14);
+  color:white;
+  font-size:24px;
+  font-weight:900;
+  box-shadow:0 14px 30px rgba(0,0,0,.25);
+  backdrop-filter:blur(18px);
+}
+
+.titleBox{
+  flex:1;
+}
+
+.title{
+  font-size:28px;
+  font-weight:950;
+  letter-spacing:-.7px;
+}
+
+.subTitle{
+  color:#cbd5e1;
+  font-size:13px;
+  font-weight:700;
+  margin-top:3px;
+}
+
+.heroCard{
+  position:relative;
+  overflow:hidden;
+  border-radius:30px;
+  padding:22px;
+  min-height:178px;
+  margin-bottom:16px;
+  background:
+    radial-gradient(circle at 85% 10%, rgba(255,255,255,.35), transparent 20%),
+    linear-gradient(135deg,#2563eb 0%,#7c3aed 52%,#db2777 100%);
+  box-shadow:0 22px 48px rgba(0,0,0,.32);
+}
+
+.heroTop{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:12px;
+}
+
+.heroLogo{
+  width:58px;
+  height:42px;
+  border-radius:13px;
+  background:rgba(255,255,255,.24);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:27px;
+  backdrop-filter:blur(12px);
+}
+
+.heroText{
+  margin-top:34px;
+}
+
+.heroSmall{
+  font-size:13px;
+  font-weight:800;
+  color:rgba(255,255,255,.78);
+}
+
+.heroBig{
+  font-size:25px;
+  font-weight:950;
+  margin-top:5px;
+}
+
+.chipLine{
+  display:flex;
+  gap:8px;
+  margin-top:14px;
+  flex-wrap:wrap;
+}
+
+.heroChip{
+  padding:8px 11px;
+  border-radius:999px;
+  background:rgba(255,255,255,.18);
+  font-size:12px;
+  font-weight:900;
+}
+
+.searchBox{
+  width:100%;
+  height:56px;
+  border:none;
+  border-radius:21px;
+  padding:0 18px;
+  font-size:17px;
+  font-weight:700;
+  background:rgba(255,255,255,.94);
+  color:#111827;
+  box-shadow:0 16px 34px rgba(0,0,0,.20);
+  margin-bottom:14px;
+}
+
+.formCard{
+  background:rgba(255,255,255,.12);
+  border:1px solid rgba(255,255,255,.14);
+  border-radius:26px;
+  padding:16px;
+  box-shadow:0 18px 38px rgba(0,0,0,.22);
+  backdrop-filter:blur(22px);
+  margin-bottom:16px;
+}
+
+.formTitle{
+  font-size:17px;
+  font-weight:950;
+  margin-bottom:12px;
+}
+
+.input{
+  width:100%;
+  height:52px;
+  border:none;
+  border-radius:18px;
+  padding:0 14px;
+  font-size:16px;
+  font-weight:800;
+  background:rgba(255,255,255,.94);
+  color:#111827;
+  margin-bottom:10px;
+}
+
+.row{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+
+.saveBtn{
+  width:100%;
+  height:54px;
+  border:none;
+  border-radius:19px;
+  background:linear-gradient(135deg,#22c55e,#16a34a);
+  color:white;
+  font-size:17px;
+  font-weight:950;
+  box-shadow:0 14px 28px rgba(34,197,94,.28);
+}
+
+.saveBtn:active,
+.backBtn:active,
+.editBtn:active,
+.deleteBtn:active{
+  transform:scale(.97);
+}
+
+.cardItem{
+  position:relative;
+  overflow:hidden;
+  border-radius:27px;
+  padding:18px;
+  margin-bottom:13px;
+  background:rgba(255,255,255,.94);
+  color:#111827;
+  box-shadow:0 16px 34px rgba(0,0,0,.18);
+}
+
+.cardItem.credit{
+  background:linear-gradient(135deg,#eff6ff,#ffffff);
+}
+
+.cardItem.debit{
+  background:linear-gradient(135deg,#ecfdf5,#ffffff);
+}
+
+.cardTop{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  align-items:flex-start;
+}
+
+.bankSide{
+  display:flex;
+  gap:12px;
+  align-items:flex-start;
+  min-width:0;
+}
+
+.cardLogo{
+  width:48px;
+  height:48px;
+  border-radius:17px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:25px;
+  flex-shrink:0;
+}
+
+.logoCredit{
+  background:#dbeafe;
+  color:#2563eb;
+}
+
+.logoDebit{
+  background:#dcfce7;
+  color:#16a34a;
+}
+
+.bankName{
+  font-size:19px;
+  font-weight:950;
+  line-height:1.15;
+  word-break:break-word;
+}
+
+.cardType{
+  display:inline-flex;
+  margin-top:7px;
+  padding:6px 10px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:950;
+}
+
+.badgeCredit{
+  background:#dbeafe;
+  color:#1d4ed8;
+}
+
+.badgeDebit{
+  background:#dcfce7;
+  color:#15803d;
+}
+
+.last4Box{
+  text-align:right;
+  flex-shrink:0;
+}
+
+.last4Label{
+  font-size:11px;
+  color:#64748b;
+  font-weight:900;
+  text-transform:uppercase;
+}
+
+.last4{
+  font-size:23px;
+  font-weight:950;
+  color:#111827;
+  margin-top:4px;
+}
+
+.actions{
+  display:flex;
+  gap:10px;
+  margin-top:16px;
+}
+
+.editBtn,
+.deleteBtn{
+  flex:1;
+  height:44px;
+  border:none;
+  border-radius:15px;
+  font-weight:950;
+  font-size:14px;
+}
+
+.editBtn{
+  background:#e0f2fe;
+  color:#0369a1;
+}
+
+.deleteBtn{
+  background:#fee2e2;
+  color:#b91c1c;
+}
+
+.empty{
+  text-align:center;
+  color:#cbd5e1;
+  font-weight:850;
+  margin-top:26px;
+  line-height:1.45;
+}
+
+.emptyIcon{
+  font-size:46px;
+  margin-bottom:10px;
+}
+
+@media(max-width:520px){
+  body{
+    padding:16px 4% 80px;
+  }
+
+  .title{
+    font-size:25px;
+  }
+
+  .heroCard{
+    min-height:165px;
+    padding:19px;
+  }
+
+  .heroBig{
+    font-size:22px;
+  }
+
+  .row{
+    grid-template-columns:1fr;
+  }
+
+  .cardTop{
+    flex-direction:column;
+  }
+
+  .last4Box{
+    text-align:left;
+    margin-left:60px;
+  }
+}
 </style>
 </head>
 
 <body>
 
-<div class="topbar">
-  <button class="backBtn" onclick="goBack()">←</button>
-  <div class="title">Cards Wallet</div>
-</div>
+<div class="appShell">
 
-<input id="searchInput" class="searchBox" placeholder="Search bank or last 4..." oninput="renderCards()">
-
-<div class="formCard">
-  <input id="bankInput" class="input" placeholder="Bank name">
-
-  <div class="row">
-    <select id="typeInput" class="input">
-      <option value="Credit">Credit</option>
-      <option value="Debit">Debit</option>
-    </select>
-
-    <input id="last4Input" class="input" placeholder="Last 4" maxlength="4" inputmode="numeric">
+  <div class="topbar">
+    <button class="backBtn" onclick="goBack()">←</button>
+    <div class="titleBox">
+      <div class="title">Cards Wallet</div>
+      <div class="subTitle">Bank name, debit/credit, and last 4 digits</div>
+    </div>
   </div>
 
-  <button class="saveBtn" onclick="saveCard()">Save Card</button>
-</div>
+  <div class="heroCard">
+    <div class="heroTop">
+      <div>
+        <div class="heroSmall">SMART TOOLS</div>
+        <div class="heroBig">Simple Card Finder</div>
+      </div>
+      <div class="heroLogo">💳</div>
+    </div>
 
-<div id="cardsList"></div>
+    <div class="heroText">
+      <div class="heroSmall">Search by bank name or last 4</div>
+      <div class="chipLine">
+        <div class="heroChip">Debit</div>
+        <div class="heroChip">Credit</div>
+        <div class="heroChip">Last 4</div>
+      </div>
+    </div>
+  </div>
+
+  <input id="searchInput" class="searchBox" placeholder="🔍 Search bank or last 4..." oninput="renderCards()">
+
+  <div class="formCard">
+    <div class="formTitle">➕ Add Card</div>
+
+    <input id="bankInput" class="input" placeholder="Bank name">
+
+    <div class="row">
+      <select id="typeInput" class="input">
+        <option value="Credit">Credit Card</option>
+        <option value="Debit">Debit Card</option>
+      </select>
+
+      <input id="last4Input" class="input" placeholder="Last 4 digits" maxlength="4" inputmode="numeric">
+    </div>
+
+    <button class="saveBtn" onclick="saveCard()">Save Card</button>
+  </div>
+
+  <div id="cardsList"></div>
+
+</div>
 
 <script>
 var cards = [];
@@ -102,10 +474,10 @@ function saveCard(){
     editId = null;
   }else{
     cards.unshift({
-      id: String(Date.now()),
-      bank: bank,
-      type: type,
-      last4: last4
+      id:String(Date.now()),
+      bank:bank,
+      type:type,
+      last4:last4
     });
   }
 
@@ -135,8 +507,7 @@ function editCard(id){
   document.getElementById("bankInput").value = card.bank;
   document.getElementById("typeInput").value = card.type;
   document.getElementById("last4Input").value = card.last4;
-
-  window.scrollTo(0, 0);
+  window.scrollTo(0,0);
 }
 
 function deleteCard(id){
@@ -184,7 +555,12 @@ function renderCards(){
   }
 
   if(filtered.length === 0){
-    list.innerHTML = '<div class="empty">No cards found.</div>';
+    list.innerHTML =
+      '<div class="empty">' +
+        '<div class="emptyIcon">💳</div>' +
+        '<div>No cards found.</div>' +
+        '<div>Add a card or search last 4 digits.</div>' +
+      '</div>';
     return;
   }
 
@@ -192,19 +568,32 @@ function renderCards(){
 
   for(var j = 0; j < filtered.length; j++){
     var c = filtered[j];
+    var typeLower = String(c.type || "").toLowerCase();
+    var isDebit = typeLower === "debit";
 
-    html += '<div class="cardItem">';
+    html += '<div class="cardItem ' + (isDebit ? 'debit' : 'credit') + '">';
     html += '<div class="cardTop">';
+
+    html += '<div class="bankSide">';
+    html += '<div class="cardLogo ' + (isDebit ? 'logoDebit' : 'logoCredit') + '">' + (isDebit ? '🏦' : '💳') + '</div>';
     html += '<div>';
     html += '<div class="bankName">' + escapeHtml(c.bank) + '</div>';
-    html += '<div class="cardType">' + escapeHtml(c.type) + ' Card</div>';
+    html += '<div class="cardType ' + (isDebit ? 'badgeDebit' : 'badgeCredit') + '">' + escapeHtml(c.type) + ' Card</div>';
     html += '</div>';
+    html += '</div>';
+
+    html += '<div class="last4Box">';
+    html += '<div class="last4Label">Last 4</div>';
     html += '<div class="last4">•••• ' + escapeHtml(c.last4) + '</div>';
     html += '</div>';
-    html += '<div class="actions">';
-    html += '<button class="editBtn" onclick="editCard(\'' + c.id + '\')">Edit</button>';
-    html += '<button class="deleteBtn" onclick="deleteCard(\'' + c.id + '\')">Delete</button>';
+
     html += '</div>';
+
+    html += '<div class="actions">';
+    html += '<button class="editBtn" onclick="editCard(\'' + c.id + '\')">✏️ Edit</button>';
+    html += '<button class="deleteBtn" onclick="deleteCard(\'' + c.id + '\')">🗑️ Delete</button>';
+    html += '</div>';
+
     html += '</div>';
   }
 
