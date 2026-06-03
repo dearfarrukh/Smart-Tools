@@ -27,9 +27,6 @@
 <script type="module" src="shared/cloud-sync.js"></script>
 
   <style>
-    /* =========================
-       RESET
-    ========================= */
     * {
       box-sizing: border-box;
       margin: 0;
@@ -57,9 +54,6 @@
       font: inherit;
     }
 
-    /* =========================
-       DASHBOARD SHELL
-    ========================= */
     .dashboard-shell {
       width: 100%;
       max-width: 1200px;
@@ -68,9 +62,6 @@
       min-height: 100vh;
     }
 
-    /* =========================
-       TOP BAR
-    ========================= */
     .dashboard-topbar {
       display: flex;
       align-items: center;
@@ -150,9 +141,6 @@
       transform: scale(0.96);
     }
 
-    /* =========================
-       DROPDOWN MENU
-    ========================= */
     .dashboard-menu-dropdown {
       display: none;
       position: absolute;
@@ -197,9 +185,6 @@
       display: none;
     }
 
-    /* =========================
-       SUMMARY CARDS
-    ========================= */
     .dashboard-stats-grid {
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -272,9 +257,6 @@
       margin-top: 5px;
     }
 
-    /* =========================
-       TOOL CARDS
-    ========================= */
     .dashboard-tools-grid {
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -376,9 +358,6 @@
       line-height: 1;
     }
 
-    /* =========================
-       FOOTER
-    ========================= */
     .dashboard-footer {
       margin-top: 18px;
       min-height: 68px;
@@ -395,9 +374,6 @@
       font-weight: 700;
     }
 
-    /* =========================
-       COLORFUL IOS HOME THEME
-    ========================= */
     body.smart-tools-color-theme {
       background:
         radial-gradient(circle at top left, rgba(96,165,250,0.24), transparent 30%),
@@ -485,6 +461,18 @@
       background: linear-gradient(135deg, #eff6ff, #ffffff);
     }
 
+    body.smart-tools-color-theme .dashboard-tool-card:nth-child(9) {
+      background: linear-gradient(135deg, #f0fdf4, #ffffff);
+    }
+
+    body.smart-tools-color-theme .dashboard-tool-card:nth-child(10) {
+      background: linear-gradient(135deg, #eef2ff, #ffffff);
+    }
+
+    body.smart-tools-color-theme .dashboard-tool-card:nth-child(11) {
+      background: linear-gradient(135deg, #fff7ed, #ffffff);
+    }
+
     body.smart-tools-color-theme .dashboard-tool-card:hover {
       background: #ffffff;
       border-color: rgba(37,99,235,0.18);
@@ -506,9 +494,6 @@
       color: #94a3b8;
     }
 
-    /* =========================
-       RESPONSIVE
-    ========================= */
     @media (max-width: 1000px) {
       .dashboard-stats-grid,
       .dashboard-tools-grid {
@@ -616,14 +601,8 @@
 
 <body class="smart-tools-dark-theme">
 
-  <!-- =========================
-       MAIN SMART TOOLS LAUNCHER
-  ========================= -->
   <main class="dashboard-shell">
 
-    <!-- =========================
-         TOP BAR
-    ========================= -->
     <div class="dashboard-topbar">
       <div class="dashboard-brand">
         <div class="dashboard-logo">
@@ -647,29 +626,26 @@
           aria-label="Open app tools menu"
         >⋮</button>
 
-      <div id="homeToolsMenu" class="dashboard-menu-dropdown">
-  <button id="smartCloudStatusBtn" onclick="signInSmartToolsCloudFromHome()">
-    <span>☁</span> <span id="smartCloudStatusText">Cloud: Not signed in</span>
-  </button>
+        <div id="homeToolsMenu" class="dashboard-menu-dropdown">
+          <button id="smartCloudStatusBtn" onclick="signInSmartToolsCloudFromHome()">
+            <span>☁</span> <span id="smartCloudStatusText">Cloud: Not signed in</span>
+          </button>
 
-  <button id="smartCloudSignInBtn" onclick="signInSmartToolsCloudFromHome()">
-    <span>🔑</span> Sign in with Google
-  </button>
+          <button id="smartCloudSignInBtn" onclick="signInSmartToolsCloudFromHome()">
+            <span>🔑</span> Sign in with Google
+          </button>
 
-  <button id="smartCloudSignOutBtn" onclick="signOutSmartToolsCloudFromHome()" style="display:none;">
-    <span>🚪</span> Sign out Cloud
-  </button>
+          <button id="smartCloudSignOutBtn" onclick="signOutSmartToolsCloudFromHome()" style="display:none;">
+            <span>🚪</span> Sign out Cloud
+          </button>
 
-  <button onclick="hardRefreshAppKeepData()"><span>↻</span> Refresh App</button>
-  <button onclick="downloadSmartToolsBackup()"><span>⇩</span> Export Backup</button>
-  <button onclick="openSmartToolsBackupFileChooser()"><span>⇧</span> Import Backup</button>
-</div>
+          <button onclick="hardRefreshAppKeepData()"><span>↻</span> Refresh App</button>
+          <button onclick="downloadSmartToolsBackup()"><span>⇩</span> Export Backup</button>
+          <button onclick="openSmartToolsBackupFileChooser()"><span>⇧</span> Import Backup</button>
+        </div>
       </div>
     </div>
 
-    <!-- =========================
-         SMALL SUMMARY CARDS
-    ========================= -->
     <div class="dashboard-stats-grid">
 
       <div class="dashboard-stat-card">
@@ -710,9 +686,6 @@
 
     </div>
 
-    <!-- =========================
-         MAIN TOOL CARDS
-    ========================= -->
     <div class="dashboard-tools-grid">
 
       <button class="dashboard-tool-card" onclick="openFolderPage('qameti/')">
@@ -743,9 +716,6 @@
         <div class="dashboard-card-arrow">›</div>
       </button>
 
-      <!-- =========================
-           SECURITY TOOLS CARD
-      ========================= -->
       <button class="dashboard-tool-card" onclick="openFolderPage('security/')">
         <div class="dashboard-tool-icon purple">🔐</div>
         <h3>Security Tools</h3>
@@ -774,10 +744,6 @@
         <div class="dashboard-card-arrow">›</div>
       </button>
 
-
-        <!-- =========================
-           GROCERY LIST CARD
-      ========================= -->
       <button class="dashboard-tool-card" onclick="openFolderPage('Grocery/')">
         <div class="dashboard-tool-icon green">🛒</div>
         <h3>Grocery List</h3>
@@ -785,12 +751,28 @@
         <div class="dashboard-card-arrow">›</div>
       </button>
 
-      
+      <!-- =========================
+           CARDS WALLET CARD
+      ========================= -->
+      <button class="dashboard-tool-card" onclick="openFolderPage('cards-wallet/')">
+        <div class="dashboard-tool-icon blue">💳</div>
+        <h3>Cards Wallet</h3>
+        <p>Save bank name, debit or credit type, and last 4 digits with search.</p>
+        <div class="dashboard-card-arrow">›</div>
+      </button>
+
+      <!-- =========================
+           TRAVEL WALLET CARD
+      ========================= -->
+      <button class="dashboard-tool-card" onclick="openFolderPage('travel-wallet/')">
+        <div class="dashboard-tool-icon orange">✈️</div>
+        <h3>Travel Wallet</h3>
+        <p>Save tickets, travel times, confirmation numbers, notes, and travel history.</p>
+        <div class="dashboard-card-arrow">›</div>
+      </button>
+
     </div>
 
-    <!-- =========================
-         FOOTER
-    ========================= -->
     <div class="dashboard-footer">
       <div>Quick Actions</div>
       <div>Smart Tools © 2026</div>
@@ -798,9 +780,6 @@
 
   </main>
 
-  <!-- =========================
-       HIDDEN BACKUP IMPORT INPUT
-  ========================= -->
   <input
     id="smartToolsBackupFileInput"
     class="hidden-file-input"
@@ -810,18 +789,10 @@
   />
 
   <script>
-    // =========================
-    // OPEN FOLDER PAGE
-    // =========================
     function openFolderPage(folderPath) {
       window.location.href = folderPath;
     }
 
-    // =========================
-    // HOME THEME
-    // This key controls main page and folder pages.
-    // Folder pages read this same key: smartToolsHomeTheme
-    // =========================
     function applySmartToolsHomeTheme() {
       const savedTheme = localStorage.getItem("smartToolsHomeTheme") || "dark";
       const themeBtn = document.getElementById("smartThemeToggleBtn");
@@ -838,9 +809,6 @@
       }
     }
 
-    // =========================
-    // TOGGLE HOME THEME
-    // =========================
     function toggleSmartToolsHomeTheme(event) {
       if (event) event.stopPropagation();
 
@@ -855,9 +823,6 @@
       applySmartToolsHomeTheme();
     }
 
-    // =========================
-    // TOGGLE HOME TOOLS MENU
-    // =========================
     function toggleHomeToolsMenu(event) {
       if (event) event.stopPropagation();
 
@@ -868,9 +833,6 @@
       menu.classList.toggle("open");
     }
 
-    // =========================
-    // CLOSE HOME TOOLS MENU
-    // =========================
     function closeHomeToolsMenu() {
       const menu = document.getElementById("homeToolsMenu");
 
@@ -879,16 +841,10 @@
       }
     }
 
-    // =========================
-    // CLOSE MENU WHEN TAPPING OUTSIDE
-    // =========================
     document.addEventListener("click", function() {
       closeHomeToolsMenu();
     });
 
-    // =========================
-    // POWERFUL REFRESH APP - KEEP SAVED DATA SAFE
-    // =========================
     async function hardRefreshAppKeepData() {
       closeHomeToolsMenu();
 
@@ -969,9 +925,6 @@
       }, 250);
     }
 
-    // =========================
-    // AUTO CLEAN REFRESH URL
-    // =========================
     function cleanSmartToolsRefreshUrl() {
       if (window.location.search.indexOf("forceRefresh=") !== -1) {
         const cleanUrl = window.location.origin + window.location.pathname;
@@ -979,9 +932,6 @@
       }
     }
 
-    // =========================
-    // FORCE ICON CACHE BUSTER ON LOAD
-    // =========================
     function forceSmartToolsIconCacheBuster() {
       const version = localStorage.getItem("smartToolsForceReloadVersion") || "20260515-security1";
 
@@ -1002,9 +952,6 @@
       });
     }
 
-    // =========================
-    // OPEN SMART TOOLS BACKUP FILE CHOOSER
-    // =========================
     function openSmartToolsBackupFileChooser() {
       closeHomeToolsMenu();
 
@@ -1018,9 +965,6 @@
       }
     }
 
-    // =========================
-    // DOWNLOAD SMART TOOLS BACKUP
-    // =========================
     function downloadSmartToolsBackup() {
       closeHomeToolsMenu();
 
@@ -1043,11 +987,8 @@
       const blob = new Blob([backupText], { type: "application/json" });
       const url = URL.createObjectURL(blob);
 
-           const link = document.createElement("a");
+      const link = document.createElement("a");
       link.href = url;
-
-      // Same backup name every time.
-      // On most computers, if you save to the same folder, it can replace the old backup.
       link.download = "smart-tools-backup.json";
 
       document.body.appendChild(link);
@@ -1057,9 +998,6 @@
       URL.revokeObjectURL(url);
     }
 
-    // =========================
-    // RESTORE SMART TOOLS BACKUP
-    // =========================
     function restoreSmartToolsBackup(event) {
       const file = event.target.files && event.target.files[0];
 
@@ -1098,17 +1036,11 @@
       reader.readAsText(file);
     }
 
-    // =========================
-    // UPDATE SMART TOOLS DASHBOARD
-    // =========================
     function updateSmartToolsDashboard() {
       updateDashboardDate();
       updateDashboardNotesCount();
     }
 
-    // =========================
-    // UPDATE DASHBOARD DATE
-    // =========================
     function updateDashboardDate() {
       const dateEl = document.getElementById("dashboardTodayDate");
       const dayEl = document.getElementById("dashboardTodayDay");
@@ -1129,9 +1061,6 @@
       }
     }
 
-    // =========================
-    // UPDATE DASHBOARD NOTES COUNT
-    // =========================
     function updateDashboardNotesCount() {
       const notesCountEl = document.getElementById("dashboardNotesCount");
 
@@ -1145,113 +1074,93 @@
       }
     }
 
+    function waitForSmartToolsCloudFile() {
+      let tries = 0;
 
-// =========================
-// WAIT FOR SMART TOOLS CLOUD FILE
-// =========================
-function waitForSmartToolsCloudFile() {
-  let tries = 0;
+      const timer = setInterval(function() {
+        tries++;
 
-  const timer = setInterval(function() {
-    tries++;
+        if (window.smartToolsCloud) {
+          clearInterval(timer);
+          updateSmartToolsCloudMenu();
+          return;
+        }
 
-    if (window.smartToolsCloud) {
-      clearInterval(timer);
+        if (tries > 40) {
+          clearInterval(timer);
+          updateSmartToolsCloudMenu();
+        }
+      }, 250);
+    }
+
+    function updateSmartToolsCloudMenu() {
+      const cloud = window.smartToolsCloud;
+      const user = cloud && cloud.getCurrentUser ? cloud.getCurrentUser() : null;
+
+      const statusText = document.getElementById("smartCloudStatusText");
+      const signInBtn = document.getElementById("smartCloudSignInBtn");
+      const signOutBtn = document.getElementById("smartCloudSignOutBtn");
+
+      if (user) {
+        if (statusText) statusText.innerText = "Cloud: " + (user.email || "Signed in");
+        if (signInBtn) signInBtn.style.display = "none";
+        if (signOutBtn) signOutBtn.style.display = "flex";
+      } else {
+        if (statusText) statusText.innerText = "Cloud: Not signed in";
+        if (signInBtn) signInBtn.style.display = "flex";
+        if (signOutBtn) signOutBtn.style.display = "none";
+      }
+    }
+
+    async function signInSmartToolsCloudFromHome() {
+      try {
+        closeHomeToolsMenu();
+
+        if (!window.smartToolsCloud) {
+          alert("Cloud file is not ready yet. Please try again in a few seconds.");
+          return;
+        }
+
+        await window.smartToolsCloud.signIn();
+        updateSmartToolsCloudMenu();
+
+        alert("Cloud signed in successfully.");
+      } catch (error) {
+        console.error(error);
+        alert("Cloud sign-in failed. Check popup blocker or Firebase settings.");
+      }
+    }
+
+    async function signOutSmartToolsCloudFromHome() {
+      try {
+        closeHomeToolsMenu();
+
+        if (!window.smartToolsCloud) {
+          return;
+        }
+
+        await window.smartToolsCloud.signOut();
+        updateSmartToolsCloudMenu();
+
+        alert("Cloud signed out.");
+      } catch (error) {
+        console.error(error);
+        alert("Cloud sign-out failed.");
+      }
+    }
+
+    window.addEventListener("smartToolsCloudUserChanged", function() {
       updateSmartToolsCloudMenu();
-      return;
-    }
+    });
 
-    if (tries > 40) {
-      clearInterval(timer);
+    document.addEventListener("DOMContentLoaded", function() {
+      cleanSmartToolsRefreshUrl();
+      forceSmartToolsIconCacheBuster();
+      applySmartToolsHomeTheme();
+      updateSmartToolsDashboard();
       updateSmartToolsCloudMenu();
-    }
-  }, 250);
-}
-
-// =========================
-// UPDATE SMART TOOLS CLOUD MENU
-// =========================
-function updateSmartToolsCloudMenu() {
-  const cloud = window.smartToolsCloud;
-  const user = cloud && cloud.getCurrentUser ? cloud.getCurrentUser() : null;
-
-  const statusText = document.getElementById("smartCloudStatusText");
-  const signInBtn = document.getElementById("smartCloudSignInBtn");
-  const signOutBtn = document.getElementById("smartCloudSignOutBtn");
-
-  if (user) {
-    if (statusText) statusText.innerText = "Cloud: " + (user.email || "Signed in");
-    if (signInBtn) signInBtn.style.display = "none";
-    if (signOutBtn) signOutBtn.style.display = "flex";
-  } else {
-    if (statusText) statusText.innerText = "Cloud: Not signed in";
-    if (signInBtn) signInBtn.style.display = "flex";
-    if (signOutBtn) signOutBtn.style.display = "none";
-  }
-}
-
-// =========================
-// SIGN IN SMART TOOLS CLOUD FROM HOME
-// =========================
-async function signInSmartToolsCloudFromHome() {
-  try {
-    closeHomeToolsMenu();
-
-    if (!window.smartToolsCloud) {
-      alert("Cloud file is not ready yet. Please try again in a few seconds.");
-      return;
-    }
-
-    await window.smartToolsCloud.signIn();
-    updateSmartToolsCloudMenu();
-
-    alert("Cloud signed in successfully.");
-  } catch (error) {
-    console.error(error);
-    alert("Cloud sign-in failed. Check popup blocker or Firebase settings.");
-  }
-}
-
-// =========================
-// SIGN OUT SMART TOOLS CLOUD FROM HOME
-// =========================
-async function signOutSmartToolsCloudFromHome() {
-  try {
-    closeHomeToolsMenu();
-
-    if (!window.smartToolsCloud) {
-      return;
-    }
-
-    await window.smartToolsCloud.signOut();
-    updateSmartToolsCloudMenu();
-
-    alert("Cloud signed out.");
-  } catch (error) {
-    console.error(error);
-    alert("Cloud sign-out failed.");
-  }
-}
-
-// =========================
-// CLOUD USER CHANGE LISTENER
-// =========================
-window.addEventListener("smartToolsCloudUserChanged", function() {
-  updateSmartToolsCloudMenu();
-});
-
-    
-    // =========================
-    // PAGE LOAD
-    // =========================
-  document.addEventListener("DOMContentLoaded", function() {
-  cleanSmartToolsRefreshUrl();
-  forceSmartToolsIconCacheBuster();
-  applySmartToolsHomeTheme();
-  updateSmartToolsDashboard();
-  updateSmartToolsCloudMenu();
-  waitForSmartToolsCloudFile();
-});
+      waitForSmartToolsCloudFile();
+    });
   </script>
 
 </body>
