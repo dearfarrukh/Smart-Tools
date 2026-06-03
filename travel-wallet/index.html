@@ -20,6 +20,7 @@ body{font-family:var(--font);background:var(--bg);min-height:100vh;color:var(--t
 .add-menu.open{display:block}
 .add-menu button{width:100%;padding:13px 16px;border:none;background:#fff;text-align:left;font-family:var(--font);font-size:14px;font-weight:700;color:var(--text-dark);cursor:pointer}
 .add-menu button+button{border-top:1px solid #f0eeff}
+
 .search-wrap{padding:16px 20px 0}
 .search-box{background:#fff;border-radius:16px;border:1.5px solid #e2ddf5;display:flex;align-items:center;padding:12px 16px;gap:10px;box-shadow:0 2px 8px rgba(124,58,237,.06)}
 .search-box input{background:none;border:none;outline:none;color:var(--text-dark);font-size:15px;font-family:var(--font);flex:1;min-width:0}
@@ -27,36 +28,37 @@ body{font-family:var(--font);background:var(--bg);min-height:100vh;color:var(--t
 .filter-row{display:flex;gap:8px;padding:10px 20px 0;overflow-x:auto}
 .filter-pill{padding:7px 14px;border-radius:20px;font-size:13px;font-weight:600;border:1.5px solid #e0daf5;background:#fff;color:var(--text-muted);cursor:pointer;font-family:var(--font);white-space:nowrap}
 .filter-pill.active{background:var(--accent-light);border-color:var(--accent);color:var(--accent)}
+
 .trip-list{padding:16px 20px 70px}
 .empty-state{text-align:center;color:var(--text-muted);margin-top:70px}
 .empty-state .icon{font-size:50px;margin-bottom:12px}
 .empty-state .title{font-size:15px;font-weight:600}
 .empty-state .sub{font-size:13px;color:#c0b8dc;margin-top:6px}
-.trip-wrapper{position:relative;margin-bottom:18px}
-.trip-card{border-radius:22px;padding:18px;position:relative;overflow:hidden;min-height:165px;box-shadow:0 8px 28px rgba(0,0,0,.24);color:#fff}
-.trip-card .deco1{position:absolute;top:-45px;right:-35px;width:135px;height:135px;border-radius:50%;background:rgba(255,255,255,.08)}
-.trip-card .deco2{position:absolute;bottom:-35px;left:-20px;width:105px;height:105px;border-radius:50%;background:rgba(255,255,255,.05)}
-.trip-top{position:relative;display:flex;justify-content:space-between;gap:12px;padding-right:35px}
+
+/* DASHBOARD SMALL BOARDING PASS CARD */
+.trip-wrapper{position:relative;margin-bottom:16px}
+.trip-card{border-radius:22px;padding:16px;position:relative;overflow:hidden;min-height:145px;box-shadow:0 8px 28px rgba(0,0,0,.22);color:#fff;cursor:pointer}
+.trip-card .deco1{position:absolute;top:-42px;right:-32px;width:125px;height:125px;border-radius:50%;background:rgba(255,255,255,.08)}
+.trip-card .deco2{position:absolute;bottom:-35px;left:-20px;width:95px;height:95px;border-radius:50%;background:rgba(255,255,255,.05)}
+.trip-main{position:relative;padding-right:38px}
 .trip-label{font-size:9px;color:rgba(255,255,255,.58);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:3px}
-.trip-title{font-size:18px;font-weight:800;color:#fff;margin-bottom:6px}
-.trip-type{display:inline-block;background:rgba(255,255,255,.20);border-radius:8px;padding:4px 10px;font-size:12px;font-weight:700}
-.route-row{position:relative;display:flex;align-items:center;justify-content:space-between;gap:10px;margin:22px 0 16px}
-.city-box{flex:1;min-width:0}
-.city-code{font-size:23px;font-weight:800;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.city-label{font-size:11px;color:rgba(255,255,255,.65);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.plane{width:42px;height:42px;border-radius:50%;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
-.info-grid{position:relative;display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.info-box{background:rgba(255,255,255,.13);border-radius:13px;padding:9px 10px}
-.info-label{font-size:9px;color:rgba(255,255,255,.58);text-transform:uppercase;letter-spacing:.8px}
-.info-val{font-size:13px;font-weight:700;margin-top:3px;color:#fff;word-break:break-word}
-.notes-line{position:relative;margin-top:10px;font-size:12px;color:rgba(255,255,255,.72);line-height:1.35}
-.connection-box{position:relative;margin-top:12px;padding:12px;border-radius:16px;background:rgba(255,255,255,.12)}
-.connection-title{font-size:12px;font-weight:800;margin-bottom:8px;color:#fff}
+.trip-title{font-size:18px;font-weight:800;color:#fff;margin-bottom:7px}
+.trip-status{display:inline-block;background:rgba(255,255,255,.20);border-radius:8px;padding:4px 10px;font-size:12px;font-weight:700}
+.route-mini{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:19px 0 14px}
+.airport-code{font-size:28px;font-weight:800;letter-spacing:.5px;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.airport-label{font-size:10px;color:rgba(255,255,255,.65);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.route-icon{width:42px;height:42px;border-radius:50%;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.mini-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;position:relative}
+.mini-box{background:rgba(255,255,255,.13);border-radius:13px;padding:9px 10px}
+.mini-label{font-size:9px;color:rgba(255,255,255,.58);text-transform:uppercase;letter-spacing:.8px}
+.mini-val{font-size:13px;font-weight:700;margin-top:3px;color:#fff;word-break:break-word}
+
 .trip-menu-btn{position:absolute;top:10px;right:10px;width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.22);border:none;color:#fff;font-size:17px;z-index:10;cursor:pointer}
 .trip-dropdown{position:absolute;top:42px;right:10px;background:#fff;border-radius:14px;box-shadow:0 8px 28px rgba(80,60,160,.18),0 2px 8px rgba(0,0,0,.08);border:1.5px solid #e8e2f8;overflow:hidden;z-index:20;opacity:0;pointer-events:none;transform:scale(.92) translateY(-6px);transform-origin:top right;transition:opacity .16s,transform .16s;min-width:178px}
 .trip-dropdown.open{opacity:1;pointer-events:all;transform:scale(1) translateY(0)}
 .trip-dropdown button{display:flex;align-items:center;gap:10px;width:100%;padding:12px 16px;background:none;border:none;font-family:var(--font);font-size:14px;font-weight:600;cursor:pointer;text-align:left}
 .trip-dropdown .dd-edit{color:#5a4a95}.trip-dropdown .dd-done{color:#15803d;border-top:1px solid #f0eeff}.trip-dropdown .dd-print{color:#0369a1;border-top:1px solid #f0eeff}.trip-dropdown .dd-delete{color:#e53e3e;border-top:1px solid #f0eeff}
+
 .overlay{position:fixed;inset:0;background:rgba(60,40,120,.35);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:flex;align-items:flex-end;z-index:200;opacity:0;pointer-events:none;transition:opacity .25s}
 .overlay.active{opacity:1;pointer-events:all}
 .sheet{width:100%;background:#fff;border-radius:26px 26px 0 0;padding:20px 22px 48px;border-top:1.5px solid #e8e2f8;transform:translateY(100%);transition:transform .3s cubic-bezier(.32,.72,0,1);max-height:92vh;overflow-y:auto}
@@ -86,6 +88,15 @@ body{font-family:var(--font);background:var(--bg);min-height:100vh;color:var(--t
 .import-actions{display:flex;gap:10px}
 .import-actions button{flex:1}
 .btn-secondary{width:100%;padding:15px;border-radius:15px;border:1.5px solid #e0daf5;background:#faf9ff;color:var(--text-dark);font-size:15px;font-weight:700;cursor:pointer;font-family:var(--font)}
+
+.detail-card{border-radius:20px;padding:16px;background:linear-gradient(135deg,#f8f5ff,#ffffff);border:1.5px solid #e8e2f8;margin-bottom:14px}
+.detail-title{font-size:16px;font-weight:800;color:var(--text-dark);margin-bottom:12px}
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.detail-item{background:#fff;border:1px solid #eee9fb;border-radius:13px;padding:10px}
+.detail-label{font-size:10px;text-transform:uppercase;color:var(--text-muted);letter-spacing:.8px}
+.detail-val{font-size:14px;font-weight:700;color:var(--text-dark);margin-top:4px;word-break:break-word;white-space:pre-wrap}
+.detail-actions{display:flex;gap:10px;margin-top:14px}
+
 .del-overlay{position:fixed;inset:0;background:rgba(60,40,120,.35);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;z-index:300;padding:24px;opacity:0;pointer-events:none;transition:opacity .2s}
 .del-overlay.active{opacity:1;pointer-events:all}
 .del-box{background:#fff;border-radius:22px;padding:28px 24px;border:1.5px solid #e8e2f8;max-width:320px;width:100%;text-align:center}
@@ -93,7 +104,7 @@ body{font-family:var(--font);background:var(--bg);min-height:100vh;color:var(--t
 .btn-cancel,.btn-del-confirm{flex:1;padding:12px;border-radius:13px;font-size:14px;font-weight:600;cursor:pointer;font-family:var(--font)}
 .btn-cancel{border:1.5px solid #e0daf5;background:#faf9ff;color:var(--text)}
 .btn-del-confirm{border:none;background:linear-gradient(135deg,#ff4444,#cc0000);color:#fff}
-@media(max-width:520px){.header-title{font-size:24px}.btn-add{padding:10px 13px}.row-2{flex-direction:column;gap:0}.import-actions{flex-direction:column}}
+@media(max-width:520px){.header-title{font-size:24px}.btn-add{padding:10px 13px}.row-2{flex-direction:column;gap:0}.import-actions{flex-direction:column}.detail-grid{grid-template-columns:1fr}}
 </style>
 </head>
 
@@ -139,6 +150,15 @@ body{font-family:var(--font);background:var(--bg);min-height:100vh;color:var(--t
   </div>
 </div>
 
+<!-- DETAIL SHEET -->
+<div class="overlay" id="detail-overlay" onclick="onDetailOverlayClick(event)">
+  <div class="sheet">
+    <div class="drag-handle"></div>
+    <div class="sheet-title" id="detail-title">Itinerary Detail</div>
+    <div id="detail-content"></div>
+  </div>
+</div>
+
 <!-- FORM SHEET -->
 <div class="overlay" id="form-overlay" onclick="onOverlayClick(event)">
   <div class="sheet">
@@ -163,7 +183,7 @@ body{font-family:var(--font);background:var(--bg);min-height:100vh;color:var(--t
 
     <div class="row-2">
       <div><label class="field-label">From</label><input class="glass-input" id="f-from" type="text" placeholder="JFK / New York"></div>
-      <div><label class="field-label">To</label><input class="glass-input" id="f-to" type="text" placeholder="KEF / Reykjavik"></div>
+      <div><label class="field-label">To / First Stop</label><input class="glass-input" id="f-to" type="text" placeholder="KEF / Reykjavik"></div>
     </div>
 
     <div class="row-2">
@@ -185,7 +205,7 @@ body{font-family:var(--font);background:var(--bg);min-height:100vh;color:var(--t
 
       <div class="row-2">
         <div><label class="field-label">Second From</label><input class="glass-input" id="f-from2" type="text" placeholder="KEF / Reykjavik"></div>
-        <div><label class="field-label">Second To</label><input class="glass-input" id="f-to2" type="text" placeholder="LHR / London"></div>
+        <div><label class="field-label">Final Destination</label><input class="glass-input" id="f-to2" type="text" placeholder="LHR / London"></div>
       </div>
 
       <div class="row-2">
@@ -200,7 +220,7 @@ body{font-family:var(--font);background:var(--bg);min-height:100vh;color:var(--t
     </div>
 
     <div class="section-title">Ticket / Codes</div>
-    <label class="field-label">Ticket Number</label><input class="glass-input" id="f-ticket" type="text" placeholder="Ticket number">
+    <label class="field-label">Primary Ticket Number</label><input class="glass-input" id="f-ticket" type="text" placeholder="Primary traveler ticket number">
 
     <div class="row-2">
       <div><label class="field-label">Website Booking Code</label><input class="glass-input" id="f-webcode" type="text" placeholder="Website code"></div>
@@ -212,8 +232,8 @@ body{font-family:var(--font);background:var(--bg);min-height:100vh;color:var(--t
 
     <label class="check-row"><input type="checkbox" id="f-has-passengers" onchange="togglePassengersSection()"> Additional passenger</label>
     <div id="passenger-section" class="hidden-section">
-      <label class="field-label">Additional Travelers</label>
-      <textarea class="glass-input" id="f-passengers" rows="2" placeholder="One name per line"></textarea>
+      <label class="field-label">Additional Travelers + Ticket Numbers</label>
+      <textarea class="glass-input" id="f-passengers" rows="3" placeholder="One per line, example:&#10;Arsala Hassan - 1087446439331&#10;Ali Saeed - 1087446439332"></textarea>
     </div>
 
     <label class="field-label">Save Traveler Name</label>
@@ -252,7 +272,6 @@ const GRADIENTS=[["#1a1a2e","#16213e"],["#0f3460","#533483"],["#1b4332","#2d6a4f
 let trips=[],savedTravelers=[],editingId=null,deleteId=null,currentType="Flight",currentColor=0,searchVal="",currentFilter="all";
 
 function goBack(){window.location.href="../"}
-
 function load(){try{trips=JSON.parse(localStorage.getItem(STORAGE_KEY))||[]}catch(e){trips=[]}try{savedTravelers=JSON.parse(localStorage.getItem(TRAVELERS_KEY))||[]}catch(e){savedTravelers=[]}}
 function save(){localStorage.setItem(STORAGE_KEY,JSON.stringify(trips))}
 function saveTravelers(){localStorage.setItem(TRAVELERS_KEY,JSON.stringify(savedTravelers))}
@@ -261,12 +280,13 @@ function escAttr(str){return String(str||"").replace(/\\/g,"\\\\").replace(/'/g,
 function isPastTrip(trip){if(trip.done)return true;if(!trip.date)return false;const today=new Date();today.setHours(0,0,0,0);const d=new Date(trip.date+"T00:00:00");return d<today}
 function formatDate(dateStr){if(!dateStr)return "-";const d=new Date(dateStr+"T00:00:00");return d.toLocaleDateString([], {month:"short",day:"numeric",year:"numeric"})}
 function typeIcon(type){if(type==="Train")return"🚆";if(type==="Bus")return"🚌";return"✈️"}
+function getFinalTo(t){return t.hasConnection&&t.to2?t.to2:t.to}
+function getConnectionLabel(t){return t.hasConnection?((t.flight||"-")+" + 1 Connection"):(t.flight||"-")}
+function getTravelersText(t){let names=[];if(t.primary){names.push(t.primary+(t.ticket?" - "+t.ticket:""))}if(t.passengers){t.passengers.split("\n").forEach(n=>{const clean=n.trim();if(clean)names.push(clean)})}return names.join("\n")}
 
 function toggleAddMenu(event){event.stopPropagation();document.getElementById("add-menu").classList.toggle("open")}
 function closeAddMenu(){document.getElementById("add-menu").classList.remove("open")}
 document.addEventListener("click",function(){closeAddMenu();closeAllMenus()});
-
-function getTravelersText(t){let names=[];if(t.primary)names.push(t.primary);if(t.passengers){t.passengers.split("\n").forEach(n=>{const clean=n.trim();if(clean)names.push(clean)})}return names.join(", ")}
 
 function render(){
   const list=document.getElementById("trip-list"),count=document.getElementById("trip-count");
@@ -274,15 +294,58 @@ function render(){
   let filtered=trips.slice();
   if(currentFilter==="upcoming")filtered=filtered.filter(t=>!isPastTrip(t));
   if(currentFilter==="past")filtered=filtered.filter(t=>isPastTrip(t));
-  if(searchVal){const s=searchVal.toLowerCase();filtered=filtered.filter(t=>String(t.title||"").toLowerCase().includes(s)||String(t.company||"").toLowerCase().includes(s)||String(t.flight||"").toLowerCase().includes(s)||String(t.from||"").toLowerCase().includes(s)||String(t.to||"").toLowerCase().includes(s)||String(t.confirm||"").toLowerCase().includes(s)||String(t.ticket||"").toLowerCase().includes(s)||String(t.webcode||"").toLowerCase().includes(s)||String(t.aircode||"").toLowerCase().includes(s)||String(t.company2||"").toLowerCase().includes(s)||String(t.flight2||"").toLowerCase().includes(s)||String(t.from2||"").toLowerCase().includes(s)||String(t.to2||"").toLowerCase().includes(s)||String(t.primary||"").toLowerCase().includes(s)||String(t.passengers||"").toLowerCase().includes(s)||String(t.hotel||"").toLowerCase().includes(s)||String(t.notes||"").toLowerCase().includes(s))}
+  if(searchVal){
+    const s=searchVal.toLowerCase();
+    filtered=filtered.filter(t=>String(t.title||"").toLowerCase().includes(s)||String(t.company||"").toLowerCase().includes(s)||String(t.flight||"").toLowerCase().includes(s)||String(t.from||"").toLowerCase().includes(s)||String(t.to||"").toLowerCase().includes(s)||String(t.to2||"").toLowerCase().includes(s)||String(t.confirm||"").toLowerCase().includes(s)||String(t.ticket||"").toLowerCase().includes(s)||String(t.webcode||"").toLowerCase().includes(s)||String(t.aircode||"").toLowerCase().includes(s)||String(t.company2||"").toLowerCase().includes(s)||String(t.flight2||"").toLowerCase().includes(s)||String(t.from2||"").toLowerCase().includes(s)||String(t.primary||"").toLowerCase().includes(s)||String(t.passengers||"").toLowerCase().includes(s)||String(t.hotel||"").toLowerCase().includes(s)||String(t.notes||"").toLowerCase().includes(s))
+  }
   filtered.sort((a,b)=>String(a.date||"").localeCompare(String(b.date||"")));
   if(filtered.length===0){list.innerHTML='<div class="empty-state"><div class="icon">✈️</div><div class="title">No trips found</div><div class="sub">Tap "+ Add Trip" to save full itinerary and travel history</div></div>';return}
   list.innerHTML=filtered.map(t=>{
-    const colors=GRADIENTS[t.colorIndex%GRADIENTS.length],notes=t.notes?'<div class="notes-line">📝 '+esc(t.notes)+'</div>':"",hotel=t.hotel?'<div class="notes-line">🏨 '+esc(t.hotel)+'</div>':"",travelers=getTravelersText(t)?'<div class="notes-line">👤 '+esc(getTravelersText(t))+'</div>':"";
-    const connection=t.hasConnection?'<div class="connection-box"><div class="connection-title">Connecting Flight</div><div class="info-grid"><div class="info-box"><div class="info-label">Flight 2</div><div class="info-val">'+esc(t.flight2||"-")+'</div></div><div class="info-box"><div class="info-label">Airline 2</div><div class="info-val">'+esc(t.company2||"-")+'</div></div><div class="info-box"><div class="info-label">Route 2</div><div class="info-val">'+esc(t.from2||"-")+' → '+esc(t.to2||"-")+'</div></div><div class="info-box"><div class="info-label">Date 2</div><div class="info-val">'+formatDate(t.date2)+'</div></div><div class="info-box"><div class="info-label">Depart 2</div><div class="info-val">'+esc(t.depart2||"-")+'</div></div><div class="info-box"><div class="info-label">Arrive 2</div><div class="info-val">'+esc(t.arrive2||"-")+'</div></div></div></div>':"";
-    return '<div class="trip-wrapper"><div class="trip-card" style="background:linear-gradient(140deg,'+colors[0]+','+colors[1]+')"><div class="deco1"></div><div class="deco2"></div><div class="trip-top"><div><div class="trip-label">Itinerary</div><div class="trip-title">'+esc(t.title)+'</div><div class="trip-type">'+typeIcon(t.type)+' '+esc(t.type)+' • '+(isPastTrip(t)?"History":"Upcoming")+'</div></div></div><div class="route-row"><div class="city-box"><div class="city-code">'+esc(t.from)+'</div><div class="city-label">From</div></div><div class="plane">'+typeIcon(t.type)+'</div><div class="city-box" style="text-align:right"><div class="city-code">'+esc(t.to)+'</div><div class="city-label">To</div></div></div><div class="info-grid"><div class="info-box"><div class="info-label">Flight #</div><div class="info-val">'+esc(t.flight||"-")+'</div></div><div class="info-box"><div class="info-label">Date</div><div class="info-val">'+formatDate(t.date)+'</div></div><div class="info-box"><div class="info-label">Company</div><div class="info-val">'+esc(t.company||"-")+'</div></div><div class="info-box"><div class="info-label">Confirm</div><div class="info-val">'+esc(t.confirm||"-")+'</div></div><div class="info-box"><div class="info-label">Depart</div><div class="info-val">'+esc(t.depart||"-")+'</div></div><div class="info-box"><div class="info-label">Arrive</div><div class="info-val">'+esc(t.arrive||"-")+'</div></div><div class="info-box"><div class="info-label">Ticket</div><div class="info-val">'+esc(t.ticket||"-")+'</div></div><div class="info-box"><div class="info-label">Airline Code</div><div class="info-val">'+esc(t.aircode||"-")+'</div></div></div>'+connection+travelers+hotel+notes+'</div><button class="trip-menu-btn" onclick="toggleMenu(\''+t.id+'\',event)">⋮</button><div class="trip-dropdown" id="menu-'+t.id+'"><button class="dd-edit" onclick="openEdit(\''+t.id+'\');closeAllMenus()">✏️ Edit Itinerary</button><button class="dd-done" onclick="markDone(\''+t.id+'\');closeAllMenus()">✅ Mark as Done</button><button class="dd-print" onclick="printItinerary(\''+t.id+'\');closeAllMenus()">🖨️ Print Itinerary</button><button class="dd-delete" onclick="openDelete(\''+t.id+'\');closeAllMenus()">🗑️ Delete</button></div></div>'
+    const colors=GRADIENTS[t.colorIndex%GRADIENTS.length];
+    return '<div class="trip-wrapper">'+
+      '<div class="trip-card" onclick="openDetail(\''+t.id+'\')" style="background:linear-gradient(140deg,'+colors[0]+','+colors[1]+')">'+
+      '<div class="deco1"></div><div class="deco2"></div>'+
+      '<div class="trip-main">'+
+      '<div class="trip-label">Boarding Pass</div>'+
+      '<div class="trip-title">'+esc(t.title)+'</div>'+
+      '<div class="trip-status">'+typeIcon(t.type)+' '+(isPastTrip(t)?"History":"Upcoming")+'</div>'+
+      '<div class="route-mini">'+
+      '<div><div class="airport-code">'+esc(t.from||"-")+'</div><div class="airport-label">From</div></div>'+
+      '<div class="route-icon">'+typeIcon(t.type)+'</div>'+
+      '<div style="text-align:right"><div class="airport-code">'+esc(getFinalTo(t)||"-")+'</div><div class="airport-label">Final Destination</div></div>'+
+      '</div>'+
+      '<div class="mini-grid">'+
+      '<div class="mini-box"><div class="mini-label">Date</div><div class="mini-val">'+formatDate(t.date)+'</div></div>'+
+      '<div class="mini-box"><div class="mini-label">Flight</div><div class="mini-val">'+esc(getConnectionLabel(t))+'</div></div>'+
+      '</div>'+
+      '</div></div>'+
+      '<button class="trip-menu-btn" onclick="toggleMenu(\''+t.id+'\',event)">⋮</button>'+
+      '<div class="trip-dropdown" id="menu-'+t.id+'">'+
+      '<button class="dd-edit" onclick="openEdit(\''+t.id+'\');closeAllMenus()">✏️ Edit Itinerary</button>'+
+      '<button class="dd-done" onclick="markDone(\''+t.id+'\');closeAllMenus()">✅ Mark as Done</button>'+
+      '<button class="dd-print" onclick="printItinerary(\''+t.id+'\');closeAllMenus()">🖨️ Print Itinerary</button>'+
+      '<button class="dd-delete" onclick="openDelete(\''+t.id+'\');closeAllMenus()">🗑️ Delete</button>'+
+      '</div></div>';
   }).join("")
 }
+
+function openDetail(id){
+  const t=trips.find(x=>x.id===id);if(!t)return;
+  document.getElementById("detail-title").textContent=t.title||"Itinerary Detail";
+  const travelers=getTravelersText(t)||"-";
+  let html="";
+  html+='<div class="detail-card"><div class="detail-title">Route</div><div class="detail-grid"><div class="detail-item"><div class="detail-label">From</div><div class="detail-val">'+esc(t.from||"-")+'</div></div><div class="detail-item"><div class="detail-label">Final Destination</div><div class="detail-val">'+esc(getFinalTo(t)||"-")+'</div></div><div class="detail-item"><div class="detail-label">Status</div><div class="detail-val">'+(isPastTrip(t)?"History":"Upcoming")+'</div></div><div class="detail-item"><div class="detail-label">Date</div><div class="detail-val">'+formatDate(t.date)+'</div></div></div></div>';
+  html+='<div class="detail-card"><div class="detail-title">Flight 1</div><div class="detail-grid"><div class="detail-item"><div class="detail-label">Airline</div><div class="detail-val">'+esc(t.company||"-")+'</div></div><div class="detail-item"><div class="detail-label">Flight #</div><div class="detail-val">'+esc(t.flight||"-")+'</div></div><div class="detail-item"><div class="detail-label">Route</div><div class="detail-val">'+esc(t.from||"-")+' → '+esc(t.to||"-")+'</div></div><div class="detail-item"><div class="detail-label">Time</div><div class="detail-val">'+esc(t.depart||"-")+' → '+esc(t.arrive||"-")+'</div></div></div></div>';
+  if(t.hasConnection){html+='<div class="detail-card"><div class="detail-title">Connecting Flight</div><div class="detail-grid"><div class="detail-item"><div class="detail-label">Airline 2</div><div class="detail-val">'+esc(t.company2||"-")+'</div></div><div class="detail-item"><div class="detail-label">Flight #2</div><div class="detail-val">'+esc(t.flight2||"-")+'</div></div><div class="detail-item"><div class="detail-label">Route 2</div><div class="detail-val">'+esc(t.from2||"-")+' → '+esc(t.to2||"-")+'</div></div><div class="detail-item"><div class="detail-label">Date 2</div><div class="detail-val">'+formatDate(t.date2)+'</div></div><div class="detail-item"><div class="detail-label">Time 2</div><div class="detail-val">'+esc(t.depart2||"-")+' → '+esc(t.arrive2||"-")+'</div></div></div></div>'}
+  html+='<div class="detail-card"><div class="detail-title">Travelers & Tickets</div><div class="detail-item"><div class="detail-label">Names / Ticket Numbers</div><div class="detail-val">'+esc(travelers)+'</div></div></div>';
+  html+='<div class="detail-card"><div class="detail-title">Codes</div><div class="detail-grid"><div class="detail-item"><div class="detail-label">Confirmation</div><div class="detail-val">'+esc(t.confirm||"-")+'</div></div><div class="detail-item"><div class="detail-label">Website Code</div><div class="detail-val">'+esc(t.webcode||"-")+'</div></div><div class="detail-item"><div class="detail-label">Airline Code</div><div class="detail-val">'+esc(t.aircode||"-")+'</div></div><div class="detail-item"><div class="detail-label">Primary Ticket</div><div class="detail-val">'+esc(t.ticket||"-")+'</div></div></div></div>';
+  html+='<div class="detail-card"><div class="detail-title">Hotel</div><div class="detail-grid"><div class="detail-item"><div class="detail-label">Hotel</div><div class="detail-val">'+esc(t.hotel||"-")+'</div></div><div class="detail-item"><div class="detail-label">Hotel Confirmation</div><div class="detail-val">'+esc(t.hotelconfirm||"-")+'</div></div><div class="detail-item"><div class="detail-label">Check-In</div><div class="detail-val">'+formatDate(t.checkin)+'</div></div><div class="detail-item"><div class="detail-label">Check-Out</div><div class="detail-val">'+formatDate(t.checkout)+'</div></div></div></div>';
+  html+='<div class="detail-card"><div class="detail-title">Notes</div><div class="detail-item"><div class="detail-val">'+esc(t.notes||"-")+'</div></div><div class="detail-actions"><button class="btn-secondary" onclick="openEdit(\''+t.id+'\');closeDetail()">Edit</button><button class="btn-save" onclick="printItinerary(\''+t.id+'\')">Print</button></div></div>';
+  document.getElementById("detail-content").innerHTML=html;
+  document.getElementById("detail-overlay").classList.add("active")
+}
+function closeDetail(){document.getElementById("detail-overlay").classList.remove("active")}
+function onDetailOverlayClick(e){if(e.target===document.getElementById("detail-overlay"))closeDetail()}
 
 function setFilter(filter){currentFilter=filter;document.querySelectorAll(".filter-pill").forEach(btn=>btn.classList.toggle("active",btn.dataset.filter===filter));render()}
 function onSearch(val){searchVal=val;document.getElementById("search-clear").style.display=searchVal?"block":"none";render()}
@@ -292,145 +355,56 @@ function setColor(i){currentColor=i;document.querySelectorAll(".color-dot").forE
 function setType(val){currentType=val;document.querySelectorAll("#type-row .toggle-btn").forEach(b=>b.classList.toggle("active",b.dataset.type===val))}
 function toggleConnectionSection(){document.getElementById("connection-section").classList.toggle("show",document.getElementById("f-has-connection").checked)}
 function togglePassengersSection(){document.getElementById("passenger-section").classList.toggle("show",document.getElementById("f-has-passengers").checked)}
-
 function renderSavedTravelers(){const box=document.getElementById("savedTravelersList");if(!box)return;if(savedTravelers.length===0){box.innerHTML='<span style="font-size:12px;color:#9b8fc0;">No saved travelers yet.</span>';return}box.innerHTML=savedTravelers.map(name=>'<button type="button" class="traveler-chip" onclick="addTravelerToTrip(\''+escAttr(name)+'\')">+ '+esc(name)+'</button>').join("")}
 function saveTravelerName(){const input=document.getElementById("savedTravelerInput"),name=input.value.trim();if(!name)return;if(!savedTravelers.includes(name)){savedTravelers.push(name);saveTravelers()}input.value="";renderSavedTravelers()}
-function addTravelerToTrip(name){const primary=document.getElementById("f-primary"),passengerCheck=document.getElementById("f-has-passengers"),passengers=document.getElementById("f-passengers");if(!primary.value.trim()){primary.value=name;return}passengerCheck.checked=true;togglePassengersSection();const existing=passengers.value.trim();passengers.value=existing?existing+"\n"+name:name}
+function addTravelerToTrip(name){const primary=document.getElementById("f-primary"),passengerCheck=document.getElementById("f-has-passengers"),passengers=document.getElementById("f-passengers");if(!primary.value.trim()){primary.value=name;return}passengerCheck.checked=true;togglePassengersSection();const existing=passengers.value.trim();passengers.value=existing?existing+"\n"+name+" - ":name+" - "}
 
 function openManualAdd(){closeAddMenu();openAdd()}
 function openImport(){closeAddMenu();document.getElementById("import-text").value="";document.getElementById("import-overlay").classList.add("active")}
 function closeImport(){document.getElementById("import-overlay").classList.remove("active")}
 function onImportOverlayClick(e){if(e.target===document.getElementById("import-overlay"))closeImport()}
-
-function autoFillFromImport(){
-  const raw=document.getElementById("import-text").value.trim();
-  if(!raw){alert("Please paste receipt text first.");return}
-  const data=parseReceiptText(raw);
-  closeImport();
-  openAdd();
-  applyParsedDataToForm(data);
-  alert("Auto-fill completed. Please review and fix anything before saving.");
-}
+function autoFillFromImport(){const raw=document.getElementById("import-text").value.trim();if(!raw){alert("Please paste receipt text first.");return}const data=parseReceiptText(raw);closeImport();openAdd();applyParsedDataToForm(data);alert("Auto-fill completed. Please review and fix anything before saving.")}
 
 function parseReceiptText(raw){
-  const text=raw.replace(/\r/g,"\n");
-  const lines=text.split("\n").map(l=>l.trim()).filter(Boolean);
+  const text=raw.replace(/\r/g,"\n"),lines=text.split("\n").map(l=>l.trim()).filter(Boolean);
   let d={title:"Travel Itinerary",type:"Flight",company:"",flight:"",from:"",to:"",date:"",confirm:"",depart:"",arrive:"",hasConnection:false,company2:"",flight2:"",from2:"",to2:"",date2:"",confirm2:"",depart2:"",arrive2:"",ticket:"",webcode:"",aircode:"",primary:"",hasPassengers:false,passengers:"",hotel:"",checkin:"",checkout:"",hotelconfirm:"",notes:""};
-
-  const outbound=raw.match(/Outbound to\s+([A-Za-z ]+)/i);
-  if(outbound)d.title=outbound[1].trim()+" Trip";
-
-  const dateMatch=raw.match(/(January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2},\s+\d{4}/i);
-  if(dateMatch)d.date=toIsoDate(dateMatch[0]);
-
-  const codeMatches=raw.match(/\b[A-Z0-9]{5,8}\b/g)||[];
-  const cleanCodes=codeMatches.filter(c=>!/^(JFK|LHR|KEF|DXB|KHI|EWR|LGA|USA|USD)$/.test(c));
-  if(cleanCodes[0])d.confirm=cleanCodes[0];
-  if(cleanCodes[1])d.webcode=cleanCodes[1];
-  if(cleanCodes[0])d.aircode=cleanCodes[0];
-
-  const ticketMatches=raw.match(/Ticket\s*#?:?\s*([0-9]{8,20})/gi)||[];
-  const tickets=ticketMatches.map(x=>(x.match(/[0-9]{8,20}/)||[""])[0]).filter(Boolean);
-  if(tickets[0])d.ticket=tickets.join(", ");
-
-  const cardLast=raw.match(/(?:\*|••••)\s?([0-9]{4})/);
-  if(cardLast)d.notes+="Payment card last 4: "+cardLast[1];
-
-  let travelers=[];
+  const outbound=raw.match(/Outbound to\s+([A-Za-z ]+)/i);if(outbound)d.title=outbound[1].trim()+" Trip";
+  const dateMatch=raw.match(/(January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2},\s+\d{4}/i);if(dateMatch)d.date=toIsoDate(dateMatch[0]);
+  const codeMatches=raw.match(/\b[A-Z0-9]{5,8}\b/g)||[],cleanCodes=codeMatches.filter(c=>!/^(JFK|LHR|KEF|DXB|KHI|EWR|LGA|USA|USD)$/.test(c));if(cleanCodes[0])d.confirm=cleanCodes[0];if(cleanCodes[1])d.webcode=cleanCodes[1];if(cleanCodes[0])d.aircode=cleanCodes[0];
+  const cardLast=raw.match(/(?:\*|••••)\s?([0-9]{4})/);if(cardLast)d.notes+="Payment card last 4: "+cardLast[1];
+  let travelerTickets=[],travelers=[];
   for(let i=0;i<lines.length;i++){
     if(/Base Fare/i.test(lines[i+1]||"") && !/Fare Details/i.test(lines[i])){
-      travelers.push(lines[i]);
+      let name=lines[i];
+      let ticket="";
+      for(let j=i;j<Math.min(lines.length,i+8);j++){let tm=lines[j].match(/Ticket\s*#?:?\s*([0-9]{8,20})/i);if(tm)ticket=tm[1]}
+      travelerTickets.push({name:titleCase(name),ticket:ticket});
+      travelers.push(name);
     }
   }
-  travelers=travelers.filter(n=>n.length>2 && !/Total|Taxes|Fees|Base Fare/i.test(n));
-  if(travelers[0])d.primary=titleCase(travelers[0]);
-  if(travelers.length>1){d.hasPassengers=true;d.passengers=travelers.slice(1).map(titleCase).join("\n")}
-
+  if(travelerTickets[0]){d.primary=travelerTickets[0].name;d.ticket=travelerTickets[0].ticket}
+  if(travelerTickets.length>1){d.hasPassengers=true;d.passengers=travelerTickets.slice(1).map(p=>p.name+(p.ticket?" - "+p.ticket:"")).join("\n")}
   const segments=[];
   for(let i=0;i<lines.length;i++){
     const m=lines[i].match(/^(.+?)\s*-\s*([A-Z0-9]{2,3}\d{2,4})$/);
-    if(m){
-      let seg={company:m[1].trim(),flight:m[2].trim(),from:"",to:"",depart:"",arrive:""};
-      let codes=[],times=[];
-      for(let j=i+1;j<Math.min(lines.length,i+12);j++){
-        if(/^[A-Z]{3}$/.test(lines[j]))codes.push(lines[j]);
-        const tm=lines[j].match(/(\d{1,2}:\d{2})\s*(a\.m\.|p\.m\.|am|pm)/i);
-        if(tm)times.push(tm[1]+" "+tm[2]);
-      }
-      seg.from=codes[0]||"";
-      seg.to=codes[1]||"";
-      seg.depart=to24(times[0]||"");
-      seg.arrive=to24(times[1]||"");
-      segments.push(seg);
-    }
+    if(m){let seg={company:m[1].trim(),flight:m[2].trim(),from:"",to:"",depart:"",arrive:""},codes=[],times=[];
+      for(let j=i+1;j<Math.min(lines.length,i+12);j++){if(/^[A-Z]{3}$/.test(lines[j]))codes.push(lines[j]);const tm=lines[j].match(/(\d{1,2}:\d{2})\s*(a\.m\.|p\.m\.|am|pm)/i);if(tm)times.push(tm[1]+" "+tm[2])}
+      seg.from=codes[0]||"";seg.to=codes[1]||"";seg.depart=to24(times[0]||"");seg.arrive=to24(times[1]||"");segments.push(seg)}
   }
-
-  if(segments[0]){
-    d.company=segments[0].company;d.flight=segments[0].flight;d.from=segments[0].from;d.to=segments[0].to;d.depart=segments[0].depart;d.arrive=segments[0].arrive;
-  }
-  if(segments[1]){
-    d.hasConnection=true;d.company2=segments[1].company;d.flight2=segments[1].flight;d.from2=segments[1].from;d.to2=segments[1].to;d.depart2=segments[1].depart;d.arrive2=segments[1].arrive;d.date2=d.date;
-    if(/arrives the next day/i.test(raw))d.date2=addDays(d.date,1);
-  }
-
-  if(!d.title && d.to)d.title=d.to+" Trip";
-  return d;
+  if(segments[0]){d.company=segments[0].company;d.flight=segments[0].flight;d.from=segments[0].from;d.to=segments[0].to;d.depart=segments[0].depart;d.arrive=segments[0].arrive}
+  if(segments[1]){d.hasConnection=true;d.company2=segments[1].company;d.flight2=segments[1].flight;d.from2=segments[1].from;d.to2=segments[1].to;d.depart2=segments[1].depart;d.arrive2=segments[1].arrive;d.date2=d.date;if(/arrives the next day/i.test(raw))d.date2=addDays(d.date,1)}
+  if(!d.title && getFinalTo(d))d.title=getFinalTo(d)+" Trip";
+  return d
 }
 
 function applyParsedDataToForm(d){
-  document.getElementById("f-title").value=d.title||"";
-  setType(d.type||"Flight");
-  document.getElementById("f-company").value=d.company||"";
-  document.getElementById("f-flight").value=d.flight||"";
-  document.getElementById("f-from").value=d.from||"";
-  document.getElementById("f-to").value=d.to||"";
-  document.getElementById("f-date").value=d.date||"";
-  document.getElementById("f-confirm").value=d.confirm||"";
-  document.getElementById("f-depart").value=d.depart||"";
-  document.getElementById("f-arrive").value=d.arrive||"";
-  document.getElementById("f-has-connection").checked=!!d.hasConnection;
-  document.getElementById("f-company2").value=d.company2||"";
-  document.getElementById("f-flight2").value=d.flight2||"";
-  document.getElementById("f-from2").value=d.from2||"";
-  document.getElementById("f-to2").value=d.to2||"";
-  document.getElementById("f-date2").value=d.date2||"";
-  document.getElementById("f-confirm2").value=d.confirm2||"";
-  document.getElementById("f-depart2").value=d.depart2||"";
-  document.getElementById("f-arrive2").value=d.arrive2||"";
-  document.getElementById("f-ticket").value=d.ticket||"";
-  document.getElementById("f-webcode").value=d.webcode||"";
-  document.getElementById("f-aircode").value=d.aircode||"";
-  document.getElementById("f-primary").value=d.primary||"";
-  document.getElementById("f-has-passengers").checked=!!d.hasPassengers;
-  document.getElementById("f-passengers").value=d.passengers||"";
-  document.getElementById("f-hotel").value=d.hotel||"";
-  document.getElementById("f-checkin").value=d.checkin||"";
-  document.getElementById("f-checkout").value=d.checkout||"";
-  document.getElementById("f-hotelconfirm").value=d.hotelconfirm||"";
-  document.getElementById("f-notes").value=d.notes||"";
-  toggleConnectionSection();
-  togglePassengersSection();
+  document.getElementById("f-title").value=d.title||"";setType(d.type||"Flight");
+  ["company","flight","from","to","date","confirm","depart","arrive","company2","flight2","from2","to2","date2","confirm2","depart2","arrive2","ticket","webcode","aircode","primary","passengers","hotel","checkin","checkout","hotelconfirm","notes"].forEach(k=>{const el=document.getElementById("f-"+k);if(el)el.value=d[k]||""});
+  document.getElementById("f-has-connection").checked=!!d.hasConnection;document.getElementById("f-has-passengers").checked=!!d.hasPassengers;toggleConnectionSection();togglePassengersSection()
 }
-
-function toIsoDate(s){
-  const d=new Date(s);
-  if(isNaN(d.getTime()))return"";
-  return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
-}
-function addDays(iso,days){
-  if(!iso)return"";
-  const d=new Date(iso+"T00:00:00");d.setDate(d.getDate()+days);
-  return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
-}
-function to24(s){
-  if(!s)return"";
-  const m=s.match(/(\d{1,2}):(\d{2})\s*(a\.m\.|p\.m\.|am|pm)/i);
-  if(!m)return"";
-  let h=parseInt(m[1],10),min=m[2],ap=m[3].toLowerCase();
-  if(ap.indexOf("p")===0 && h<12)h+=12;
-  if(ap.indexOf("a")===0 && h===12)h=0;
-  return String(h).padStart(2,"0")+":"+min;
-}
+function toIsoDate(s){const d=new Date(s);if(isNaN(d.getTime()))return"";return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
+function addDays(iso,days){if(!iso)return"";const d=new Date(iso+"T00:00:00");d.setDate(d.getDate()+days);return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
+function to24(s){if(!s)return"";const m=s.match(/(\d{1,2}):(\d{2})\s*(a\.m\.|p\.m\.|am|pm)/i);if(!m)return"";let h=parseInt(m[1],10),min=m[2],ap=m[3].toLowerCase();if(ap.indexOf("p")===0&&h<12)h+=12;if(ap.indexOf("a")===0&&h===12)h=0;return String(h).padStart(2,"0")+":"+min}
 function titleCase(s){return String(s||"").toLowerCase().replace(/\b\w/g,c=>c.toUpperCase())}
 
 function openAdd(){
@@ -439,7 +413,6 @@ function openAdd(){
   ["f-title","f-company","f-flight","f-from","f-to","f-date","f-confirm","f-depart","f-arrive","f-company2","f-flight2","f-from2","f-to2","f-date2","f-confirm2","f-depart2","f-arrive2","f-ticket","f-webcode","f-aircode","f-primary","f-passengers","f-hotel","f-checkin","f-checkout","f-hotelconfirm","f-notes","savedTravelerInput"].forEach(id=>{const el=document.getElementById(id);if(el)el.value=""});
   document.getElementById("f-has-connection").checked=false;document.getElementById("f-has-passengers").checked=false;toggleConnectionSection();togglePassengersSection();setType("Flight");buildColorDots();setColor(currentColor);renderSavedTravelers();document.getElementById("form-overlay").classList.add("active")
 }
-
 function openEdit(id){
   const t=trips.find(x=>x.id===id);if(!t)return;editingId=id;currentType=t.type||"Flight";currentColor=t.colorIndex||0;
   document.getElementById("form-title").textContent="Edit Itinerary";document.getElementById("btn-save").textContent="Save Changes";
@@ -447,27 +420,15 @@ function openEdit(id){
   document.getElementById("f-has-connection").checked=!!t.hasConnection;document.getElementById("f-has-passengers").checked=!!t.hasPassengers;document.getElementById("savedTravelerInput").value="";
   toggleConnectionSection();togglePassengersSection();setType(currentType);buildColorDots();setColor(currentColor);renderSavedTravelers();document.getElementById("form-overlay").classList.add("active")
 }
-
 function handleSave(){
   const data={title:document.getElementById("f-title").value.trim(),type:currentType,company:document.getElementById("f-company").value.trim(),flight:document.getElementById("f-flight").value.trim(),from:document.getElementById("f-from").value.trim(),to:document.getElementById("f-to").value.trim(),date:document.getElementById("f-date").value,confirm:document.getElementById("f-confirm").value.trim(),depart:document.getElementById("f-depart").value,arrive:document.getElementById("f-arrive").value,hasConnection:document.getElementById("f-has-connection").checked,company2:document.getElementById("f-company2").value.trim(),flight2:document.getElementById("f-flight2").value.trim(),from2:document.getElementById("f-from2").value.trim(),to2:document.getElementById("f-to2").value.trim(),date2:document.getElementById("f-date2").value,confirm2:document.getElementById("f-confirm2").value.trim(),depart2:document.getElementById("f-depart2").value,arrive2:document.getElementById("f-arrive2").value,ticket:document.getElementById("f-ticket").value.trim(),webcode:document.getElementById("f-webcode").value.trim(),aircode:document.getElementById("f-aircode").value.trim(),primary:document.getElementById("f-primary").value.trim(),hasPassengers:document.getElementById("f-has-passengers").checked,passengers:document.getElementById("f-passengers").value.trim(),hotel:document.getElementById("f-hotel").value.trim(),checkin:document.getElementById("f-checkin").value,checkout:document.getElementById("f-checkout").value,hotelconfirm:document.getElementById("f-hotelconfirm").value.trim(),notes:document.getElementById("f-notes").value.trim(),colorIndex:currentColor};
-  if(!data.title||!data.from||!data.to||!data.date){alert("Please fill Trip Name, From, To, and Date.");return}
-  if(data.hasConnection&&(!data.from2||!data.to2||!data.date2)){alert("For connecting flight, please fill Second From, Second To, and Second Date.");return}
+  if(!data.title||!data.from||!data.to||!data.date){alert("Please fill Trip Name, From, To / First Stop, and Date.");return}
+  if(data.hasConnection&&(!data.from2||!data.to2||!data.date2)){alert("For connecting flight, please fill Second From, Final Destination, and Second Date.");return}
   if(editingId){trips=trips.map(t=>t.id===editingId?Object.assign({},t,data):t)}else{trips.push(Object.assign({id:String(Date.now()),done:false},data))}
   save();closeForm();render()
 }
-
 function markDone(id){trips=trips.map(t=>{if(t.id===id)t.done=true;return t});save();render()}
-function printItinerary(id){
-  const t=trips.find(x=>x.id===id);if(!t)return;const win=window.open("","_blank"),travelers=getTravelersText(t)||"-";
-  win.document.write('<html><head><title>Itinerary</title><style>body{font-family:Arial,sans-serif;padding:28px;color:#111}h1{margin-bottom:4px}.sub{color:#555;margin-bottom:20px}.box{border:1px solid #ddd;border-radius:14px;padding:16px;margin:12px 0}.label{font-size:12px;color:#666;text-transform:uppercase}.val{font-size:16px;font-weight:700;margin-bottom:8px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media print{button{display:none}}</style></head><body>');
-  win.document.write('<button onclick="window.print()" style="padding:10px 16px;border:none;border-radius:10px;background:#5b21b6;color:white;font-weight:bold;">Print</button><h1>'+esc(t.title)+'</h1><div class="sub">Travel Itinerary</div>');
-  win.document.write('<div class="box"><h2>Travelers</h2><div>'+esc(travelers)+'</div></div>');
-  win.document.write('<div class="box"><h2>Flight 1</h2><div class="grid"><div><div class="label">Airline</div><div class="val">'+esc(t.company||"-")+'</div></div><div><div class="label">Flight Number</div><div class="val">'+esc(t.flight||"-")+'</div></div><div><div class="label">From</div><div class="val">'+esc(t.from||"-")+'</div></div><div><div class="label">To</div><div class="val">'+esc(t.to||"-")+'</div></div><div><div class="label">Date</div><div class="val">'+formatDate(t.date)+'</div></div><div><div class="label">Time</div><div class="val">'+esc(t.depart||"-")+' → '+esc(t.arrive||"-")+'</div></div></div></div>');
-  if(t.hasConnection){win.document.write('<div class="box"><h2>Flight 2 / Connecting</h2><div class="grid"><div><div class="label">Airline 2</div><div class="val">'+esc(t.company2||"-")+'</div></div><div><div class="label">Flight Number 2</div><div class="val">'+esc(t.flight2||"-")+'</div></div><div><div class="label">From 2</div><div class="val">'+esc(t.from2||"-")+'</div></div><div><div class="label">To 2</div><div class="val">'+esc(t.to2||"-")+'</div></div><div><div class="label">Date 2</div><div class="val">'+formatDate(t.date2)+'</div></div><div><div class="label">Time 2</div><div class="val">'+esc(t.depart2||"-")+' → '+esc(t.arrive2||"-")+'</div></div></div></div>')}
-  win.document.write('<div class="box"><h2>Ticket / Codes</h2><div class="grid"><div><div class="label">Ticket Number</div><div class="val">'+esc(t.ticket||"-")+'</div></div><div><div class="label">Website Booking Code</div><div class="val">'+esc(t.webcode||"-")+'</div></div><div><div class="label">Airline Code</div><div class="val">'+esc(t.aircode||"-")+'</div></div><div><div class="label">Confirmation</div><div class="val">'+esc(t.confirm||"-")+'</div></div></div></div>');
-  win.document.write('<div class="box"><h2>Hotel</h2><div class="grid"><div><div class="label">Hotel</div><div class="val">'+esc(t.hotel||"-")+'</div></div><div><div class="label">Hotel Confirmation</div><div class="val">'+esc(t.hotelconfirm||"-")+'</div></div><div><div class="label">Check-In</div><div class="val">'+formatDate(t.checkin)+'</div></div><div><div class="label">Check-Out</div><div class="val">'+formatDate(t.checkout)+'</div></div></div></div>');
-  win.document.write('<div class="box"><h2>Notes</h2><div>'+esc(t.notes||"-")+'</div></div></body></html>');win.document.close()
-}
+function printItinerary(id){const t=trips.find(x=>x.id===id);if(!t)return;const win=window.open("","_blank"),travelers=getTravelersText(t)||"-";win.document.write('<html><head><title>Itinerary</title><style>body{font-family:Arial,sans-serif;padding:28px;color:#111}h1{margin-bottom:4px}.sub{color:#555;margin-bottom:20px}.box{border:1px solid #ddd;border-radius:14px;padding:16px;margin:12px 0}.label{font-size:12px;color:#666;text-transform:uppercase}.val{font-size:16px;font-weight:700;margin-bottom:8px;white-space:pre-wrap}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media print{button{display:none}}</style></head><body>');win.document.write('<button onclick="window.print()" style="padding:10px 16px;border:none;border-radius:10px;background:#5b21b6;color:white;font-weight:bold;">Print</button><h1>'+esc(t.title)+'</h1><div class="sub">'+esc(t.from)+' → '+esc(getFinalTo(t))+'</div>');win.document.write('<div class="box"><h2>Travelers & Tickets</h2><div class="val">'+esc(travelers)+'</div></div>');win.document.write('<div class="box"><h2>Flight 1</h2><div class="grid"><div><div class="label">Airline</div><div class="val">'+esc(t.company||"-")+'</div></div><div><div class="label">Flight Number</div><div class="val">'+esc(t.flight||"-")+'</div></div><div><div class="label">From</div><div class="val">'+esc(t.from||"-")+'</div></div><div><div class="label">To / First Stop</div><div class="val">'+esc(t.to||"-")+'</div></div><div><div class="label">Date</div><div class="val">'+formatDate(t.date)+'</div></div><div><div class="label">Time</div><div class="val">'+esc(t.depart||"-")+' → '+esc(t.arrive||"-")+'</div></div></div></div>');if(t.hasConnection){win.document.write('<div class="box"><h2>Flight 2 / Connecting</h2><div class="grid"><div><div class="label">Airline 2</div><div class="val">'+esc(t.company2||"-")+'</div></div><div><div class="label">Flight Number 2</div><div class="val">'+esc(t.flight2||"-")+'</div></div><div><div class="label">From 2</div><div class="val">'+esc(t.from2||"-")+'</div></div><div><div class="label">Final Destination</div><div class="val">'+esc(t.to2||"-")+'</div></div><div><div class="label">Date 2</div><div class="val">'+formatDate(t.date2)+'</div></div><div><div class="label">Time 2</div><div class="val">'+esc(t.depart2||"-")+' → '+esc(t.arrive2||"-")+'</div></div></div></div>')}win.document.write('<div class="box"><h2>Ticket / Codes</h2><div class="grid"><div><div class="label">Primary Ticket</div><div class="val">'+esc(t.ticket||"-")+'</div></div><div><div class="label">Website Code</div><div class="val">'+esc(t.webcode||"-")+'</div></div><div><div class="label">Airline Code</div><div class="val">'+esc(t.aircode||"-")+'</div></div><div><div class="label">Confirmation</div><div class="val">'+esc(t.confirm||"-")+'</div></div></div></div>');win.document.write('<div class="box"><h2>Hotel</h2><div class="grid"><div><div class="label">Hotel</div><div class="val">'+esc(t.hotel||"-")+'</div></div><div><div class="label">Hotel Confirmation</div><div class="val">'+esc(t.hotelconfirm||"-")+'</div></div><div><div class="label">Check-In</div><div class="val">'+formatDate(t.checkin)+'</div></div><div><div class="label">Check-Out</div><div class="val">'+formatDate(t.checkout)+'</div></div></div></div>');win.document.write('<div class="box"><h2>Notes</h2><div class="val">'+esc(t.notes||"-")+'</div></div></body></html>');win.document.close()}
 function openDelete(id){deleteId=id;document.getElementById("del-overlay").classList.add("active")}
 function closeDelete(){deleteId=null;document.getElementById("del-overlay").classList.remove("active")}
 function confirmDelete(){trips=trips.filter(t=>t.id!==deleteId);save();closeDelete();render()}
@@ -475,7 +436,6 @@ function closeForm(){document.getElementById("form-overlay").classList.remove("a
 function onOverlayClick(e){if(e.target===document.getElementById("form-overlay"))closeForm()}
 function toggleMenu(id,e){e.stopPropagation();const menu=document.getElementById("menu-"+id),open=menu.classList.contains("open");closeAllMenus();if(!open)menu.classList.add("open")}
 function closeAllMenus(){document.querySelectorAll(".trip-dropdown").forEach(m=>m.classList.remove("open"))}
-
 load();render();
 </script>
 
