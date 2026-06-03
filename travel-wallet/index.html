@@ -1,1 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Travel Wallet – Smart Tools</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f0f0f7;
+  --accent:#7c3aed;
+  --accent-deep:#5b21b6;
+  --accent-light:#ede9fe;
+  --text:#4a3f72;
+  --text-dark:#2d2550;
+  --text-muted:#9b8fc0;
+  --font:'DM Sans',sans-serif;
+}
+body{
+  font-family:var(--font);
+  background:var(--bg);
+  min-height:100vh;
+  color:var(--text);
+}
+.back-wrap{padding:20px 20px 0}
+.back-btn{
+  width:42px;height:42px;border:none;border-radius:14px;
+  background:#fff;color:var(--text-dark);font-size:22px;font-weight:700;
+  box-shadow:0 4px 14px rgba(124,58,237,.12);
+  cursor:pointer;
+}
+.header{
+  padding:18px 20px 0;
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:12px;
+}
+.header-title{
+  font-size:26px;
+  font-weight:700;
+  color:var(--text-dark);
+}
+.header-sub{
+  font-size:13px;
+  color:var(--text-muted);
+  margin-top:4px;
+}
+.btn-add{
+  background:linear-gradient(135deg,var(--accent),var(--accent-deep));
+  border:none;border-radius:14px;color:#fff;font-size:13px;font-weight:600;
+  padding:10px 16px;cursor:pointer;font-family:var(--font);
+  box-shadow:0 4px 16px rgba(124,58,237,.35);
+  white-space:nowrap;
+}
+.search-wrap{padding:16px 20px 0}
+.search-box{
+  background:#fff;border-radius:16px;border:1.5px solid #e2ddf5;
+  display:flex;align-items:center;padding:12px 16px;gap:10px;
+  box-shadow:0 2px 8px rgba(124,58,237,.06);
+}
+.search-box input{
+  background:none;border:none;outline:none;color:var(--text-dark);
+  font-size:15px;font-family:var(--font);flex:1;min-width:0;
+}
+.search-clear{
+  color:var(--text-muted);
+  font-size:20px;
+  cursor:pointer;
+  display:none;
+}
+.filter-row{
+  display:flex;
+  gap:8px;
+  padding:10px 20px 0;
+  overflow-x:auto;
+}
+.filter-pill{
+  padding:7px 14px;
+  border-radius:20px;
+  font-size:13px;
+  font-weight:600;
+  border:1.5px solid #e0daf5;
+  background:#fff;
+  color:var(--text-muted);
+  cursor:pointer;
+  font-family:var(--font);
+  white-space:nowrap;
+}
+.filter-pill.active{
+  background:var(--accent-light);
+  border-color:var(--accent);
+  color:var(--accent);
+}
+.trip-list{padding:16px 20px 70px}
+.empty-state{
+  text-align:center;
+  color:var(--text-muted);
+  margin-top:70px;
+}
+.empty-state .icon{
+  font-size:50px;
+  margin-bottom:12px;
+}
+.empty-state .title{
+  font-size:15px;
+  font-weight:600;
+}
+.empty-state .sub{
+  font-size:13px;
+  color:#c0b8dc;
+  margin-top:6px;
+}
+.trip-wrapper{
+  position:relative;
+  margin-bottom:18px;
+}
+.trip-card{
+  border-radius:22px;
+  padding:18px;
+  position:relative;
+  overflow:hidden;
+  min-height:165px;
+  box-shadow:0 8px 28px rgba(0,0,0,.24);
+  color:#fff;
+}
+.trip-card .deco1{
+  position:absolute;top:-45px;right:-35px;width:135px;height:135px;
+  border-radius:50%;background:rgba(255,255,255,.08);
+}
+.trip-card .deco2{
+  position:absolute;bottom:-35px;left:-20px;width:105px;height:105px;
+  border-radius:50%;background:rgba(255,255,255,.05);
+}
+.trip-top{
+  position:relative;
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  padding-right:35px;
+}
+.trip-label{
+  font-size:9px;
+  color:rgba(255,255,255,.58);
+  text-transform:uppercase;
+  letter-spacing:1.2px;
+  margin-bottom:3px;
+}
+.trip-title{
+  font-size:18px;
+  font-weight:800;
+  color:#fff;
+  margin-bottom:6px;
+}
+.trip-type{
+  display:inline-block;
+  background:rgba(255,255,255,.20);
+  border-radius:8px;
+  padding:4px 10px;
+  font-size:12px;
+  font-weight:700;
+}
+.route-row{
+  position:relative;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin:22px 0 16px;
+}
+.city-box{
+  flex:1;
+  min-width:0;
+}
+.city-code{
+  font-size:23px;
+  font-weight:800;
+  color:#fff;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.city-label{
+  font-size:11px;
+  color:rgba(255,255,255,.65);
+  margin-top:2px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.plane{
+  width:42px;height:42px;border-radius:50%;
+  background:rgba(255,255,255,.18);
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;
+  flex-shrink:0;
+}
+.info-grid{
+  position:relative;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+.info-box{
+  background:rgba(255,255,255,.13);
+  border-radius:13px;
+  padding:9px 10px;
+}
+.info-label{
+  font-size:9px;
+  color:rgba(255,255,255,.58);
+  text-transform:uppercase;
+  letter-spacing:.8px;
+}
+.info-val{
+  font-size:13px;
+  font-weight:700;
+  margin-top:3px;
+  color:#fff;
+}
+.notes-line{
+  position:relative;
+  margin-top:10px;
+  font-size:12px;
+  color:rgba(255,255,255,.72);
+  line-height:1.35;
+}
+.trip-menu-btn{
+  position:absolute;top:10px;right:10px;
+  width:28px;height:28px;border-radius:50%;
+  background:rgba(255,255,255,.22);
+  border:none;color:#fff;font-size:17px;
+  z-index:10;cursor:pointer;
+}
+.trip-dropdown{
+  position:absolute;top:42px;right:10px;
+  background:#fff;border-radius:14px;
+  box-shadow:0 8px 28px rgba(80,60,160,.18),0 2px 8px rgba(0,0,0,.08);
+  border:1.5px solid #e8e2f8;
+  overflow:hidden;z-index:20;
+  opacity:0;pointer-events:none;
+  transform:scale(.92) translateY(-6px);
+  transform-origin:top right;
+  transition:opacity .16s,transform .16s;
+  min-width:145px;
+}
+.trip-dropdown.open{
+  opacity:1;pointer-events:all;transform:scale(1) translateY(0);
+}
+.trip-dropdown button{
+  display:flex;align-items:center;gap:10px;width:100%;padding:12px 16px;
+  background:none;border:none;font-family:var(--font);font-size:14px;
+  font-weight:600;cursor:pointer;text-align:left;
+}
+.trip-dropdown .dd-edit{color:#5a4a95}
+.trip-dropdown .dd-delete{color:#e53e3e;border-top:1px solid #f0eeff}
+.overlay{
+  position:fixed;inset:0;background:rgba(60,40,120,.35);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  display:flex;align-items:flex-end;z-index:200;
+  opacity:0;pointer-events:none;transition:opacity .25s;
+}
+.overlay.active{opacity:1;pointer-events:all}
+.sheet{
+  width:100%;background:#fff;border-radius:26px 26px 0 0;
+  padding:20px 22px 48px;border-top:1.5px solid #e8e2f8;
+  transform:translateY(100%);
+  transition:transform .3s cubic-bezier(.32,.72,0,1);
+  max-height:92vh;overflow-y:auto;
+}
+.overlay.active .sheet{transform:translateY(0)}
+.drag-handle{
+  width:38px;height:4px;border-radius:2px;background:#d4cef0;
+  margin:0 auto 20px;
+}
+.sheet-title{
+  font-size:18px;font-weight:700;margin-bottom:20px;color:var(--text-dark);
+}
+.field-label{
+  font-size:11px;color:var(--text-muted);text-transform:uppercase;
+  letter-spacing:1px;margin-bottom:7px;display:block;
+}
+.glass-input{
+  width:100%;background:#faf9ff;border:1.5px solid #e0daf5;
+  border-radius:13px;padding:12px 14px;color:var(--text-dark);
+  font-size:15px;font-family:var(--font);outline:none;margin-bottom:14px;
+  resize:none;
+}
+.glass-input:focus{border-color:var(--accent);background:#fff}
+.row-2{display:flex;gap:12px}
+.row-2>div{flex:1}
+.toggle-row{display:flex;gap:8px;margin-bottom:14px}
+.toggle-btn{
+  flex:1;padding:9px 4px;border-radius:11px;border:1.5px solid #e0daf5;
+  background:#faf9ff;color:var(--text-muted);font-size:12px;font-weight:600;
+  cursor:pointer;font-family:var(--font);
+}
+.toggle-btn.active{
+  border-color:var(--accent);
+  background:var(--accent-light);
+  color:var(--accent);
+}
+.color-row{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:22px}
+.color-dot{
+  width:30px;height:30px;border-radius:50%;cursor:pointer;
+  border:2.5px solid transparent;
+}
+.color-dot.active{
+  border-color:var(--accent);
+  box-shadow:0 0 0 1px rgba(124,58,237,.4);
+}
+.btn-save{
+  width:100%;padding:15px;border-radius:15px;border:none;
+  background:linear-gradient(135deg,var(--accent),var(--accent-deep));
+  color:#fff;font-size:15px;font-weight:700;cursor:pointer;
+  font-family:var(--font);
+  box-shadow:0 4px 16px rgba(124,58,237,.3);
+}
+.del-overlay{
+  position:fixed;inset:0;background:rgba(60,40,120,.35);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  display:flex;align-items:center;justify-content:center;
+  z-index:300;padding:24px;opacity:0;pointer-events:none;transition:opacity .2s;
+}
+.del-overlay.active{opacity:1;pointer-events:all}
+.del-box{
+  background:#fff;border-radius:22px;padding:28px 24px;
+  border:1.5px solid #e8e2f8;max-width:320px;width:100%;text-align:center;
+}
+.del-icon{font-size:36px;margin-bottom:12px}
+.del-title{font-size:16px;font-weight:700;margin-bottom:8px;color:var(--text-dark)}
+.del-sub{font-size:13px;color:var(--text-muted);margin-bottom:24px}
+.del-btns{display:flex;gap:12px}
+.btn-cancel,.btn-del-confirm{
+  flex:1;padding:12px;border-radius:13px;font-size:14px;font-weight:600;
+  cursor:pointer;font-family:var(--font);
+}
+.btn-cancel{
+  border:1.5px solid #e0daf5;background:#faf9ff;color:var(--text;
+}
+.btn-del-confirm{
+  border:none;background:linear-gradient(135deg,#ff4444,#cc0000);color:#fff;
+}
+@media(max-width:520px){
+  .header-title{font-size:24px}
+  .btn-add{padding:10px 13px}
+  .row-2{flex-direction:column;gap:0}
+}
+</style>
+</head>
+
+<body>
+
+<div class="back-wrap">
+  <button class="back-btn" onclick="goBack()">←</button>
+</div>
+
+<div class="header">
+  <div>
+    <div class="header-title">✈️ Travel Wallet</div>
+    <div class="header-sub" id="trip-count">0 trips saved</div>
+  </div>
+  <button class="btn-add" onclick="openAdd()">+ Add Trip</button>
+</div>
+
+<div class="search-wrap">
+  <div class="search-box">
+    🔍
+    <input id="search-input" type="text" placeholder="Search city, airline, confirmation…" oninput="onSearch(this.value)">
+    <span class="search-clear" id="search-clear" onclick="clearSearch()">×</span>
+  </div>
+</div>
+
+<div class="filter-row">
+  <button class="filter-pill active" data-filter="all" onclick="setFilter('all')">All</button>
+  <button class="filter-pill" data-filter="upcoming" onclick="setFilter('upcoming')">Upcoming</button>
+  <button class="filter-pill" data-filter="past" onclick="setFilter('past')">History</button>
+</div>
+
+<div class="trip-list" id="trip-list"></div>
+
+<div class="overlay" id="form-overlay" onclick="onOverlayClick(event)">
+  <div class="sheet">
+    <div class="drag-handle"></div>
+    <div class="sheet-title" id="form-title">Add Trip / Ticket</div>
+
+    <label class="field-label">Trip Name</label>
+    <input class="glass-input" id="f-title" type="text" placeholder="e.g. Pakistan Trip">
+
+    <label class="field-label">Travel Type</label>
+    <div class="toggle-row" id="type-row">
+      <button class="toggle-btn active" data-type="Flight" onclick="setType('Flight')">✈️ Flight</button>
+      <button class="toggle-btn" data-type="Train" onclick="setType('Train')">🚆 Train</button>
+      <button class="toggle-btn" data-type="Bus" onclick="setType('Bus')">🚌 Bus</button>
+    </div>
+
+    <label class="field-label">Airline / Company</label>
+    <input class="glass-input" id="f-company" type="text" placeholder="e.g. Emirates, Delta, Amtrak">
+
+    <div class="row-2">
+      <div>
+        <label class="field-label">From</label>
+        <input class="glass-input" id="f-from" type="text" placeholder="JFK / New York">
+      </div>
+      <div>
+        <label class="field-label">To</label>
+        <input class="glass-input" id="f-to" type="text" placeholder="KHI / Karachi">
+      </div>
+    </div>
+
+    <div class="row-2">
+      <div>
+        <label class="field-label">Date</label>
+        <input class="glass-input" id="f-date" type="date">
+      </div>
+      <div>
+        <label class="field-label">Confirmation #</label>
+        <input class="glass-input" id="f-confirm" type="text" placeholder="ABC123">
+      </div>
+    </div>
+
+    <div class="row-2">
+      <div>
+        <label class="field-label">Departure Time</label>
+        <input class="glass-input" id="f-depart" type="time">
+      </div>
+      <div>
+        <label class="field-label">Arrival Time</label>
+        <input class="glass-input" id="f-arrive" type="time">
+      </div>
+    </div>
+
+    <label class="field-label">Hotel Info Optional</label>
+    <input class="glass-input" id="f-hotel" type="text" placeholder="Hotel name, address, check-in time">
+
+    <label class="field-label">Card Color</label>
+    <div class="color-row" id="color-row"></div>
+
+    <label class="field-label">Notes Optional</label>
+    <textarea class="glass-input" id="f-notes" rows="2" placeholder="Gate, seat, baggage, pickup, special notes…"></textarea>
+
+    <button class="btn-save" id="btn-save" onclick="handleSave()">Add Trip</button>
+  </div>
+</div>
+
+<div class="del-overlay" id="del-overlay">
+  <div class="del-box">
+    <div class="del-icon">🗑️</div>
+    <div class="del-title">Delete this trip?</div>
+    <div class="del-sub">This can't be undone.</div>
+    <div class="del-btns">
+      <button class="btn-cancel" onclick="closeDelete()">Cancel</button>
+      <button class="btn-del-confirm" onclick="confirmDelete()">Delete</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const STORAGE_KEY="smarttools-travel-wallet";
+const GRADIENTS=[
+  ["#1a1a2e","#16213e"],["#0f3460","#533483"],["#1b4332","#2d6a4f"],
+  ["#4a0e6e","#7b2d8b"],["#7b0000","#c9181e"],["#c0392b","#ff6b35"],
+  ["#2c3e50","#4ca1af"],["#373b44","#4286f4"]
+];
+
+let trips=[];
+let editingId=null;
+let deleteId=null;
+let currentType="Flight";
+let currentColor=0;
+let searchVal="";
+let currentFilter="all";
+
+function goBack(){window.location.href="../"}
+
+function load(){
+  try{trips=JSON.parse(localStorage.getItem(STORAGE_KEY))||[]}
+  catch(e){trips=[]}
+}
+function save(){localStorage.setItem(STORAGE_KEY,JSON.stringify(trips))}
+
+function esc(str){
+  return String(str||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+
+function isPastTrip(trip){
+  if(!trip.date)return false;
+  const today=new Date();
+  today.setHours(0,0,0,0);
+  const d=new Date(trip.date+"T00:00:00");
+  return d<today;
+}
+
+function formatDate(dateStr){
+  if(!dateStr)return "-";
+  const d=new Date(dateStr+"T00:00:00");
+  return d.toLocaleDateString([], {month:"short",day:"numeric",year:"numeric"});
+}
+
+function typeIcon(type){
+  if(type==="Train")return "🚆";
+  if(type==="Bus")return "🚌";
+  return "✈️";
+}
+
+function render(){
+  const list=document.getElementById("trip-list");
+  const count=document.getElementById("trip-count");
+  count.textContent=trips.length+" trip"+(trips.length!==1?"s":"")+" saved";
+
+  let filtered=trips.slice();
+
+  if(currentFilter==="upcoming"){
+    filtered=filtered.filter(t=>!isPastTrip(t));
+  }
+  if(currentFilter==="past"){
+    filtered=filtered.filter(t=>isPastTrip(t));
+  }
+
+  if(searchVal){
+    const s=searchVal.toLowerCase();
+    filtered=filtered.filter(t=>{
+      return String(t.title||"").toLowerCase().includes(s)||
+             String(t.company||"").toLowerCase().includes(s)||
+             String(t.from||"").toLowerCase().includes(s)||
+             String(t.to||"").toLowerCase().includes(s)||
+             String(t.confirm||"").toLowerCase().includes(s)||
+             String(t.hotel||"").toLowerCase().includes(s)||
+             String(t.notes||"").toLowerCase().includes(s);
+    });
+  }
+
+  filtered.sort((a,b)=>String(a.date||"").localeCompare(String(b.date||"")));
+
+  if(filtered.length===0){
+    list.innerHTML='<div class="empty-state"><div class="icon">✈️</div><div class="title">No trips found</div><div class="sub">Tap "+ Add Trip" to save tickets and travel history</div></div>';
+    return;
+  }
+
+  list.innerHTML=filtered.map(t=>{
+    const colors=GRADIENTS[t.colorIndex%GRADIENTS.length];
+    const notes=t.notes?'<div class="notes-line">📝 '+esc(t.notes)+'</div>':"";
+    const hotel=t.hotel?'<div class="notes-line">🏨 '+esc(t.hotel)+'</div>':"";
+    return '<div class="trip-wrapper">'+
+      '<div class="trip-card" style="background:linear-gradient(140deg,'+colors[0]+','+colors[1]+')">'+
+      '<div class="deco1"></div><div class="deco2"></div>'+
+      '<div class="trip-top"><div><div class="trip-label">Trip</div><div class="trip-title">'+esc(t.title)+'</div><div class="trip-type">'+typeIcon(t.type)+' '+esc(t.type)+'</div></div></div>'+
+      '<div class="route-row"><div class="city-box"><div class="city-code">'+esc(t.from)+'</div><div class="city-label">From</div></div><div class="plane">'+typeIcon(t.type)+'</div><div class="city-box" style="text-align:right"><div class="city-code">'+esc(t.to)+'</div><div class="city-label">To</div></div></div>'+
+      '<div class="info-grid">'+
+      '<div class="info-box"><div class="info-label">Date</div><div class="info-val">'+formatDate(t.date)+'</div></div>'+
+      '<div class="info-box"><div class="info-label">Company</div><div class="info-val">'+esc(t.company)+'</div></div>'+
+      '<div class="info-box"><div class="info-label">Depart</div><div class="info-val">'+esc(t.depart||"-")+'</div></div>'+
+      '<div class="info-box"><div class="info-label">Arrive</div><div class="info-val">'+esc(t.arrive||"-")+'</div></div>'+
+      '<div class="info-box"><div class="info-label">Confirm</div><div class="info-val">'+esc(t.confirm||"-")+'</div></div>'+
+      '<div class="info-box"><div class="info-label">Status</div><div class="info-val">'+(isPastTrip(t)?"History":"Upcoming")+'</div></div>'+
+      '</div>'+hotel+notes+'</div>'+
+      '<button class="trip-menu-btn" onclick="toggleMenu(\''+t.id+'\',event)">⋮</button>'+
+      '<div class="trip-dropdown" id="menu-'+t.id+'">'+
+      '<button class="dd-edit" onclick="openEdit(\''+t.id+'\');closeAllMenus()">✏️ Edit Trip</button>'+
+      '<button class="dd-delete" onclick="openDelete(\''+t.id+'\');closeAllMenus()">🗑️ Delete Trip</button>'+
+      '</div></div>';
+  }).join("");
+}
+
+function setFilter(filter){
+  currentFilter=filter;
+  document.querySelectorAll(".filter-pill").forEach(btn=>{
+    btn.classList.toggle("active",btn.dataset.filter===filter);
+  });
+  render();
+}
+
+function onSearch(val){
+  searchVal=val;
+  document.getElementById("search-clear").style.display=searchVal?"block":"none";
+  render();
+}
+function clearSearch(){
+  searchVal="";
+  document.getElementById("search-input").value="";
+  document.getElementById("search-clear").style.display="none";
+  render();
+}
+
+function buildColorDots(){
+  document.getElementById("color-row").innerHTML=GRADIENTS.map((g,i)=>{
+    return '<div class="color-dot '+(i===currentColor?'active':'')+'" style="background:linear-gradient(135deg,'+g[0]+','+g[1]+')" onclick="setColor('+i+')"></div>';
+  }).join("");
+}
+function setColor(i){
+  currentColor=i;
+  document.querySelectorAll(".color-dot").forEach((d,idx)=>d.classList.toggle("active",idx===i));
+}
+function setType(val){
+  currentType=val;
+  document.querySelectorAll("#type-row .toggle-btn").forEach(b=>b.classList.toggle("active",b.dataset.type===val));
+}
+
+function openAdd(){
+  editingId=null;
+  currentType="Flight";
+  currentColor=Math.floor(Math.random()*GRADIENTS.length);
+  document.getElementById("form-title").textContent="Add Trip / Ticket";
+  document.getElementById("btn-save").textContent="Add Trip";
+  ["f-title","f-company","f-from","f-to","f-date","f-confirm","f-depart","f-arrive","f-hotel","f-notes"].forEach(id=>document.getElementById(id).value="");
+  setType("Flight");
+  buildColorDots();
+  setColor(currentColor);
+  document.getElementById("form-overlay").classList.add("active");
+}
+
+function openEdit(id){
+  const t=trips.find(x=>x.id===id);
+  if(!t)return;
+  editingId=id;
+  currentType=t.type;
+  currentColor=t.colorIndex;
+  document.getElementById("form-title").textContent="Edit Trip";
+  document.getElementById("btn-save").textContent="Save Changes";
+  document.getElementById("f-title").value=t.title||"";
+  document.getElementById("f-company").value=t.company||"";
+  document.getElementById("f-from").value=t.from||"";
+  document.getElementById("f-to").value=t.to||"";
+  document.getElementById("f-date").value=t.date||"";
+  document.getElementById("f-confirm").value=t.confirm||"";
+  document.getElementById("f-depart").value=t.depart||"";
+  document.getElementById("f-arrive").value=t.arrive||"";
+  document.getElementById("f-hotel").value=t.hotel||"";
+  document.getElementById("f-notes").value=t.notes||"";
+  setType(t.type);
+  buildColorDots();
+  setColor(t.colorIndex);
+  document.getElementById("form-overlay").classList.add("active");
+}
+
+function handleSave(){
+  const data={
+    title:document.getElementById("f-title").value.trim(),
+    type:currentType,
+    company:document.getElementById("f-company").value.trim(),
+    from:document.getElementById("f-from").value.trim(),
+    to:document.getElementById("f-to").value.trim(),
+    date:document.getElementById("f-date").value,
+    confirm:document.getElementById("f-confirm").value.trim(),
+    depart:document.getElementById("f-depart").value,
+    arrive:document.getElementById("f-arrive").value,
+    hotel:document.getElementById("f-hotel").value.trim(),
+    notes:document.getElementById("f-notes").value.trim(),
+    colorIndex:currentColor
+  };
+
+  if(!data.title||!data.from||!data.to||!data.date){
+    alert("Please fill Trip Name, From, To, and Date.");
+    return;
+  }
+
+  if(editingId){
+    trips=trips.map(t=>t.id===editingId?Object.assign({},t,data):t);
+  }else{
+    trips.push(Object.assign({id:String(Date.now())},data));
+  }
+
+  save();
+  closeForm();
+  render();
+}
+
+function openDelete(id){
+  deleteId=id;
+  document.getElementById("del-overlay").classList.add("active");
+}
+function closeDelete(){
+  deleteId=null;
+  document.getElementById("del-overlay").classList.remove("active");
+}
+function confirmDelete(){
+  trips=trips.filter(t=>t.id!==deleteId);
+  save();
+  closeDelete();
+  render();
+}
+function closeForm(){
+  document.getElementById("form-overlay").classList.remove("active");
+}
+function onOverlayClick(e){
+  if(e.target===document.getElementById("form-overlay"))closeForm();
+}
+function toggleMenu(id,e){
+  e.stopPropagation();
+  const menu=document.getElementById("menu-"+id);
+  const open=menu.classList.contains("open");
+  closeAllMenus();
+  if(!open)menu.classList.add("open");
+}
+function closeAllMenus(){
+  document.querySelectorAll(".trip-dropdown").forEach(m=>m.classList.remove("open"));
+}
+document.addEventListener("click",closeAllMenus);
+
+load();
+render();
+</script>
+
+</body>
+</html>
