@@ -11,11 +11,6 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
 
 <style>
-/* =========================
-   TRAVEL WALLET
-   File: travel-wallet/index.html
-========================= */
-
 *{
   box-sizing:border-box;
   margin:0;
@@ -25,11 +20,9 @@
 
 :root{
   --bg:#f3eef8;
-  --bg2:#fbf8ff;
   --ink:#1f2433;
   --muted:#777f93;
   --soft:#a4a9b8;
-  --card:#ffffff;
   --line:rgba(31,36,51,.10);
 
   --purple:#6d4aff;
@@ -270,7 +263,7 @@ button{
 }
 
 /* =========================
-   MAIN CONTENT
+   PAGES
 ========================= */
 
 .page{
@@ -330,7 +323,7 @@ button{
 }
 
 /* =========================
-   BOARDING PASS CARD
+   TRIP CARD
 ========================= */
 
 .trip-card{
@@ -597,7 +590,7 @@ button{
 }
 
 /* =========================
-   TRAVELERS PAGE
+   TRAVELERS
 ========================= */
 
 .traveler-card{
@@ -699,7 +692,7 @@ button{
   position:absolute;
   right:0;
   bottom:62px;
-  width:210px;
+  width:220px;
   background:#fff;
   border-radius:22px;
   border:1px solid var(--line);
@@ -724,6 +717,14 @@ button{
 .fab-item i{
   font-size:20px;
   color:var(--purple);
+}
+
+.fab-item.danger{
+  color:var(--red);
+}
+
+.fab-item.danger i{
+  color:var(--red);
 }
 
 /* =========================
@@ -776,7 +777,7 @@ button{
 }
 
 /* =========================
-   MODALS / SHEETS
+   SHEETS
 ========================= */
 
 .overlay{
@@ -1109,10 +1110,6 @@ textarea.form-input{
   font-weight:900;
 }
 
-/* =========================
-   UTIL
-========================= */
-
 .hidden{
   display:none!important;
 }
@@ -1129,15 +1126,14 @@ textarea.form-input{
 
 <div class="app">
 
-  <!-- =========================
-       HEADER
-  ========================== -->
   <header class="header">
     <div class="top-row">
       <button class="back-btn" onclick="goBackToSmartTools()" aria-label="Back">
         <i class="ti ti-chevron-left"></i>
       </button>
+
       <div class="brand-mini">Smart Tools</div>
+
       <button class="back-btn" onclick="openAddMenu()" aria-label="Add">
         <i class="ti ti-plus"></i>
       </button>
@@ -1149,6 +1145,7 @@ textarea.form-input{
           <div class="logo-icon">
             <i class="ti ti-plane"></i>
           </div>
+
           <div class="logo-text">
             <div class="logo-title">Travel Wallet</div>
             <div class="logo-subtitle">Trips, flights, tickets and travelers</div>
@@ -1160,10 +1157,12 @@ textarea.form-input{
             <div class="stat-num" id="statUpcoming">0</div>
             <div class="stat-label">Upcoming</div>
           </div>
+
           <div class="stat-box">
             <div class="stat-num" id="statHistory">0</div>
             <div class="stat-label">History</div>
           </div>
+
           <div class="stat-box">
             <div class="stat-num" id="statTravelers">0</div>
             <div class="stat-label">Travelers</div>
@@ -1173,9 +1172,6 @@ textarea.form-input{
     </div>
   </header>
 
-  <!-- =========================
-       SEARCH
-  ========================== -->
   <div class="search-wrap">
     <div class="search-box">
       <i class="ti ti-search"></i>
@@ -1183,9 +1179,6 @@ textarea.form-input{
     </div>
   </div>
 
-  <!-- =========================
-       DASHBOARD PAGE
-  ========================== -->
   <main class="page active" id="dashboardPage">
     <div class="section-title-row">
       <div>
@@ -1196,9 +1189,6 @@ textarea.form-input{
     <div class="cards-wrap" id="dashboardCards"></div>
   </main>
 
-  <!-- =========================
-       HISTORY PAGE
-  ========================== -->
   <main class="page" id="historyPage">
     <div class="section-title-row">
       <div>
@@ -1209,38 +1199,41 @@ textarea.form-input{
     <div class="cards-wrap" id="historyCards"></div>
   </main>
 
-  <!-- =========================
-       TRAVELERS PAGE
-  ========================== -->
   <main class="page" id="travelersPage">
     <div class="section-title-row">
       <div>
         <div class="section-title">Saved Travelers</div>
         <div class="section-small">Save names for future trips</div>
       </div>
+
       <button class="icon-btn" onclick="openTravelerForm()">
         <i class="ti ti-plus"></i>
       </button>
     </div>
+
     <div class="cards-wrap" id="travelersList"></div>
   </main>
 
-  <!-- =========================
-       FLOATING ADD BUTTON
-  ========================== -->
   <div class="fab-wrap">
     <div class="fab-menu hidden" id="fabMenu">
       <div class="fab-item" onclick="openManualForm()">
         <i class="ti ti-edit"></i>
         Manual Entry
       </div>
+
       <div class="fab-item" onclick="openImportForm()">
         <i class="ti ti-clipboard-text"></i>
         Import / Paste Receipt
       </div>
+
       <div class="fab-item" onclick="openTravelerForm()">
         <i class="ti ti-user-plus"></i>
         Save Traveler
+      </div>
+
+      <div class="fab-item danger" onclick="deleteAllTripsFromMenu()">
+        <i class="ti ti-trash"></i>
+        Delete All Trips
       </div>
     </div>
 
@@ -1250,9 +1243,6 @@ textarea.form-input{
     </button>
   </div>
 
-  <!-- =========================
-       BOTTOM NAV
-  ========================== -->
   <nav class="bottom-nav">
     <button class="nav-item active" id="navDashboard" onclick="showPage('dashboard')">
       <i class="ti ti-layout-dashboard"></i>
@@ -1272,34 +1262,32 @@ textarea.form-input{
 
 </div>
 
-<!-- =========================
-     DETAIL SHEET
-========================== -->
 <div class="overlay hidden" id="detailOverlay" onclick="closeDetailFromOverlay(event)">
   <div class="sheet" onclick="event.stopPropagation()">
     <div class="sheet-handle"></div>
+
     <div class="sheet-header">
       <div class="sheet-title" id="detailTitle">Trip Details</div>
       <button class="close-btn" onclick="closeDetail()">
         <i class="ti ti-x"></i>
       </button>
     </div>
+
     <div class="sheet-body" id="detailBody"></div>
   </div>
 </div>
 
-<!-- =========================
-     FORM SHEET
-========================== -->
 <div class="overlay hidden" id="formOverlay" onclick="closeFormFromOverlay(event)">
   <div class="sheet" onclick="event.stopPropagation()">
     <div class="sheet-handle"></div>
+
     <div class="sheet-header">
       <div class="sheet-title" id="formTitle">Add Trip</div>
       <button class="close-btn" onclick="closeForm()">
         <i class="ti ti-x"></i>
       </button>
     </div>
+
     <div class="sheet-body" id="formBody"></div>
   </div>
 </div>
@@ -1370,6 +1358,7 @@ function cityName(code){
     JED:"Jeddah",
     MED:"Madinah"
   };
+
   return map[code] || code || "City";
 }
 
@@ -1385,6 +1374,7 @@ function loadTrips(){
       if(Array.isArray(parsed)) return parsed;
     }
   }catch(e){}
+
   return [];
 }
 
@@ -1400,6 +1390,7 @@ function loadTravelers(){
       if(Array.isArray(parsed)) return parsed;
     }
   }catch(e){}
+
   return [];
 }
 
@@ -1462,7 +1453,7 @@ function renderStats(){
 }
 
 /* =========================
-   FILTER / SEARCH
+   SEARCH
 ========================= */
 
 function getSearchText(){
@@ -1503,6 +1494,7 @@ function tripMatchesSearch(t){
 
 function renderDashboard(){
   const wrap = document.getElementById("dashboardCards");
+
   const list = trips
     .filter(t => t.status !== "history")
     .filter(tripMatchesSearch)
@@ -1513,6 +1505,7 @@ function renderDashboard(){
 
 function renderHistory(){
   const wrap = document.getElementById("historyCards");
+
   const list = trips
     .filter(t => t.status === "history")
     .filter(tripMatchesSearch);
@@ -1675,6 +1668,25 @@ function openAddMenu(){
 
 function closeAddMenu(){
   document.getElementById("fabMenu").classList.add("hidden");
+}
+
+/* =========================
+   DELETE ALL TRIPS
+========================= */
+
+function deleteAllTripsFromMenu(){
+  closeAddMenu();
+
+  const ok = confirm("Delete all saved trips? This will remove all trips from this browser.");
+  if(!ok) return;
+
+  trips = [];
+  localStorage.removeItem(TRAVEL_WALLET_TRIPS_KEY);
+  saveTrips();
+
+  renderCurrentPage();
+
+  alert("All saved trips deleted.");
 }
 
 /* =========================
@@ -1855,7 +1867,7 @@ function renderTripForm(d){
 
     <div class="form-group">
       <label class="form-label">Trip Name</label>
-      <input class="form-input" id="fName" value="${escapeHtml(d.name)}" placeholder="London Summer Trip">
+      <input class="form-input" id="fName" value="${escapeHtml(d.name)}" placeholder="Trip name">
     </div>
 
     <div class="form-row">
@@ -1870,7 +1882,7 @@ function renderTripForm(d){
 
       <div class="form-group">
         <label class="form-label">Airline / Company</label>
-        <input class="form-input" id="fAirline" value="${escapeHtml(d.airline)}" placeholder="Icelandair">
+        <input class="form-input" id="fAirline" value="${escapeHtml(d.airline)}" placeholder="Airline / company">
       </div>
     </div>
 
@@ -1933,7 +1945,7 @@ function renderTripForm(d){
       <div class="form-row">
         <div class="form-group">
           <label class="form-label">Second Airline</label>
-          <input class="form-input" id="fAirline2" value="${escapeHtml(d.airline2)}" placeholder="Icelandair">
+          <input class="form-input" id="fAirline2" value="${escapeHtml(d.airline2)}" placeholder="Second airline">
         </div>
 
         <div class="form-group">
@@ -1997,7 +2009,7 @@ function renderTripForm(d){
 
     <div class="form-group">
       <label class="form-label">Primary Traveler</label>
-      <input class="form-input" id="fTraveler" value="${escapeHtml(d.traveler)}" placeholder="Farrukh Saeed">
+      <input class="form-input" id="fTraveler" value="${escapeHtml(d.traveler)}" placeholder="Traveler name">
       ${travelerChips ? `<div class="traveler-picker">${travelerChips}</div>` : ""}
     </div>
 
@@ -2058,18 +2070,21 @@ function useSavedTraveler(name){
 
 function saveCurrentPrimaryTraveler(){
   const name = getValue("fTraveler");
+
   if(!name){
     alert("Please type traveler name first.");
     return;
   }
 
   const exists = travelers.some(t => t.name.toLowerCase() === name.toLowerCase());
+
   if(!exists){
     travelers.push({
       id:makeId("traveler"),
       name:name,
       note:"Saved from trip form"
     });
+
     saveTravelers();
     renderStats();
     alert("Traveler saved.");
@@ -2125,8 +2140,13 @@ function saveTrip(){
     ...data
   };
 
-  if(!trip.name) trip.name = trip.to ? trip.to + " Trip" : "New Trip";
-  if(!trip.code && trip.flightNum) trip.code = trip.flightNum.replace(/[0-9]/g,"").slice(0,2);
+  if(!trip.name){
+    trip.name = trip.to ? trip.to + " Trip" : "New Trip";
+  }
+
+  if(!trip.code && trip.flightNum){
+    trip.code = trip.flightNum.replace(/[0-9]/g,"").slice(0,2);
+  }
 
   if(editingTripId){
     trips = trips.map(t => t.id === editingTripId ? trip : t);
@@ -2233,8 +2253,13 @@ function parseImportText(){
   m = raw.match(/\b(American|Delta|United|JetBlue|Southwest|Emirates|Icelandair|British Airways|Lufthansa|Air France|Qatar Airways|Etihad|Turkish Airlines)\b/i);
   if(m) d.airline = m[1];
 
-  if(d.airline && d.airline.toLowerCase().includes("icelandair")) d.code = "FI";
-  if(d.flightNum && !d.code) d.code = d.flightNum.replace(/[0-9]/g,"").slice(0,2).toUpperCase();
+  if(d.airline && d.airline.toLowerCase().includes("icelandair")){
+    d.code = "FI";
+  }
+
+  if(d.flightNum && !d.code){
+    d.code = d.flightNum.replace(/[0-9]/g,"").slice(0,2).toUpperCase();
+  }
 
   m = raw.match(/passenger[:\s]*([A-Za-z ]{3,40})/i);
   if(m) d.traveler = m[1].trim();
@@ -2278,6 +2303,7 @@ function renderTravelers(){
 
     const card = document.createElement("div");
     card.className = "traveler-card";
+
     card.innerHTML = `
       <div class="traveler-left">
         <div class="avatar">${escapeHtml(first)}</div>
@@ -2309,12 +2335,13 @@ function openTravelerForm(id){
   const traveler = editingTravelerId ? travelers.find(t => t.id === editingTravelerId) : {};
 
   document.getElementById("formTitle").textContent = editingTravelerId ? "Edit Traveler" : "Save Traveler";
+
   document.getElementById("formBody").innerHTML = `
     <div class="form-section-title">Traveler Details</div>
 
     <div class="form-group">
       <label class="form-label">Traveler Name</label>
-      <input class="form-input" id="travelerNameInput" value="${escapeHtml(traveler ? traveler.name : "")}" placeholder="Farrukh Saeed">
+      <input class="form-input" id="travelerNameInput" value="${escapeHtml(traveler ? traveler.name : "")}" placeholder="Traveler name">
     </div>
 
     <div class="form-group">
@@ -2349,10 +2376,12 @@ function saveTraveler(){
     travelers = travelers.map(t => t.id === editingTravelerId ? obj : t);
   }else{
     const exists = travelers.some(t => t.name.toLowerCase() === name.toLowerCase());
+
     if(exists){
       alert("This traveler is already saved.");
       return;
     }
+
     travelers.unshift(obj);
   }
 
@@ -2363,6 +2392,7 @@ function saveTraveler(){
 
 function deleteTraveler(id){
   if(!confirm("Delete this saved traveler?")) return;
+
   travelers = travelers.filter(t => t.id !== id);
   saveTravelers();
   renderCurrentPage();
@@ -2382,6 +2412,7 @@ function toggleTripHistory(id){
         status:t.status === "history" ? "upcoming" : "history"
       };
     }
+
     return t;
   });
 
