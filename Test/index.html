@@ -110,19 +110,54 @@
     .card-exp-val { font-size: 13px; font-weight: 600; color: #fff; }
     .card-notes-row {
       margin-top: 6px;
-      font-size: 11px; color: rgba(255,255,255,0.6);
-      font-style: italic; white-space: nowrap; overflow: hidden;
-      text-overflow: ellipsis; max-width: 70%;
+      font-size: 11px; color: rgba(255,255,255,0.65);
+      font-style: italic; white-space: normal;
+      line-height: 1.4;
     }
 
-    .card-actions { display: flex; gap: 10px; margin-top: 10px; }
-    .btn-edit, .btn-delete {
-      flex: 1; border-radius: 12px; padding: 10px;
-      font-size: 13px; font-weight: 600; cursor: pointer;
-      font-family: var(--font); border: 1.5px solid;
+    /* ── 3-dot menu ── */
+    .card-wrapper { position: relative; margin-bottom: 20px; }
+    .card-menu-btn {
+      position: absolute; top: 10px; right: 10px;
+      width: 30px; height: 30px; border-radius: 50%;
+      background: rgba(255,255,255,0.18);
+      border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; color: #fff; line-height: 1;
+      z-index: 10; transition: background 0.15s;
+      font-family: var(--font);
+      letter-spacing: 0; padding: 0;
     }
-    .btn-edit   { background: #fff; border-color: #ddd8f5; color: #5a4a95; }
-    .btn-delete { background: #fff5f5; border-color: #fcd0d0; color: #e53e3e; }
+    .card-menu-btn:hover { background: rgba(255,255,255,0.28); }
+    .card-dropdown {
+      position: absolute; top: 44px; right: 10px;
+      background: #fff;
+      border-radius: 14px;
+      box-shadow: 0 8px 28px rgba(80,60,160,0.18), 0 2px 8px rgba(0,0,0,0.08);
+      border: 1.5px solid #e8e2f8;
+      overflow: hidden;
+      z-index: 20;
+      opacity: 0; pointer-events: none;
+      transform: scale(0.92) translateY(-6px);
+      transform-origin: top right;
+      transition: opacity 0.16s, transform 0.16s;
+      min-width: 140px;
+    }
+    .card-dropdown.open {
+      opacity: 1; pointer-events: all;
+      transform: scale(1) translateY(0);
+    }
+    .card-dropdown button {
+      display: flex; align-items: center; gap: 10px;
+      width: 100%; padding: 12px 16px;
+      background: none; border: none;
+      font-family: var(--font); font-size: 14px; font-weight: 600;
+      cursor: pointer; text-align: left;
+      transition: background 0.1s;
+    }
+    .card-dropdown button:hover { background: #f5f3ff; }
+    .card-dropdown .dd-edit { color: #5a4a95; }
+    .card-dropdown .dd-delete { color: #e53e3e; border-top: 1px solid #f0eeff; }
 
     /* ── Modal Overlay ── */
     .overlay {
@@ -425,7 +460,7 @@
         const notesHtml = card.notes
           ? `<div class="card-notes-row">📝 ${esc(card.notes)}</div>` : "";
         return `
-          <div class="card-item">
+          <div class="card-wrapper">
             <div class="card-visual" style="background:linear-gradient(140deg,${from},${to})">
               <div class="deco1"></div>
               <div class="deco2"></div>
@@ -434,7 +469,9 @@
                   <div class="card-bank-label">Bank</div>
                   <div class="card-bank-name">${esc(card.bank)}</div>
                 </div>
-                <div class="card-type-badge">${esc(card.type)}</div>
+                <div style="display:flex;align-items:center;gap:8px">
+                  <div class="card-type-badge">${esc(card.type)}</div>
+                </div>
               </div>
               <div class="card-number">•••• &nbsp;•••• &nbsp;•••• &nbsp;${esc(card.last4)}</div>
               <div class="card-bottom-row">
@@ -446,9 +483,10 @@
                 <div>${networkLogo(card.network, true)}</div>
               </div>
             </div>
-            <div class="card-actions">
-              <button class="btn-edit" onclick="openEdit('${card.id}')">✏️ Edit</button>
-              <button class="btn-delete" onclick="openDelete('${card.id}')">🗑️ Delete</button>
+            <button class="card-menu-btn" onclick="toggleMenu('${card.id}',event)">⋮</button>
+            <div class="card-dropdown" id="menu-${card.id}">
+              <button class="dd-edit" onclick="openEdit('${card.id}');closeAllMenus()">✏️ Edit Card</button>
+              <button class="dd-delete" onclick="openDelete('${card.id}');closeAllMenus()">🗑️ Delete Card</button>
             </div>
           </div>`;
       }).join("");
@@ -598,6 +636,19 @@
       if (val.length === 2 && !val.includes("/")) val = val + "/";
       input.value = val.slice(0,5);
     }
+
+    /* ── 3-dot Menu ── */
+    function toggleMenu(id, e) {
+      e.stopPropagation();
+      const menu = document.getElementById("menu-" + id);
+      const isOpen = menu.classList.contains("open");
+      closeAllMenus();
+      if (!isOpen) menu.classList.add("open");
+    }
+    function closeAllMenus() {
+      document.querySelectorAll(".card-dropdown").forEach(m => m.classList.remove("open"));
+    }
+    document.addEventListener("click", closeAllMenus);
 
     /* ── Init ── */
     load();
