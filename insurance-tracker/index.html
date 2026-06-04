@@ -303,7 +303,24 @@
       text-overflow:ellipsis;
     }
 
-    tr:hover td{background:#fbfaff}
+    tr{
+      cursor:pointer;
+    }
+
+    tr:hover td{
+      background:#fbfaff;
+    }
+
+    tr:active td{
+      background:#f3efff;
+    }
+
+    .click-hint{
+      font-size:11px;
+      color:#6d28d9;
+      font-weight:900;
+      margin-top:3px;
+    }
     .w-entity{width:160px}
     .w-address{width:190px}
     .w-company{width:150px}
@@ -588,6 +605,7 @@
             <div>
               <h2>All Insurances</h2>
               <div id="resultCount" class="small-muted">Upload Excel to start</div>
+              <div class="click-hint">Click any policy row to open and edit.</div>
             </div>
             <button class="primary" onclick="addNewRow()">＋ Add New Row</button>
           </div>
@@ -604,7 +622,7 @@
                   <th class="w-premium">Premium</th>
                   <th class="w-date">Exp Date</th>
                   <th class="w-status">Status</th>
-                  <th class="w-action">Edit</th>
+                  <th class="w-action">Open</th>
                 </tr>
               </thead>
               <tbody id="tableBody">
@@ -1105,7 +1123,7 @@
     tbody.innerHTML = data.map(row=>{
       const idx = rows.indexOf(row);
       const status = calcStatus(row);
-      return `<tr ondblclick="editRow(${idx})">
+      return `<tr onclick="editRow(${idx})" title="Click to open and edit this policy">
         <td title="${escapeHtml(getVal(row,"entity"))}">${escapeHtml(getVal(row,"entity"))}</td>
         <td title="${escapeHtml(getVal(row,"address"))}">${escapeHtml(getVal(row,"address"))}</td>
         <td title="${escapeHtml(getVal(row,"company"))}">${escapeHtml(getVal(row,"company"))}</td>
@@ -1114,7 +1132,7 @@
         <td>${escapeHtml(money(getVal(row,"premium")))}</td>
         <td>${escapeHtml(formatDate(getVal(row,"exp")))}</td>
         <td><span class="status ${statusClass(status)}">${escapeHtml(status)}</span></td>
-        <td><button onclick="editRow(${idx}); event.stopPropagation();">Edit</button></td>
+        <td><button onclick="editRow(${idx}); event.stopPropagation();">Open</button></td>
       </tr>`;
     }).join("");
   }
