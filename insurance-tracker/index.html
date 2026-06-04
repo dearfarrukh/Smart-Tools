@@ -1,0 +1,1304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Insurance Tracker</title>
+
+  <!-- Excel reader/export library -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+  <style>
+    :root{
+      --bg:#f5f3ff;
+      --panel:#ffffff;
+      --panel2:rgba(255,255,255,.72);
+      --text:#191724;
+      --muted:#6b6478;
+      --line:#e6e0f5;
+      --purple:#7c3aed;
+      --purple2:#a78bfa;
+      --red:#ef4444;
+      --orange:#f59e0b;
+      --green:#16a34a;
+      --gray:#64748b;
+      --blue:#2563eb;
+      --shadow:0 18px 45px rgba(62,42,110,.12);
+      --radius:22px;
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: "DM Sans", "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at 12% 7%, rgba(124,58,237,.20), transparent 28%),
+        radial-gradient(circle at 88% 4%, rgba(167,139,250,.23), transparent 28%),
+        linear-gradient(135deg,#fbfaff 0%,#f3efff 55%,#f8fafc 100%);
+      color:var(--text);
+      min-height:100vh;
+    }
+
+    .app{
+      width:min(1720px, calc(100% - 36px));
+      margin:18px auto 28px;
+    }
+
+    .topbar{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:16px;
+      margin-bottom:14px;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+    }
+
+    .logo{
+      width:52px;
+      height:52px;
+      border-radius:18px;
+      background:linear-gradient(145deg,#7c3aed,#c084fc);
+      display:grid;
+      place-items:center;
+      color:white;
+      font-size:25px;
+      box-shadow:0 14px 28px rgba(124,58,237,.25);
+    }
+
+    h1{
+      margin:0;
+      font-size:28px;
+      letter-spacing:-.04em;
+    }
+
+    .subtitle{
+      margin-top:2px;
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    .top-actions{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+
+    button, .file-btn{
+      border:0;
+      border-radius:14px;
+      padding:11px 15px;
+      font-weight:800;
+      cursor:pointer;
+      background:#ede9fe;
+      color:#4c1d95;
+      transition:.18s ease;
+      font-size:14px;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      white-space:nowrap;
+    }
+
+    button:hover, .file-btn:hover{transform:translateY(-1px); filter:brightness(.98)}
+    button.primary, .file-btn.primary{background:linear-gradient(135deg,#7c3aed,#a855f7); color:white}
+    button.dark{background:#191724; color:white}
+    button.red{background:#fee2e2;color:#991b1b}
+    button.green{background:#dcfce7;color:#166534}
+    button.gray{background:#f1f5f9;color:#334155}
+
+    input[type=file]{display:none}
+
+    .notice{
+      padding:13px 15px;
+      border:1px solid var(--line);
+      border-radius:18px;
+      background:rgba(255,255,255,.58);
+      color:#4b5563;
+      font-size:13px;
+      margin-bottom:14px;
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      align-items:center;
+    }
+
+    .layout{
+      display:grid;
+      grid-template-columns: 410px minmax(0,1fr);
+      gap:14px;
+      align-items:start;
+    }
+
+    .panel{
+      background:var(--panel2);
+      border:1px solid rgba(255,255,255,.75);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      backdrop-filter: blur(18px);
+    }
+
+    .sidebar{
+      padding:16px;
+      position:sticky;
+      top:14px;
+    }
+
+    .main{
+      padding:16px;
+      min-height:760px;
+    }
+
+    .section-title{
+      font-size:12px;
+      font-weight:900;
+      text-transform:uppercase;
+      color:#6d28d9;
+      letter-spacing:.08em;
+      margin:6px 0 10px;
+    }
+
+    .search-grid{
+      display:grid;
+      gap:10px;
+    }
+
+    label{
+      font-size:12px;
+      font-weight:900;
+      color:#352f44;
+      margin-bottom:5px;
+      display:block;
+    }
+
+    select, input, textarea{
+      width:100%;
+      border:1px solid #ded6f2;
+      background:rgba(255,255,255,.86);
+      border-radius:14px;
+      padding:11px 12px;
+      outline:none;
+      color:var(--text);
+      font-size:14px;
+      font-family:inherit;
+    }
+
+    select:focus, input:focus, textarea:focus{
+      border-color:#a78bfa;
+      box-shadow:0 0 0 4px rgba(124,58,237,.12);
+    }
+
+    .two{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+    }
+
+    .chips{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin:10px 0 4px;
+    }
+
+    .chip{
+      border:1px solid #ddd6fe;
+      background:#fff;
+      color:#4c1d95;
+      padding:8px 10px;
+      border-radius:999px;
+      font-size:12px;
+      font-weight:900;
+      cursor:pointer;
+      user-select:none;
+    }
+    .chip.active{background:#7c3aed;color:#fff;border-color:#7c3aed}
+
+    .kpis{
+      display:grid;
+      grid-template-columns: repeat(6, minmax(130px, 1fr));
+      gap:10px;
+      margin-bottom:14px;
+    }
+
+    .kpi{
+      background:#fff;
+      border:1px solid #efe7ff;
+      border-radius:19px;
+      padding:14px;
+      box-shadow:0 10px 26px rgba(62,42,110,.07);
+    }
+
+    .kpi .num{
+      font-size:26px;
+      font-weight:950;
+      letter-spacing:-.05em;
+      margin-bottom:2px;
+    }
+    .kpi .name{font-size:12px;color:var(--muted);font-weight:800}
+    .kpi.red .num{color:var(--red)}
+    .kpi.orange .num{color:var(--orange)}
+    .kpi.green .num{color:var(--green)}
+    .kpi.gray .num{color:var(--gray)}
+    .kpi.blue .num{color:var(--blue)}
+
+    .dashboard-head{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      margin:2px 0 11px;
+    }
+
+    .dashboard-head h2{
+      margin:0;
+      font-size:20px;
+      letter-spacing:-.03em;
+    }
+
+    .small-muted{
+      color:var(--muted);
+      font-size:12px;
+      font-weight:700;
+    }
+
+    .table-wrap{
+      background:#fff;
+      border:1px solid #ede7f8;
+      border-radius:20px;
+      overflow:hidden;
+      box-shadow:0 10px 26px rgba(62,42,110,.06);
+    }
+
+    table{
+      width:100%;
+      border-collapse:collapse;
+      table-layout:fixed;
+    }
+
+    th{
+      background:#f3efff;
+      color:#4c1d95;
+      font-size:11px;
+      text-transform:uppercase;
+      letter-spacing:.06em;
+      text-align:left;
+      padding:11px 9px;
+      border-bottom:1px solid #e8ddff;
+      white-space:nowrap;
+    }
+
+    td{
+      padding:10px 9px;
+      font-size:13px;
+      border-bottom:1px solid #f1edf8;
+      vertical-align:top;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+
+    tr:hover td{background:#fbfaff}
+    .w-entity{width:160px}
+    .w-address{width:190px}
+    .w-company{width:150px}
+    .w-coverage{width:160px}
+    .w-policy{width:135px}
+    .w-premium{width:105px}
+    .w-date{width:100px}
+    .w-status{width:115px}
+    .w-action{width:75px}
+
+    .status{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:6px 9px;
+      border-radius:999px;
+      font-size:11px;
+      font-weight:950;
+      white-space:nowrap;
+    }
+    .status.expired{background:#fee2e2;color:#991b1b}
+    .status.soon{background:#fef3c7;color:#92400e}
+    .status.active{background:#dcfce7;color:#166534}
+    .status.missing{background:#f1f5f9;color:#334155}
+    .status.inactive{background:#e5e7eb;color:#374151}
+    .status.review{background:#dbeafe;color:#1e40af}
+
+    .detail-screen{display:none}
+    .detail-screen.active{display:block}
+    .dashboard-screen.hide{display:none}
+
+    .detail-top{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:12px;
+      margin-bottom:12px;
+    }
+
+    .detail-title h2{
+      margin:0;
+      font-size:25px;
+      letter-spacing:-.04em;
+    }
+
+    .detail-sub{
+      color:var(--muted);
+      font-weight:700;
+      margin-top:4px;
+      font-size:13px;
+    }
+
+    .detail-grid{
+      display:grid;
+      grid-template-columns: repeat(3, minmax(250px, 1fr));
+      gap:12px;
+      max-height:calc(100vh - 185px);
+      overflow:auto;
+      padding-right:4px;
+    }
+
+    .policy-card{
+      background:#fff;
+      border:1px solid #ede7f8;
+      border-radius:20px;
+      padding:14px;
+      box-shadow:0 10px 22px rgba(62,42,110,.06);
+      min-height:260px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+
+    .card-head{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:8px;
+      border-bottom:1px solid #f1edf8;
+      padding-bottom:10px;
+    }
+
+    .card-title{
+      font-weight:950;
+      font-size:16px;
+      line-height:1.15;
+    }
+
+    .info-list{
+      display:grid;
+      grid-template-columns:105px minmax(0,1fr);
+      gap:8px 10px;
+      font-size:13px;
+    }
+    .info-list .key{color:var(--muted);font-weight:900}
+    .info-list .val{font-weight:750;word-break:break-word}
+
+    .card-notes{
+      margin-top:auto;
+      background:#faf8ff;
+      border:1px solid #eee6ff;
+      border-radius:14px;
+      padding:9px;
+      color:#4b5563;
+      font-size:12px;
+      line-height:1.35;
+      min-height:48px;
+    }
+
+    .empty{
+      padding:32px;
+      text-align:center;
+      color:var(--muted);
+      font-weight:800;
+    }
+
+    .modal-backdrop{
+      position:fixed;
+      inset:0;
+      background:rgba(15,23,42,.38);
+      display:none;
+      place-items:center;
+      padding:18px;
+      z-index:50;
+    }
+
+    .modal-backdrop.show{display:grid}
+
+    .modal{
+      width:min(920px, 100%);
+      max-height:92vh;
+      overflow:auto;
+      background:#fff;
+      border-radius:26px;
+      box-shadow:0 30px 80px rgba(15,23,42,.26);
+      padding:18px;
+    }
+
+    .modal-head{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      align-items:center;
+      margin-bottom:12px;
+    }
+
+    .modal-head h3{margin:0;font-size:22px;letter-spacing:-.04em}
+
+    .form-grid{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:12px;
+    }
+
+    .form-grid .wide{grid-column:span 3}
+    .form-grid .two-wide{grid-column:span 2}
+
+    textarea{min-height:90px;resize:vertical}
+
+    .modal-actions{
+      display:flex;
+      justify-content:flex-end;
+      gap:10px;
+      margin-top:14px;
+    }
+
+    .hidden{display:none !important}
+
+    @media (max-width: 1200px){
+      .layout{grid-template-columns:1fr}
+      .sidebar{position:relative;top:auto}
+      .kpis{grid-template-columns:repeat(3,1fr)}
+      .detail-grid{grid-template-columns:repeat(2,1fr)}
+    }
+
+    @media (max-width: 760px){
+      .app{width:calc(100% - 18px); margin:10px auto}
+      .topbar{align-items:flex-start; flex-direction:column}
+      .top-actions{justify-content:flex-start}
+      .kpis{grid-template-columns:repeat(2,1fr)}
+      .two{grid-template-columns:1fr}
+      .detail-grid{grid-template-columns:1fr; max-height:none}
+      .form-grid{grid-template-columns:1fr}
+      .form-grid .wide,.form-grid .two-wide{grid-column:span 1}
+      .table-wrap{overflow:auto}
+      table{min-width:1050px}
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="topbar">
+      <div class="brand">
+        <div class="logo">🛡️</div>
+        <div>
+          <h1>Insurance Tracker</h1>
+          <div class="subtitle">Upload Excel → search policies → edit → download updated Excel</div>
+        </div>
+      </div>
+
+      <div class="top-actions">
+        <label class="file-btn primary" for="excelFile">📤 Upload Excel</label>
+        <input id="excelFile" type="file" accept=".xlsx,.xls,.csv" />
+        <button class="dark" onclick="downloadExcel()">⬇️ Download Updated Excel</button>
+        <button class="gray" onclick="loadSampleData()">Load Sample</button>
+      </div>
+    </div>
+
+    <div class="notice">
+      <div><b>Main file stays Excel.</b> This app reads your Excel file, lets you search/edit, then downloads a new Excel file for next time.</div>
+      <div id="fileName" class="small-muted">No file uploaded yet</div>
+    </div>
+
+    <div class="layout">
+      <aside class="panel sidebar">
+        <div class="section-title">Find / Search</div>
+
+        <div class="search-grid">
+          <div>
+            <label>Find By</label>
+            <select id="findBy" onchange="refreshDropdownForFindBy(); applyFilters();">
+              <option value="all">Search All Fields</option>
+              <option value="address">Address</option>
+              <option value="entity">Entity</option>
+              <option value="company">Insurance Company</option>
+              <option value="broker">Broker</option>
+              <option value="policy">Policy #</option>
+              <option value="coverage">Coverage Type</option>
+              <option value="vehicle">Vehicle / Info</option>
+              <option value="status">Status</option>
+            </select>
+          </div>
+
+          <div>
+            <label>Choose From List</label>
+            <select id="valueDropdown" onchange="onDropdownSearch()">
+              <option value="">Upload Excel first</option>
+            </select>
+          </div>
+
+          <div>
+            <label>Or Type Manually</label>
+            <input id="manualSearch" placeholder="Example: 51 Windsor, State Farm, 994900699" oninput="applyFilters()" />
+          </div>
+
+          <button class="primary" onclick="openDetailFromSearch()">Open Detail Screen</button>
+          <button onclick="clearSearch()">Clear Search</button>
+        </div>
+
+        <div class="section-title" style="margin-top:18px;">Quick Filters</div>
+        <div class="chips" id="filterChips">
+          <div class="chip active" data-filter="all" onclick="setStatusFilter('all')">All</div>
+          <div class="chip" data-filter="active" onclick="setStatusFilter('active')">Active</div>
+          <div class="chip" data-filter="expired" onclick="setStatusFilter('expired')">Expired</div>
+          <div class="chip" data-filter="soon" onclick="setStatusFilter('soon')">Expiring Soon</div>
+          <div class="chip" data-filter="missing" onclick="setStatusFilter('missing')">Missing Info</div>
+          <div class="chip" data-filter="inactive" onclick="setStatusFilter('inactive')">Inactive / Replaced</div>
+          <div class="chip" data-filter="review" onclick="setStatusFilter('review')">Need Review</div>
+        </div>
+
+        <div class="section-title" style="margin-top:18px;">Desktop Detail View</div>
+        <div class="small-muted">
+          Search an address, entity, policy #, or insurance company, then click <b>Open Detail Screen</b>.
+          The app will show matching rows plus rows where the term appears in <b>Covered Addresses / Search Tags</b>.
+        </div>
+      </aside>
+
+      <main class="panel main">
+        <section id="dashboardScreen" class="dashboard-screen">
+          <div class="kpis">
+            <div class="kpi blue"><div id="kTotal" class="num">0</div><div class="name">Total Rows</div></div>
+            <div class="kpi green"><div id="kActive" class="num">0</div><div class="name">Active</div></div>
+            <div class="kpi red"><div id="kExpired" class="num">0</div><div class="name">Expired</div></div>
+            <div class="kpi orange"><div id="kSoon" class="num">0</div><div class="name">Expiring Soon</div></div>
+            <div class="kpi gray"><div id="kMissing" class="num">0</div><div class="name">Missing Info</div></div>
+            <div class="kpi"><div id="kPremium" class="num">$0</div><div class="name">Total Premium</div></div>
+          </div>
+
+          <div class="dashboard-head">
+            <div>
+              <h2>All Insurances</h2>
+              <div id="resultCount" class="small-muted">Upload Excel to start</div>
+            </div>
+            <button class="primary" onclick="addNewRow()">＋ Add New Row</button>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th class="w-entity">Entity</th>
+                  <th class="w-address">Address</th>
+                  <th class="w-company">Insurance Co.</th>
+                  <th class="w-coverage">Coverage</th>
+                  <th class="w-policy">Policy #</th>
+                  <th class="w-premium">Premium</th>
+                  <th class="w-date">Exp Date</th>
+                  <th class="w-status">Status</th>
+                  <th class="w-action">Edit</th>
+                </tr>
+              </thead>
+              <tbody id="tableBody">
+                <tr><td colspan="9" class="empty">Upload your insurance Excel file to view the dashboard.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="detailScreen" class="detail-screen">
+          <div class="detail-top">
+            <div class="detail-title">
+              <h2 id="detailTitle">Search Detail</h2>
+              <div id="detailSub" class="detail-sub"></div>
+            </div>
+            <button onclick="backToDashboard()">← Back to Dashboard</button>
+          </div>
+          <div id="detailGrid" class="detail-grid"></div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <div id="modalBackdrop" class="modal-backdrop">
+    <div class="modal">
+      <div class="modal-head">
+        <h3 id="modalTitle">Edit Insurance Row</h3>
+        <button class="gray" onclick="closeModal()">✕</button>
+      </div>
+
+      <div class="form-grid">
+        <div>
+          <label>Entity</label>
+          <input id="f_entity" />
+        </div>
+        <div>
+          <label>Main Address</label>
+          <input id="f_address" />
+        </div>
+        <div>
+          <label>Row Type</label>
+          <select id="f_rowType">
+            <option>Insurance / Policy Record</option>
+            <option>Location Only</option>
+            <option>Covered Under Master Policy</option>
+            <option>Inactive / Replaced</option>
+            <option>Need Review</option>
+          </select>
+        </div>
+
+        <div>
+          <label>Broker</label>
+          <input id="f_broker" />
+        </div>
+        <div>
+          <label>Insurance Company</label>
+          <input id="f_company" />
+        </div>
+        <div>
+          <label>Coverage Type</label>
+          <input id="f_coverage" />
+        </div>
+
+        <div>
+          <label>Policy #</label>
+          <input id="f_policy" />
+        </div>
+        <div>
+          <label>Premium</label>
+          <input id="f_premium" />
+        </div>
+        <div>
+          <label>Expiration Date</label>
+          <input id="f_exp" placeholder="MM/DD/YYYY" />
+        </div>
+
+        <div class="two-wide">
+          <label>Covered Addresses / Search Tags</label>
+          <input id="f_tags" placeholder="Example: 51 Windsor Ave; 55 Windsor Ave; 80 Windsor Ave" />
+        </div>
+        <div>
+          <label>Status</label>
+          <select id="f_status">
+            <option value="">Auto</option>
+            <option>Active</option>
+            <option>Expired</option>
+            <option>Expiring Soon</option>
+            <option>Missing Exp Date</option>
+            <option>Inactive / Replaced</option>
+            <option>Need Review</option>
+            <option>Covered / Verify</option>
+          </select>
+        </div>
+
+        <div class="wide">
+          <label>Notes</label>
+          <textarea id="f_notes"></textarea>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button class="red" id="deleteBtn" onclick="markInactive()">Mark Inactive / Replaced</button>
+        <button onclick="closeModal()">Cancel</button>
+        <button class="primary" onclick="saveModal()">Save Changes</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+  let rows = [];
+  let headers = [];
+  let workbookName = "insurance_tracker_updated.xlsx";
+  let selectedStatusFilter = "all";
+  let editingIndex = null;
+  let lastDetailTerm = "";
+
+  const fieldMap = {
+    entity: ["Entity", "Name", "Named Insured", "Insured"],
+    address: ["Address", "Location", "Property", "Vehicle", "Main Address"],
+    tags: ["Covered Addresses / Search Tags", "Search Tags", "Covered Addresses", "Related Addresses"],
+    broker: ["Broker", "Agent", "Agency"],
+    company: ["Insurance Company", "Carrier", "Policy", "Ins Co", "Company"],
+    coverage: ["Coverage Type", "Coverage", "Description", "Type"],
+    policy: ["Policy #", "Policy Number", "Policy No", "Policy"],
+    premium: ["Premium", "Amount", "Cost"],
+    effective: ["Effective Date", "Effective", "Start Date"],
+    exp: ["Expiration Date", "Exp Date", "Expiration", "Exp", "Main Expiration Date"],
+    status: ["Status"],
+    rowType: ["Row Type"],
+    notes: ["Notes", "Update Notes", "Missing Info", "Info"]
+  };
+
+  function normalizeText(v){
+    return String(v ?? "").trim();
+  }
+
+  function cleanHeader(h){
+    return String(h ?? "").replace(/\s+/g," ").trim();
+  }
+
+  function getVal(row, key){
+    const names = fieldMap[key] || [key];
+    for(const n of names){
+      if(row[n] !== undefined && row[n] !== null && String(row[n]).trim() !== "") return row[n];
+    }
+    return "";
+  }
+
+  function setVal(row, key, value){
+    const preferred = preferredHeader(key);
+    row[preferred] = value;
+    if(!headers.includes(preferred)) headers.push(preferred);
+  }
+
+  function preferredHeader(key){
+    const preferred = {
+      entity:"Entity",
+      address:"Main Address",
+      tags:"Covered Addresses / Search Tags",
+      broker:"Broker",
+      company:"Insurance Company",
+      coverage:"Coverage Type",
+      policy:"Policy #",
+      premium:"Premium",
+      effective:"Effective Date",
+      exp:"Expiration Date",
+      status:"Status",
+      rowType:"Row Type",
+      notes:"Notes"
+    };
+    return preferred[key] || key;
+  }
+
+  function parseExcelDate(value){
+    if(value === null || value === undefined || value === "") return null;
+
+    if(value instanceof Date && !isNaN(value)) return value;
+
+    if(typeof value === "number"){
+      const parsed = XLSX.SSF.parse_date_code(value);
+      if(parsed) return new Date(parsed.y, parsed.m - 1, parsed.d);
+    }
+
+    const s = String(value).trim();
+    if(!s) return null;
+
+    const m = s.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{2,4})$/);
+    if(m){
+      let y = Number(m[3]);
+      if(y < 100) y += 2000;
+      return new Date(y, Number(m[1]) - 1, Number(m[2]));
+    }
+
+    const d = new Date(s);
+    if(!isNaN(d)) return d;
+    return null;
+  }
+
+  function formatDate(value){
+    const d = parseExcelDate(value);
+    if(!d) return normalizeText(value);
+    const mm = String(d.getMonth()+1).padStart(2,"0");
+    const dd = String(d.getDate()).padStart(2,"0");
+    const yy = d.getFullYear();
+    return `${mm}/${dd}/${yy}`;
+  }
+
+  function money(value){
+    if(value === "" || value === null || value === undefined) return "";
+    if(typeof value === "number") return value.toLocaleString("en-US",{style:"currency",currency:"USD",maximumFractionDigits:2});
+    const n = Number(String(value).replace(/[$,\s]/g,""));
+    if(!isNaN(n) && String(value).match(/\d/)) return n.toLocaleString("en-US",{style:"currency",currency:"USD",maximumFractionDigits:2});
+    return String(value);
+  }
+
+  function premiumNumber(value){
+    if(value === "" || value === null || value === undefined) return 0;
+    const n = Number(String(value).replace(/[$,\s]/g,""));
+    return isNaN(n) ? 0 : n;
+  }
+
+  function calcStatus(row){
+    const manual = normalizeText(getVal(row,"status"));
+    const rowType = normalizeText(getVal(row,"rowType")).toLowerCase();
+    if(manual && manual.toLowerCase() !== "auto") return manual;
+    if(rowType.includes("inactive") || rowType.includes("replaced")) return "Inactive / Replaced";
+    if(rowType.includes("location")) return "Need Review";
+    if(rowType.includes("covered")) return "Covered / Verify";
+
+    const exp = parseExcelDate(getVal(row,"exp"));
+    if(!exp) return "Missing Exp Date";
+
+    const today = new Date();
+    today.setHours(0,0,0,0);
+    const diffDays = Math.ceil((exp - today) / (1000*60*60*24));
+
+    if(diffDays < 0) return "Expired";
+    if(diffDays <= 90) return "Expiring Soon";
+    return "Active";
+  }
+
+  function statusClass(status){
+    const s = String(status).toLowerCase();
+    if(s.includes("expired") && !s.includes("soon")) return "expired";
+    if(s.includes("soon")) return "soon";
+    if(s.includes("active")) return "active";
+    if(s.includes("missing")) return "missing";
+    if(s.includes("inactive") || s.includes("replaced")) return "inactive";
+    if(s.includes("review") || s.includes("covered")) return "review";
+    return "review";
+  }
+
+  function allSearchText(row){
+    const pieces = [
+      getVal(row,"entity"),
+      getVal(row,"address"),
+      getVal(row,"tags"),
+      getVal(row,"broker"),
+      getVal(row,"company"),
+      getVal(row,"coverage"),
+      getVal(row,"policy"),
+      getVal(row,"premium"),
+      getVal(row,"exp"),
+      getVal(row,"status"),
+      getVal(row,"rowType"),
+      getVal(row,"notes")
+    ];
+    return pieces.join(" ").toLowerCase();
+  }
+
+  function fieldSearchText(row, findBy){
+    if(findBy === "all") return allSearchText(row);
+    if(findBy === "vehicle") return [getVal(row,"address"), getVal(row,"coverage"), getVal(row,"notes"), getVal(row,"tags")].join(" ").toLowerCase();
+    return String(getVal(row,findBy) + " " + (findBy === "address" ? getVal(row,"tags") : "")).toLowerCase();
+  }
+
+  document.getElementById("excelFile").addEventListener("change", async (event)=>{
+    const file = event.target.files[0];
+    if(!file) return;
+
+    workbookName = file.name.replace(/\.(xlsx|xls|csv)$/i,"") + "_updated.xlsx";
+    document.getElementById("fileName").textContent = file.name;
+
+    const data = await file.arrayBuffer();
+    const wb = XLSX.read(data, { type:"array", cellDates:true });
+    const sheetName = wb.SheetNames[0];
+    const ws = wb.Sheets[sheetName];
+
+    const json = XLSX.utils.sheet_to_json(ws, { defval:"", raw:false });
+    if(!json.length){
+      alert("No rows found in this Excel sheet.");
+      return;
+    }
+
+    headers = Object.keys(json[0]).map(cleanHeader);
+    rows = json.map((r, idx)=>{
+      const clean = {};
+      Object.keys(r).forEach(k => clean[cleanHeader(k)] = r[k]);
+      clean.__id = crypto.randomUUID ? crypto.randomUUID() : String(Date.now()+idx);
+      clean.__sourceRow = idx + 2;
+      ensureStandardFields(clean);
+      return clean;
+    });
+
+    refreshAll();
+  });
+
+  function ensureStandardFields(row){
+    for(const key of ["entity","address","tags","broker","company","coverage","policy","premium","effective","exp","status","rowType","notes"]){
+      const h = preferredHeader(key);
+      if(!headers.includes(h)) headers.push(h);
+      if(row[h] === undefined) row[h] = getVal(row,key) || "";
+    }
+    if(!getVal(row,"rowType")){
+      const hasPolicyInfo = getVal(row,"company") || getVal(row,"policy") || getVal(row,"premium") || getVal(row,"exp") || getVal(row,"coverage");
+      setVal(row,"rowType", hasPolicyInfo ? "Insurance / Policy Record" : "Location Only");
+    }
+  }
+
+  function refreshAll(){
+    refreshDropdownForFindBy();
+    updateKpis();
+    renderTable(applyFilters(false));
+  }
+
+  function uniqueValuesFor(field){
+    const set = new Set();
+    rows.forEach(row=>{
+      let v = "";
+      if(field === "all") return;
+      if(field === "status") v = calcStatus(row);
+      else v = getVal(row, field);
+      if(v !== undefined && v !== null){
+        String(v).split(field === "address" || field === "vehicle" ? /[;\n]/ : /\n/).forEach(part=>{
+          const clean = part.trim();
+          if(clean) set.add(clean);
+        });
+      }
+      if(field === "address"){
+        const tags = getVal(row,"tags");
+        String(tags).split(/[;\n,]/).forEach(part=>{
+          const clean = part.trim();
+          if(clean) set.add(clean);
+        });
+      }
+    });
+    return Array.from(set).sort((a,b)=>a.localeCompare(b));
+  }
+
+  function refreshDropdownForFindBy(){
+    const findBy = document.getElementById("findBy").value;
+    const dd = document.getElementById("valueDropdown");
+    dd.innerHTML = "";
+
+    if(findBy === "all"){
+      dd.innerHTML = `<option value="">Use manual search for all fields</option>`;
+      return;
+    }
+
+    const vals = uniqueValuesFor(findBy);
+    dd.innerHTML = `<option value="">Choose ${findBy}</option>` + vals.map(v=>`<option value="${escapeHtml(v)}">${escapeHtml(v)}</option>`).join("");
+  }
+
+  function onDropdownSearch(){
+    const v = document.getElementById("valueDropdown").value;
+    document.getElementById("manualSearch").value = v;
+    applyFilters();
+  }
+
+  function setStatusFilter(filter){
+    selectedStatusFilter = filter;
+    document.querySelectorAll(".chip").forEach(c => c.classList.toggle("active", c.dataset.filter === filter));
+    applyFilters();
+  }
+
+  function applyFilters(render = true){
+    const term = document.getElementById("manualSearch").value.trim().toLowerCase();
+    const findBy = document.getElementById("findBy").value;
+
+    const filtered = rows.filter(row=>{
+      const status = calcStatus(row);
+      const s = status.toLowerCase();
+      let statusOk = true;
+
+      if(selectedStatusFilter !== "all"){
+        if(selectedStatusFilter === "active") statusOk = s.includes("active");
+        if(selectedStatusFilter === "expired") statusOk = s.includes("expired") && !s.includes("soon");
+        if(selectedStatusFilter === "soon") statusOk = s.includes("soon");
+        if(selectedStatusFilter === "missing") statusOk = s.includes("missing");
+        if(selectedStatusFilter === "inactive") statusOk = s.includes("inactive") || s.includes("replaced");
+        if(selectedStatusFilter === "review") statusOk = s.includes("review") || s.includes("covered");
+      }
+
+      if(!statusOk) return false;
+      if(!term) return true;
+
+      return fieldSearchText(row, findBy).includes(term);
+    });
+
+    if(render) renderTable(filtered);
+    return filtered;
+  }
+
+  function updateKpis(){
+    const total = rows.length;
+    let active=0, expired=0, soon=0, missing=0, premium=0;
+
+    rows.forEach(row=>{
+      const s = calcStatus(row).toLowerCase();
+      if(s.includes("active")) active++;
+      if(s.includes("expired") && !s.includes("soon")) expired++;
+      if(s.includes("soon")) soon++;
+      if(s.includes("missing")) missing++;
+      premium += premiumNumber(getVal(row,"premium"));
+    });
+
+    document.getElementById("kTotal").textContent = total;
+    document.getElementById("kActive").textContent = active;
+    document.getElementById("kExpired").textContent = expired;
+    document.getElementById("kSoon").textContent = soon;
+    document.getElementById("kMissing").textContent = missing;
+    document.getElementById("kPremium").textContent = premium.toLocaleString("en-US",{style:"currency",currency:"USD",maximumFractionDigits:0});
+  }
+
+  function renderTable(data){
+    const tbody = document.getElementById("tableBody");
+    document.getElementById("resultCount").textContent = `${data.length} of ${rows.length} rows showing`;
+
+    if(!rows.length){
+      tbody.innerHTML = `<tr><td colspan="9" class="empty">Upload your insurance Excel file to view the dashboard.</td></tr>`;
+      return;
+    }
+
+    if(!data.length){
+      tbody.innerHTML = `<tr><td colspan="9" class="empty">No matching insurance rows found.</td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = data.map(row=>{
+      const idx = rows.indexOf(row);
+      const status = calcStatus(row);
+      return `<tr ondblclick="editRow(${idx})">
+        <td title="${escapeHtml(getVal(row,"entity"))}">${escapeHtml(getVal(row,"entity"))}</td>
+        <td title="${escapeHtml(getVal(row,"address"))}">${escapeHtml(getVal(row,"address"))}</td>
+        <td title="${escapeHtml(getVal(row,"company"))}">${escapeHtml(getVal(row,"company"))}</td>
+        <td title="${escapeHtml(getVal(row,"coverage"))}">${escapeHtml(getVal(row,"coverage"))}</td>
+        <td title="${escapeHtml(getVal(row,"policy"))}">${escapeHtml(getVal(row,"policy"))}</td>
+        <td>${escapeHtml(money(getVal(row,"premium")))}</td>
+        <td>${escapeHtml(formatDate(getVal(row,"exp")))}</td>
+        <td><span class="status ${statusClass(status)}">${escapeHtml(status)}</span></td>
+        <td><button onclick="editRow(${idx}); event.stopPropagation();">Edit</button></td>
+      </tr>`;
+    }).join("");
+  }
+
+  function openDetailFromSearch(){
+    const term = document.getElementById("manualSearch").value.trim();
+    if(!term){
+      alert("Choose from the dropdown or type something first.");
+      return;
+    }
+    openDetail(term);
+  }
+
+  function openDetail(term){
+    lastDetailTerm = term;
+    const findBy = document.getElementById("findBy").value;
+    const lower = term.toLowerCase();
+
+    const matches = rows.filter(row=>{
+      return fieldSearchText(row, findBy).includes(lower) || allSearchText(row).includes(lower);
+    });
+
+    document.getElementById("dashboardScreen").classList.add("hide");
+    document.getElementById("detailScreen").classList.add("active");
+    document.getElementById("detailTitle").textContent = term;
+    document.getElementById("detailSub").textContent = `${matches.length} matching rows found. Includes main fields and Covered Addresses / Search Tags.`;
+
+    const grid = document.getElementById("detailGrid");
+    if(!matches.length){
+      grid.innerHTML = `<div class="empty">No detail found for ${escapeHtml(term)}.</div>`;
+      return;
+    }
+
+    grid.innerHTML = matches.map(row=>{
+      const idx = rows.indexOf(row);
+      const status = calcStatus(row);
+      const notes = getVal(row,"notes") || getVal(row,"tags") || "No notes.";
+      return `<div class="policy-card">
+        <div class="card-head">
+          <div>
+            <div class="card-title">${escapeHtml(getVal(row,"coverage") || getVal(row,"company") || "Insurance Row")}</div>
+            <div class="small-muted">${escapeHtml(getVal(row,"entity"))}</div>
+          </div>
+          <span class="status ${statusClass(status)}">${escapeHtml(status)}</span>
+        </div>
+
+        <div class="info-list">
+          <div class="key">Address</div><div class="val">${escapeHtml(getVal(row,"address"))}</div>
+          <div class="key">Broker</div><div class="val">${escapeHtml(getVal(row,"broker"))}</div>
+          <div class="key">Company</div><div class="val">${escapeHtml(getVal(row,"company"))}</div>
+          <div class="key">Policy #</div><div class="val">${escapeHtml(getVal(row,"policy"))}</div>
+          <div class="key">Premium</div><div class="val">${escapeHtml(money(getVal(row,"premium")))}</div>
+          <div class="key">Expires</div><div class="val">${escapeHtml(formatDate(getVal(row,"exp")))}</div>
+          <div class="key">Row Type</div><div class="val">${escapeHtml(getVal(row,"rowType"))}</div>
+          <div class="key">Tags</div><div class="val">${escapeHtml(getVal(row,"tags"))}</div>
+        </div>
+
+        <div class="card-notes">${escapeHtml(notes)}</div>
+        <button class="primary" onclick="editRow(${idx})">Edit This Policy</button>
+      </div>`;
+    }).join("");
+  }
+
+  function backToDashboard(){
+    document.getElementById("detailScreen").classList.remove("active");
+    document.getElementById("dashboardScreen").classList.remove("hide");
+  }
+
+  function editRow(index){
+    editingIndex = index;
+    const row = rows[index];
+    document.getElementById("modalTitle").textContent = "Edit Insurance Row";
+    document.getElementById("f_entity").value = getVal(row,"entity");
+    document.getElementById("f_address").value = getVal(row,"address");
+    document.getElementById("f_rowType").value = getVal(row,"rowType") || "Insurance / Policy Record";
+    document.getElementById("f_broker").value = getVal(row,"broker");
+    document.getElementById("f_company").value = getVal(row,"company");
+    document.getElementById("f_coverage").value = getVal(row,"coverage");
+    document.getElementById("f_policy").value = getVal(row,"policy");
+    document.getElementById("f_premium").value = getVal(row,"premium");
+    document.getElementById("f_exp").value = formatDate(getVal(row,"exp"));
+    document.getElementById("f_tags").value = getVal(row,"tags");
+    document.getElementById("f_status").value = getVal(row,"status") || "";
+    document.getElementById("f_notes").value = getVal(row,"notes");
+    document.getElementById("modalBackdrop").classList.add("show");
+  }
+
+  function addNewRow(){
+    const row = {};
+    headers.forEach(h=>row[h]="");
+    row.__id = crypto.randomUUID ? crypto.randomUUID() : String(Date.now());
+    row.__sourceRow = "";
+    ensureStandardFields(row);
+    rows.unshift(row);
+    editRow(0);
+  }
+
+  function closeModal(){
+    document.getElementById("modalBackdrop").classList.remove("show");
+    editingIndex = null;
+  }
+
+  function saveModal(){
+    if(editingIndex === null) return;
+    const row = rows[editingIndex];
+
+    setVal(row,"entity", document.getElementById("f_entity").value);
+    setVal(row,"address", document.getElementById("f_address").value);
+    setVal(row,"rowType", document.getElementById("f_rowType").value);
+    setVal(row,"broker", document.getElementById("f_broker").value);
+    setVal(row,"company", document.getElementById("f_company").value);
+    setVal(row,"coverage", document.getElementById("f_coverage").value);
+    setVal(row,"policy", document.getElementById("f_policy").value);
+    setVal(row,"premium", document.getElementById("f_premium").value);
+    setVal(row,"exp", document.getElementById("f_exp").value);
+    setVal(row,"tags", document.getElementById("f_tags").value);
+    setVal(row,"status", document.getElementById("f_status").value);
+    setVal(row,"notes", document.getElementById("f_notes").value);
+
+    closeModal();
+    refreshAll();
+
+    if(document.getElementById("detailScreen").classList.contains("active") && lastDetailTerm){
+      openDetail(lastDetailTerm);
+    }
+  }
+
+  function markInactive(){
+    document.getElementById("f_rowType").value = "Inactive / Replaced";
+    document.getElementById("f_status").value = "Inactive / Replaced";
+  }
+
+  function clearSearch(){
+    document.getElementById("manualSearch").value = "";
+    document.getElementById("valueDropdown").value = "";
+    setStatusFilter("all");
+  }
+
+  function downloadExcel(){
+    if(!rows.length){
+      alert("Upload or load data first.");
+      return;
+    }
+
+    const exportHeaders = [
+      "Entity",
+      "Main Address",
+      "Covered Addresses / Search Tags",
+      "Broker",
+      "Insurance Company",
+      "Coverage Type",
+      "Policy #",
+      "Premium",
+      "Effective Date",
+      "Expiration Date",
+      "Status",
+      "Row Type",
+      "Notes"
+    ];
+
+    const extraHeaders = headers.filter(h => !exportHeaders.includes(h) && !h.startsWith("__"));
+    const finalHeaders = [...exportHeaders, ...extraHeaders];
+
+    const exportRows = rows.map(row=>{
+      const out = {};
+      finalHeaders.forEach(h=>out[h] = row[h] ?? "");
+      out["Status"] = getVal(row,"status") || calcStatus(row);
+      out["Expiration Date"] = formatDate(getVal(row,"exp"));
+      return out;
+    });
+
+    const ws = XLSX.utils.json_to_sheet(exportRows, {header: finalHeaders});
+    ws["!cols"] = finalHeaders.map(h=>{
+      if(h.includes("Address") || h.includes("Notes") || h.includes("Tags")) return {wch:34};
+      if(h.includes("Entity") || h.includes("Company") || h.includes("Coverage")) return {wch:24};
+      return {wch:16};
+    });
+
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Insurance Tracker");
+    XLSX.writeFile(wb, workbookName || "insurance_tracker_updated.xlsx");
+  }
+
+  function escapeHtml(str){
+    return String(str ?? "")
+      .replaceAll("&","&amp;")
+      .replaceAll("<","&lt;")
+      .replaceAll(">","&gt;")
+      .replaceAll('"',"&quot;")
+      .replaceAll("'","&#039;");
+  }
+
+  function loadSampleData(){
+    rows = [
+      {
+        "Entity":"Windsor Fuel Co., Inc.",
+        "Main Address":"80 Windsor Ave",
+        "Covered Addresses / Search Tags":"51 Windsor Ave; 55 Windsor Ave; 80 Windsor Ave; 219 S. Bedford Ave",
+        "Broker":"Tangram ProSight",
+        "Insurance Company":"NY Marine & General Ins",
+        "Coverage Type":"Commercial Auto / GL",
+        "Policy #":"AU202500015833",
+        "Premium":"143602",
+        "Effective Date":"06/17/2025",
+        "Expiration Date":"06/17/2026",
+        "Status":"",
+        "Row Type":"Insurance / Policy Record",
+        "Notes":"Master policy. Search tags help find related addresses."
+      },
+      {
+        "Entity":"WFCo, MFL, Aqua",
+        "Main Address":"80 Windsor Ave",
+        "Covered Addresses / Search Tags":"Windsor Fuel; MFL; Aquadyne; 80 Windsor Ave",
+        "Broker":"Jo-Mil Prosight",
+        "Insurance Company":"NY Marine & General Ins",
+        "Coverage Type":"Excess / Umbrella Liability",
+        "Policy #":"EX202500001085",
+        "Premium":"72252",
+        "Effective Date":"06/17/2025",
+        "Expiration Date":"06/17/2026",
+        "Status":"",
+        "Row Type":"Insurance / Policy Record",
+        "Notes":"Excess policy."
+      },
+      {
+        "Entity":"Windsor Fuel Co., Inc.",
+        "Main Address":"51 Windsor Ave",
+        "Covered Addresses / Search Tags":"51 Windsor Ave",
+        "Broker":"",
+        "Insurance Company":"",
+        "Coverage Type":"",
+        "Policy #":"",
+        "Premium":"",
+        "Effective Date":"",
+        "Expiration Date":"",
+        "Status":"Covered / Verify",
+        "Row Type":"Covered Under Master Policy",
+        "Notes":"Possibly covered under master GL policy. Verify final policy."
+      }
+    ];
+    headers = Object.keys(rows[0]);
+    rows.forEach((r,i)=>{r.__id=String(i); r.__sourceRow=i+2; ensureStandardFields(r);});
+    document.getElementById("fileName").textContent = "Sample data loaded";
+    refreshAll();
+  }
+</script>
+</body>
+</html>
