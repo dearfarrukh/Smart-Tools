@@ -305,7 +305,7 @@
     <div class="inner-page-hero">
       <h1>Office Tools</h1>
       <p>
-        Office-only tools for work forms, contracts, invoices, customer documents, CSV files, number matching, and business shortcuts.
+        Office-only tools for work forms, contracts, invoices, customer documents, insurance tracking, CSV files, number matching, and business shortcuts.
       </p>
     </div>
 
@@ -348,6 +348,16 @@
         <div class="office-icon">#</div>
         <h3>Number Match</h3>
         <p>Find numbers that match your target total for office calculations.</p>
+        <div class="office-arrow">›</div>
+      </button>
+
+      <!-- =========================
+           INSURANCE TRACKER CARD
+      ========================= -->
+      <button class="office-card" onclick="openInsuranceTracker()">
+        <div class="office-icon">🛡️</div>
+        <h3>Insurance Tracker</h3>
+        <p>Upload Excel, find policies by address, company, policy number, and track expirations.</p>
         <div class="office-arrow">›</div>
       </button>
 
@@ -399,6 +409,13 @@
     // =========================
     function openNumberMatch() {
       window.location.href = "../numbermatch/";
+    }
+
+    // =========================
+    // OPEN INSURANCE TRACKER
+    // =========================
+    function openInsuranceTracker() {
+      window.location.href = "../insurance-tracker/";
     }
 
     // =========================
