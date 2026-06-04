@@ -531,7 +531,7 @@
     </div>
 
     <div class="notice">
-      <div><b>Main file stays Excel.</b> This app reads your Excel file, lets you search/edit, then downloads a new Excel file for next time.</div>
+      <div><b>Main file stays Excel.</b> Upload Excel, edit policies, then download the same-style workbook. Existing formula cells are kept when possible.</div>
       <div id="fileName" class="small-muted">No file uploaded yet</div>
     </div>
 
@@ -736,6 +736,12 @@
   let rows = [];
   let headers = [];
   let workbookName = "insurance_tracker_updated.xlsx";
+
+  // Keeps the uploaded workbook so downloaded Excel can keep original columns and formulas.
+  let originalWorkbook = null;
+  let originalSheetName = "";
+  let originalWorksheet = null;
+  let originalHeaderMap = {};
   let selectedStatusFilter = "all";
   let editingIndex = null;
   let lastDetailTerm = "";
@@ -762,6 +768,118 @@
 
   function cleanHeader(h){
     return String(h ?? "").replace(/\s+/g," ").trim();
+  }
+
+  function buildOriginalHeaderMap(){
+    originalHeaderMap = {};
+    headers.forEach((h, i) => {
+      originalHeaderMap[h] = i;
+    });
+  }
+
+  function findHeaderForKey(key){
+    const names = fieldMap[key] || [key];
+    for(const n of names){
+      if(originalHeaderMap[n] !== undefined) return n;
+    }
+    const preferred = preferredHeader(key);
+    if(originalHeaderMap[preferred] !== undefined) return preferred;
+    return "";
+  }
+
+  function cellAddress(rowNumber, colIndex){
+    return XLSX.utils.encode_cell({ r: rowNumber - 1, c: colIndex });
+  }
+
+  function originalCellHasFormula(rowNumber, header){
+    if(!originalWorksheet || originalHeaderMap[header] === undefined) return false;
+    const addr = cellAddress(rowNumber, originalHeaderMap[header]);
+    return !!(originalWorksheet[addr] && originalWorksheet[addr].f);
+  }
+
+  function setOriginalCell(rowNumber, header, value, keepFormula = true){
+    if(!originalWorksheet || originalHeaderMap[header] === undefined || !rowNumber) return;
+    if(keepFormula && originalCellHasFormula(rowNumber, header)) return;
+
+    const addr = cellAddress(rowNumber, originalHeaderMap[header]);
+    const v = value ?? "";
+
+    if(v === ""){
+      originalWorksheet[addr] = { t:"s", v:"" };
+      return;
+    }
+
+    const d = parseExcelDate(v);
+    if(header.toLowerCase().includes("date") || header.toLowerCase().includes("exp")){
+      if(d){
+        originalWorksheet[addr] = { t:"d", v:d, z:"mm/dd/yyyy" };
+        return;
+      }
+    }
+
+    const moneyHeaders = ["Premium", "Auto Premium"];
+    if(moneyHeaders.includes(header)){
+      const n = Number(String(v).replace(/[$,\s]/g,""));
+      if(!isNaN(n)){
+        originalWorksheet[addr] = { t:"n", v:n, z:'$#,##0.00' };
+        return;
+      }
+    }
+
+    originalWorksheet[addr] = { t:"s", v:String(v) };
+  }
+
+  function updateOriginalWorkbookRow(row){
+    if(!originalWorkbook || !originalWorksheet || !row.__sourceRow) return;
+
+    const rowNum = row.__sourceRow;
+    const entity = getVal(row,"entity");
+    const address = getVal(row,"address");
+    const broker = getVal(row,"broker");
+    const company = getVal(row,"company");
+    const coverage = getVal(row,"coverage");
+    const policy = getVal(row,"policy");
+    const premium = getVal(row,"premium");
+    const exp = formatDate(getVal(row,"exp"));
+    const status = calcStatus(row);
+    const rowType = getVal(row,"rowType");
+    const notes = getVal(row,"notes");
+    const tags = getVal(row,"tags");
+
+    const updates = [
+      ["entity", entity],
+      ["address", address],
+      ["broker", broker],
+      ["company", company],
+      ["coverage", coverage],
+      ["policy", policy],
+      ["premium", premium],
+      ["exp", exp],
+      ["rowType", rowType],
+      ["notes", notes],
+      ["tags", tags]
+    ];
+
+    updates.forEach(([key, value]) => {
+      const header = findHeaderForKey(key);
+      if(header) setOriginalCell(rowNum, header, value, true);
+    });
+
+    // If Status is a formula, keep formula. If it is normal text, update it.
+    const statusHeader = findHeaderForKey("status");
+    if(statusHeader) setOriginalCell(rowNum, statusHeader, status, true);
+
+    // Keep original calculated formula columns if they already have formulas.
+    // If they are not formulas, keep them useful.
+    if(originalHeaderMap["Main Expiration Date"] !== undefined){
+      setOriginalCell(rowNum, "Main Expiration Date", exp, true);
+    }
+    if(originalHeaderMap["Days To Expire"] !== undefined){
+      setOriginalCell(rowNum, "Days To Expire", "", true);
+    }
+    if(originalHeaderMap["Missing Info"] !== undefined){
+      setOriginalCell(rowNum, "Missing Info", "", true);
+    }
   }
 
   function getVal(row, key){
@@ -951,9 +1069,13 @@
     document.getElementById("fileName").textContent = file.name;
 
     const data = await file.arrayBuffer();
-    const wb = XLSX.read(data, { type:"array", cellDates:true });
+    const wb = XLSX.read(data, { type:"array", cellDates:true, cellFormula:true, cellNF:true, cellStyles:true });
     const sheetName = wb.SheetNames[0];
     const ws = wb.Sheets[sheetName];
+
+    originalWorkbook = wb;
+    originalSheetName = sheetName;
+    originalWorksheet = ws;
 
     const json = XLSX.utils.sheet_to_json(ws, { defval:"", raw:false });
     if(!json.length){
@@ -962,6 +1084,7 @@
     }
 
     headers = Object.keys(json[0]).map(cleanHeader);
+    buildOriginalHeaderMap();
     rows = json.map((r, idx)=>{
       const clean = {};
       Object.keys(r).forEach(k => clean[cleanHeader(k)] = r[k]);
@@ -1302,51 +1425,51 @@
       return;
     }
 
-    const cleanHeaders = [
+    // Best mode: update the original uploaded workbook directly.
+    // This keeps original columns and existing Excel formulas when possible.
+    if(originalWorkbook && originalWorksheet){
+      rows.forEach(row => updateOriginalWorkbookRow(row));
+
+      XLSX.writeFile(originalWorkbook, workbookName || "insurance_tracker_updated.xlsx", {
+        bookType: "xlsx",
+        cellDates: true
+      });
+      return;
+    }
+
+    // Fallback mode for sample data or if no original workbook exists.
+    const finalHeaders = [
+      "Entity",
+      "Main Address",
       "Covered Addresses / Search Tags",
+      "Broker",
       "Insurance Company",
       "Coverage Type",
+      "Policy #",
+      "Premium",
+      "Effective Date",
       "Expiration Date",
+      "Status",
+      "Row Type",
       "Notes"
     ];
 
-    // Keep the uploaded Excel layout first, then add any clean app columns that were missing.
-    const originalHeaders = headers.filter(h => !h.startsWith("__"));
-    const finalHeaders = [...originalHeaders];
-    cleanHeaders.forEach(h => {
-      if(!finalHeaders.includes(h)) finalHeaders.push(h);
-    });
-
     const exportRows = rows.map(row=>{
       const out = {};
-      finalHeaders.forEach(h=>out[h] = row[h] ?? "");
-
-      const address = getVal(row,"address");
-      const company = getVal(row,"company");
-      const coverage = getVal(row,"coverage");
-      const policy = getVal(row,"policy");
-      const premium = getVal(row,"premium");
-      const exp = formatDate(getVal(row,"exp"));
-      const status = calcStatus(row);
-      const rowType = getVal(row,"rowType");
-      const notes = getVal(row,"notes");
-
-      if(finalHeaders.includes("Address")) out["Address"] = address;
-      if(finalHeaders.includes("Main Address")) out["Main Address"] = address;
-      if(finalHeaders.includes("Policy / Carrier")) out["Policy / Carrier"] = company;
-      if(finalHeaders.includes("Insurance Company")) out["Insurance Company"] = company;
-      if(finalHeaders.includes("Coverage / Info")) out["Coverage / Info"] = coverage;
-      if(finalHeaders.includes("Coverage Type")) out["Coverage Type"] = coverage;
-      if(finalHeaders.includes("Policy #")) out["Policy #"] = policy;
-      if(finalHeaders.includes("Premium")) out["Premium"] = premium;
-      if(finalHeaders.includes("Exp Date")) out["Exp Date"] = exp;
-      if(finalHeaders.includes("Main Expiration Date")) out["Main Expiration Date"] = exp;
-      if(finalHeaders.includes("Expiration Date")) out["Expiration Date"] = exp;
-      if(finalHeaders.includes("Status")) out["Status"] = status;
-      if(finalHeaders.includes("Row Type")) out["Row Type"] = rowType;
-      if(finalHeaders.includes("Notes")) out["Notes"] = notes;
-      if(finalHeaders.includes("Update Notes") && !out["Update Notes"]) out["Update Notes"] = notes;
-
+      finalHeaders.forEach(h=>out[h] = "");
+      out["Entity"] = getVal(row,"entity");
+      out["Main Address"] = getVal(row,"address");
+      out["Covered Addresses / Search Tags"] = getVal(row,"tags");
+      out["Broker"] = getVal(row,"broker");
+      out["Insurance Company"] = getVal(row,"company");
+      out["Coverage Type"] = getVal(row,"coverage");
+      out["Policy #"] = getVal(row,"policy");
+      out["Premium"] = getVal(row,"premium");
+      out["Effective Date"] = getVal(row,"effective");
+      out["Expiration Date"] = formatDate(getVal(row,"exp"));
+      out["Status"] = calcStatus(row);
+      out["Row Type"] = getVal(row,"rowType");
+      out["Notes"] = getVal(row,"notes");
       return out;
     });
 
