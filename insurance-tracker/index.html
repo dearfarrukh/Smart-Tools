@@ -531,7 +531,7 @@
     </div>
 
     <div class="notice">
-      <div><b>Main file stays Excel.</b> Upload Excel, edit policies, then download the same-style workbook. Existing formula cells are kept when possible.</div>
+      <div><b>Main file stays Excel.</b> Upload Excel, edit policies, then download the same-style workbook. Existing formula cells are kept when possible, and missing company/policy/expiration is auto-filled from matching master policy rows.</div>
       <div id="fileName" class="small-muted">No file uploaded yet</div>
     </div>
 
@@ -836,15 +836,19 @@
     const entity = getVal(row,"entity");
     const address = getVal(row,"address");
     const broker = getVal(row,"broker");
-    const company = getVal(row,"company");
+    const company = getDisplayCompany(row);
     const coverage = getVal(row,"coverage");
-    const policy = getVal(row,"policy");
+    const policy = getDisplayPolicy(row);
     const premium = getVal(row,"premium");
-    const exp = formatDate(getVal(row,"exp"));
+    const exp = formatDate(getDisplayExp(row));
     const status = calcStatus(row);
     const rowType = getVal(row,"rowType");
     const notes = getVal(row,"notes");
     const tags = getVal(row,"tags");
+
+    if(company && !getVal(row,"company")) setVal(row,"company", company);
+    if(policy && !getVal(row,"policy")) setVal(row,"policy", policy);
+    if(exp && !getVal(row,"exp")) setVal(row,"exp", exp);
 
     const updates = [
       ["entity", entity],
@@ -982,11 +986,126 @@
     return !v || v.startsWith("#");
   }
 
+  function normalizePolicyKey(value){
+    return String(value ?? "")
+      .toLowerCase()
+      .replace(/[^a-z0-9]/g, "");
+  }
+
+  function normalizeLooseText(value){
+    return String(value ?? "")
+      .toLowerCase()
+      .replace(/[^a-z0-9]/g, " ");
+  }
+
+  function findCompanyFromRelatedRows(row){
+    const currentCompany = normalizeText(getVal(row,"company"));
+    if(currentCompany && !currentCompany.startsWith("#")) return currentCompany;
+
+    const policyKey = normalizePolicyKey(getVal(row,"policy"));
+    if(policyKey){
+      const matchByPolicy = rows.find(other => {
+        if(other === row) return false;
+        const otherPolicy = normalizePolicyKey(getVal(other,"policy"));
+        const otherCompany = normalizeText(getVal(other,"company"));
+        return otherPolicy && otherPolicy === policyKey && otherCompany && !otherCompany.startsWith("#");
+      });
+      if(matchByPolicy) return normalizeText(getVal(matchByPolicy,"company"));
+    }
+
+    const rowText = normalizeLooseText([
+      getVal(row,"entity"),
+      getVal(row,"address"),
+      getVal(row,"tags"),
+      getVal(row,"notes"),
+      getVal(row,"coverage")
+    ].join(" "));
+
+    if(rowText){
+      const possibleMaster = rows.find(other => {
+        if(other === row) return false;
+        const otherCompany = normalizeText(getVal(other,"company"));
+        if(!otherCompany || otherCompany.startsWith("#")) return false;
+
+        const otherText = normalizeLooseText([
+          getVal(other,"entity"),
+          getVal(other,"address"),
+          getVal(other,"tags"),
+          getVal(other,"notes"),
+          getVal(other,"coverage")
+        ].join(" "));
+
+        // Match when an address-only/covered row is clearly inside a master policy tag/note text.
+        const addr = normalizeLooseText(getVal(row,"address")).trim();
+        return addr && otherText.includes(addr);
+      });
+
+      if(possibleMaster) return normalizeText(getVal(possibleMaster,"company"));
+    }
+
+    return "";
+  }
+
+  function findPolicyFromRelatedRows(row){
+    const currentPolicy = normalizeText(getVal(row,"policy"));
+    if(currentPolicy && !currentPolicy.startsWith("#")) return currentPolicy;
+
+    const company = findCompanyFromRelatedRows(row);
+    if(!company) return "";
+
+    const addr = normalizeLooseText(getVal(row,"address")).trim();
+    const match = rows.find(other => {
+      if(other === row) return false;
+      const otherCompany = normalizeText(getVal(other,"company"));
+      if(otherCompany !== company) return false;
+      const otherPolicy = normalizeText(getVal(other,"policy"));
+      if(!otherPolicy) return false;
+      const otherText = normalizeLooseText([
+        getVal(other,"address"),
+        getVal(other,"tags"),
+        getVal(other,"notes")
+      ].join(" "));
+      return addr && otherText.includes(addr);
+    });
+
+    return match ? normalizeText(getVal(match,"policy")) : "";
+  }
+
+  function findExpFromRelatedRows(row){
+    const currentExp = normalizeText(getVal(row,"exp"));
+    if(currentExp && !currentExp.startsWith("#")) return currentExp;
+
+    const policyKey = normalizePolicyKey(getVal(row,"policy") || findPolicyFromRelatedRows(row));
+    if(policyKey){
+      const matchByPolicy = rows.find(other => {
+        if(other === row) return false;
+        const otherPolicy = normalizePolicyKey(getVal(other,"policy"));
+        const otherExp = normalizeText(getVal(other,"exp"));
+        return otherPolicy && otherPolicy === policyKey && otherExp && !otherExp.startsWith("#");
+      });
+      if(matchByPolicy) return normalizeText(getVal(matchByPolicy,"exp"));
+    }
+
+    return "";
+  }
+
+  function getDisplayCompany(row){
+    return normalizeText(getVal(row,"company")) || findCompanyFromRelatedRows(row);
+  }
+
+  function getDisplayPolicy(row){
+    return normalizeText(getVal(row,"policy")) || findPolicyFromRelatedRows(row);
+  }
+
+  function getDisplayExp(row){
+    return normalizeText(getVal(row,"exp")) || findExpFromRelatedRows(row);
+  }
+
   function calcStatus(row){
     const manual = normalizeText(getVal(row,"status"));
     const manualLower = manual.toLowerCase();
     const rowType = normalizeText(getVal(row,"rowType")).toLowerCase();
-    const exp = parseExcelDate(getVal(row,"exp"));
+    const exp = parseExcelDate(getDisplayExp(row));
 
     if(rowType.includes("inactive") || rowType.includes("replaced") || manualLower.includes("inactive") || manualLower.includes("replaced")){
       return "Inactive / Replaced";
@@ -1042,11 +1161,11 @@
       getVal(row,"address"),
       getVal(row,"tags"),
       getVal(row,"broker"),
-      getVal(row,"company"),
+      getDisplayCompany(row),
       getVal(row,"coverage"),
-      getVal(row,"policy"),
+      getDisplayPolicy(row),
       getVal(row,"premium"),
-      getVal(row,"exp"),
+      getDisplayExp(row),
       calcStatus(row),
       getVal(row,"status"),
       getVal(row,"rowType"),
@@ -1135,6 +1254,8 @@
       let v = "";
       if(field === "all") return;
       if(field === "status") v = calcStatus(row);
+      else if(field === "company") v = getDisplayCompany(row);
+      else if(field === "policy") v = getDisplayPolicy(row);
       else v = getVal(row, field);
       if(v !== undefined && v !== null){
         String(v).split(field === "address" || field === "vehicle" ? /[;\n]/ : /\n/).forEach(part=>{
@@ -1249,11 +1370,11 @@
       return `<tr onclick="editRow(${idx})" title="Click to open and edit this policy">
         <td title="${escapeHtml(getVal(row,"entity"))}">${escapeHtml(getVal(row,"entity"))}</td>
         <td title="${escapeHtml(getVal(row,"address"))}">${escapeHtml(getVal(row,"address"))}</td>
-        <td title="${escapeHtml(getVal(row,"company"))}">${escapeHtml(getVal(row,"company"))}</td>
+        <td title="${escapeHtml(getDisplayCompany(row))}">${escapeHtml(getDisplayCompany(row))}</td>
         <td title="${escapeHtml(getVal(row,"coverage"))}">${escapeHtml(getVal(row,"coverage"))}</td>
-        <td title="${escapeHtml(getVal(row,"policy"))}">${escapeHtml(getVal(row,"policy"))}</td>
+        <td title="${escapeHtml(getDisplayPolicy(row))}">${escapeHtml(getDisplayPolicy(row))}</td>
         <td>${escapeHtml(money(getVal(row,"premium")))}</td>
-        <td>${escapeHtml(formatDate(getVal(row,"exp")))}</td>
+        <td>${escapeHtml(formatDate(getDisplayExp(row)))}</td>
         <td><span class="status ${statusClass(status)}">${escapeHtml(status)}</span></td>
         <td><button onclick="editRow(${idx}); event.stopPropagation();">Open</button></td>
       </tr>`;
@@ -1305,10 +1426,10 @@
         <div class="info-list">
           <div class="key">Address</div><div class="val">${escapeHtml(getVal(row,"address"))}</div>
           <div class="key">Broker</div><div class="val">${escapeHtml(getVal(row,"broker"))}</div>
-          <div class="key">Company</div><div class="val">${escapeHtml(getVal(row,"company"))}</div>
-          <div class="key">Policy #</div><div class="val">${escapeHtml(getVal(row,"policy"))}</div>
+          <div class="key">Company</div><div class="val">${escapeHtml(getDisplayCompany(row))}</div>
+          <div class="key">Policy #</div><div class="val">${escapeHtml(getDisplayPolicy(row))}</div>
           <div class="key">Premium</div><div class="val">${escapeHtml(money(getVal(row,"premium")))}</div>
-          <div class="key">Expires</div><div class="val">${escapeHtml(formatDate(getVal(row,"exp")))}</div>
+          <div class="key">Expires</div><div class="val">${escapeHtml(formatDate(getDisplayExp(row)))}</div>
           <div class="key">Row Type</div><div class="val">${escapeHtml(getVal(row,"rowType"))}</div>
           <div class="key">Tags</div><div class="val">${escapeHtml(getVal(row,"tags"))}</div>
         </div>
@@ -1332,11 +1453,11 @@
     document.getElementById("f_address").value = getVal(row,"address");
     document.getElementById("f_rowType").value = getVal(row,"rowType") || "Insurance / Policy Record";
     document.getElementById("f_broker").value = getVal(row,"broker");
-    document.getElementById("f_company").value = getVal(row,"company");
+    document.getElementById("f_company").value = getDisplayCompany(row);
     document.getElementById("f_coverage").value = getVal(row,"coverage");
-    document.getElementById("f_policy").value = getVal(row,"policy");
+    document.getElementById("f_policy").value = getDisplayPolicy(row);
     document.getElementById("f_premium").value = getVal(row,"premium");
-    document.getElementById("f_exp").value = formatDate(getVal(row,"exp"));
+    document.getElementById("f_exp").value = formatDate(getDisplayExp(row));
     document.getElementById("f_tags").value = getVal(row,"tags");
     document.getElementById("f_status").value = getVal(row,"status") || "";
     document.getElementById("f_notes").value = getVal(row,"notes");
@@ -1419,11 +1540,25 @@
     setStatusFilter("all");
   }
 
+  function autofillMissingCompanyPolicyExp(){
+    rows.forEach(row => {
+      const company = getDisplayCompany(row);
+      const policy = getDisplayPolicy(row);
+      const exp = getDisplayExp(row);
+
+      if(company && !getVal(row,"company")) setVal(row,"company", company);
+      if(policy && !getVal(row,"policy")) setVal(row,"policy", policy);
+      if(exp && !getVal(row,"exp")) setVal(row,"exp", exp);
+    });
+  }
+
   function downloadExcel(){
     if(!rows.length){
       alert("Upload or load data first.");
       return;
     }
+
+    autofillMissingCompanyPolicyExp();
 
     // Best mode: update the original uploaded workbook directly.
     // This keeps original columns and existing Excel formulas when possible.
@@ -1461,12 +1596,12 @@
       out["Main Address"] = getVal(row,"address");
       out["Covered Addresses / Search Tags"] = getVal(row,"tags");
       out["Broker"] = getVal(row,"broker");
-      out["Insurance Company"] = getVal(row,"company");
+      out["Insurance Company"] = getDisplayCompany(row);
       out["Coverage Type"] = getVal(row,"coverage");
-      out["Policy #"] = getVal(row,"policy");
+      out["Policy #"] = getDisplayPolicy(row);
       out["Premium"] = getVal(row,"premium");
       out["Effective Date"] = getVal(row,"effective");
-      out["Expiration Date"] = formatDate(getVal(row,"exp"));
+      out["Expiration Date"] = formatDate(getDisplayExp(row));
       out["Status"] = calcStatus(row);
       out["Row Type"] = getVal(row,"rowType");
       out["Notes"] = getVal(row,"notes");
