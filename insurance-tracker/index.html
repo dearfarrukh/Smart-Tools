@@ -330,6 +330,7 @@
     .status.missing{background:#f1f5f9;color:#334155}
     .status.inactive{background:#e5e7eb;color:#374151}
     .status.review{background:#dbeafe;color:#1e40af}
+    .status.covered{background:#ede9fe;color:#5b21b6}
 
     .detail-screen{display:none}
     .detail-screen.active{display:block}
@@ -500,7 +501,7 @@
         <div class="logo">🛡️</div>
         <div>
           <h1>Insurance Tracker</h1>
-          <div class="subtitle">Upload Excel → search policies → edit → download updated Excel</div>
+          <div class="subtitle">Upload Excel → search policies → master coverage → edit → download updated Excel</div>
         </div>
       </div>
 
@@ -562,6 +563,7 @@
           <div class="chip" data-filter="missing" onclick="setStatusFilter('missing')">Missing Info</div>
           <div class="chip" data-filter="inactive" onclick="setStatusFilter('inactive')">Inactive / Replaced</div>
           <div class="chip" data-filter="review" onclick="setStatusFilter('review')">Need Review</div>
+          <div class="chip" data-filter="covered" onclick="setStatusFilter('covered')">Covered Master</div>
         </div>
 
         <div class="section-title" style="margin-top:18px;">Desktop Detail View</div>
@@ -693,6 +695,7 @@
             <option>Missing Exp Date</option>
             <option>Inactive / Replaced</option>
             <option>Need Review</option>
+            <option>Covered Under Master Policy</option>
             <option>Covered / Verify</option>
           </select>
         </div>
@@ -721,18 +724,18 @@
 
   const fieldMap = {
     entity: ["Entity", "Name", "Named Insured", "Insured"],
-    address: ["Address", "Location", "Property", "Vehicle", "Main Address"],
+    address: ["Main Address", "Address", "Location", "Property", "Vehicle"],
     tags: ["Covered Addresses / Search Tags", "Search Tags", "Covered Addresses", "Related Addresses"],
     broker: ["Broker", "Agent", "Agency"],
-    company: ["Insurance Company", "Carrier", "Policy", "Ins Co", "Company"],
-    coverage: ["Coverage Type", "Coverage", "Description", "Type"],
-    policy: ["Policy #", "Policy Number", "Policy No", "Policy"],
+    company: ["Insurance Company", "Policy / Carrier", "Carrier", "Ins Co", "Company"],
+    coverage: ["Coverage Type", "Coverage / Info", "Coverage", "Description", "Type"],
+    policy: ["Policy #", "Policy Number", "Policy No"],
     premium: ["Premium", "Amount", "Cost"],
     effective: ["Effective Date", "Effective", "Start Date"],
-    exp: ["Expiration Date", "Exp Date", "Expiration", "Exp", "Main Expiration Date"],
+    exp: ["Expiration Date", "Main Expiration Date", "Exp Date", "Expiration", "Exp", "Umbrella Exp Date", "Auto Exp Date"],
     status: ["Status"],
     rowType: ["Row Type"],
-    notes: ["Notes", "Update Notes", "Missing Info", "Info"]
+    notes: ["Notes", "Update Notes", "Missing Info", "Info", "Account / Other #"]
   };
 
   function normalizeText(v){
@@ -824,15 +827,55 @@
     return isNaN(n) ? 0 : n;
   }
 
+  function isCoveredMasterRow(row){
+    const rowType = normalizeText(getVal(row,"rowType")).toLowerCase();
+    const status = normalizeText(getVal(row,"status")).toLowerCase();
+    const notes = normalizeText(getVal(row,"notes")).toLowerCase();
+    return rowType.includes("covered")
+      || status.includes("covered")
+      || notes.includes("covered under master")
+      || notes.includes("master policy");
+  }
+
+  function hasRealPolicyInfo(row){
+    return !!(getVal(row,"company") || getVal(row,"policy") || getVal(row,"premium") || getVal(row,"exp") || getVal(row,"coverage"));
+  }
+
+  function isBlankOrFormulaError(value){
+    const v = normalizeText(value);
+    return !v || v.startsWith("#");
+  }
+
   function calcStatus(row){
     const manual = normalizeText(getVal(row,"status"));
+    const manualLower = manual.toLowerCase();
     const rowType = normalizeText(getVal(row,"rowType")).toLowerCase();
-    if(manual && manual.toLowerCase() !== "auto") return manual;
-    if(rowType.includes("inactive") || rowType.includes("replaced")) return "Inactive / Replaced";
-    if(rowType.includes("location")) return "Need Review";
-    if(rowType.includes("covered")) return "Covered / Verify";
-
     const exp = parseExcelDate(getVal(row,"exp"));
+
+    if(rowType.includes("inactive") || rowType.includes("replaced") || manualLower.includes("inactive") || manualLower.includes("replaced")){
+      return "Inactive / Replaced";
+    }
+
+    if(isCoveredMasterRow(row)){
+      if(exp){
+        const today = new Date();
+        today.setHours(0,0,0,0);
+        const diffDays = Math.ceil((exp - today) / (1000*60*60*24));
+        if(diffDays < 0) return "Expired Covered Master";
+        if(diffDays <= 90) return "Covered Master - Expiring Soon";
+        return "Covered Under Master Policy";
+      }
+      return "Covered / Verify";
+    }
+
+    // If the uploaded Excel says "Missing Exp Date" but the row now has an exp date,
+    // ignore the old manual status and recalculate.
+    if(manual && manualLower !== "auto" && !(manualLower.includes("missing") && exp)){
+      return manual;
+    }
+
+    if(rowType.includes("location") && !hasRealPolicyInfo(row)) return "Location Only / No Policy Info";
+
     if(!exp) return "Missing Exp Date";
 
     const today = new Date();
@@ -840,12 +883,14 @@
     const diffDays = Math.ceil((exp - today) / (1000*60*60*24));
 
     if(diffDays < 0) return "Expired";
-    if(diffDays <= 90) return "Expiring Soon";
+    if(diffDays <= 30) return "Expiring 30 Days";
+    if(diffDays <= 90) return "Expiring 90 Days";
     return "Active";
   }
 
   function statusClass(status){
     const s = String(status).toLowerCase();
+    if(s.includes("covered") && !s.includes("expired") && !s.includes("soon")) return "covered";
     if(s.includes("expired") && !s.includes("soon")) return "expired";
     if(s.includes("soon")) return "soon";
     if(s.includes("active")) return "active";
@@ -866,6 +911,7 @@
       getVal(row,"policy"),
       getVal(row,"premium"),
       getVal(row,"exp"),
+      calcStatus(row),
       getVal(row,"status"),
       getVal(row,"rowType"),
       getVal(row,"notes")
@@ -914,11 +960,25 @@
     for(const key of ["entity","address","tags","broker","company","coverage","policy","premium","effective","exp","status","rowType","notes"]){
       const h = preferredHeader(key);
       if(!headers.includes(h)) headers.push(h);
-      if(row[h] === undefined) row[h] = getVal(row,key) || "";
+
+      // Copy from old/original column names into clean app columns only when clean field is blank.
+      if(row[h] === undefined || row[h] === null || String(row[h]).trim() === ""){
+        const v = getVal(row,key);
+        row[h] = v || "";
+      }
     }
+
     if(!getVal(row,"rowType")){
-      const hasPolicyInfo = getVal(row,"company") || getVal(row,"policy") || getVal(row,"premium") || getVal(row,"exp") || getVal(row,"coverage");
-      setVal(row,"rowType", hasPolicyInfo ? "Insurance / Policy Record" : "Location Only");
+      setVal(row,"rowType", hasRealPolicyInfo(row) ? "Insurance / Policy Record" : "Location Only");
+    }
+
+    // Master-policy address rows should not be treated as missing.
+    if(isCoveredMasterRow(row)){
+      setVal(row,"rowType", "Covered Under Master Policy");
+      const st = getVal(row,"status");
+      if(!st || String(st).toLowerCase().includes("missing")){
+        setVal(row,"status", "");
+      }
     }
   }
 
@@ -993,7 +1053,8 @@
         if(selectedStatusFilter === "soon") statusOk = s.includes("soon");
         if(selectedStatusFilter === "missing") statusOk = s.includes("missing");
         if(selectedStatusFilter === "inactive") statusOk = s.includes("inactive") || s.includes("replaced");
-        if(selectedStatusFilter === "review") statusOk = s.includes("review") || s.includes("covered");
+        if(selectedStatusFilter === "review") statusOk = s.includes("review");
+        if(selectedStatusFilter === "covered") statusOk = s.includes("covered");
       }
 
       if(!statusOk) return false;
@@ -1012,7 +1073,7 @@
 
     rows.forEach(row=>{
       const s = calcStatus(row).toLowerCase();
-      if(s.includes("active")) active++;
+      if(s.includes("active") || (s.includes("covered") && !s.includes("expired") && !s.includes("soon"))) active++;
       if(s.includes("expired") && !s.includes("soon")) expired++;
       if(s.includes("soon")) soon++;
       if(s.includes("missing")) missing++;
@@ -1160,18 +1221,43 @@
     if(editingIndex === null) return;
     const row = rows[editingIndex];
 
-    setVal(row,"entity", document.getElementById("f_entity").value);
-    setVal(row,"address", document.getElementById("f_address").value);
-    setVal(row,"rowType", document.getElementById("f_rowType").value);
-    setVal(row,"broker", document.getElementById("f_broker").value);
-    setVal(row,"company", document.getElementById("f_company").value);
-    setVal(row,"coverage", document.getElementById("f_coverage").value);
-    setVal(row,"policy", document.getElementById("f_policy").value);
-    setVal(row,"premium", document.getElementById("f_premium").value);
-    setVal(row,"exp", document.getElementById("f_exp").value);
-    setVal(row,"tags", document.getElementById("f_tags").value);
-    setVal(row,"status", document.getElementById("f_status").value);
-    setVal(row,"notes", document.getElementById("f_notes").value);
+    const entity = document.getElementById("f_entity").value;
+    const address = document.getElementById("f_address").value;
+    const rowType = document.getElementById("f_rowType").value;
+    const broker = document.getElementById("f_broker").value;
+    const company = document.getElementById("f_company").value;
+    const coverage = document.getElementById("f_coverage").value;
+    const policy = document.getElementById("f_policy").value;
+    const premium = document.getElementById("f_premium").value;
+    const exp = document.getElementById("f_exp").value;
+    const tags = document.getElementById("f_tags").value;
+    const status = document.getElementById("f_status").value;
+    const notes = document.getElementById("f_notes").value;
+
+    setVal(row,"entity", entity);
+    setVal(row,"address", address);
+    setVal(row,"rowType", rowType);
+    setVal(row,"broker", broker);
+    setVal(row,"company", company);
+    setVal(row,"coverage", coverage);
+    setVal(row,"policy", policy);
+    setVal(row,"premium", premium);
+    setVal(row,"exp", exp);
+    setVal(row,"tags", tags);
+    setVal(row,"status", status);
+    setVal(row,"notes", notes);
+
+    // Also update original Excel-style columns if they exist, so old layout stays useful.
+    if(row["Address"] !== undefined) row["Address"] = address;
+    if(row["Policy / Carrier"] !== undefined) row["Policy / Carrier"] = company;
+    if(row["Coverage / Info"] !== undefined) row["Coverage / Info"] = coverage;
+    if(row["Policy #"] !== undefined) row["Policy #"] = policy;
+    if(row["Premium"] !== undefined) row["Premium"] = premium;
+    if(row["Exp Date"] !== undefined) row["Exp Date"] = exp;
+    if(row["Main Expiration Date"] !== undefined) row["Main Expiration Date"] = exp;
+    if(row["Status"] !== undefined) row["Status"] = status;
+    if(row["Row Type"] !== undefined) row["Row Type"] = rowType;
+    if(row["Update Notes"] !== undefined) row["Update Notes"] = notes;
 
     closeModal();
     refreshAll();
@@ -1198,30 +1284,51 @@
       return;
     }
 
-    const exportHeaders = [
-      "Entity",
-      "Main Address",
+    const cleanHeaders = [
       "Covered Addresses / Search Tags",
-      "Broker",
       "Insurance Company",
       "Coverage Type",
-      "Policy #",
-      "Premium",
-      "Effective Date",
       "Expiration Date",
-      "Status",
-      "Row Type",
       "Notes"
     ];
 
-    const extraHeaders = headers.filter(h => !exportHeaders.includes(h) && !h.startsWith("__"));
-    const finalHeaders = [...exportHeaders, ...extraHeaders];
+    // Keep the uploaded Excel layout first, then add any clean app columns that were missing.
+    const originalHeaders = headers.filter(h => !h.startsWith("__"));
+    const finalHeaders = [...originalHeaders];
+    cleanHeaders.forEach(h => {
+      if(!finalHeaders.includes(h)) finalHeaders.push(h);
+    });
 
     const exportRows = rows.map(row=>{
       const out = {};
       finalHeaders.forEach(h=>out[h] = row[h] ?? "");
-      out["Status"] = getVal(row,"status") || calcStatus(row);
-      out["Expiration Date"] = formatDate(getVal(row,"exp"));
+
+      const address = getVal(row,"address");
+      const company = getVal(row,"company");
+      const coverage = getVal(row,"coverage");
+      const policy = getVal(row,"policy");
+      const premium = getVal(row,"premium");
+      const exp = formatDate(getVal(row,"exp"));
+      const status = calcStatus(row);
+      const rowType = getVal(row,"rowType");
+      const notes = getVal(row,"notes");
+
+      if(finalHeaders.includes("Address")) out["Address"] = address;
+      if(finalHeaders.includes("Main Address")) out["Main Address"] = address;
+      if(finalHeaders.includes("Policy / Carrier")) out["Policy / Carrier"] = company;
+      if(finalHeaders.includes("Insurance Company")) out["Insurance Company"] = company;
+      if(finalHeaders.includes("Coverage / Info")) out["Coverage / Info"] = coverage;
+      if(finalHeaders.includes("Coverage Type")) out["Coverage Type"] = coverage;
+      if(finalHeaders.includes("Policy #")) out["Policy #"] = policy;
+      if(finalHeaders.includes("Premium")) out["Premium"] = premium;
+      if(finalHeaders.includes("Exp Date")) out["Exp Date"] = exp;
+      if(finalHeaders.includes("Main Expiration Date")) out["Main Expiration Date"] = exp;
+      if(finalHeaders.includes("Expiration Date")) out["Expiration Date"] = exp;
+      if(finalHeaders.includes("Status")) out["Status"] = status;
+      if(finalHeaders.includes("Row Type")) out["Row Type"] = rowType;
+      if(finalHeaders.includes("Notes")) out["Notes"] = notes;
+      if(finalHeaders.includes("Update Notes") && !out["Update Notes"]) out["Update Notes"] = notes;
+
       return out;
     });
 
@@ -1281,17 +1388,32 @@
       {
         "Entity":"Windsor Fuel Co., Inc.",
         "Main Address":"51 Windsor Ave",
-        "Covered Addresses / Search Tags":"51 Windsor Ave",
-        "Broker":"",
-        "Insurance Company":"",
-        "Coverage Type":"",
-        "Policy #":"",
-        "Premium":"",
-        "Effective Date":"",
-        "Expiration Date":"",
-        "Status":"Covered / Verify",
+        "Covered Addresses / Search Tags":"51 Windsor Ave; 55 Windsor Ave; 219 S. Bedford Ave",
+        "Broker":"Tangram ProSight",
+        "Insurance Company":"NY Marine & General Ins",
+        "Coverage Type":"Covered under master GL / Auto policy",
+        "Policy #":"AU202500015833",
+        "Premium":"143602",
+        "Effective Date":"06/17/2025",
+        "Expiration Date":"06/17/2026",
+        "Status":"",
         "Row Type":"Covered Under Master Policy",
-        "Notes":"Possibly covered under master GL policy. Verify final policy."
+        "Notes":"Covered under master policy. Address row still shows company, policy #, premium, and expiration."
+      },
+      {
+        "Entity":"LeoGrande Family Irr.Tr.",
+        "Main Address":"47 Fanning Blvd",
+        "Covered Addresses / Search Tags":"4255 West Mill Rd; 4900 West Mill Rd; 47 Fanning Blvd",
+        "Broker":"John C Micena",
+        "Insurance Company":"Farm Family Casualty",
+        "Coverage Type":"Covered under master Property, GL",
+        "Policy #":"3152G4588",
+        "Premium":"13036.41",
+        "Effective Date":"",
+        "Expiration Date":"03/23/2027",
+        "Status":"",
+        "Row Type":"Covered Under Master Policy",
+        "Notes":"Covered under Farm Family Casualty master policy."
       }
     ];
     headers = Object.keys(rows[0]);
