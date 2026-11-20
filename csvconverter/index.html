@@ -830,6 +830,11 @@
         setConverterStatus("success", "Done. " + converterRows.length + " CSV row(s) created.");
       } catch (error) {
         console.error(error);
+        if (error instanceof TransactionRegisterError) {
+          document.getElementById("converterCsvOutput").value = "";
+          setConverterStatus("error", error.message);
+          return;
+        }
         setConverterStatus("error", "Something went wrong while reading the file. Check the file format and try again.");
       }
     }
@@ -900,6 +905,10 @@
     // =========================
     async function parsePdfFileToRows(file) {
       const text = await readPdfText(file);
+      if (/TRANSACTION\s+CHECK\s+REGISTER/i.test(text)) {
+        document.getElementById("converterCsvOutput").value = "";
+        return parseTransactionRegisterPdf(file);
+      }
       const checkbookId = detectPdfCheckbookId(text);
       const accountMap = getConverterAccountMap();
       const account = accountMap[checkbookId] || "";
@@ -930,6 +939,111 @@
         });
       }
 
+      return rows;
+    }
+
+    // =========================
+    // TRANSACTION CHECK REGISTER PDF (ADDITIONAL FORMAT)
+    // =========================
+    class TransactionRegisterError extends Error {}
+
+    async function parseTransactionRegisterPdf(file) {
+      const pdf = await pdfjsLib.getDocument({ data: await file.arrayBuffer() }).promise;
+      const pages = [];
+      try {
+        for (let n = 1; n <= pdf.numPages; n++) {
+          const page = await pdf.getPage(n);
+          const content = await page.getTextContent();
+          pages.push(registerLayoutLines(content.items));
+        }
+        return parseTransactionRegisterLines(pages, file.name, getConverterAccountMap());
+      } finally {
+        await pdf.destroy();
+      }
+    }
+
+    // Rebuild the fixed-width GP report from PDF text positions.
+    function registerLayoutLines(items) {
+      const usable = items.filter(item => item.str && item.transform && item.width > 0);
+      if (!usable.length) return [];
+      const widths = usable.filter(item => item.str.trim().length > 5)
+        .map(item => item.width / item.str.length).sort((a, b) => a - b);
+      const cell = widths[Math.floor(widths.length / 2)] || 5.5;
+      const left = Math.min(...usable.map(item => item.transform[4]));
+      const groups = [];
+      usable.forEach(item => {
+        const y = item.transform[5];
+        let group = groups.find(g => Math.abs(g.y - y) < 1.5);
+        if (!group) { group = { y, items: [] }; groups.push(group); }
+        group.items.push(item);
+      });
+      return groups.sort((a, b) => b.y - a.y).map(group => {
+        let line = "";
+        group.items.sort((a, b) => a.transform[4] - b.transform[4]).forEach(item => {
+          const col = Math.max(0, Math.round((item.transform[4] - left) / cell));
+          line = line.padEnd(col, " ") + item.str;
+        });
+        return line;
+      });
+    }
+
+    function parseTransactionRegisterLines(pages, source, accountMap) {
+      const fail = message => { throw new TransactionRegisterError(source + ": " + message); };
+      const rows = [];
+      let pending = null;
+      let columns = null;
+      let seen = 0, cents = 0, activeCents = 0, voided = 0;
+      let totals = [];
+      const checkPattern = /^\s*([A-Z]*\d+)\s+(\d{1,2}\/\d{1,2}\/\d{4})\s+\d+\s+\$([\d,]+\.\d{2})\s*$/i;
+      for (const lines of pages) {
+        for (const line of lines) {
+          if (/Checkbook\s+Vendor ID\s+Check Name\s+Voided/i.test(line)) {
+            columns = { vendor: line.search(/Vendor ID/i), payee: line.search(/Check Name/i), voided: line.search(/Voided/i) };
+            continue;
+          }
+          const total = line.match(/(\d[\d,]*)\s+Check\(s\)\s+Checks Total:\s*\$([\d,]+\.\d{2})/i);
+          if (total) {
+            totals.push({ count: Number(total[1].replace(/,/g, "")), cents: Math.round(Number(total[2].replace(/,/g, "")) * 100) });
+            continue;
+          }
+          const check = line.match(checkPattern);
+          if (check) {
+            if (pending) fail("A check is missing its checkbook/payee line.");
+            pending = { source, checkNumber: normalizeCheckNumber(check[1]), date: normalizeExcelDate(check[2]), amount: formatUploadAmount(check[3]) };
+            continue;
+          }
+          if (!pending || !line.trim() || /^\s*[-=]+\s*$/.test(line)) continue;
+          if (!columns) fail("Could not read the check register column headings.");
+          const checkbook = line.slice(0, columns.vendor).trim().replace(/\s+/g, " ").toUpperCase();
+          const vendor = line.slice(columns.vendor, columns.payee).trim();
+          let payee = line.slice(columns.payee).trim();
+          if (!checkbook || !vendor || !payee) fail("Could not read details for check " + pending.checkNumber + ".");
+          // A void indicator is separate from the payee in the Voided column.
+          const voidField = line.slice(columns.voided).trim();
+          const hasVoidField = columns.voided >= line.length || /\s/.test(line.charAt(columns.voided - 1));
+          const isVoided = hasVoidField && /^(YES|Y|TRUE|VOID|VOIDED|X|\*)$/i.test(voidField);
+          if (hasVoidField && (isVoided || /^(NO|N|FALSE)$/i.test(voidField))) {
+            payee = line.slice(columns.payee, columns.voided).trim();
+          }
+          if (!Object.prototype.hasOwnProperty.call(accountMap, checkbook)) fail("Unknown checkbook: " + checkbook + ".");
+          seen++;
+          const checkCents = Math.round(Number(pending.amount) * 100);
+          cents += checkCents;
+          if (isVoided) {
+            voided++;
+          } else {
+            activeCents += checkCents;
+            rows.push({ ...pending, account: accountMap[checkbook], payee: cleanPayee(payee) });
+          }
+          pending = null;
+        }
+      }
+      if (pending) fail("A check is missing its checkbook/payee line.");
+      if (!seen || !totals.length) fail("No complete checks or report total found.");
+      const last = totals[totals.length - 1];
+      const summed = totals.reduce((sum, t) => ({ count: sum.count + t.count, cents: sum.cents + t.cents }), { count: 0, cents: 0 });
+      const matches = t => (t.count === seen && t.cents === cents) || (voided > 0 && (t.count === seen || t.count === rows.length) && t.cents === activeCents);
+      if (!matches(last) && !matches(summed)) fail("Extracted check count or amount does not match the report total. CSV was not created.");
       return rows;
     }
 
